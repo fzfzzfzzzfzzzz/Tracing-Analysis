@@ -54,12 +54,24 @@ python -m tracegraph run-offline `
 
 `--input` 支持：当前单文件 `results.json`、当前 `results.json + simulations/*.json` 目录、单个 `SimulationRun` JSON，以及旧版带 `trajectory`/`traj` 的 JSON。
 
+## GLM 真实 Pilot
+
+将 GLM key 只写入被忽略的本地 `.env`，然后使用安全 runner：
+
+```powershell
+./scripts/run_glm_pilot.ps1 -Domain mock -TaskId create_task_1 `
+  -Manager full_trajectory -Budget none -MaxSteps 8 -VerboseLogs
+```
+
+已完成的真实 mock/retail 结果、成本与模型协议边界见 [GLM Pilot](docs/GLM_PILOT.md)。
+
 ## 文档
 
 - [架构与数据流](docs/ARCHITECTURE.md)
 - [完整实验协议](docs/EXPERIMENTS.md)
 - [指标定义](docs/METRICS.md)
 - [τ³-bench 集成](docs/TAU3_INTEGRATION.md)
+- [GLM 真实 Pilot](docs/GLM_PILOT.md)
 - [数据与结果格式](docs/DATA_FORMAT.md)
 - [已执行验证](docs/VALIDATION.md)
 - [调研报告逐项追踪](docs/REQUIREMENTS_TRACEABILITY.md)

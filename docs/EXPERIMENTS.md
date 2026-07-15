@@ -84,3 +84,9 @@ python -m tracegraph verify-archive artifacts\tau3-archive
 ## 8. 阶段性判断
 
 若真实小样本中 median trajectory 太短、Oracle compression ratio 低、生命周期转移稀少，或强 LLM-only 在相同预算下结构指标与 Full Ours 无显著差异，应按报告要求调整 benchmark 或缩小论文主张，而不是扩大 synthetic 结果。
+
+## 9. 当前 GLM 阶段状态
+
+2026-07-16 已完成真实 API 连通、Function Call、mock 端到端成功以及 retail 单任务 Full Trajectory。retail agent 完成全部 5 个目标工具动作，但当前可用的 `glm-4.5-air` user simulator 不输出 τ³ 所需的 `###STOP###`，因此官方 reward 为 0；该结果不得改写为 task success。详细配置、成本、失败分析与两图离线结构 pilot 见 [GLM Pilot](GLM_PILOT.md)。
+
+正式实验在 user protocol 兼容性解决前暂停，避免把 user simulator 缺陷混入 context manager 比较。恢复后仍按本文第 0–8 节冻结变量并逐条件执行。

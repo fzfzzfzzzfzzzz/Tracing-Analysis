@@ -32,6 +32,15 @@ $env:TRACEGRAPH_OUTPUT_DIR = "outputs/tau3_live/full_ours"
 
 对每个 manager 使用完全相同参数和 task IDs。`scripts/tau3_cli.py` 只是在启动上游 CLI 前注册 `tracegraph_agent`，评价器、environment、tools 和 user simulator 仍是官方实现。
 
+使用智谱 BigModel/GLM 时，推荐由安全 runner 加载被忽略的 `.env`，并通过 `extra_body` 关闭 thinking：
+
+```powershell
+./scripts/run_glm_pilot.ps1 -Domain mock -TaskId create_task_1 `
+  -Manager full_trajectory -Budget none -MaxSteps 8 -VerboseLogs
+```
+
+runner 不会显示 API key，并在 `.env` 未被 Git 忽略时拒绝运行。真实执行记录与当前 user simulator 协议限制见 [GLM Pilot](GLM_PILOT.md)。
+
 ## Live agent 的上下文语义
 
 - 固定 agent instruction 永远保留。
@@ -43,4 +52,4 @@ $env:TRACEGRAPH_OUTPUT_DIR = "outputs/tau3_live/full_ours"
 
 ## 当前验证边界
 
-核心和 JSON adapter 已在 Python 3.11.9 通过 22 项测试。官方隔离环境已用 `uv 0.11.29` 安装 CPython 3.12.13 与 `tau2 1.0.0`，并通过 `tau2 check-data`；`tracegraph 0.1.0` 已以 editable 模式导入，`tracegraph_agent` 已在上游 registry 中注册，包装 CLI 入口也已验证。当前仅缺用户提供的 agent/user 模型密钥，因此尚未执行会产生外部调用成本的 live benchmark。
+核心和 JSON adapter 已在 Python 3.11.9 通过 22 项测试。官方隔离环境已用 `uv 0.11.29` 安装 CPython 3.12.13 与 `tau2 1.0.0`，并通过 `tau2 check-data`；`tracegraph 0.1.0` 已以 editable 模式导入，`tracegraph_agent` 已在上游 registry 中注册。GLM mock live task 已获得 reward 1.0；retail task 暴露了当前 GLM user simulator 不输出停止标记的兼容问题，因此正式多条件 benchmark 尚未启动。

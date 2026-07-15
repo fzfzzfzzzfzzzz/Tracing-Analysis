@@ -27,7 +27,20 @@ python -m compileall -q src tests scripts
 - 调用 `register_tau3_agent()` 后，上游 registry 可发现 `tracegraph_agent`；
 - `scripts/tau3_cli.py --help` 成功进入上游 CLI。
 
-这证明安装、数据发现、包导入、适配器注册和命令入口已经接通。真实 agent/user 对话仍需模型 API key，并会产生外部模型调用成本，因此未在无密钥环境中执行。
+这证明安装、数据发现、包导入、适配器注册和命令入口已经接通。
+
+## GLM 真实调用验证
+
+本地 `.env` 中的 GLM 凭据通过认证和模型目录查询；该文件由 `.gitignore` 排除，发布前对全部 42 个 tracked/untracked candidate files 做动态密钥扫描，泄漏数为 0。
+
+- `zai/glm-4.5-air` 最小 Function Call：成功产生 1 个合法工具调用；
+- `mock/create_task_1`：reward 1.0、DB 1.0、write action 1/1、正常 `user_stop`；
+- mock 轨迹与 archive：10 nodes、6 edges，schema/hash 全部有效；
+- `retail/0`：5 个预期工具动作全部无 error，写操作执行成功，但 user simulator 未产生 `###STOP###`，最终 `max_steps`、官方 reward 0；
+- retail 轨迹与 archive：37 nodes、16 edges，schema/hash 全部有效；
+- 两图 2048-token 离线 suite：12 个 manager、生命周期、Oracle、前缀回放与 manifest 全部生成，archive 校验通过。
+
+retail 结果不重解释为成功，也不作为 context manager 主结果。详细成本、诊断与结构 pilot 见 `docs/GLM_PILOT.md`。
 
 ## 官方公开历史轨迹兼容验证
 
