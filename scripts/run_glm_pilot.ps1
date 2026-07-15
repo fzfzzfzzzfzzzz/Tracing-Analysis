@@ -29,6 +29,7 @@ param(
     [string]$SaveTo = "",
     [string]$TraceOutputDir = "",
     [switch]$VerboseLogs,
+    [switch]$NormalizeUserStop,
     [switch]$DryRun
 )
 
@@ -90,6 +91,11 @@ if ([string]::IsNullOrWhiteSpace($TraceOutputDir)) {
 $env:TRACEGRAPH_MANAGER = $Manager
 $env:TRACEGRAPH_BUDGET = $Budget
 $env:TRACEGRAPH_OUTPUT_DIR = $TraceOutputDir
+$userImplementation = if ($NormalizeUserStop) {
+    "tracegraph_user_simulator"
+} else {
+    "user_simulator"
+}
 
 # LiteLLM 1.81.11 does not expose GLM's `thinking` as a top-level OpenAI
 # parameter. `extra_body` is the compatible route and prevents reasoning tokens
@@ -114,7 +120,7 @@ $arguments = @(
     "--agent", "tracegraph_agent",
     "--agent-llm", $AgentModel,
     "--agent-llm-args", $agentArgsJson,
-    "--user", "user_simulator",
+    "--user", $userImplementation,
     "--user-llm", $UserModel,
     "--user-llm-args", $userArgsJson,
     "--num-trials", "1",
@@ -139,6 +145,7 @@ $runConfig = [pscustomobject]@{
     budget = $Budget
     agent_model = $AgentModel
     user_model = $UserModel
+    user_implementation = $userImplementation
     seed = $Seed
     max_steps = $MaxSteps
     save_to = $SaveTo

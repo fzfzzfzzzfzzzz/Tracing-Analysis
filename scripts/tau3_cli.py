@@ -34,8 +34,10 @@ def _prepare_windows_process() -> None:
 _prepare_windows_process()
 
 from tracegraph.integrations.tau3_agent import register_tau3_agent
+from tracegraph.integrations.tau3_user import register_tau3_user
 
 register_tau3_agent()
+register_tau3_user()
 
 from tau2.cli import main  # noqa: E402
 

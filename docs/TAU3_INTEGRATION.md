@@ -41,6 +41,15 @@ $env:TRACEGRAPH_OUTPUT_DIR = "outputs/tau3_live/full_ours"
 
 runner 不会显示 API key，并在 `.env` 未被 Git 忽略时拒绝运行。真实执行记录与当前 user simulator 协议限制见 [GLM Pilot](GLM_PILOT.md)。
 
+若模型明确用自然语言表达结束意图但不输出 τ³ 标记，可显式启用：
+
+```powershell
+./scripts/run_glm_pilot.ps1 -Domain retail -TaskId 0 `
+  -Manager full_trajectory -Budget none -NormalizeUserStop
+```
+
+`tracegraph_user_simulator` 只做确定性停止协议规范化，默认关闭；正式对比中必须跨条件固定该开关并披露。
+
 ## Live agent 的上下文语义
 
 - 固定 agent instruction 永远保留。
@@ -52,4 +61,4 @@ runner 不会显示 API key，并在 `.env` 未被 Git 忽略时拒绝运行。�
 
 ## 当前验证边界
 
-核心和 JSON adapter 已在 Python 3.11.9 通过 22 项测试。官方隔离环境已用 `uv 0.11.29` 安装 CPython 3.12.13 与 `tau2 1.0.0`，并通过 `tau2 check-data`；`tracegraph 0.1.0` 已以 editable 模式导入，`tracegraph_agent` 已在上游 registry 中注册。GLM mock live task 已获得 reward 1.0；retail task 暴露了当前 GLM user simulator 不输出停止标记的兼容问题，因此正式多条件 benchmark 尚未启动。
+核心和 JSON adapter 已在 Python 3.11.9 通过 27 项测试。官方隔离环境已用 `uv 0.11.29` 安装 CPython 3.12.13 与 `tau2 1.0.0`，并通过 `tau2 check-data`；`tracegraph 0.1.0` 已以 editable 模式导入，`tracegraph_agent` 与可选 `tracegraph_user_simulator` 已在上游 registry 中注册。GLM mock live task 已获得 reward 1.0；两次 retail task 分别暴露 user-stop 与工具 variant 选择问题，因此正式多条件 benchmark 尚未启动。

@@ -87,6 +87,6 @@ python -m tracegraph verify-archive artifacts\tau3-archive
 
 ## 9. 当前 GLM 阶段状态
 
-2026-07-16 已完成真实 API 连通、Function Call、mock 端到端成功以及 retail 单任务 Full Trajectory。retail agent 完成全部 5 个目标工具动作，但当前可用的 `glm-4.5-air` user simulator 不输出 τ³ 所需的 `###STOP###`，因此官方 reward 为 0；该结果不得改写为 task success。详细配置、成本、失败分析与两图离线结构 pilot 见 [GLM Pilot](GLM_PILOT.md)。
+2026-07-16 已完成真实 API 连通、Function Call、mock 端到端成功以及两次 retail 单任务 Full Trajectory。第一次完成全部 5 个目标工具动作但 user 没有停止；第二次正常 `user_stop`，但 agent 选择了错误键盘 variant，官方 reward 仍为 0。两次结果都不得改写为 task success。详细配置、成本、失败分析与三图离线结构 pilot 见 [GLM Pilot](GLM_PILOT.md)。
 
-正式实验在 user protocol 兼容性解决前暂停，避免把 user simulator 缺陷混入 context manager 比较。恢复后仍按本文第 0–8 节冻结变量并逐条件执行。
+项目提供默认关闭的确定性 user-stop 协议 adapter；是否启用必须在所有条件中固定。正式实验在获得有额度且工具选择稳定的模型前暂停，避免把 agent/user 模型缺陷混入 context manager 比较。恢复后仍按本文第 0–8 节冻结变量并逐条件执行。

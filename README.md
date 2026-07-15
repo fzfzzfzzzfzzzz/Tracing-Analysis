@@ -64,6 +64,7 @@ python -m tracegraph run-offline `
 ```
 
 已完成的真实 mock/retail 结果、成本与模型协议边界见 [GLM Pilot](docs/GLM_PILOT.md)。
+对于明确结束意图未映射到 τ³ 停止标记的模型，可显式添加 `-NormalizeUserStop`；该开关默认关闭，正式对比必须跨条件固定。
 
 ## 文档
 

@@ -13,7 +13,7 @@ python -m compileall -q src tests scripts
 
 覆盖归档 hash、类型边、图持久化、失败/重试/side effect、生命周期硬约束、可恢复压缩、全部 manager、消融开关、指标、固定 agent loop、τ 当前/旧格式、完整实验输出和无未来前缀图。
 
-本次最终复验结果：22/22 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过。
+本次最终复验结果：27/27 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过。
 
 ## 当前官方 τ³ 环境验证
 
@@ -38,7 +38,9 @@ python -m compileall -q src tests scripts
 - mock 轨迹与 archive：10 nodes、6 edges，schema/hash 全部有效；
 - `retail/0`：5 个预期工具动作全部无 error，写操作执行成功，但 user simulator 未产生 `###STOP###`，最终 `max_steps`、官方 reward 0；
 - retail 轨迹与 archive：37 nodes、16 edges，schema/hash 全部有效；
-- 两图 2048-token 离线 suite：12 个 manager、生命周期、Oracle、前缀回放与 manifest 全部生成，archive 校验通过。
+- 可选 user-stop normalizer：问句/普通道别不触发，明确结束意图触发，幂等性测试通过；
+- 第二次 `retail/0`：正常 `user_stop`，4/4 read actions，但错误键盘 variant 导致 write 0/1、DB 0、官方 reward 0；
+- 三图 2048-token 离线 suite：12 个 manager、生命周期、Oracle、前缀回放与 manifest 全部生成，archive 校验通过。
 
 retail 结果不重解释为成功，也不作为 context manager 主结果。详细成本、诊断与结构 pilot 见 `docs/GLM_PILOT.md`。
 
