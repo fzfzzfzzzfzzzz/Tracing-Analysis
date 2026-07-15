@@ -13,7 +13,7 @@ python -m compileall -q src tests scripts
 
 覆盖归档 hash、类型边、图持久化、失败/重试/side effect、生命周期硬约束、可恢复压缩、全部 manager、消融开关、指标、固定 agent loop、τ 当前/旧格式、完整实验输出和无未来前缀图。
 
-本次最终复验结果：41/41 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过。
+本次最终复验结果：43/43 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过。
 
 ## 当前官方 τ³ 环境验证
 

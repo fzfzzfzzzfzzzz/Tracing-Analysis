@@ -25,6 +25,7 @@
 | Stage 1 聚合与 gate | `stage1.py`, `analyze_glm_stage1.py` | 30/30 sessions/traces；官方 reward/action/termination；完整性硬门槛 |
 | 真实预算选择 | `budget_sweep.py`, `run_budget_sweep.py` | 30 图 4096/8192/16384 sweep；推荐 16384 |
 | 人工双标工具 | `annotation.py`, export/score scripts | 盲化双表、隔离 key、Cohen's κ、裁决表 tests |
+| 强 baseline provenance | `manager_provenance.py`, `STRONG_BASELINES.md` | manifest 标记 native/proxy、主结果资格和官方来源；unknown fail closed |
 
 ## 尚需真实外部资源的事项
 

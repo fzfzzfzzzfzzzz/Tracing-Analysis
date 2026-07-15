@@ -44,6 +44,15 @@ class ExperimentTests(unittest.TestCase):
             self.assertTrue(manifest["contains_synthetic_data"])
             self.assertEqual(manifest["graph_count"], 1)
             self.assertEqual(len(manifest["manager_names"]), 12)
+            provenance = manifest["manager_provenance"]
+            self.assertEqual(set(provenance), set(manifest["manager_names"]))
+            self.assertTrue(provenance["full_ours"]["main_result_eligible"])
+            self.assertFalse(provenance["agentdiet_style"]["main_result_eligible"])
+            self.assertFalse(provenance["acon_style"]["main_result_eligible"])
+            self.assertEqual(
+                provenance["acon_style"]["official_code"],
+                "https://github.com/microsoft/acon",
+            )
             for name in manifest["files"]:
                 self.assertTrue((root / "results" / name).is_file(), name)
             rows = [

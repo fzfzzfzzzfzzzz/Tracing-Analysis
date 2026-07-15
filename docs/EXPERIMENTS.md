@@ -73,6 +73,8 @@ python -m tracegraph verify-archive artifacts\tau3-archive
 
 默认的后三类/摘要类是透明标记的 deterministic proxy，用于管线验证。论文主结果必须把 scorer/summarizer 替换为指定模型或官方方法，并在 manifest 中写明版本、prompt 和 commit。
 
+AgentDiet/ACON/Agent-Omit 的官方实现可用性、接口差异和 τ³ 接入验收标准见 [强 baseline 官方实现审计](STRONG_BASELINES.md)。实验 manifest 会 fail-closed 地记录每个 manager 的实现类型与主结果资格。
+
 ## 7. 统计
 
 - τ 任务成功率：paired bootstrap 95% CI；多 trial 报 Pass^k。

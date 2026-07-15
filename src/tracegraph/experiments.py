@@ -16,6 +16,7 @@ from .context import ContextItem, ContextManager, ContextView, build_context_man
 from .graph import TraceGraph
 from .lifecycle import LifecycleEngine
 from .metrics import EvaluationMetrics, evaluate_view
+from .manager_provenance import manager_provenance
 from .schema import Edge, LifecycleState, Node, NodeType, utc_now
 
 
@@ -251,6 +252,7 @@ class ExperimentRunner:
             "provenance": self.config.provenance,
             "graph_count": len(graphs),
             "manager_names": list(self.managers),
+            "manager_provenance": manager_provenance(self.managers),
             "budget": self.config.budget,
             "online_replay": self.config.online_replay,
             "contains_synthetic_data": any(

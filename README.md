@@ -80,6 +80,7 @@ python -m tracegraph run-offline `
 - [正式实验矩阵与成本门控](docs/FORMAL_MATRIX.md)
 - [Stage 1 正式结果与决策](docs/STAGE1_RESULTS.md)
 - [生命周期人工双标协议](docs/LIFECYCLE_ANNOTATION.md)
+- [强 baseline 官方实现审计](docs/STRONG_BASELINES.md)
 - [数据与结果格式](docs/DATA_FORMAT.md)
 - [已执行验证](docs/VALIDATION.md)
 - [调研报告逐项追踪](docs/REQUIREMENTS_TRACEABILITY.md)

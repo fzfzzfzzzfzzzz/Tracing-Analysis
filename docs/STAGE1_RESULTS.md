@@ -90,7 +90,7 @@ retail 为 `4/15 = 0.2667`，airline 为 `8/15 = 0.5333`。这说明模型可完
 - ACON-style proxy：evidence retention 0.70、unsafe 1.33；
 - 去掉 constraint retention：constraint retention 0.5667、unsafe 0.4333。
 
-这些是 30 图离线结构结果。除 Full Trajectory 外，task success 保持空值；AgentDiet/ACON/LLM-only 仍是 proxy，不能当作论文官方 baseline 结果。
+这些是 30 图离线结构结果。除 Full Trajectory 外，task success 保持空值；AgentDiet/ACON/LLM-only 仍是 proxy，不能当作论文官方 baseline 结果。论文与官方代码审计、τ³ 接入验收条件见[强 baseline 官方实现审计](STRONG_BASELINES.md)。
 
 ## 不可识别项与下一步
 
