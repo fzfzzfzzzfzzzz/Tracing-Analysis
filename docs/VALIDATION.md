@@ -13,6 +13,22 @@ python -m compileall -q src tests scripts
 
 覆盖归档 hash、类型边、图持久化、失败/重试/side effect、生命周期硬约束、可恢复压缩、全部 manager、消融开关、指标、固定 agent loop、τ 当前/旧格式、完整实验输出和无未来前缀图。
 
+本次最终复验结果：22/22 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过。
+
+## 当前官方 τ³ 环境验证
+
+通过 `scripts/setup_tau3.ps1` 在隔离的 `vendor/tau3-bench/.venv` 中完成：
+
+- `uv 0.11.29` 管理上游环境；
+- CPython 3.12.13；
+- 上游发布包 `tau2 1.0.0`，77 个依赖包检查通过；
+- `tau2 check-data` 通过，官方 mock、airline、retail、telecom 等域与 task sets 可发现；
+- `tracegraph 0.1.0` 以 editable 模式安装；
+- 调用 `register_tau3_agent()` 后，上游 registry 可发现 `tracegraph_agent`；
+- `scripts/tau3_cli.py --help` 成功进入上游 CLI。
+
+这证明安装、数据发现、包导入、适配器注册和命令入口已经接通。真实 agent/user 对话仍需模型 API key，并会产生外部模型调用成本，因此未在无密钥环境中执行。
+
 ## 官方公开历史轨迹兼容验证
 
 数据：旧版官方 `historical_trajectories/gpt-4o-airline.json`。

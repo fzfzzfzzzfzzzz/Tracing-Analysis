@@ -4,13 +4,13 @@
 
 ## 安装
 
-先安装 `uv`，然后：
+先安装 `uv`，然后运行下面的脚本。若项目 `.venv` 中已有 `uv`，脚本会优先使用它；否则使用 PATH 中的版本。
 
 ```powershell
 ./scripts/setup_tau3.ps1
 ```
 
-脚本执行：克隆官方仓库到 `vendor/tau3-bench`、`uv sync`、把本项目 editable 安装到上游环境、执行 `tau2 check-data`。
+脚本执行：克隆官方仓库到 `vendor/tau3-bench`、`uv sync`、把本项目 editable 安装到上游环境、执行 `tau2 check-data`。脚本强制 Python/控制台使用 UTF-8，并直接传递 `.venv` 解释器路径，兼容中文 Windows 工作区；任一外部命令失败都会返回非零状态。
 
 ## Live 条件运行
 
@@ -20,7 +20,7 @@ $env:TRACEGRAPH_MANAGER = "full_ours"
 $env:TRACEGRAPH_BUDGET = "2048"
 $env:TRACEGRAPH_OUTPUT_DIR = "outputs/tau3_live/full_ours"
 
-uv run --project vendor\tau3-bench python scripts\tau3_cli.py run `
+.\.venv\Scripts\uv.exe run --project vendor\tau3-bench python scripts\tau3_cli.py run `
   --domain retail `
   --agent tracegraph_agent `
   --agent-llm gpt-4.1 `
@@ -43,4 +43,4 @@ uv run --project vendor\tau3-bench python scripts\tau3_cli.py run `
 
 ## 当前验证边界
 
-核心和 JSON adapter 已在 Python 3.11 运行测试；live 模块按当前官方 `LLMAgent`、`SimulationRun`、`AssistantMessage.tool_calls` 和 `ToolMessage.error` 接口实现并通过编译。本机没有 `uv`、Python 3.12 和用户模型密钥，所以 live benchmark 运行需要在完成上述安装后验证。
+核心和 JSON adapter 已在 Python 3.11.9 通过 22 项测试。官方隔离环境已用 `uv 0.11.29` 安装 CPython 3.12.13 与 `tau2 1.0.0`，并通过 `tau2 check-data`；`tracegraph 0.1.0` 已以 editable 模式导入，`tracegraph_agent` 已在上游 registry 中注册，包装 CLI 入口也已验证。当前仅缺用户提供的 agent/user 模型密钥，因此尚未执行会产生外部调用成本的 live benchmark。
