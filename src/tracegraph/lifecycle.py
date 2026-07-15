@@ -70,6 +70,22 @@ class LifecycleEngine:
                 state = LifecycleState.SUPERSEDED
             elif graph.incoming(node.node_id, EdgeType.COMPRESSES) and node.raw_ref:
                 state = LifecycleState.ARCHIVED
+            elif node.node_type in {NodeType.TOOL_CALL, NodeType.MCP_CALL} and (
+                graph.outgoing(node.node_id, EdgeType.PRODUCES)
+                or graph.outgoing(node.node_id, EdgeType.FAILED_WITH)
+            ):
+                state = LifecycleState.CONSUMED
+            elif node.node_type == NodeType.DECISION and not node.metadata.get("final", False):
+                later_decision_exists = any(
+                    other.node_type == NodeType.DECISION and other.step_id > node.step_id
+                    for other in graph.nodes.values()
+                )
+                if graph.outgoing(node.node_id, EdgeType.LEADS_TO) or later_decision_exists:
+                    state = LifecycleState.CONSUMED
+            elif node.node_type == NodeType.OBSERVATION and graph.outgoing(
+                node.node_id, EdgeType.SUPPORTS
+            ):
+                state = LifecycleState.CONSUMED
             elif self.semantic_relevance is not None and self.semantic_relevance(node, graph):
                 state = LifecycleState.ACTIVE
             elif node.lifecycle == LifecycleState.CREATED:
@@ -86,7 +102,13 @@ class LifecycleEngine:
                 graph.set_lifecycle(
                     node_id,
                     state,
-                    active=state not in {LifecycleState.ARCHIVED, LifecycleState.SUPERSEDED},
+                    active=state
+                    not in {
+                        LifecycleState.ARCHIVED,
+                        LifecycleState.CONSUMED,
+                        LifecycleState.RESOLVED_FAILURE,
+                        LifecycleState.SUPERSEDED,
+                    },
                 )
         return transitions
 
@@ -185,4 +207,3 @@ class LifecycleEngine:
             graph.connect(summary_node.node_id, source.node_id, EdgeType.COMPRESSES)
             graph.set_lifecycle(source.node_id, LifecycleState.ARCHIVED, active=False)
         return summary_node
-

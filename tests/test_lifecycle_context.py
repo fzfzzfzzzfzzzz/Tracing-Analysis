@@ -4,7 +4,12 @@ import tempfile
 import unittest
 
 from tracegraph import ArchiveStore, EdgeType, LifecycleState, NodeType, TraceGraph
-from tracegraph.context import GraphLifecycleManager, LastKManager, build_context_managers
+from tracegraph.context import (
+    GraphLifecycleManager,
+    LastKManager,
+    SummaryOnlyManager,
+    build_context_managers,
+)
 from tracegraph.lifecycle import LifecycleEngine
 from tracegraph.metrics import evaluate_view
 
@@ -177,6 +182,14 @@ class ContextManagerTests(unittest.TestCase):
             metrics = evaluate_view(graph, view)
             self.assertEqual(metrics.constraint_retention, 0.0)
             self.assertGreater(metrics.unsafe_removal_count, 0)
+
+    def test_unverified_summary_does_not_claim_evidence_coverage(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            graph = build_research_graph(ArchiveStore(directory))
+            LifecycleEngine().apply(graph)
+            view = SummaryOnlyManager().select(graph)
+            metrics = evaluate_view(graph, view)
+            self.assertEqual(metrics.evidence_retention, 0.0)
 
 
 if __name__ == "__main__":

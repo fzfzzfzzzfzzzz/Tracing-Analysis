@@ -22,6 +22,7 @@ class ContextItem:
     reason: str
     source_node_ids: tuple[str, ...] = ()
     raw_ref: str | None = None
+    preserves_sources: bool = True
 
     @classmethod
     def from_node(cls, node: Node, reason: str) -> "ContextItem":
@@ -34,6 +35,10 @@ class ContextItem:
             reason=reason,
             source_node_ids=sources,
             raw_ref=node.raw_ref,
+            preserves_sources=(
+                node.node_type != NodeType.SUMMARY
+                or bool(node.metadata.get("coverage_verified", False))
+            ),
         )
 
 
@@ -60,7 +65,8 @@ class ContextView:
     def covered_node_ids(self) -> set[str]:
         covered: set[str] = set()
         for item in self.items:
-            covered.update(item.source_node_ids)
+            if item.preserves_sources:
+                covered.update(item.source_node_ids)
         return covered
 
     def to_dict(self) -> dict[str, Any]:
@@ -81,6 +87,7 @@ class ContextView:
                     "reason": item.reason,
                     "source_node_ids": list(item.source_node_ids),
                     "raw_ref": item.raw_ref,
+                    "preserves_sources": item.preserves_sources,
                 }
                 for item in self.items
             ],
@@ -200,6 +207,7 @@ class SummaryOnlyManager(ContextManager):
                 reason="deterministic_summary_proxy",
                 source_node_ids=(node.node_id,),
                 raw_ref=node.raw_ref,
+                preserves_sources=False,
             )
             if _fits(total, item, budget):
                 items.append(item)
@@ -282,6 +290,7 @@ class ACONStyleManager(ContextManager):
                     reason="compressed_observation_or_history",
                     source_node_ids=(node.node_id,),
                     raw_ref=node.raw_ref,
+                    preserves_sources=False,
                 )
             else:
                 item = ContextItem.from_node(node, "uncompressed_control_record")
@@ -310,6 +319,12 @@ class GraphLifecycleManager(ContextManager):
 
     def _reasons(self, graph: TraceGraph, node: Node) -> list[str]:
         reasons: list[str] = []
+        # Ablations must disable the target signal completely; otherwise the
+        # generic Active/blocks rules would silently reintroduce it.
+        if node.node_type == NodeType.CONSTRAINT and not self.retain_constraints:
+            return reasons
+        if node.node_type == NodeType.ERROR and not self.retain_failures:
+            return reasons
         if node.node_type in {NodeType.GOAL, NodeType.SUBGOAL} and node.active:
             reasons.append("active_goal")
         if self.retain_constraints and node.node_type == NodeType.CONSTRAINT and node.active:
@@ -357,6 +372,7 @@ class GraphLifecycleManager(ContextManager):
                     reason=f"compressed:{node.lifecycle.value}",
                     source_node_ids=(node.node_id,),
                     raw_ref=node.raw_ref,
+                    preserves_sources=False,
                 )
                 optional.append((node.step_id + 10_000, item))
             elif node.lifecycle == LifecycleState.ARCHIVED:
@@ -369,6 +385,7 @@ class GraphLifecycleManager(ContextManager):
                         reason="recoverable_archive_handle",
                         source_node_ids=(node.node_id,),
                         raw_ref=node.raw_ref,
+                        preserves_sources=False,
                     )
                     optional.append((node.step_id, handle))
             else:
@@ -442,4 +459,3 @@ def build_context_managers(*, last_k: int = 8) -> dict[str, ContextManager]:
         GraphLifecycleManager(),
     ]
     return {manager.name: manager for manager in managers}
-

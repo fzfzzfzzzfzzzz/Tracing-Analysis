@@ -90,7 +90,10 @@ def evaluate_view(
         recovered = sum(1 for node in recoverable_nodes if archive.exists(node.raw_ref or ""))
 
     retry_edges = [edge for edge in graph.edges.values() if edge.edge_type == EdgeType.RETRIES]
-    repeated_failed = sum(1 for edge in retry_edges if edge.target not in covered)
+    # This is the observed repeated-failure count in the source trajectory.
+    # Counterfactual repetitions caused by a particular context view require a
+    # live run and must not be fabricated from offline omission.
+    repeated_failed = len(retry_edges)
     engine = LifecycleEngine()
     unsafe = sum(
         1
@@ -113,4 +116,3 @@ def evaluate_view(
         manager_overhead_ms=manager_overhead_ms,
         graph_maintenance_overhead_ms=graph_maintenance_overhead_ms,
     )
-
