@@ -21,6 +21,7 @@
 | 7 个 baseline | 统一 registry | registry test |
 | 结构可靠性指标 | `metrics.py` | context/experiment tests |
 | 可复现与审计 | manifest、JSONL/CSV、CI、archive verify | CLI smoke |
+| 正式矩阵与成本门控 | `matrix.py`, `plan_glm_matrix.py`, frozen JSON config | 10 runs / 30 sessions dry-run；secret/cost/duplicate validation tests |
 
 ## 尚需真实外部资源的事项
 
@@ -31,5 +32,7 @@
 5. 将 proxy baseline 替换成论文/官方强实现后再形成论文主表。
 
 官方 τ³ 所需 `uv`、CPython 3.12 和隔离环境已经安装并通过 `tau2 check-data`、TraceGraph editable import、`tracegraph_agent`/`tracegraph_user_simulator` registry 注册及上游 CLI 入口验证。GLM mock live task 已通过；两次 retail 真实 pilot 和三图离线结构分析已执行并按失败边界记录。
+
+Full Trajectory Stage 1 已冻结 tasks、trials、seed、模型、user adapter、step/timeout 与通过 gate；预算仍以保守估算 cap 管理，尚未执行付费矩阵。
 
 以上项目不影响代码与实验管线完整性，但没有这些外部输入时不能声称真实 benchmark 假设已被证实。

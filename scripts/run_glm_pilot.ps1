@@ -23,6 +23,7 @@ param(
     [string]$UserModel = "",
     [int]$AgentMaxTokens = 512,
     [int]$UserMaxTokens = 256,
+    [int]$NumTrials = 1,
     [int]$MaxSteps = 30,
     [int]$Seed = 300,
     [int]$TimeoutSeconds = 600,
@@ -123,7 +124,7 @@ $arguments = @(
     "--user", $userImplementation,
     "--user-llm", $UserModel,
     "--user-llm-args", $userArgsJson,
-    "--num-trials", "1",
+    "--num-trials", $NumTrials.ToString(),
     "--max-steps", $MaxSteps.ToString(),
     "--max-errors", "5",
     "--timeout", $TimeoutSeconds.ToString(),
@@ -147,6 +148,7 @@ $runConfig = [pscustomobject]@{
     user_model = $UserModel
     user_implementation = $userImplementation
     seed = $Seed
+    trials = $NumTrials
     max_steps = $MaxSteps
     save_to = $SaveTo
     trace_output = $TraceOutputDir

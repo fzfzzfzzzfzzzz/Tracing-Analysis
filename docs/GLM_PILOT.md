@@ -111,3 +111,5 @@ runner 会先确认 `.env` 被 Git 忽略，只向子进程加载变量，不显
 - H5：retail 轨迹足够长，存在明显 token 压缩空间；仍需正式多任务运行验证净收益。
 
 下一阶段的硬前置条件：提供有额度且在 retail 工具选择上足够稳定的 agent/user model；若使用 user-protocol adapter，必须预注册、跨条件固定并明确披露。之后冻结 retail/airline task IDs、3 trials、预算和模型，先跑 10-task Full Trajectory pilot，再启动全部 manager。
+
+10-task × 3-trial Full Trajectory 配置和零费用 manifest 规划器已经固化，见 [正式实验矩阵](FORMAL_MATRIX.md)；当前未执行付费矩阵。

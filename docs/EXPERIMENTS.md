@@ -90,3 +90,5 @@ python -m tracegraph verify-archive artifacts\tau3-archive
 2026-07-16 已完成真实 API 连通、Function Call、mock 端到端成功以及两次 retail 单任务 Full Trajectory。第一次完成全部 5 个目标工具动作但 user 没有停止；第二次正常 `user_stop`，但 agent 选择了错误键盘 variant，官方 reward 仍为 0。两次结果都不得改写为 task success。详细配置、成本、失败分析与三图离线结构 pilot 见 [GLM Pilot](GLM_PILOT.md)。
 
 项目提供默认关闭的确定性 user-stop 协议 adapter；是否启用必须在所有条件中固定。正式实验在获得有额度且工具选择稳定的模型前暂停，避免把 agent/user 模型缺陷混入 context manager 比较。恢复后仍按本文第 0–8 节冻结变量并逐条件执行。
+
+下一阶段 Full Trajectory 适用性 gate 已冻结为 10 tasks × 3 trials，默认只生成 manifest，不调用 API；任务、seed、成本估算、执行 cap 和通过阈值见 [正式实验矩阵](FORMAL_MATRIX.md)。

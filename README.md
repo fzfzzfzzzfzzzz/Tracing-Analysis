@@ -66,6 +66,8 @@ python -m tracegraph run-offline `
 已完成的真实 mock/retail 结果、成本与模型协议边界见 [GLM Pilot](docs/GLM_PILOT.md)。
 对于明确结束意图未映射到 τ³ 停止标记的模型，可显式添加 `-NormalizeUserStop`；该开关默认关闭，正式对比必须跨条件固定。
 
+正式矩阵默认只生成零费用 manifest；执行必须显式提供估算成本上限，见 [正式实验矩阵](docs/FORMAL_MATRIX.md)。
+
 ## 文档
 
 - [架构与数据流](docs/ARCHITECTURE.md)
@@ -73,6 +75,7 @@ python -m tracegraph run-offline `
 - [指标定义](docs/METRICS.md)
 - [τ³-bench 集成](docs/TAU3_INTEGRATION.md)
 - [GLM 真实 Pilot](docs/GLM_PILOT.md)
+- [正式实验矩阵与成本门控](docs/FORMAL_MATRIX.md)
 - [数据与结果格式](docs/DATA_FORMAT.md)
 - [已执行验证](docs/VALIDATION.md)
 - [调研报告逐项追踪](docs/REQUIREMENTS_TRACEABILITY.md)

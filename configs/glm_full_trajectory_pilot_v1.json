@@ -1,0 +1,36 @@
+{
+  "matrix_id": "glm_full_trajectory_pilot_v1",
+  "description": "Model-suitability gate before any context-manager comparison.",
+  "agent_model": "zai/glm-4.5-air",
+  "user_model": "zai/glm-4.5-air",
+  "normalize_user_stop": true,
+  "base_seed": 300,
+  "trials": 3,
+  "max_steps": 50,
+  "timeout_seconds": 900,
+  "estimated_cost_per_session_usd": 0.01,
+  "domains": [
+    {
+      "name": "retail",
+      "task_ids": ["0", "1", "2", "3", "4"]
+    },
+    {
+      "name": "airline",
+      "task_ids": ["0", "1", "2", "3", "4"]
+    }
+  ],
+  "conditions": [
+    {
+      "manager": "full_trajectory",
+      "budget": "none"
+    }
+  ],
+  "gates": {
+    "minimum_task_success_rate": 0.5,
+    "minimum_normal_stop_rate": 0.9,
+    "minimum_median_tool_calls": 5,
+    "minimum_median_estimated_tokens": 4096,
+    "maximum_infrastructure_error_rate": 0.05
+  },
+  "interpretation_warning": "This stage tests model and harness suitability only. It is not a context-manager comparison and must pass its gates before the paid matrix expands."
+}

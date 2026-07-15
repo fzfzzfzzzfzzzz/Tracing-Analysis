@@ -13,7 +13,7 @@ python -m compileall -q src tests scripts
 
 覆盖归档 hash、类型边、图持久化、失败/重试/side effect、生命周期硬约束、可恢复压缩、全部 manager、消融开关、指标、固定 agent loop、τ 当前/旧格式、完整实验输出和无未来前缀图。
 
-本次最终复验结果：27/27 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过。
+本次最终复验结果：32/32 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过。
 
 ## 当前官方 τ³ 环境验证
 
@@ -43,6 +43,16 @@ python -m compileall -q src tests scripts
 - 三图 2048-token 离线 suite：12 个 manager、生命周期、Oracle、前缀回放与 manifest 全部生成，archive 校验通过。
 
 retail 结果不重解释为成功，也不作为 context manager 主结果。详细成本、诊断与结构 pilot 见 `docs/GLM_PILOT.md`。
+
+## 正式矩阵规划验证
+
+- 固定 10 tasks × 3 trials，展开为 10 runs / 30 sessions；
+- 所有 run 共享 model、base seed、trials、max steps 和 user adapter；
+- 保守估算总成本 `$0.30`；
+- dry-run manifest 与 10 条命令生成成功，未调用 API；
+- secret-like 字段、未知 manager、重复 task/condition 均由测试拒绝；
+- 缺失 cap 或 cap 低于估算时，在执行前拒绝；
+- 生成的 `outputs/plans/` 继续由 Git 忽略。
 
 ## 官方公开历史轨迹兼容验证
 
