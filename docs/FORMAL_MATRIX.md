@@ -1,6 +1,6 @@
 # 正式实验矩阵与成本门控
 
-本阶段只规划，不执行付费 API。配置文件与生成的 manifest 均禁止包含 key、secret、credential、password 或 access token 字段；真实凭据仍只从被 Git 忽略的 `.env` 加载。
+配置文件与生成的 manifest 均禁止包含 key、secret、credential、password 或 access token 字段；真实凭据仍只从被 Git 忽略的 `.env` 加载。Stage 1 已于 2026-07-16 完整执行，结果见 [Stage 1 正式结果](STAGE1_RESULTS.md)。
 
 ## Stage 1：模型与 harness 适用性门槛
 
@@ -61,4 +61,4 @@ python scripts/plan_glm_matrix.py `
 2. 固定一个预算后，运行 Full Trajectory、7 个 baseline、4 个 ablation 和 Full Ours；相同 task、trial、seed、模型与 user adapter，只替换 context manager。
 3. pilot 通过后再扩到每域 10–20 tasks，并执行 paired bootstrap、McNemar/permutation 与 Holm correction。
 
-当前 Stage 1 尚未执行；原因是更强 GLM 无可用额度，而现有 `glm-4.5-air` 两次 retail pilot 均未获得官方成功。等待模型/预算确认期间，manifest 和命令矩阵已经准备完毕。
+Stage 1 已完成 30/30 sessions，成功率 `0.40 < 0.50`，因此未进入付费 context-manager 对照。30 图结构 sweep 推荐未来使用 16384 预算；只有开通更强 GLM 并重新通过 Stage 1 后才允许启动该矩阵。

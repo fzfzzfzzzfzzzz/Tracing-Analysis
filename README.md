@@ -68,6 +68,8 @@ python -m tracegraph run-offline `
 
 正式矩阵默认只生成零费用 manifest；执行必须显式提供估算成本上限，见 [正式实验矩阵](docs/FORMAL_MATRIX.md)。
 
+2026-07-16 的 30-session Stage 1 已完整执行：轨迹长度与基础设施 gates 通过，但官方 task success 为 0.40，低于 0.50，因此按协议未启动在线 manager 对照。完整结果见 [Stage 1 正式结果](docs/STAGE1_RESULTS.md)。
+
 ## 文档
 
 - [架构与数据流](docs/ARCHITECTURE.md)
@@ -76,6 +78,8 @@ python -m tracegraph run-offline `
 - [τ³-bench 集成](docs/TAU3_INTEGRATION.md)
 - [GLM 真实 Pilot](docs/GLM_PILOT.md)
 - [正式实验矩阵与成本门控](docs/FORMAL_MATRIX.md)
+- [Stage 1 正式结果与决策](docs/STAGE1_RESULTS.md)
+- [生命周期人工双标协议](docs/LIFECYCLE_ANNOTATION.md)
 - [数据与结果格式](docs/DATA_FORMAT.md)
 - [已执行验证](docs/VALIDATION.md)
 - [调研报告逐项追踪](docs/REQUIREMENTS_TRACEABILITY.md)

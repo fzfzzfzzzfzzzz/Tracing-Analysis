@@ -92,3 +92,5 @@ python -m tracegraph verify-archive artifacts\tau3-archive
 项目提供默认关闭的确定性 user-stop 协议 adapter；是否启用必须在所有条件中固定。正式实验在获得有额度且工具选择稳定的模型前暂停，避免把 agent/user 模型缺陷混入 context manager 比较。恢复后仍按本文第 0–8 节冻结变量并逐条件执行。
 
 下一阶段 Full Trajectory 适用性 gate 已冻结为 10 tasks × 3 trials，默认只生成 manifest，不调用 API；任务、seed、成本估算、执行 cap 和通过阈值见 [正式实验矩阵](FORMAL_MATRIX.md)。
+
+Stage 1 随后已完整执行：30/30 sessions 与图均有效，task success `0.40` 未达到 `0.50`，其余四项 gate 通过。按预注册规则未运行 live manager 对照。30 图生命周期、Oracle、预算 sweep、12-manager 离线结构结果和失败诊断见 [Stage 1 正式结果](STAGE1_RESULTS.md)。

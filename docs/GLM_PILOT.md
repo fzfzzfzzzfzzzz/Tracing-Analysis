@@ -112,4 +112,8 @@ runner 会先确认 `.env` 被 Git 忽略，只向子进程加载变量，不显
 
 下一阶段的硬前置条件：提供有额度且在 retail 工具选择上足够稳定的 agent/user model；若使用 user-protocol adapter，必须预注册、跨条件固定并明确披露。之后冻结 retail/airline task IDs、3 trials、预算和模型，先跑 10-task Full Trajectory pilot，再启动全部 manager。
 
-10-task × 3-trial Full Trajectory 配置和零费用 manifest 规划器已经固化，见 [正式实验矩阵](FORMAL_MATRIX.md)；当前未执行付费矩阵。
+10-task × 3-trial Full Trajectory 配置和零费用 manifest 规划器已经固化，见 [正式实验矩阵](FORMAL_MATRIX.md)。以下记录其后续正式执行结果。
+
+## Stage 1 后续结果
+
+Stage 1 已于 2026-07-16 完成 30/30 sessions。官方 task success 为 `12/30 = 0.40`，低于预注册门槛 0.50；normal stop 1.00、median tool calls 8、median trajectory tokens 82,382、infrastructure error 0 均通过。实际成本 `$0.1020457`。因此不启动在线 manager 对照；完整按任务失败诊断、30 图结构实验和下一步见 [Stage 1 正式结果](STAGE1_RESULTS.md)。

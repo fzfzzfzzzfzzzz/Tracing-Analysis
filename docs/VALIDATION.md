@@ -13,7 +13,7 @@ python -m compileall -q src tests scripts
 
 覆盖归档 hash、类型边、图持久化、失败/重试/side effect、生命周期硬约束、可恢复压缩、全部 manager、消融开关、指标、固定 agent loop、τ 当前/旧格式、完整实验输出和无未来前缀图。
 
-本次最终复验结果：32/32 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过。
+本次最终复验结果：41/41 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过。
 
 ## 当前官方 τ³ 环境验证
 
@@ -53,6 +53,17 @@ retail 结果不重解释为成功，也不作为 context manager 主结果。�
 - secret-like 字段、未知 manager、重复 task/condition 均由测试拒绝；
 - 缺失 cap 或 cap 低于估算时，在执行前拒绝；
 - 生成的 `outputs/plans/` 继续由 Git 忽略。
+
+## Stage 1 正式执行与分析验证
+
+- 官方 τ³：10 runs / 30 sessions 全部完成，30 traces、30 非零 token 轨迹；
+- 30 个 enrichment 后的 TraceGraph 均通过 `validate-trace`；
+- 合并的 446 个 archive objects 全部通过 hash 校验；
+- gate 聚合器读取官方 reward、termination、action checks、DB/NL/communication checks 与真实 TraceGraph token；
+- Stage 1 判定 `fail`，唯一失败 gate 为 success `0.40 < 0.50`；
+- 4096/8192/16384 结构 sweep 推荐 16384，并同时检查 Oracle 与 Full Ours 实际溢出率；
+- 12 managers × 30 graphs 离线结构实验及 8,952 条 prefix replay rows 生成成功；
+- 双标导出生成 120 条盲化样本，两份表独立顺序且不含机器预测；评分器验证 ID/标签并计算 Cohen's κ。
 
 ## 官方公开历史轨迹兼容验证
 
