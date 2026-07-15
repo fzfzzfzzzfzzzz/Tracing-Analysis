@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+build/
+dist/
+
+# Generated experiment artifacts and downloaded benchmark data
+artifacts/
+data/raw/
+data/interim/
+data/processed/
+outputs/
+vendor/
+
