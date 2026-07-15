@@ -22,6 +22,7 @@ KNOWN_MANAGERS = {
     "llm_only_pruning",
     "agentdiet_style",
     "acon_style",
+    "acon_official",
     "ours_without_graph_edges",
     "ours_without_lifecycle_states",
     "ours_without_failure_retention",

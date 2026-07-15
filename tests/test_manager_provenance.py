@@ -14,6 +14,12 @@ class ManagerProvenanceTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missing scientific provenance"):
             manager_provenance(["unregistered"])
 
+    def test_official_acon_requires_runtime_eligibility(self):
+        provenance = manager_provenance(["acon_official"])["acon_official"]
+        self.assertEqual(provenance["implementation_kind"], "external_official_adapter")
+        self.assertFalse(provenance["main_result_eligible"])
+        self.assertTrue(provenance["runtime_eligibility_required"])
+
 
 if __name__ == "__main__":
     unittest.main()

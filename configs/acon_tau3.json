@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "source_repo": "https://github.com/microsoft/acon",
+  "source_snapshot_sha": "d63f9ae18959dc7215ff62899c94c5e8c56847ae",
+  "source_manifest": {
+    "LICENSE": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+    "src/productive_agents/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/productive_agents/ctxopt/__init__.py": "ebcf83bbc70b7b00e9b13853903019fc7fd9d203204701622c2d9accc574ee12",
+    "src/productive_agents/ctxopt/base.py": "d6b52a26288760c18b60152be6e95ee8147b965d1293744734a706ac86de3fdb",
+    "src/productive_agents/ctxopt/obs_optimizer.py": "ed21a897c90f6ae06b2d21ce563423dea30014a8df4db4b4896c439ba4915f9e",
+    "src/productive_agents/ctxopt/history_optimizer.py": "343089f43f8235889303eea73cd323686a649f1dc3b8d374a988c9d243b44306",
+    "experiments/appworld/prompts/context_opt/system_prompt.jinja": "f9a0a5188d643d0990a422e94557e781e9e4f9c00a6506f699c4956b7096a392",
+    "experiments/appworld/prompts/context_opt/prompt_user.jinja": "f500677dfd6609aef26fe2dbb3f9c928d2bd7ea8c0e432114feeed0636c7b385",
+    "experiments/appworld/prompts/context_opt/prompt_history_v2.jinja": "0508caa837c50403be2c8545646359a0fb72009fb14df3a8acf85aedaf649834"
+  },
+  "prompt_dir": "experiments/appworld/prompts/context_opt",
+  "compressor_model": "zai/glm-4.5-air",
+  "compressor_llm_args": {
+    "temperature": 0.0,
+    "num_retries": 0
+  },
+  "preserve_last_k_turns": 1,
+  "fallback": "error",
+  "observation": {
+    "type": "obs",
+    "compressor_type": "full",
+    "temperature": 0.0,
+    "obs_summarization_threshold": 256,
+    "prompts": {
+      "prompt_system": "system_prompt",
+      "prompt_user": "prompt_user"
+    }
+  },
+  "history": {
+    "type": "history",
+    "compressor_type": "full",
+    "temperature": 0.0,
+    "history_summarization_threshold": 4096,
+    "prompts": {
+      "prompt_system": "system_prompt",
+      "prompt_history_user": "prompt_history_v2"
+    }
+  }
+}

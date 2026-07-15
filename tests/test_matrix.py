@@ -45,6 +45,12 @@ class MatrixPlanTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unknown manager"):
             build_matrix_plan(config)
 
+    def test_accepts_live_only_official_acon_manager(self):
+        config = sample_config()
+        config["conditions"] = [{"manager": "acon_official", "budget": "official_config"}]
+        plan = build_matrix_plan(config)
+        self.assertEqual(plan["conditions"][0]["manager"], "acon_official")
+
     def test_rejects_duplicate_tasks_and_conditions(self):
         duplicate_tasks = sample_config()
         duplicate_tasks["domains"][0]["task_ids"] = ["0", "0"]

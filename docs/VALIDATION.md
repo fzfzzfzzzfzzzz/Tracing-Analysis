@@ -13,7 +13,7 @@ python -m compileall -q src tests scripts
 
 覆盖归档 hash、类型边、图持久化、失败/重试/side effect、生命周期硬约束、可恢复压缩、全部 manager、消融开关、指标、固定 agent loop、τ 当前/旧格式、完整实验输出和无未来前缀图。
 
-本次最终复验结果：43/43 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过。
+本次最终复验结果：52/52 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过；本次新增/修改 Python 文件通过 Ruff 检查。
 
 ## 当前官方 τ³ 环境验证
 
@@ -29,9 +29,19 @@ python -m compileall -q src tests scripts
 
 这证明安装、数据发现、包导入、适配器注册和命令入口已经接通。
 
+## 官方 ACON 外部适配验证
+
+- GitHub codeload 快照固定为 `microsoft/acon@d63f9ae18959dc7215ff62899c94c5e8c56847ae`，MIT license；
+- 9 个执行相关源码、包入口和 prompt 文件的 SHA-256 全部匹配 `configs/acon_tau3.json`；
+- 外部官方 `ObservationOptimizer` 与 `HistoryOptimizer` 已在本机和 τ³ Python 3.12 隔离环境成功实例化；
+- 无 API 的 τ³ 端到端烟测确认调用上下文包含未压缩 policy、原始 task 和上游消息类型；
+- 7 项适配器契约测试覆盖确定性序列化、官方参数签名、summary 状态、最近轮保留、严格失败、显式 raw fallback、provider usage/cost 和源码 hash 拒绝；
+- `scripts/setup_acon.ps1` 通过 PowerShell 语法解析，目标已存在时拒绝覆盖；
+- 尚未执行 ACON paid paired run，原因是 Stage 1 success gate 未通过，而非适配器被当作已产生效果结果。
+
 ## GLM 真实调用验证
 
-本地 `.env` 中的 GLM 凭据通过认证和模型目录查询；该文件由 `.gitignore` 排除，发布前对全部 42 个 tracked/untracked candidate files 做动态密钥扫描，泄漏数为 0。
+本地 `.env` 中的 GLM 凭据通过认证和模型目录查询；该文件由 `.gitignore` 排除，发布前对全部 tracked/untracked candidate files 做动态密钥扫描，泄漏数为 0。
 
 - `zai/glm-4.5-air` 最小 Function Call：成功产生 1 个合法工具调用；
 - `mock/create_task_1`：reward 1.0、DB 1.0、write action 1/1、正常 `user_stop`；

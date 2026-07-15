@@ -54,6 +54,19 @@ _MANAGER_PROVENANCE: dict[str, dict[str, Any]] = {
             "a frozen compressor model, guideline config, prompts, and cost accounting."
         ),
     },
+    "acon_official": {
+        "implementation_kind": "external_official_adapter",
+        "main_result_eligible": False,
+        "runtime_eligibility_required": True,
+        "reference": "https://arxiv.org/abs/2510.00615",
+        "official_code": "https://github.com/microsoft/acon",
+        "source_snapshot_sha": "d63f9ae18959dc7215ff62899c94c5e8c56847ae",
+        "note": (
+            "Live-only adapter for hash-verified official ObservationOptimizer and "
+            "HistoryOptimizer classes. A run becomes eligible only when runtime provenance "
+            "is verified, provider usage is recorded, and no fallback occurs."
+        ),
+    },
     "ours_without_graph_edges": {
         "implementation_kind": "native_ablation",
         "main_result_eligible": True,

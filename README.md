@@ -14,6 +14,7 @@
 - 报告列出的 7 个 baseline、4 个 ablation 和 Full Ours；
 - 离线生命周期分析、结构 Oracle 上界、在线前缀回放和对照/消融实验；
 - 当前 τ³-bench 双格式结果导入、旧 τ-bench `trajectory/traj` 兼容和 live agent 入口；
+- hash 固定的 Microsoft ACON 官方 observation/history optimizer 外部适配器；
 - 主指标与结构可靠性指标、JSONL/CSV 聚合结果和 provenance 清单；
 - Windows/Linux、Python 3.11–3.13 CI。
 
@@ -70,6 +71,19 @@ python -m tracegraph run-offline `
 
 2026-07-16 的 30-session Stage 1 已完整执行：轨迹长度与基础设施 gates 通过，但官方 task success 为 0.40，低于 0.50，因此按协议未启动在线 manager 对照。完整结果见 [Stage 1 正式结果](docs/STAGE1_RESULTS.md)。
 
+## 官方 ACON 外部 baseline
+
+第三方源码不会提交到本仓库。先下载并校验固定的 Microsoft ACON 快照：
+
+```powershell
+./scripts/setup_acon.ps1
+$env:TRACEGRAPH_MANAGER = "acon_official"
+$env:TRACEGRAPH_ACON_ROOT = "vendor/acon-main"
+$env:TRACEGRAPH_ACON_CONFIG = "configs/acon_tau3.json"
+```
+
+适配器默认在任何 optimizer 异常、空输出、源码 hash 不符或 provider usage 缺失时 fail closed。当前尚不应执行 paid paired run，因为 Stage 1 模型适用性 gate 未通过。实现与解释边界见 [强 baseline 官方实现审计](docs/STRONG_BASELINES.md)。
+
 ## 文档
 
 - [架构与数据流](docs/ARCHITECTURE.md)
@@ -90,4 +104,4 @@ python -m tracegraph run-offline `
 - “移除”只表示不进入下一轮 LLM context，原始记录不会物理删除。
 - synthetic 结果始终带 `synthetic=true` 和解释警告。
 - 离线回放不伪造 counterfactual task success 或 policy violation；这两项只从真实 benchmark 评价或 live run 读取。
-- `llm_only_pruning`、`agentdiet_style`、`acon_style` 在无外部模型/官方实现时会标记为 proxy；主论文结果应接入对应 live 实现后再报告。
+- `llm_only_pruning`、`agentdiet_style`、`acon_style` 会标记为 proxy；`acon_official` 只有在 live runtime provenance 完整且无 fallback 时才具备主结果资格。

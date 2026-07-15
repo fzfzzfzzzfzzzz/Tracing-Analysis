@@ -10,6 +10,14 @@
 ./scripts/setup_tau3.ps1
 ```
 
+如需准备官方 ACON baseline，再执行：
+
+```powershell
+./scripts/setup_acon.ps1
+```
+
+该脚本下载 commit `d63f9ae18959dc7215ff62899c94c5e8c56847ae` 到被忽略的 `vendor/acon-main`，并用 `configs/acon_tau3.json` 的 9 个 SHA-256 校验项加载官方类。目标目录已存在时脚本会拒绝覆盖。
+
 脚本执行：克隆官方仓库到 `vendor/tau3-bench`、`uv sync`、把本项目 editable 安装到上游环境、执行 `tau2 check-data`。脚本强制 Python/控制台使用 UTF-8，并直接传递 `.venv` 解释器路径，兼容中文 Windows 工作区；任一外部命令失败都会返回非零状态。
 
 ## Live 条件运行
@@ -29,6 +37,17 @@ $env:TRACEGRAPH_OUTPUT_DIR = "outputs/tau3_live/full_ours"
   --num-tasks 10 `
   --save-to tracegraph_full_ours_retail
 ```
+
+官方 ACON 条件使用独立 manager 名称和配置：
+
+```powershell
+$env:TRACEGRAPH_MANAGER = "acon_official"
+$env:TRACEGRAPH_ACON_ROOT = "vendor/acon-main"
+$env:TRACEGRAPH_ACON_CONFIG = "configs/acon_tau3.json"
+$env:TRACEGRAPH_ACON_COMPRESSOR_MODEL = "zai/glm-4.5-air"
+```
+
+ACON 的阈值来自固定配置，而不是把 `TRACEGRAPH_BUDGET` 当作静态后处理预算；context view 会明确记录 `budget_ignored=true`。任何 fallback 或不完整 usage 都会使本次 runtime result 失去主结果资格。
 
 对每个 manager 使用完全相同参数和 task IDs。`scripts/tau3_cli.py` 只是在启动上游 CLI 前注册 `tracegraph_agent`，评价器、environment、tools 和 user simulator 仍是官方实现。
 
