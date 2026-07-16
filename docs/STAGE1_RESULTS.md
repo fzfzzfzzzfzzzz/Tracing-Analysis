@@ -1,5 +1,7 @@
 # GLM Stage 1 正式结果（2026-07-16）
 
+> 本页记录 `zai/glm-4.5-air` 的历史 Stage 1。随后免费 `zai/glm-4.7-flash` 已用同一 gate 重跑并通过；最新结果见 [GLM-4.7-Flash 机器生命周期标签实验结果](GLM47_FLASH_RESULTS.md)。
+
 ## 决策
 
 `glm_full_trajectory_pilot_v1` 已完整执行，但 **未通过模型与 harness 适用性 gate**。唯一失败项是官方 task success rate：`12/30 = 0.40 < 0.50`。因此没有启动任何付费在线 context-manager 对照；后续离线结果只用于生命周期、Oracle 和结构可靠性分析，不声称 counterfactual task success。

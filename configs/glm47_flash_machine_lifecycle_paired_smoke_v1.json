@@ -1,0 +1,42 @@
+{
+  "matrix_id": "g47f_ml_sm2",
+  "description": "Rate-limit-aware paired smoke for machine-inferred lifecycle pseudo labels after GLM-4.7-Flash passed Stage 1 and compressed-message protocol closure was verified.",
+  "agent_model": "zai/glm-4.7-flash",
+  "user_model": "zai/glm-4.7-flash",
+  "normalize_user_stop": true,
+  "base_seed": 300,
+  "trials": 1,
+  "max_steps": 50,
+  "timeout_seconds": 900,
+  "inter_run_delay_seconds": 20,
+  "estimated_cost_per_session_usd": 0.0001,
+  "domains": [
+    {
+      "name": "retail",
+      "task_ids": ["0"]
+    },
+    {
+      "name": "airline",
+      "task_ids": ["0"]
+    }
+  ],
+  "conditions": [
+    {
+      "manager": "full_trajectory",
+      "budget": "none"
+    },
+    {
+      "manager": "last_k",
+      "budget": "16384"
+    },
+    {
+      "manager": "ours_without_lifecycle_states",
+      "budget": "16384"
+    },
+    {
+      "manager": "full_ours",
+      "budget": "16384"
+    }
+  ],
+  "interpretation_warning": "This is an eight-session pipeline smoke over two representative tasks, not a statistical result. Lifecycle states are machine-inferred pseudo labels, not human gold labels. The 20-second inter-run cooldown is fixed and disclosed to reduce transient free-endpoint rate limits."
+}

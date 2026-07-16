@@ -1,5 +1,7 @@
 # GLM 真实 τ³ Pilot（2026-07-16）
 
+> 本页主要记录 `glm-4.5-air` 的早期接入与失败边界。后续 `glm-4.7-flash` Stage 1 与 paired smoke 见 [GLM-4.7-Flash 结果](GLM47_FLASH_RESULTS.md)。
+
 本页记录使用本地 GLM 凭据完成的真实调用与边界。`.env` 被 Git 忽略；所有已提交文件和实验摘要都不包含 API key。
 
 ## 固定环境

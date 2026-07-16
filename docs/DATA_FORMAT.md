@@ -26,4 +26,9 @@
 - `oracle_upper_bound.json`：post-hoc 结构 Oracle。
 - `online_replay.jsonl`：按 step 前缀回放，保证不读取未来节点。
 
+Live paired matrix 聚合额外输出：
+
+- `live_matrix_report.json`：完整性、每个 manager 的官方 success/stop/infra、selected-context tokens、task+trial 配对、exact McNemar 与 paired bootstrap。
+- `live_matrix_sessions.csv`：每个真实 session 的 reward、termination、manager、budget、轨迹和 context-view 统计。
+
 原始 benchmark 数据、archive 和正式 outputs 默认不入 Git，避免泄露数据或把昂贵实验产物混入源码。

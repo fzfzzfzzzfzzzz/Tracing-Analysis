@@ -25,7 +25,7 @@
 ```powershell
 $env:OPENAI_API_KEY = "..."
 $env:TRACEGRAPH_MANAGER = "full_ours"
-$env:TRACEGRAPH_BUDGET = "2048"
+$env:TRACEGRAPH_BUDGET = "16384"
 $env:TRACEGRAPH_OUTPUT_DIR = "outputs/tau3_live/full_ours"
 
 .\.venv\Scripts\uv.exe run --project vendor\tau3-bench python scripts\tau3_cli.py run `
@@ -44,7 +44,7 @@ $env:TRACEGRAPH_OUTPUT_DIR = "outputs/tau3_live/full_ours"
 $env:TRACEGRAPH_MANAGER = "acon_official"
 $env:TRACEGRAPH_ACON_ROOT = "vendor/acon-main"
 $env:TRACEGRAPH_ACON_CONFIG = "configs/acon_tau3.json"
-$env:TRACEGRAPH_ACON_COMPRESSOR_MODEL = "zai/glm-4.5-air"
+$env:TRACEGRAPH_ACON_COMPRESSOR_MODEL = "zai/glm-4.7-flash"
 ```
 
 ACON 的阈值来自固定配置，而不是把 `TRACEGRAPH_BUDGET` 当作静态后处理预算；context view 会明确记录 `budget_ignored=true`。任何 fallback 或不完整 usage 都会使本次 runtime result 失去主结果资格。
@@ -75,9 +75,10 @@ runner 不会显示 API key，并在 `.env` 未被 Git 忽略时拒绝运行。�
 - domain policy 作为 Constraint 进入图；因此 constraint ablation 是真实开关。
 - 被选择的原始消息保持上游消息类型和时序。
 - tool result 与对应 assistant tool call 做闭包，避免产生无前置调用的非法 ToolMessage。
+- 若压缩切片以 assistant/tool 开头，补入其前最近的 user message 作为协议锚点；实际 ordinals/roles 写入 context-view metadata。
 - summary/archive handle 作为 `<active_trace_context>` system fragment 进入模型。
 - 每次调用前保存 `trace.json` 与 `context_views.jsonl`，原始 tool payload 存入 session archive。
 
 ## 当前验证边界
 
-核心和 JSON adapter 已在 Python 3.11.9 通过 27 项测试。官方隔离环境已用 `uv 0.11.29` 安装 CPython 3.12.13 与 `tau2 1.0.0`，并通过 `tau2 check-data`；`tracegraph 0.1.0` 已以 editable 模式导入，`tracegraph_agent` 与可选 `tracegraph_user_simulator` 已在上游 registry 中注册。GLM mock live task 已获得 reward 1.0；两次 retail task 分别暴露 user-stop 与工具 variant 选择问题，因此正式多条件 benchmark 尚未启动。
+核心与 adapter 已在本地通过 59 项测试。官方隔离环境已用 `uv 0.11.29` 安装 CPython 3.12.13 与 `tau2 1.0.0`，并通过 `tau2 check-data`；`tracegraph 0.1.0` 已以 editable 模式导入，`tracegraph_agent` 与可选 `tracegraph_user_simulator` 已在上游 registry 中注册。`glm-4.7-flash` 已完成 mock reward 1.0、30-session Stage 1 pass、8-session paired pipeline smoke 和 40-session single-trial preliminary paired pilot；完整结果见 [GLM-4.7-Flash 结果](GLM47_FLASH_RESULTS.md)。

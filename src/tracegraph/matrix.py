@@ -65,6 +65,9 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
     max_steps = _positive_int(config, "max_steps")
     timeout_seconds = _positive_int(config, "timeout_seconds")
     base_seed = int(config.get("base_seed", 300))
+    inter_run_delay_seconds = float(config.get("inter_run_delay_seconds", 0.0))
+    if inter_run_delay_seconds < 0:
+        raise ValueError("inter_run_delay_seconds must be non-negative")
     cost_per_session = float(config.get("estimated_cost_per_session_usd", 0.0))
     if cost_per_session <= 0:
         raise ValueError("estimated_cost_per_session_usd must be positive")
@@ -151,8 +154,10 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
             "trials": trials,
             "max_steps": max_steps,
             "timeout_seconds": timeout_seconds,
+            "inter_run_delay_seconds": inter_run_delay_seconds,
             "task_ids_by_domain": {item["name"]: item["task_ids"] for item in domains},
         },
+        "inter_run_delay_seconds": inter_run_delay_seconds,
         "conditions": conditions,
         "run_count": len(runs),
         "session_count": session_count,

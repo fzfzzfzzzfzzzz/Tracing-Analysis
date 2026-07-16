@@ -49,7 +49,7 @@ Microsoft 官方 ACON 是独立的 context-compression framework，支持 AppWor
 - 默认 `fallback=error`。只有配置显式改为 `raw` 才允许继续，而任何 fallback、缺失 provider usage 或源码 hash 不匹配都会令 `runtime_main_result_eligible=false`。
 - 静态 provenance 仍将 `acon_official.main_result_eligible` 设为 false；必须读取每次 live run 的 runtime eligibility，不能只凭 manager 名称进入主表。
 
-接口、序列化、状态推进、最近轮保留、失败路径、usage 计量和源码拒绝已通过契约测试；真实快照也已成功加载进 τ³ 隔离环境。尚未执行 paid ACON paired run：更强 GLM 无可用资源包，`glm-4.5-air` Stage 1 success 只有 0.40，按预注册 gate 必须停在 Stage 1。因此当前没有 ACON live reward，也不作效果声明。
+接口、序列化、状态推进、最近轮保留、失败路径、usage 计量和源码拒绝已通过契约测试；真实快照也已成功加载进 τ³ 隔离环境。免费 `glm-4.7-flash` 已通过 Stage 1，但本轮只执行 native/proxy 条件的 pipeline smoke；官方 ACON 仍需冻结 compressor model、prompt/guideline hash、限流与 usage/cost 规则后再运行。因此当前没有 ACON live reward，也不作效果声明。
 
 ## AgentDiet 与 Agent-Omit 边界
 

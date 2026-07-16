@@ -19,7 +19,6 @@ from tau2.data_model.message import (
     Message,
     MultiToolMessage,
     SystemMessage,
-    ToolMessage,
 )
 from tau2.utils.llm_utils import generate
 
@@ -32,6 +31,7 @@ from tracegraph.integrations.acon import (
     canonical_message_json,
     load_official_acon_adapter,
 )
+from tracegraph.message_protocol import close_message_ordinals
 from tracegraph.schema import NodeType
 
 
@@ -92,30 +92,6 @@ class TraceGraphTauAgent(LLMAgent):
     def _dump_message(message: Message) -> dict:
         return message.model_dump(mode="json")
 
-    @staticmethod
-    def _tool_pair_closure(messages: list[Message], ordinals: set[int]) -> set[int]:
-        call_to_ordinal: dict[str, int] = {}
-        result_to_ordinal: dict[str, int] = {}
-        for ordinal, message in enumerate(messages, start=1):
-            tool_calls = getattr(message, "tool_calls", None) or []
-            for call in tool_calls:
-                if call.id:
-                    call_to_ordinal[call.id] = ordinal
-            if isinstance(message, ToolMessage):
-                result_to_ordinal[message.id] = ordinal
-        changed = True
-        while changed:
-            changed = False
-            for call_id, call_ordinal in call_to_ordinal.items():
-                result_ordinal = result_to_ordinal.get(call_id)
-                if call_ordinal in ordinals and result_ordinal and result_ordinal not in ordinals:
-                    ordinals.add(result_ordinal)
-                    changed = True
-                if result_ordinal in ordinals and call_ordinal not in ordinals:
-                    ordinals.add(call_ordinal)
-                    changed = True
-        return ordinals
-
     def _select_messages(
         self,
         state: LLMAgentState,
@@ -137,11 +113,17 @@ class TraceGraphTauAgent(LLMAgent):
                 compressed_fragments.append(
                     json.dumps(item.content, ensure_ascii=False, default=str)
                 )
-        ordinals = self._tool_pair_closure(state.messages, ordinals)
+        dumped_messages = [self._dump_message(message) for message in state.messages]
+        ordinals = close_message_ordinals(dumped_messages, ordinals)
         selected = [
             message
             for ordinal, message in enumerate(state.messages, start=1)
             if ordinal in ordinals
+        ]
+        view.metadata["selected_message_ordinals"] = sorted(ordinals)
+        view.metadata["selected_message_roles"] = [
+            str(dumped_messages[ordinal - 1].get("role") or "")
+            for ordinal in sorted(ordinals)
         ]
         return selected, compressed_fragments
 

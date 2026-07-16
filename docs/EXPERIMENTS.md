@@ -91,8 +91,8 @@ AgentDiet/ACON/Agent-Omit 的官方实现可用性、接口差异和 τ³ 接入
 
 2026-07-16 已完成真实 API 连通、Function Call、mock 端到端成功以及两次 retail 单任务 Full Trajectory。第一次完成全部 5 个目标工具动作但 user 没有停止；第二次正常 `user_stop`，但 agent 选择了错误键盘 variant，官方 reward 仍为 0。两次结果都不得改写为 task success。详细配置、成本、失败分析与三图离线结构 pilot 见 [GLM Pilot](GLM_PILOT.md)。
 
-项目提供默认关闭的确定性 user-stop 协议 adapter；是否启用必须在所有条件中固定。正式实验在获得有额度且工具选择稳定的模型前暂停，避免把 agent/user 模型缺陷混入 context manager 比较。恢复后仍按本文第 0–8 节冻结变量并逐条件执行。
+项目提供默认关闭的确定性 user-stop 协议 adapter；是否启用必须在所有条件中固定。`glm-4.7-flash` 已提供零成本可用路径，并通过模型适用性 gate。免费端点可能瞬时限流，因此矩阵显式记录跨 run 冷却，infrastructure error 仍单独排除。
 
 下一阶段 Full Trajectory 适用性 gate 已冻结为 10 tasks × 3 trials，默认只生成 manifest，不调用 API；任务、seed、成本估算、执行 cap 和通过阈值见 [正式实验矩阵](FORMAL_MATRIX.md)。
 
-Stage 1 随后已完整执行：30/30 sessions 与图均有效，task success `0.40` 未达到 `0.50`，其余四项 gate 通过。按预注册规则未运行 live manager 对照。30 图生命周期、Oracle、预算 sweep、12-manager 离线结构结果和失败诊断见 [Stage 1 正式结果](STAGE1_RESULTS.md)。
+历史 `glm-4.5-air` Stage 1 为 `12/30 = 0.40`。`glm-4.7-flash` 随后用同一 10-task × 3-trial gate 重跑，取得 `16/30 = 0.5333` 并通过全部 gate；30 图机器生命周期、Oracle、预算 sweep、8-session paired pipeline smoke 和 40-session single-trial preliminary paired pilot 见 [GLM-4.7-Flash 结果](GLM47_FLASH_RESULTS.md)。当前 paired pilot 只有一个 trial，且有两个 Full Trajectory wall-clock timeout，仍不构成论文主结果。

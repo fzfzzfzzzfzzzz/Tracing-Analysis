@@ -69,7 +69,7 @@ python -m tracegraph run-offline `
 
 正式矩阵默认只生成零费用 manifest；执行必须显式提供估算成本上限，见 [正式实验矩阵](docs/FORMAL_MATRIX.md)。
 
-2026-07-16 的 30-session Stage 1 已完整执行：轨迹长度与基础设施 gates 通过，但官方 task success 为 0.40，低于 0.50，因此按协议未启动在线 manager 对照。完整结果见 [Stage 1 正式结果](docs/STAGE1_RESULTS.md)。
+`zai/glm-4.5-air` 的首轮 30-session Stage 1 官方 task success 为 0.40，历史结果见 [Stage 1 正式结果](docs/STAGE1_RESULTS.md)。随后使用免费 `zai/glm-4.7-flash` 按同一 10-task × 3-trial gate 重跑，取得 `16/30 = 0.5333`、normal stop `0.90`、0 infrastructure error、实际成本 `$0.00`，全部 gate 通过。30 图机器生命周期/Oracle/预算实验、8-session pipeline smoke 和 40-session single-trial preliminary paired pilot 见 [GLM-4.7-Flash 结果](docs/GLM47_FLASH_RESULTS.md)。
 
 ## 官方 ACON 外部 baseline
 
@@ -82,7 +82,7 @@ $env:TRACEGRAPH_ACON_ROOT = "vendor/acon-main"
 $env:TRACEGRAPH_ACON_CONFIG = "configs/acon_tau3.json"
 ```
 
-适配器默认在任何 optimizer 异常、空输出、源码 hash 不符或 provider usage 缺失时 fail closed。当前尚不应执行 paid paired run，因为 Stage 1 模型适用性 gate 未通过。实现与解释边界见 [强 baseline 官方实现审计](docs/STRONG_BASELINES.md)。
+适配器默认在任何 optimizer 异常、空输出、源码 hash 不符或 provider usage 缺失时 fail closed。GLM-4.7-Flash 已通过模型适用性 gate，但官方 ACON live paired run 仍需冻结 compressor 配置、限流规则和完整 provenance 后单独执行。实现与解释边界见 [强 baseline 官方实现审计](docs/STRONG_BASELINES.md)。
 
 ## 文档
 
@@ -93,6 +93,7 @@ $env:TRACEGRAPH_ACON_CONFIG = "configs/acon_tau3.json"
 - [GLM 真实 Pilot](docs/GLM_PILOT.md)
 - [正式实验矩阵与成本门控](docs/FORMAL_MATRIX.md)
 - [Stage 1 正式结果与决策](docs/STAGE1_RESULTS.md)
+- [GLM-4.7-Flash 机器标签实验结果](docs/GLM47_FLASH_RESULTS.md)
 - [生命周期人工双标协议](docs/LIFECYCLE_ANNOTATION.md)
 - [强 baseline 官方实现审计](docs/STRONG_BASELINES.md)
 - [数据与结果格式](docs/DATA_FORMAT.md)

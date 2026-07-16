@@ -1,0 +1,42 @@
+{
+  "matrix_id": "g47f_ml_3t1",
+  "description": "Three-trial paired live matrix for machine-inferred lifecycle pseudo labels using the free GLM-4.7-Flash endpoint.",
+  "agent_model": "zai/glm-4.7-flash",
+  "user_model": "zai/glm-4.7-flash",
+  "normalize_user_stop": true,
+  "base_seed": 300,
+  "trials": 3,
+  "max_steps": 50,
+  "timeout_seconds": 900,
+  "inter_run_delay_seconds": 20,
+  "estimated_cost_per_session_usd": 0.0001,
+  "domains": [
+    {
+      "name": "retail",
+      "task_ids": ["0", "1", "2", "3", "4"]
+    },
+    {
+      "name": "airline",
+      "task_ids": ["0", "1", "2", "3", "4"]
+    }
+  ],
+  "conditions": [
+    {
+      "manager": "full_trajectory",
+      "budget": "none"
+    },
+    {
+      "manager": "last_k",
+      "budget": "16384"
+    },
+    {
+      "manager": "ours_without_lifecycle_states",
+      "budget": "16384"
+    },
+    {
+      "manager": "full_ours",
+      "budget": "16384"
+    }
+  ],
+  "interpretation_warning": "This is the first three-trial paired extension over ten fixed tasks. Lifecycle states are machine-inferred pseudo labels, not human gold labels. Infrastructure errors and wall-clock timeouts are excluded pairwise. Conclusions remain preliminary until independent human annotation validates lifecycle labels."
+}

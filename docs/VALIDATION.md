@@ -13,7 +13,7 @@ python -m compileall -q src tests scripts
 
 覆盖归档 hash、类型边、图持久化、失败/重试/side effect、生命周期硬约束、可恢复压缩、全部 manager、消融开关、指标、固定 agent loop、τ 当前/旧格式、完整实验输出和无未来前缀图。
 
-本次最终复验结果：52/52 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过；本次新增/修改 Python 文件通过 Ruff 检查。
+本次最终复验结果：59/59 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过；本次新增/修改 Python 文件通过 Ruff 检查。
 
 ## 当前官方 τ³ 环境验证
 
@@ -37,13 +37,15 @@ python -m compileall -q src tests scripts
 - 无 API 的 τ³ 端到端烟测确认调用上下文包含未压缩 policy、原始 task 和上游消息类型；
 - 7 项适配器契约测试覆盖确定性序列化、官方参数签名、summary 状态、最近轮保留、严格失败、显式 raw fallback、provider usage/cost 和源码 hash 拒绝；
 - `scripts/setup_acon.ps1` 通过 PowerShell 语法解析，目标已存在时拒绝覆盖；
-- 尚未执行 ACON paid paired run，原因是 Stage 1 success gate 未通过，而非适配器被当作已产生效果结果。
+- `glm-4.7-flash` 已通过 Stage 1；尚未执行 ACON official paired run，因为 compressor model、prompt/guideline、限流和 usage/cost provenance 仍需作为独立条件冻结，而非把适配器当作已产生效果结果。
 
 ## GLM 真实调用验证
 
 本地 `.env` 中的 GLM 凭据通过认证和模型目录查询；该文件由 `.gitignore` 排除，发布前对全部 tracked/untracked candidate files 做动态密钥扫描，泄漏数为 0。
 
 - `zai/glm-4.5-air` 最小 Function Call：成功产生 1 个合法工具调用；
+- `glm-4.7-flash` 最小 Function Call：190 prompt + 12 completion tokens，成功产生指定工具调用；
+- `zai/glm-4.7-flash` mock：reward 1.0、DB 1.0、write 1/1、正常 `user_stop`、实际成本 `$0.00`；
 - `mock/create_task_1`：reward 1.0、DB 1.0、write action 1/1、正常 `user_stop`；
 - mock 轨迹与 archive：10 nodes、6 edges，schema/hash 全部有效；
 - `retail/0`：5 个预期工具动作全部无 error，写操作执行成功，但 user simulator 未产生 `###STOP###`，最终 `max_steps`、官方 reward 0；
@@ -51,6 +53,12 @@ python -m compileall -q src tests scripts
 - 可选 user-stop normalizer：问句/普通道别不触发，明确结束意图触发，幂等性测试通过；
 - 第二次 `retail/0`：正常 `user_stop`，4/4 read actions，但错误键盘 variant 导致 write 0/1、DB 0、官方 reward 0；
 - 三图 2048-token 离线 suite：12 个 manager、生命周期、Oracle、前缀回放与 manifest 全部生成，archive 校验通过。
+- `glm-4.7-flash` Stage 1：30/30 sessions、16/30 success、normal stop 0.90、0 infrastructure error、实际成本 `$0.00`；
+- 新 30 图机器生命周期、Oracle、12-manager offline、4096/8192/16384 sweep 均完成，推荐预算 16384；
+- 2-task × 4-condition paired smoke：8/8 sessions/traces、8/8 正常停止、0 infra、所有 archive hash 有效；
+- 10-task × 4-condition preliminary paired pilot：40/40 sessions/traces、40/40 archives、490 archive objects 全部验证通过；
+- preliminary pilot 精确 `infrastructure_error` 为 0；Full Trajectory 的 2 个 wall-clock timeout 被分析器按基础设施型中止排除；
+- 压缩消息协议闭包在真实 `retail/0 + last_k` 故障条件上复验通过，不再产生非法 ToolMessage 序列。
 
 retail 结果不重解释为成功，也不作为 context manager 主结果。详细成本、诊断与结构 pilot 见 `docs/GLM_PILOT.md`。
 
@@ -61,18 +69,24 @@ retail 结果不重解释为成功，也不作为 context manager 主结果。�
 - 保守估算总成本 `$0.30`；
 - dry-run manifest 与 10 条命令生成成功，未调用 API；
 - secret-like 字段、未知 manager、重复 task/condition 均由测试拒绝；
+- 非负 `inter_run_delay_seconds` 写入 plan 并在 run 间显式执行；负值由测试拒绝；
 - 缺失 cap 或 cap 低于估算时，在执行前拒绝；
 - 生成的 `outputs/plans/` 继续由 Git 忽略。
 
-## Stage 1 正式执行与分析验证
+## Stage 1 与 paired live 执行验证
 
-- 官方 τ³：10 runs / 30 sessions 全部完成，30 traces、30 非零 token 轨迹；
-- 30 个 enrichment 后的 TraceGraph 均通过 `validate-trace`；
-- 合并的 446 个 archive objects 全部通过 hash 校验；
+- 历史 `glm-4.5-air`：10 runs / 30 sessions 全部完成，唯一失败 gate 为 success `0.40 < 0.50`；
+- `glm-4.7-flash`：10 runs / 30 sessions、30 traces、30 非零 token 轨迹全部完成；
+- 新 30 个 enrichment 后的 TraceGraph 均通过 `validate-trace`；
+- 合并的 440 个 archive objects 全部通过 hash 校验；
 - gate 聚合器读取官方 reward、termination、action checks、DB/NL/communication checks 与真实 TraceGraph token；
-- Stage 1 判定 `fail`，唯一失败 gate 为 success `0.40 < 0.50`；
-- 4096/8192/16384 结构 sweep 推荐 16384，并同时检查 Oracle 与 Full Ours 实际溢出率；
-- 12 managers × 30 graphs 离线结构实验及 8,952 条 prefix replay rows 生成成功；
+- `glm-4.7-flash` Stage 1 判定 `pass`：success 0.5333、normal stop 0.90、median tool calls 7、median tokens 41,282.5、infra 0；
+- 新 4096/8192/16384 结构 sweep 推荐 16384，并同时检查 Oracle 与 Full Ours 实际溢出率；
+- 12 managers × 30 graphs 离线结构实验及 8,868 条 prefix replay rows 生成成功；
+- paired live 聚合器输出 manager 指标、task+trial 配对、exact McNemar、bootstrap CI 和 selected-context token 配对差；
+- 8-session paired smoke 完整，Full Trajectory/Last-k/No-lifecycle/Full Ours 分别成功 2/2、2/2、1/2、1/2；只作为 pipeline smoke；
+- 40-session preliminary pilot 完整，四条件原始成功分别为 4/10、6/10、4/10、5/10；Full Ours 对 Full Trajectory 的 8 个有效配对成功率差为 0，selected-context token 配对均值差为 -27,146.4；
+- Full Ours 对 no-lifecycle 的 10 个直接配对成功率差为 +0.10、McNemar `p=1.0`，当前只作为机器生命周期标签的待验证信号；
 - 双标导出生成 120 条盲化样本，两份表独立顺序且不含机器预测；评分器验证 ID/标签并计算 Cohen's κ。
 
 ## 官方公开历史轨迹兼容验证

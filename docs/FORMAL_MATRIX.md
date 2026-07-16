@@ -1,6 +1,6 @@
 # 正式实验矩阵与成本门控
 
-配置文件与生成的 manifest 均禁止包含 key、secret、credential、password 或 access token 字段；真实凭据仍只从被 Git 忽略的 `.env` 加载。Stage 1 已于 2026-07-16 完整执行，结果见 [Stage 1 正式结果](STAGE1_RESULTS.md)。
+配置文件与生成的 manifest 均禁止包含 key、secret、credential、password 或 access token 字段；真实凭据仍只从被 Git 忽略的 `.env` 加载。`glm-4.5-air` 历史结果见 [Stage 1 正式结果](STAGE1_RESULTS.md)；通过 gate 的 `glm-4.7-flash` 重跑与 paired smoke 见 [GLM-4.7-Flash 结果](GLM47_FLASH_RESULTS.md)。
 
 ## Stage 1：模型与 harness 适用性门槛
 
@@ -61,4 +61,6 @@ python scripts/plan_glm_matrix.py `
 2. 固定一个预算后，运行 Full Trajectory、7 个 baseline、4 个 ablation 和 Full Ours；相同 task、trial、seed、模型与 user adapter，只替换 context manager。
 3. pilot 通过后再扩到每域 10–20 tasks，并执行 paired bootstrap、McNemar/permutation 与 Holm correction。
 
-Stage 1 已完成 30/30 sessions，成功率 `0.40 < 0.50`，因此未进入付费 context-manager 对照。30 图结构 sweep 推荐未来使用 16384 预算；只有开通更强 GLM 并重新通过 Stage 1 后才允许启动该矩阵。
+`glm-4.7-flash` 重跑已完成 30/30 sessions，并以 success `0.5333`、normal stop `0.90`、infrastructure error `0` 通过全部 gate。新 30 图 sweep 仍推荐 16384；2-task × 4-condition 的 rate-limit-aware paired pipeline smoke 和 `configs/glm47_flash_machine_lifecycle_paired_pilot_v1.json` 的 10-task × 4-condition single-trial preliminary pilot 均已完成。40-session pilot 中 Full Ours 与 Full Trajectory 在 8 个有效配对上成功率持平，平均累计 selected-context tokens 少 27,146.4，但置信区间跨 0；下一步是扩到至少 3 trials，而不是继续使用已失败的 `glm-4.5-air` 配置。
+
+矩阵配置可设置非负 `inter_run_delay_seconds`。该值写入 manifest 并在每个 run 后显式等待，用于披露和控制免费端点的瞬时限流，不改变单个 session 内的模型、seed 或 context-manager 条件。

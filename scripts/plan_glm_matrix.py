@@ -8,6 +8,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -106,6 +107,10 @@ def main() -> None:
     for index, command in enumerate(commands, start=1):
         print(f"[{index}/{len(commands)}] executing {plan['runs'][index - 1]['run_id']}")
         subprocess.run(command, cwd=project_root, check=True)
+        delay = float(plan.get("inter_run_delay_seconds", 0.0))
+        if delay > 0 and index < len(commands):
+            print(f"cooldown: waiting {delay:g}s before the next run")
+            time.sleep(delay)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,36 @@
+{
+  "matrix_id": "g47f_s1_v1",
+  "description": "Free-tier GLM-4.7-Flash model-suitability gate using machine-inferred lifecycle pseudo labels for preliminary experiments.",
+  "agent_model": "zai/glm-4.7-flash",
+  "user_model": "zai/glm-4.7-flash",
+  "normalize_user_stop": true,
+  "base_seed": 300,
+  "trials": 3,
+  "max_steps": 50,
+  "timeout_seconds": 900,
+  "estimated_cost_per_session_usd": 0.0001,
+  "domains": [
+    {
+      "name": "retail",
+      "task_ids": ["0", "1", "2", "3", "4"]
+    },
+    {
+      "name": "airline",
+      "task_ids": ["0", "1", "2", "3", "4"]
+    }
+  ],
+  "conditions": [
+    {
+      "manager": "full_trajectory",
+      "budget": "none"
+    }
+  ],
+  "gates": {
+    "minimum_task_success_rate": 0.5,
+    "minimum_normal_stop_rate": 0.9,
+    "minimum_median_tool_calls": 5,
+    "minimum_median_estimated_tokens": 4096,
+    "maximum_infrastructure_error_rate": 0.05
+  },
+  "interpretation_warning": "This stage tests model and harness suitability only. Lifecycle states are machine-inferred pseudo labels, not human gold labels. The positive cost estimate is a planner safety placeholder; the capability smoke test reported zero provider cost."
+}

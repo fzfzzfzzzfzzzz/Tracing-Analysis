@@ -14,7 +14,7 @@
     "experiments/appworld/prompts/context_opt/prompt_history_v2.jinja": "0508caa837c50403be2c8545646359a0fb72009fb14df3a8acf85aedaf649834"
   },
   "prompt_dir": "experiments/appworld/prompts/context_opt",
-  "compressor_model": "zai/glm-4.5-air",
+  "compressor_model": "zai/glm-4.7-flash",
   "compressor_llm_args": {
     "temperature": 0.0,
     "num_retries": 0

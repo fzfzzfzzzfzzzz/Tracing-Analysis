@@ -14,6 +14,7 @@ def sample_config():
         "trials": 3,
         "max_steps": 50,
         "timeout_seconds": 900,
+        "inter_run_delay_seconds": 2.5,
         "estimated_cost_per_session_usd": 0.01,
         "domains": [
             {"name": "retail", "task_ids": ["0", "1"]},
@@ -32,6 +33,10 @@ class MatrixPlanTests(unittest.TestCase):
         self.assertEqual(plan["estimated_total_cost_usd"], 0.09)
         self.assertTrue(all(run["base_seed"] == 300 for run in plan["runs"]))
         self.assertTrue(all(run["trials"] == 3 for run in plan["runs"]))
+        self.assertEqual(plan["inter_run_delay_seconds"], 2.5)
+        self.assertEqual(
+            plan["paired_invariants"]["inter_run_delay_seconds"], 2.5
+        )
 
     def test_rejects_any_secret_like_config_key(self):
         config = sample_config()
@@ -69,6 +74,12 @@ class MatrixPlanTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "exceeds explicit cap"):
             require_execution_budget(plan, 0.08)
         require_execution_budget(plan, 0.09)
+
+    def test_rejects_negative_inter_run_delay(self):
+        config = sample_config()
+        config["inter_run_delay_seconds"] = -1
+        with self.assertRaisesRegex(ValueError, "inter_run_delay_seconds"):
+            build_matrix_plan(config)
 
 
 if __name__ == "__main__":
