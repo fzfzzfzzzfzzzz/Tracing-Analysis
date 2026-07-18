@@ -113,6 +113,109 @@ class SemanticOutcome(str, Enum):
     TEST_FAILED = "test_failed"
 
 
+class FailureClass(str, Enum):
+    """Decision-facing class for compact negative-evidence cards."""
+
+    ACTIONABLE = "actionable"
+    TERMINAL = "terminal"
+    POLICY_DENIED = "policy_denied"
+    MALFORMED = "malformed"
+    STALE = "stale"
+
+
+class FailureExpiryTrigger(str, Enum):
+    """Why a failure card no longer belongs in protected active context."""
+
+    RESOLVED = "resolved"
+    SUPERSEDED = "superseded"
+    ALTERNATIVE_COMPLETED = "alternative_completed"
+    USER_ABANDONED = "user_abandoned"
+    CONSTRAINT_CHANGED = "constraint_changed"
+    FINAL_ACCEPTED = "final_accepted"
+    CORRECTED_SYNTAX = "corrected_syntax"
+    TTL_EXPIRED = "ttl_expired"
+    TERMINAL = "terminal"
+    STALE = "stale"
+
+
+@dataclass(frozen=True, slots=True)
+class FailureCard:
+    """Compact, scoped representation of an unresolved negative outcome.
+
+    A card is a context representation, not a replacement for source trace
+    records. ``raw_archive_refs`` keep the full call/result chain recoverable
+    without forcing historical provider messages back into every prompt.
+    """
+
+    card_id: str
+    operation_scope: str
+    action_family: str
+    entity_ids: tuple[str, ...]
+    failure_class: FailureClass
+    latest_failure_cause: str
+    failed_argument_diff: dict[str, Any]
+    next_admissible_correction: str
+    confidence: float
+    created_step: int
+    last_relevant_step: int
+    expiry_trigger: FailureExpiryTrigger | None
+    raw_archive_refs: tuple[str, ...]
+    source_node_ids: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        if not 0.0 <= self.confidence <= 1.0:
+            raise ValueError("failure card confidence must be between 0 and 1")
+        object.__setattr__(self, "entity_ids", tuple(dict.fromkeys(self.entity_ids)))
+        object.__setattr__(
+            self,
+            "raw_archive_refs",
+            tuple(dict.fromkeys(self.raw_archive_refs)),
+        )
+        object.__setattr__(
+            self,
+            "source_node_ids",
+            tuple(dict.fromkeys(self.source_node_ids)),
+        )
+
+    @property
+    def active(self) -> bool:
+        return self.expiry_trigger is None and self.failure_class not in {
+            FailureClass.TERMINAL,
+            FailureClass.STALE,
+        }
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "card_id": self.card_id,
+            "operation_scope": self.operation_scope,
+            "action_family": self.action_family,
+            "entity_ids": list(self.entity_ids),
+            "failure_class": self.failure_class.value,
+            "latest_failure_cause": self.latest_failure_cause,
+            "failed_argument_diff": dict(self.failed_argument_diff),
+            "next_admissible_correction": self.next_admissible_correction,
+            "confidence": self.confidence,
+            "created_step": self.created_step,
+            "last_relevant_step": self.last_relevant_step,
+            "expiry_trigger": (
+                self.expiry_trigger.value if self.expiry_trigger is not None else None
+            ),
+            "raw_archive_refs": list(self.raw_archive_refs),
+            "source_node_ids": list(self.source_node_ids),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "FailureCard":
+        values = dict(data)
+        values["failure_class"] = FailureClass(values["failure_class"])
+        trigger = values.get("expiry_trigger")
+        values["expiry_trigger"] = FailureExpiryTrigger(trigger) if trigger else None
+        values["entity_ids"] = tuple(values.get("entity_ids", ()))
+        values["raw_archive_refs"] = tuple(values.get("raw_archive_refs", ()))
+        values["source_node_ids"] = tuple(values.get("source_node_ids", ()))
+        return cls(**values)
+
+
 @dataclass(slots=True)
 class LifecycleProfile:
     """Factorized lifecycle state used by schema v2.

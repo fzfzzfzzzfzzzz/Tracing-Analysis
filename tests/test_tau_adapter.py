@@ -227,6 +227,69 @@ class TauAdapterTests(unittest.TestCase):
                 5000,
             )
 
+    def test_missing_argument_completion_is_linked_as_resolved_retry(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            payload = {
+                "task_id": 9,
+                "messages": [
+                    {
+                        "role": "assistant",
+                        "tool_calls": [
+                            {
+                                "id": "lookup-1",
+                                "name": "find_user_id_by_name_zip",
+                                "arguments": {
+                                    "first_name": "Isabella",
+                                    "last_name": "Johansson",
+                                    "zip": "",
+                                },
+                            }
+                        ],
+                    },
+                    {
+                        "id": "lookup-1",
+                        "role": "tool",
+                        "content": "Error: User not found",
+                    },
+                    {
+                        "role": "assistant",
+                        "tool_calls": [
+                            {
+                                "id": "lookup-2",
+                                "name": "find_user_id_by_name_zip",
+                                "arguments": {
+                                    "first_name": "Isabella",
+                                    "last_name": "Johansson",
+                                    "zip": "32286",
+                                },
+                            }
+                        ],
+                    },
+                    {
+                        "id": "lookup-2",
+                        "role": "tool",
+                        "content": "isabella_johansson_2152",
+                    },
+                ],
+            }
+            source = Path(directory) / "argument-completion.json"
+            source.write_text(json.dumps(payload), encoding="utf-8")
+            graph = TauTraceImporter(
+                ArchiveStore(Path(directory) / "archive")
+            ).import_path(source)[0]
+
+            retries = [
+                edge for edge in graph.edges.values() if edge.edge_type == EdgeType.RETRIED_BY
+            ]
+            resolutions = [
+                edge for edge in graph.edges.values() if edge.edge_type == EdgeType.RESOLVED_BY
+            ]
+            self.assertEqual(len(retries), 1)
+            self.assertEqual(retries[0].metadata["match_type"], "argument_completion")
+            self.assertEqual(len(resolutions), 1)
+            errors = graph.find_nodes(node_types={NodeType.ERROR})
+            self.assertEqual(errors[0].lifecycle, LifecycleState.RESOLVED_FAILURE)
+
 
 if __name__ == "__main__":
     unittest.main()

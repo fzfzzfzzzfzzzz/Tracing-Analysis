@@ -83,6 +83,13 @@ _TEMPORAL_FORWARD_EDGE_TYPES = {
     EdgeType.SUMMARIZED_BY,
 }
 
+_LEGACY_LIFECYCLE_EDGE_MAP: dict[EdgeType, EdgeType] = {
+    EdgeType.RETRIES: EdgeType.RETRIED_BY,
+    EdgeType.RESOLVES: EdgeType.RESOLVED_BY,
+    EdgeType.SUPERSEDES: EdgeType.SUPERSEDED_BY,
+    EdgeType.COMPRESSES: EdgeType.SUMMARIZED_BY,
+}
+
 
 class TraceGraph:
     """A thread-safe, in-memory trace graph with JSON persistence."""
@@ -204,6 +211,52 @@ class TraceGraph:
         predecessors.extend(edge.target for edge in self.outgoing(node_id, EdgeType.RETRIES))
         return list(dict.fromkeys(predecessors))
 
+    def normalize_legacy_lifecycle_edges(self) -> int:
+        """Add canonical forward counterparts for legacy lifecycle edges.
+
+        Legacy edges remain serialized for lossless compatibility. New
+        selectors can consume only the canonical v2 relations after this
+        single read-boundary migration instead of branching on both schemas.
+        The operation is idempotent and is also safe for in-memory fixtures.
+        """
+
+        existing = {
+            (edge.source, edge.target, edge.edge_type)
+            for edge in self.edges.values()
+        }
+        additions: list[tuple[Edge, EdgeType]] = []
+        for edge in list(self.edges.values()):
+            canonical_type = _LEGACY_LIFECYCLE_EDGE_MAP.get(edge.edge_type)
+            if canonical_type is None:
+                continue
+            signature = (edge.target, edge.source, canonical_type)
+            if signature in existing:
+                continue
+            additions.append((edge, canonical_type))
+            existing.add(signature)
+
+        for legacy, canonical_type in additions:
+            metadata = dict(legacy.metadata)
+            metadata.update(
+                {
+                    "normalized_from_legacy": legacy.edge_type.value,
+                    "legacy_edge_id": legacy.edge_id,
+                }
+            )
+            self.connect(
+                legacy.target,
+                legacy.source,
+                canonical_type,
+                confidence=legacy.confidence,
+                metadata=metadata,
+            )
+        if additions:
+            self.metadata["legacy_lifecycle_edges_normalized"] = (
+                int(self.metadata.get("legacy_lifecycle_edges_normalized", 0))
+                + len(additions)
+            )
+        return len(additions)
+
     def neighbors(self, node_id: str, *, reverse: bool = False) -> list[str]:
         edges = self.incoming(node_id) if reverse else self.outgoing(node_id)
         return [edge.source if reverse else edge.target for edge in edges]
@@ -314,6 +367,7 @@ class TraceGraph:
             graph.add_node(Node.from_dict(item))
         for item in data.get("edges", []):
             graph.add_edge(Edge.from_dict(item))
+        graph.normalize_legacy_lifecycle_edges()
         return graph
 
     def save(self, path: str | Path) -> None:

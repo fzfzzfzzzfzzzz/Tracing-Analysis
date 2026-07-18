@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import json
 import re
 from typing import Any
+
+from .phase3_gates import evaluate_p2_status
 
 from .capture import TOKEN_ACCOUNTING_VERSION
 
@@ -25,10 +28,12 @@ KNOWN_MANAGERS = {
     "agentdiet_style",
     "acon_style",
     "acon_official",
+    "acon_official_with_failure_cards",
     "ours_without_graph_edges",
     "ours_without_lifecycle_states",
     "ours_without_failure_retention",
     "ours_without_constraint_retention",
+    "raw_hard_failure_retention",
     "full_ours",
 }
 
@@ -76,6 +81,7 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
 
     agent_model = str(config.get("agent_model", ""))
     user_model = str(config.get("user_model", ""))
+    evaluator_model = str(config.get("evaluator_model", ""))
     if not agent_model or not user_model:
         raise ValueError("agent_model and user_model are required")
     token_accounting = str(
@@ -115,11 +121,18 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
             raise ValueError(f"unknown manager: {manager!r}")
         if not budget:
             raise ValueError(f"condition {manager!r} requires budget")
+        run_label = str(entry.get("run_label") or manager)
+        if not _SAFE_ID.fullmatch(run_label):
+            raise ValueError(
+                f"condition {manager!r} run_label must be a safe identifier"
+            )
         condition_key = (manager, budget)
         if condition_key in seen_conditions:
             raise ValueError(f"duplicate condition: {manager}/{budget}")
         seen_conditions.add(condition_key)
-        conditions.append({"manager": manager, "budget": budget})
+        conditions.append(
+            {"manager": manager, "budget": budget, "run_label": run_label}
+        )
 
     normalize_user_stop = bool(config.get("normalize_user_stop", False))
     runs: list[dict[str, Any]] = []
@@ -130,7 +143,7 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
                 task_slug = re.sub(r"[^A-Za-z0-9_-]", "_", task_id)
                 run_slug = (
                     f"{matrix_id}_{domain['name']}_{task_slug}_"
-                    f"{condition['manager']}_b{budget_slug}"
+                    f"{condition['run_label']}_b{budget_slug}"
                 )
                 runs.append(
                     {
@@ -141,6 +154,7 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
                         "budget": condition["budget"],
                         "agent_model": agent_model,
                         "user_model": user_model,
+                        "evaluator_model": evaluator_model,
                         "normalize_user_stop": normalize_user_stop,
                         "trials": trials,
                         "base_seed": base_seed,
@@ -159,6 +173,7 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
         "description": str(config.get("description", "")),
         "agent_model": agent_model,
         "user_model": user_model,
+        "evaluator_model": evaluator_model,
         "normalize_user_stop": normalize_user_stop,
         "token_accounting": token_accounting,
         "paired_invariants": {
@@ -168,6 +183,7 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
             "timeout_seconds": timeout_seconds,
             "inter_run_delay_seconds": inter_run_delay_seconds,
             "token_accounting": token_accounting,
+            "evaluator_model": evaluator_model,
             "task_ids_by_domain": {item["name"]: item["task_ids"] for item in domains},
         },
         "inter_run_delay_seconds": inter_run_delay_seconds,
@@ -194,4 +210,52 @@ def require_execution_budget(plan: dict[str, Any], max_estimated_cost_usd: float
         raise ValueError(
             f"estimated cost ${estimated:.4f} exceeds explicit cap "
             f"${max_estimated_cost_usd:.4f}"
+        )
+
+
+def require_phase3_p4_go(report: dict[str, Any] | None) -> None:
+    """Fail closed before any P4 expansion matrix is executed."""
+
+    if not isinstance(report, dict):
+        raise ValueError("P4 execution requires a phase-three gate report")
+    if not bool((report.get("p4") or {}).get("go_gate_passed")):
+        blockers = (report.get("p4") or {}).get("blockers") or ["unknown"]
+        raise ValueError(
+            "P4 execution is not authorized by the phase-three Go gate: "
+            + ", ".join(str(item) for item in blockers)
+        )
+
+
+def require_phase3_p2_construct_gate(report: dict[str, Any] | None) -> None:
+    """Fail closed before a formal P3 matrix is executed."""
+
+    status = evaluate_p2_status(report)
+    if not status.get("passed"):
+        raise ValueError(
+            "formal P3 execution requires a passing P2 human construct report: "
+            + json.dumps(status, ensure_ascii=False, sort_keys=True)
+        )
+
+
+def require_codex_provisional_p2(report: dict[str, Any] | None) -> None:
+    """Authorize only the explicitly non-formal Codex-labelled P3 lane."""
+
+    if not isinstance(report, dict):
+        raise ValueError("provisional P3 execution requires a Codex P2 report")
+    checks = {
+        "complete": bool(report.get("complete")),
+        "chain_count_at_least_60": int(report.get("chain_count") or 0) >= 60,
+        "codex_provenance": report.get("annotation_provenance")
+        == "codex_provisional",
+        "not_human_gold": not bool(report.get("human_independent_annotations")),
+        "no_unresolved_adjudications": int(
+            report.get("unresolved_adjudications") or 0
+        )
+        == 0,
+    }
+    if not all(checks.values()):
+        raise ValueError(
+            "provisional P3 execution requires a structurally complete, explicitly "
+            "Codex-labelled P2 report: "
+            + json.dumps(checks, ensure_ascii=False, sort_keys=True)
         )

@@ -154,6 +154,7 @@ class ContextManagerTests(unittest.TestCase):
                 "ours_without_lifecycle_states",
                 "ours_without_failure_retention",
                 "ours_without_constraint_retention",
+                "raw_hard_failure_retention",
                 "full_ours",
             },
         )

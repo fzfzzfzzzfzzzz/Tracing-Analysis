@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "matrix_id": "p3_card_retail_codex_v1",
+  "description": "Provisional Codex-labelled single-environment P3 paired matrix; not formal human-validated evidence.",
+  "agent_model": "zai/glm-4.7-flash",
+  "user_model": "zai/glm-4.7-flash",
+  "token_accounting": "content_estimate_v2",
+  "temperature": 0.0,
+  "base_seed": 4300,
+  "trials": 3,
+  "max_steps": 50,
+  "normalize_user_stop": true,
+  "timeout_seconds": 900,
+  "inter_run_delay_seconds": 20,
+  "estimated_cost_per_session_usd": 0.0001,
+  "domains": [
+    {"name": "retail", "task_ids": ["27", "33", "34", "76", "36"]}
+  ],
+  "conditions": [
+    {"manager": "full_trajectory", "budget": "none", "run_label": "full"},
+    {"manager": "ours_without_failure_retention", "budget": "4096", "run_label": "remove"},
+    {"manager": "raw_hard_failure_retention", "budget": "4096", "run_label": "raw"},
+    {"manager": "full_ours", "budget": "4096", "run_label": "card"}
+  ],
+  "gates": {
+    "purpose": "codex_provisional_model_annotation_lane",
+    "codex_provisional_p2_required": true,
+    "primary_metrics": [
+      "task_success_noninferiority",
+      "repeated_invalid_action_count",
+      "mean_recovery_steps"
+    ],
+    "secondary_metrics": [
+      "total_protocol_closed_message_tokens",
+      "agent_provider_input_tokens",
+      "normal_stop",
+      "policy_violation"
+    ],
+    "task_success_noninferiority_margin": -0.05,
+    "infrastructure_exclusions": ["infrastructure_error", "timeout"],
+    "bootstrap_samples": 10000,
+    "exact_mcnemar": true
+  },
+  "interpretation_warning": "Codex A/B labels are provisional machine annotations from one model/thread. This matrix cannot satisfy the formal P2 human gate or authorize formal P4 conclusions."
+}

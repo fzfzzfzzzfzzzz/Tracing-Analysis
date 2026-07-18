@@ -45,7 +45,7 @@ python -m tracegraph verify-archive artifacts\tau3-archive
 
 离线的 `online_replay.jsonl` 在每个 step 只构造该前缀图，用来检查未来信息泄漏与 context 大小。正式 task success 必须用 [τ³ live agent](TAU3_INTEGRATION.md) 重跑。
 
-建议预算：512、1024、2048、4096；先在 10-task pilot 上选择不会让 mandatory context 大面积超预算的范围，再冻结正式配置。
+历史第二阶段实验使用 512、1024、2048、4096 等 active-context 预算。第三阶段先冻结一个可行总预算，`full_ours` 默认只给 Failure Card 分配总预算的 12.5%；除非 P1 暴露 card 边界问题，不重新 sweep 整个 active-context budget。
 
 ## 5. 实验四：ablation
 
@@ -55,9 +55,10 @@ python -m tracegraph verify-archive artifacts\tau3-archive
 - `ours_without_lifecycle_states`
 - `ours_without_failure_retention`
 - `ours_without_constraint_retention`
+- `raw_hard_failure_retention`（第二阶段无界原始失败硬保留对照）
 - `full_ours`
 
-测试已保证 failure/constraint ablation 不会被通用 Active/blocks 规则重新引入。
+`full_ours` 是第三阶段的 compact-card 策略；测试保证原始失败、audit-required 写操作和通用 Active 状态不会重新进入无界 mandatory 集合，并保证 Failure Card 不触发历史 tool-call/result 消息闭包。
 
 ## 6. 强 baseline
 
@@ -96,3 +97,7 @@ AgentDiet/ACON/Agent-Omit 的官方实现可用性、接口差异和 τ³ 接入
 Full Trajectory 适用性 gate 已冻结并完成 10 tasks × 3 trials；任务、seed、成本估算、执行 cap 和通过阈值见 [正式实验矩阵](FORMAL_MATRIX.md)。
 
 历史 `glm-4.5-air` Stage 1 为 `12/30 = 0.40`。`glm-4.7-flash` 随后用同一 gate 取得 `16/30 = 0.5333` 并通过全部条件。对 Stage 1 图执行 `content_estimate_v2` 重计量后，中位内容轨迹为 4,875 tokens，gate 仍通过；预算 sweep 推荐 4096。旧 120-session paired matrix 的 reward/termination 保留为诊断，但其压缩条件受旧 token 口径影响，不能进入正式效果结论。替代的 corrected smoke、`g47f_ml_c2` 和 failure-rich `g47f_fr_c2` 使用冻结的 4096 预算，并同时报告估算 context tokens 与真实 agent provider input usage。详细边界见 [Token 计量修正](TOKEN_ACCOUNTING.md) 和 [GLM-4.7-Flash 结果](GLM47_FLASH_RESULTS.md)。
+
+## 10. 第三阶段执行顺序
+
+第三阶段按 `P1 → P2 → P3 → P4 Go/No-Go` 执行。P1 已完成 32 tasks × 4 conditions 的确定性机制实验；P2 已完成 Codex 临时 A/B，但正式 human gate 保持 fail closed。P3 原始矩阵暴露 NL evaluator 配额造成的顺序偏差后，对受影响任务四条件平衡补跑，并形成 60-session、0-infra 的 task-stratified 修复后复合分析。最新 P4 gate 因 human construct、Raw 双 token CI、Remove 机制 CI 和 success non-inferiority 四项 blocker 判为 No-Go，因此不执行 P4 扩展。当前结果和命令见 [第三阶段执行结果](PHASE3_RESULTS.md)。

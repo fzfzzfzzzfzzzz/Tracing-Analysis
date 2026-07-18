@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "matrix_id": "p3_card_resolution_smoke_v1",
+  "description": "Single-session live regression for immediate Failure Card expiry after a missing-argument repair succeeds.",
+  "agent_model": "zai/glm-4.7-flash",
+  "user_model": "zai/glm-4.7-flash",
+  "token_accounting": "content_estimate_v2",
+  "temperature": 0.0,
+  "base_seed": 4300,
+  "trials": 1,
+  "max_steps": 50,
+  "normalize_user_stop": true,
+  "timeout_seconds": 900,
+  "inter_run_delay_seconds": 0,
+  "estimated_cost_per_session_usd": 0.0001,
+  "domains": [
+    {"name": "retail", "task_ids": ["27"]}
+  ],
+  "conditions": [
+    {"manager": "full_ours", "budget": "4096", "run_label": "cardfix"}
+  ],
+  "gates": {
+    "purpose": "argument_completion_expiry_regression_only",
+    "required_p1_manifest": "outputs/phase3/p1_interventions_v2/manifest.json",
+    "p2_human_construct_validation": "not_run"
+  },
+  "interpretation_warning": "Engineering regression only. It verifies that a real missing-argument failure is removed from protected context immediately after a successful repaired call; it is not a formal P3 effect estimate."
+}

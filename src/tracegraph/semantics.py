@@ -153,6 +153,53 @@ def _flatten_arguments(value: Any, prefix: str = "") -> list[tuple[str, Any]]:
     return [(prefix, value)]
 
 
+_MISSING = object()
+
+
+def _empty_argument_value(value: Any) -> bool:
+    """Return whether a value carries no entity/operation information.
+
+    Booleans and numeric zero are intentionally not empty: both are common,
+    meaningful control values in tool APIs.
+    """
+
+    return value is None or value == "" or value == [] or value == {}
+
+
+def is_argument_completion_retry(
+    previous_arguments: dict[str, Any],
+    current_arguments: dict[str, Any],
+) -> bool:
+    """Conservatively detect a retry that only fills missing arguments.
+
+    This covers live traces such as ``zip=""`` followed by ``zip="32286"``
+    without treating arbitrary calls to the same tool as one operation.  At
+    least one non-empty anchor must remain identical, and every other change
+    must fill a previously absent or empty field.
+    """
+
+    previous = dict(_flatten_arguments(previous_arguments))
+    current = dict(_flatten_arguments(current_arguments))
+    stable_anchor = False
+    completed_field = False
+    for path in sorted(set(previous) | set(current)):
+        before = previous.get(path, _MISSING)
+        after = current.get(path, _MISSING)
+        if before is not _MISSING and after is not _MISSING and before == after:
+            if not _empty_argument_value(before):
+                stable_anchor = True
+            continue
+        if (
+            (before is _MISSING or _empty_argument_value(before))
+            and after is not _MISSING
+            and not _empty_argument_value(after)
+        ):
+            completed_field = True
+            continue
+        return False
+    return stable_anchor and completed_field
+
+
 def operation_key(tool_name: str, arguments: dict[str, Any]) -> str:
     """Build a stable operation identity that tolerates retry-control changes.
 

@@ -79,8 +79,42 @@ def _write_run(root: Path, run: dict, reward: float) -> None:
             {
                 "session_id": run["run_id"],
                 "metadata": {"graph_validation_errors": []},
-                "nodes": [{"token_count": 5000}],
-                "edges": [],
+                "nodes": [
+                    {"node_id": "call-1", "node_type": "tool_call", "step_id": 1, "token_count": 5000},
+                    {
+                        "node_id": "error-1",
+                        "node_type": "error",
+                        "step_id": 1,
+                        "token_count": 0,
+                        "metadata": {"semantic_outcome": "negative"},
+                    },
+                    {"node_id": "call-2", "node_type": "tool_call", "step_id": 2, "token_count": 0},
+                    {
+                        "node_id": "error-2",
+                        "node_type": "error",
+                        "step_id": 2,
+                        "token_count": 0,
+                        "metadata": {"semantic_outcome": "negative"},
+                    },
+                    {"node_id": "ok-3", "node_type": "observation", "step_id": 3, "token_count": 0},
+                ],
+                "edges": [
+                    {"source": "call-1", "target": "error-1", "edge_type": "failed_with"},
+                    {"source": "error-1", "target": "ok-3", "edge_type": "resolved_by"},
+                    *(
+                        [
+                            {
+                                "source": "call-1",
+                                "target": "call-2",
+                                "edge_type": "retried_by",
+                                "metadata": {"match_type": "exact_signature"},
+                            },
+                            {"source": "call-2", "target": "error-2", "edge_type": "failed_with"},
+                        ]
+                        if run["manager"] == "full_trajectory"
+                        else []
+                    ),
+                ],
             }
         ),
         encoding="utf-8",
@@ -93,6 +127,15 @@ def _write_run(root: Path, run: dict, reward: float) -> None:
                 "compression_ratio": (
                     0.0 if run["manager"] == "full_trajectory" else 0.6
                 ),
+                "metadata": {
+                    "graph_selected_representation_tokens": selected_tokens,
+                    "protocol_closed_message_tokens": (
+                        4800 if run["manager"] == "full_trajectory" else 1800
+                    ),
+                    "failure_card_count": (
+                        1 if run["manager"] == "full_ours" else 0
+                    ),
+                },
             }
         )
         + "\n",
@@ -277,6 +320,24 @@ class PairedMatrixTests(unittest.TestCase):
                     "mean_agent_provider_input_tokens_per_call_delta"
                 ],
                 -600.0,
+            )
+            self.assertEqual(
+                comparison["mean_total_protocol_closed_message_tokens_delta"],
+                -3000.0,
+            )
+            self.assertEqual(
+                comparison["mean_repeated_invalid_action_count_delta"],
+                -1.0,
+            )
+            self.assertEqual(
+                report["condition_metrics"]["full_trajectory"][
+                    "mean_repeated_invalid_action_count"
+                ],
+                1.0,
+            )
+            self.assertEqual(
+                report["condition_metrics"]["full_ours"]["failure_card_sessions"],
+                2,
             )
 
             output = root / "analysis"

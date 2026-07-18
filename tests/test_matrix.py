@@ -2,7 +2,13 @@ import copy
 import unittest
 
 from tracegraph.capture import TOKEN_ACCOUNTING_VERSION
-from tracegraph.matrix import build_matrix_plan, require_execution_budget
+from tracegraph.matrix import (
+    build_matrix_plan,
+    require_execution_budget,
+    require_codex_provisional_p2,
+    require_phase3_p2_construct_gate,
+    require_phase3_p4_go,
+)
 
 
 def sample_config():
@@ -27,6 +33,62 @@ def sample_config():
 
 
 class MatrixPlanTests(unittest.TestCase):
+    def test_formal_p3_execution_requires_passing_p2_report(self) -> None:
+        with self.assertRaisesRegex(ValueError, "passing P2"):
+            require_phase3_p2_construct_gate(None)
+        with self.assertRaisesRegex(ValueError, "passing P2"):
+            require_phase3_p2_construct_gate(
+                {
+                    "complete": True,
+                    "chain_count": 60,
+                    "annotation_provenance": "human_independent",
+                    "human_independent_annotations": True,
+                    "cohen_kappa": 0.69,
+                    "actionable_precision": 1.0,
+                    "actionable_recall": 1.0,
+                    "expiry_precision": 1.0,
+                    "operation_scope_aggregation_error_rate": 0.0,
+                }
+            )
+        require_phase3_p2_construct_gate(
+            {
+                "complete": True,
+                "chain_count": 60,
+                "annotation_provenance": "human_independent",
+                "human_independent_annotations": True,
+                "cohen_kappa": 0.70,
+                "actionable_precision": 0.75,
+                "actionable_recall": 0.75,
+                "expiry_precision": 0.90,
+                "operation_scope_aggregation_error_rate": 0.10,
+            }
+        )
+
+    def test_codex_report_only_authorizes_provisional_lane(self) -> None:
+        report = {
+            "complete": True,
+            "chain_count": 60,
+            "annotation_provenance": "codex_provisional",
+            "human_independent_annotations": False,
+            "unresolved_adjudications": 0,
+        }
+        require_codex_provisional_p2(report)
+        with self.assertRaisesRegex(ValueError, "human construct"):
+            require_phase3_p2_construct_gate(report)
+        with self.assertRaisesRegex(ValueError, "Codex-labelled"):
+            require_codex_provisional_p2(
+                {**report, "annotation_provenance": "human_independent"}
+            )
+
+    def test_p4_execution_requires_positive_phase3_gate(self) -> None:
+        with self.assertRaises(ValueError):
+            require_phase3_p4_go(None)
+        with self.assertRaises(ValueError):
+            require_phase3_p4_go(
+                {"p4": {"go_gate_passed": False, "blockers": ["p2"]}}
+            )
+        require_phase3_p4_go({"p4": {"go_gate_passed": True, "blockers": []}})
+
     def test_expands_paired_tasks_trials_and_cost(self):
         plan = build_matrix_plan(sample_config())
         self.assertEqual(plan["run_count"], 3)
@@ -58,11 +120,45 @@ class MatrixPlanTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unknown manager"):
             build_matrix_plan(config)
 
+    def test_preserves_explicit_nl_evaluator_model(self):
+        config = sample_config()
+        config["evaluator_model"] = "zai/glm-4.7-flash"
+        plan = build_matrix_plan(config)
+        self.assertEqual(plan["evaluator_model"], "zai/glm-4.7-flash")
+        self.assertEqual(
+            plan["paired_invariants"]["evaluator_model"], "zai/glm-4.7-flash"
+        )
+        self.assertTrue(
+            all(
+                run["evaluator_model"] == "zai/glm-4.7-flash"
+                for run in plan["runs"]
+            )
+        )
+
     def test_accepts_live_only_official_acon_manager(self):
         config = sample_config()
         config["conditions"] = [{"manager": "acon_official", "budget": "official_config"}]
         plan = build_matrix_plan(config)
         self.assertEqual(plan["conditions"][0]["manager"], "acon_official")
+
+    def test_short_run_label_preserves_manager_identity(self):
+        config = sample_config()
+        config["conditions"] = [
+            {
+                "manager": "ours_without_failure_retention",
+                "budget": "4096",
+                "run_label": "remove",
+            }
+        ]
+        plan = build_matrix_plan(config)
+        self.assertEqual(
+            plan["runs"][0]["manager"], "ours_without_failure_retention"
+        )
+        self.assertIn("_remove_b4096", plan["runs"][0]["run_id"])
+
+        config["conditions"][0]["run_label"] = "not safe"
+        with self.assertRaisesRegex(ValueError, "run_label"):
+            build_matrix_plan(config)
 
     def test_rejects_duplicate_tasks_and_conditions(self):
         duplicate_tasks = sample_config()

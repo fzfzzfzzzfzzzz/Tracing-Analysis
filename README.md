@@ -10,12 +10,14 @@
 - 在线增量建图、重试/解决/覆盖关系推断；
 - Created、Active、Critical Evidence、Consumed、Unresolved/Resolved Failure、Superseded、Archived、Audit-required 状态；
 - 图硬约束、证据路径保护和可恢复压缩；
+- 第三阶段 operation-scope Failure Card：失败分类、显式过期、独立 12.5% 子预算，以及 archive/audit 与 active context 分离；
 - 固定 Agent scaffold，仅替换 context manager；
-- 报告列出的 7 个 baseline、4 个 ablation 和 Full Ours；
+- 报告列出的 7 个 baseline、4 个 ablation、第二阶段 Raw Hard Failure Retention 对照和 card-aware Full Ours；
 - 离线生命周期分析、结构 Oracle 上界、在线前缀回放和对照/消融实验；
 - 当前 τ³-bench 双格式结果导入、旧 τ-bench `trajectory/traj` 兼容和 live agent 入口；
 - hash 固定的 Microsoft ACON 官方 observation/history optimizer 外部适配器；
 - 主指标与结构可靠性指标、JSONL/CSV 聚合结果和 provenance 清单；
+- 第三阶段 P1 受控干预、P2 failure-chain 双盲包/评分器、P3/P4 fail-closed Go/No-Go；
 - Windows/Linux、Python 3.11–3.13 CI。
 
 ## 快速开始
@@ -86,6 +88,8 @@ $env:TRACEGRAPH_ACON_CONFIG = "configs/acon_tau3.json"
 
 适配器默认在任何 optimizer 异常、空输出、源码 hash 不符或 provider usage 缺失时 fail closed。GLM-4.7-Flash 已通过模型适用性 gate，但官方 ACON live paired run 仍需冻结 compressor 配置、限流规则和完整 provenance 后单独执行。实现与解释边界见 [强 baseline 官方实现审计](docs/STRONG_BASELINES.md)。
 
+第三阶段已按预注册停止规则收口：P1 的 128-run 机制实验通过；P2 已完成明确标注 provenance 的 Codex 临时 A/B，但不是独立人工 gold；P3 已完成 24-session 平衡补跑和 60-session 修复后复合分析；P4 的 ACON+card 工程与门禁完成，但最新 gate 为 No-Go，因此没有绕过门禁运行扩展。精确数值和 blocker 见 [第三阶段执行结果](docs/PHASE3_RESULTS.md)。
+
 ## 文档
 
 - [架构与数据流](docs/ARCHITECTURE.md)
@@ -100,6 +104,8 @@ $env:TRACEGRAPH_ACON_CONFIG = "configs/acon_tau3.json"
 - [生命周期人工双标协议](docs/LIFECYCLE_ANNOTATION.md)
 - [生命周期分歧诊断与 failure-rich 任务选择](docs/LIFECYCLE_DIAGNOSTICS.md)
 - [强 baseline 官方实现审计](docs/STRONG_BASELINES.md)
+- [第三阶段修改计划](第三阶段修改计划.md)
+- [第三阶段执行结果与门槛状态](docs/PHASE3_RESULTS.md)
 - [数据与结果格式](docs/DATA_FORMAT.md)
 - [已执行验证](docs/VALIDATION.md)
 - [调研报告逐项追踪](docs/REQUIREMENTS_TRACEABILITY.md)

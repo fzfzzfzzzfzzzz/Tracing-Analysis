@@ -65,6 +65,7 @@ def _counter_template() -> Counter[str]:
             "retry_edges": 0,
             "exact_retry_edges": 0,
             "structural_retry_edges": 0,
+            "argument_completion_retry_edges": 0,
             "resolve_edges": 0,
             "supersede_edges": 0,
             "canonical_forward_edges": 0,
@@ -140,6 +141,9 @@ def _update(counter: Counter[str], graph: TraceGraph, *, budget: int) -> None:
     )
     counter["structural_retry_edges"] += sum(
         edge.metadata.get("match_type") == "structural_operation" for edge in retries
+    )
+    counter["argument_completion_retry_edges"] += sum(
+        edge.metadata.get("match_type") == "argument_completion" for edge in retries
     )
     counter["resolve_edges"] += len(resolutions)
     counter["supersede_edges"] += len(supersessions)
@@ -235,6 +239,10 @@ def analyze(
                     ),
                     "structural_retry_edges": sum(
                         edge.metadata.get("match_type") == "structural_operation"
+                        for edge in retry_edges
+                    ),
+                    "argument_completion_retry_edges": sum(
+                        edge.metadata.get("match_type") == "argument_completion"
                         for edge in retry_edges
                     ),
                     "resolve_edges": len(resolve_edges),

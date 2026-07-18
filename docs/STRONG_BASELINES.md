@@ -9,6 +9,7 @@
 | `agentdiet_style` | 去重 + expired 状态过滤 proxy | [AgentDiet paper](https://arxiv.org/abs/2509.23586)；未识别到官方代码仓库 | 否 |
 | `acon_style` | observation/history 截断 proxy | [ACON paper](https://arxiv.org/abs/2510.00615)、[Microsoft 官方代码](https://github.com/microsoft/acon) | 否 |
 | `acon_official` | 外部加载、hash 固定的官方 optimizer 运行时适配器 | 同上，commit `d63f9ae18959dc7215ff62899c94c5e8c56847ae` | 逐次运行判定；必须无 fallback 且 usage 完整 |
+| `acon_official_with_failure_cards` | 官方 ACON selected-message plan + bounded native Failure Card overlay | 同上 + 第三阶段协议 | 仅 P4 Go 后；同时要求 ACON runtime eligibility |
 | Agent-Omit | 未接入 | [paper](https://arxiv.org/abs/2602.04284)、[official code](https://github.com/usail-hkust/Agent-Omit) | 当前不作为 inference-only baseline |
 
 `aggregate.json` 可用于结构管线检查，但 proxy 结果不能进入论文主表。`manifest.json` 现在为每个 manager 写入 `implementation_kind`、`main_result_eligible`、论文/代码来源和边界说明；未注册 manager 会 fail closed。
@@ -48,8 +49,9 @@ Microsoft 官方 ACON 是独立的 context-compression framework，支持 AppWor
 - compressor 使用单独的 τ³ provider 调用，逐次记录 provider input/output tokens、cost、latency 与估算 tokens；记录写入被忽略的 `acon_calls.jsonl`，compressor cost 同时并入上游 assistant turn 的总 cost，并在 `raw_data.tracegraph_context_management` 保留拆分。
 - 默认 `fallback=error`。只有配置显式改为 `raw` 才允许继续，而任何 fallback、缺失 provider usage 或源码 hash 不匹配都会令 `runtime_main_result_eligible=false`。
 - 静态 provenance 仍将 `acon_official.main_result_eligible` 设为 false；必须读取每次 live run 的 runtime eligibility，不能只凭 manager 名称进入主表。
+- `acon_official_with_failure_cards` 不改变官方 ACON 的消息选择计划，只在其后叠加受独立子预算约束的 Failure Card fragment；缺少 P4 正向 gate report 时 matrix runner 会在外部调用前拒绝执行。
 
-接口、序列化、状态推进、最近轮保留、失败路径、usage 计量和源码拒绝已通过契约测试；真实快照也已成功加载进 τ³ 隔离环境。免费 `glm-4.7-flash` 已通过 Stage 1，但本轮只执行 native/proxy 条件的 pipeline smoke；官方 ACON 仍需冻结 compressor model、prompt/guideline hash、限流与 usage/cost 规则后再运行。因此当前没有 ACON live reward，也不作效果声明。
+接口、序列化、状态推进、最近轮保留、失败路径、usage 计量和源码拒绝已通过契约测试；真实快照也已成功加载进 τ³ 隔离环境。免费 `glm-4.7-flash` 已通过 Stage 1；第三阶段 P3 修复后复合分析已完成，但 human construct 和三项效果门槛未通过，最新 P4 gate 为 No-Go。官方 ACON 与 ACON+card 因此均未执行 live reward，不作效果声明。
 
 ## AgentDiet 与 Agent-Omit 边界
 

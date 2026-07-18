@@ -280,8 +280,8 @@ class LifecycleEngine:
             reasons.append("active_constraint")
         if profile.validity == ValidityState.NEGATIVE_UNRESOLVED:
             reasons.append("unresolved_negative_evidence")
-        if RetentionObligation.AUDIT_REQUIRED in profile.obligations:
-            reasons.append("audit_required_side_effect")
+        # Audit-required controls durable external storage. It does not by
+        # itself require the raw write call to remain in every LLM prompt.
         if RetentionObligation.CRITICAL_EVIDENCE in profile.obligations:
             reasons.append("critical_evidence")
         if RetentionObligation.ACTIVE_CONSTRAINT in profile.obligations:

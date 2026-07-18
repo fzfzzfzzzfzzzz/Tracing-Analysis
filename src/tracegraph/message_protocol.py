@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Sequence
 from typing import Any
+
+from .schema import NodeType
 
 
 def _role(message: dict[str, Any]) -> str:
@@ -88,3 +91,35 @@ def close_message_ordinals(
             if prior_users:
                 closed.add(prior_users[-1])
     return closed
+
+
+def project_context_items_to_messages(
+    messages: Sequence[dict[str, Any]],
+    items: Sequence[Any],
+    nodes: Any,
+) -> tuple[set[int], list[str]]:
+    """Project graph context into raw-message ordinals plus compact fragments.
+
+    Summary and archive-handle items are representations, not requests to
+    replay their source messages. In particular, a Failure Card may point to a
+    historical error node for provenance without re-injecting that tool result
+    and forcing protocol closure to restore its original tool call.
+    """
+
+    ordinals: set[int] = {len(messages)} if messages else set()
+    fragments: list[str] = []
+    for item in items:
+        if item.node_type in {NodeType.SUMMARY, NodeType.ARCHIVE_HANDLE}:
+            fragments.append(
+                json.dumps(item.content, ensure_ascii=False, default=str)
+            )
+            continue
+        node = nodes.get(item.node_id)
+        ordinal = node.metadata.get("source_message_ordinal") if node else None
+        if isinstance(ordinal, int):
+            ordinals.add(ordinal)
+        else:
+            fragments.append(
+                json.dumps(item.content, ensure_ascii=False, default=str)
+            )
+    return close_message_ordinals(messages, ordinals), fragments

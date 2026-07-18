@@ -102,6 +102,78 @@ def _trace_record(path: Path, project_root: Path) -> dict[str, Any]:
         for view in context_views
         if isinstance(view.get("compression_ratio"), (int, float))
     ]
+    graph_representation_tokens = [
+        float(view.get("metadata", {}).get("graph_selected_representation_tokens"))
+        for view in context_views
+        if isinstance(
+            view.get("metadata", {}).get("graph_selected_representation_tokens"),
+            (int, float),
+        )
+    ]
+    protocol_closed_tokens = [
+        float(view.get("metadata", {}).get("protocol_closed_message_tokens"))
+        for view in context_views
+        if isinstance(
+            view.get("metadata", {}).get("protocol_closed_message_tokens"),
+            (int, float),
+        )
+    ]
+    failure_card_counts = [
+        int(view.get("metadata", {}).get("failure_card_count"))
+        for view in context_views
+        if isinstance(
+            view.get("metadata", {}).get("failure_card_count"),
+            (int, float),
+        )
+    ]
+    budget_infeasible_turns = sum(
+        bool(view.get("metadata", {}).get("budget_infeasible", False))
+        for view in context_views
+    )
+    raw_failure_messages_selected = sum(
+        int(view.get("metadata", {}).get("raw_failure_messages_selected") or 0)
+        for view in context_views
+    )
+    node_by_id = {
+        str(node.get("node_id")): node
+        for node in nodes
+        if isinstance(node, dict) and node.get("node_id")
+    }
+    edges = [edge for edge in (trace.get("edges") or []) if isinstance(edge, dict)]
+    negative_result_ids = {
+        node_id
+        for node_id, node in node_by_id.items()
+        if node.get("node_type") == "error"
+        or (node.get("metadata") or {}).get("semantic_outcome")
+        in {"negative", "policy_denied", "test_failed"}
+    }
+    results_by_call: dict[str, list[str]] = defaultdict(list)
+    for edge in edges:
+        if edge.get("edge_type") in {"failed_with", "produces"}:
+            results_by_call[str(edge.get("source"))].append(str(edge.get("target")))
+    repeated_failed_actions = 0
+    repeated_invalid_actions = 0
+    for edge in edges:
+        if edge.get("edge_type") != "retried_by":
+            continue
+        later_call_id = str(edge.get("target"))
+        later_failed = any(
+            result_id in negative_result_ids
+            for result_id in results_by_call.get(later_call_id, ())
+        )
+        if not later_failed:
+            continue
+        repeated_failed_actions += 1
+        if (edge.get("metadata") or {}).get("match_type") == "exact_signature":
+            repeated_invalid_actions += 1
+    recovery_steps = []
+    for edge in edges:
+        if edge.get("edge_type") != "resolved_by":
+            continue
+        source = node_by_id.get(str(edge.get("source")), {})
+        target = node_by_id.get(str(edge.get("target")), {})
+        if isinstance(source.get("step_id"), int) and isinstance(target.get("step_id"), int):
+            recovery_steps.append(max(1, int(target["step_id"]) - int(source["step_id"])))
     try:
         relative_path = path.relative_to(project_root).as_posix()
     except ValueError:
@@ -133,6 +205,22 @@ def _trace_record(path: Path, project_root: Path) -> dict[str, Any]:
         "mean_context_compression_ratio": _mean(
             context_compression_ratios
         ),
+        "total_graph_selected_representation_tokens": (
+            sum(graph_representation_tokens) if graph_representation_tokens else None
+        ),
+        "total_protocol_closed_message_tokens": (
+            sum(protocol_closed_tokens) if protocol_closed_tokens else None
+        ),
+        "failure_card_turns": sum(count > 0 for count in failure_card_counts),
+        "maximum_active_failure_cards": (
+            max(failure_card_counts) if failure_card_counts else None
+        ),
+        "budget_infeasible_turns": budget_infeasible_turns,
+        "raw_failure_messages_selected": raw_failure_messages_selected,
+        "repeated_failed_action_count": repeated_failed_actions,
+        "repeated_invalid_action_count": repeated_invalid_actions,
+        "resolved_failure_count": len(recovery_steps),
+        "mean_recovery_steps": _mean([float(value) for value in recovery_steps]),
         "_mtime_ns": path.stat().st_mtime_ns,
     }
 
@@ -212,6 +300,14 @@ def _condition_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
         int(row["agent_provider_generation_calls"])
         for row in provider_input_rows
     )
+    protocol_rows = [
+        row
+        for row in traces
+        if row.get("total_protocol_closed_message_tokens") is not None
+    ]
+    recovery_rows = [
+        row for row in traces if row.get("mean_recovery_steps") is not None
+    ]
     return {
         "sessions": len(rows),
         "evaluated_sessions": len(evaluated),
@@ -265,6 +361,38 @@ def _condition_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 for row in selected_context_rows
                 if row.get("mean_context_compression_ratio") is not None
             ]
+        ),
+        "mean_total_graph_selected_representation_tokens": _mean(
+            [
+                float(row["total_graph_selected_representation_tokens"])
+                for row in traces
+                if row.get("total_graph_selected_representation_tokens") is not None
+            ]
+        ),
+        "mean_total_protocol_closed_message_tokens": _mean(
+            [
+                float(row["total_protocol_closed_message_tokens"])
+                for row in protocol_rows
+            ]
+        ),
+        "mean_repeated_failed_action_count": _mean(
+            [float(row["repeated_failed_action_count"]) for row in traces]
+        ),
+        "mean_repeated_invalid_action_count": _mean(
+            [float(row["repeated_invalid_action_count"]) for row in traces]
+        ),
+        "mean_recovery_steps": _mean(
+            [float(row["mean_recovery_steps"]) for row in recovery_rows]
+        ),
+        "resolved_failure_sessions": len(recovery_rows),
+        "failure_card_sessions": sum(
+            int(row.get("failure_card_turns") or 0) > 0 for row in traces
+        ),
+        "budget_infeasible_sessions": sum(
+            int(row.get("budget_infeasible_turns") or 0) > 0 for row in traces
+        ),
+        "mean_raw_failure_messages_selected": _mean(
+            [float(row["raw_failure_messages_selected"]) for row in traces]
         ),
         "mean_agent_provider_input_tokens": _mean(
             [
@@ -595,6 +723,9 @@ def analyze_live_matrix(
         selected_context_token_deltas: list[float] = []
         agent_provider_input_token_deltas: list[float] = []
         agent_provider_input_per_call_deltas: list[float] = []
+        protocol_closed_token_deltas: list[float] = []
+        repeated_invalid_action_deltas: list[float] = []
+        recovery_step_deltas: list[float] = []
         for domain, task_id, trial in task_trial_keys:
             reference = by_manager_key.get(
                 (reference_manager, domain, task_id, trial)
@@ -640,6 +771,30 @@ def analyze_live_matrix(
                         - float(reference["agent_provider_input_tokens"])
                         / reference_calls
                     )
+            if (
+                reference.get("total_protocol_closed_message_tokens") is not None
+                and candidate.get("total_protocol_closed_message_tokens") is not None
+            ):
+                protocol_closed_token_deltas.append(
+                    float(candidate["total_protocol_closed_message_tokens"])
+                    - float(reference["total_protocol_closed_message_tokens"])
+                )
+            if (
+                reference.get("repeated_invalid_action_count") is not None
+                and candidate.get("repeated_invalid_action_count") is not None
+            ):
+                repeated_invalid_action_deltas.append(
+                    float(candidate["repeated_invalid_action_count"])
+                    - float(reference["repeated_invalid_action_count"])
+                )
+            if (
+                reference.get("mean_recovery_steps") is not None
+                and candidate.get("mean_recovery_steps") is not None
+            ):
+                recovery_step_deltas.append(
+                    float(candidate["mean_recovery_steps"])
+                    - float(reference["mean_recovery_steps"])
+                )
             if reference_success and comparator_success:
                 both_success += 1
             elif reference_success:
@@ -689,6 +844,28 @@ def analyze_live_matrix(
                     seed=bootstrap_seed,
                 )
             ),
+            "mean_total_protocol_closed_message_tokens_delta": _mean(
+                protocol_closed_token_deltas
+            ),
+            "protocol_closed_message_token_delta_bootstrap": _paired_bootstrap(
+                protocol_closed_token_deltas,
+                samples=bootstrap_samples,
+                seed=bootstrap_seed,
+            ),
+            "mean_repeated_invalid_action_count_delta": _mean(
+                repeated_invalid_action_deltas
+            ),
+            "repeated_invalid_action_delta_bootstrap": _paired_bootstrap(
+                repeated_invalid_action_deltas,
+                samples=bootstrap_samples,
+                seed=bootstrap_seed,
+            ),
+            "mean_recovery_steps_delta": _mean(recovery_step_deltas),
+            "recovery_step_delta_bootstrap": _paired_bootstrap(
+                recovery_step_deltas,
+                samples=bootstrap_samples,
+                seed=bootstrap_seed,
+            ),
         }
     holm_adjusted = _holm_adjust(
         {
@@ -719,6 +896,16 @@ def analyze_live_matrix(
             "pair_key": "domain + task_id + trial",
             "estimated_trajectory_tokens": "sum of all TraceGraph node token_count; this is not selected context size",
             "total_selected_context_tokens": "sum of ContextView selected_tokens over live agent turns",
+            "total_protocol_closed_message_tokens": (
+                "sum of raw provider-message tokens after tool-call/result closure; "
+                "compact context fragments are represented separately"
+            ),
+            "repeated_invalid_action_count": (
+                "exact-signature retried_by calls whose later result is also negative"
+            ),
+            "mean_recovery_steps": (
+                "mean positive step distance from negative evidence to its resolved_by target"
+            ),
             "agent_provider_input_tokens": (
                 "sum of upstream assistant-message prompt/input usage; this is "
                 "the actual agent-generation input telemetry when present"

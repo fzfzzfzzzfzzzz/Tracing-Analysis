@@ -43,7 +43,7 @@ class ExperimentTests(unittest.TestCase):
             ).run(graphs, root / "results")
             self.assertTrue(manifest["contains_synthetic_data"])
             self.assertEqual(manifest["graph_count"], 1)
-            self.assertEqual(len(manifest["manager_names"]), 12)
+            self.assertEqual(len(manifest["manager_names"]), 13)
             provenance = manifest["manager_provenance"]
             self.assertEqual(set(provenance), set(manifest["manager_names"]))
             self.assertTrue(provenance["full_ours"]["main_result_eligible"])
@@ -61,7 +61,7 @@ class ExperimentTests(unittest.TestCase):
                 .read_text(encoding="utf-8")
                 .splitlines()
             ]
-            self.assertEqual(len(rows), 12)
+            self.assertEqual(len(rows), 13)
             ours = next(row for row in rows if row["manager"] == "full_ours")
             self.assertEqual(ours["evidence_retention"], 1.0)
             self.assertEqual(ours["unresolved_failure_retention"], 1.0)

@@ -12,7 +12,13 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from tracegraph.matrix import build_matrix_plan, require_execution_budget
+from tracegraph.matrix import (
+    build_matrix_plan,
+    require_codex_provisional_p2,
+    require_execution_budget,
+    require_phase3_p2_construct_gate,
+    require_phase3_p4_go,
+)
 
 
 for _stream in (sys.stdout, sys.stderr):
@@ -62,6 +68,8 @@ def _powershell_command(project_root: Path, run: dict) -> list[str]:
     ]
     if run["normalize_user_stop"]:
         command.append("-NormalizeUserStop")
+    if run.get("evaluator_model"):
+        command.extend(["-EvaluatorModel", run["evaluator_model"]])
     return command
 
 
@@ -72,6 +80,9 @@ def main() -> None:
     parser.add_argument("--print-commands", action="store_true")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--max-estimated-cost-usd", type=float)
+    parser.add_argument("--phase3-gate-report", type=Path)
+    parser.add_argument("--p2-report", type=Path)
+    parser.add_argument("--provisional-p2-report", type=Path)
     args = parser.parse_args()
 
     config = json.loads(args.config.read_text(encoding="utf-8"))
@@ -105,6 +116,31 @@ def main() -> None:
     if os.name != "nt":
         raise RuntimeError("matrix execution is currently supported only on Windows")
     require_execution_budget(plan, args.max_estimated_cost_usd)
+    if bool(
+        (plan.get("gates") or {}).get(
+            "p2_human_construct_validation_required", False
+        )
+    ):
+        p2_report = (
+            json.loads(args.p2_report.read_text(encoding="utf-8"))
+            if args.p2_report
+            else None
+        )
+        require_phase3_p2_construct_gate(p2_report)
+    if bool((plan.get("gates") or {}).get("codex_provisional_p2_required", False)):
+        provisional_report = (
+            json.loads(args.provisional_p2_report.read_text(encoding="utf-8"))
+            if args.provisional_p2_report
+            else None
+        )
+        require_codex_provisional_p2(provisional_report)
+    if bool((plan.get("gates") or {}).get("requires_p4_go", False)):
+        gate_report = (
+            json.loads(args.phase3_gate_report.read_text(encoding="utf-8"))
+            if args.phase3_gate_report
+            else None
+        )
+        require_phase3_p4_go(gate_report)
 
     for index, command in enumerate(commands, start=1):
         print(f"[{index}/{len(commands)}] executing {plan['runs'][index - 1]['run_id']}")

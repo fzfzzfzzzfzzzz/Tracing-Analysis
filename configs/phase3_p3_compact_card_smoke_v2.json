@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "matrix_id": "p3_card_smoke_v2",
+  "description": "Short-path rerun of the phase-three live retain/remove/raw/card pipeline smoke.",
+  "agent_model": "zai/glm-4.7-flash",
+  "user_model": "zai/glm-4.7-flash",
+  "token_accounting": "content_estimate_v2",
+  "temperature": 0.0,
+  "base_seed": 4300,
+  "trials": 1,
+  "max_steps": 50,
+  "normalize_user_stop": true,
+  "timeout_seconds": 900,
+  "inter_run_delay_seconds": 20,
+  "estimated_cost_per_session_usd": 0.0001,
+  "domains": [
+    {"name": "retail", "task_ids": ["27"]}
+  ],
+  "conditions": [
+    {"manager": "full_trajectory", "budget": "none", "run_label": "full"},
+    {"manager": "ours_without_failure_retention", "budget": "4096", "run_label": "remove"},
+    {"manager": "raw_hard_failure_retention", "budget": "4096", "run_label": "raw"},
+    {"manager": "full_ours", "budget": "4096", "run_label": "card"}
+  ],
+  "gates": {
+    "purpose": "pipeline_smoke_only",
+    "required_p1_manifest": "outputs/phase3/p1_interventions_v2/manifest.json",
+    "p2_human_construct_validation": "not_run"
+  },
+  "interpretation_warning": "Pipeline smoke only. This v2 uses short run labels to avoid Windows debug-path overflow. P2 has not run, so the result cannot satisfy formal P3 or authorize P4."
+}

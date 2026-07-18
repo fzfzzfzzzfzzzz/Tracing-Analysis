@@ -19,7 +19,7 @@
 | 指标 | 定义 |
 | --- | --- |
 | Evidence retention | 被选中或被可恢复摘要覆盖的 critical/final evidence 比例 |
-| Unresolved failure retention | 未被 `resolves` 的 Error 在 active context 中的保留率 |
+| Unresolved failure retention | 未被 `resolves` 的 Error 是否由 active raw item 或可验证来源覆盖的 Failure Card 逻辑保留；不要求原始 tool result 每轮重放 |
 | Constraint retention | 当前有效 Constraint 的保留率 |
 | Evidence path preservation | 每个 final Decision 是否至少保留一条 `supports` 路径 |
 | Archive recoverability | 具备 raw reference 的工具节点中，可通过 SHA-256 校验恢复的比例 |

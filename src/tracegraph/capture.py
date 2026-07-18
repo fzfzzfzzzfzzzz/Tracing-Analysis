@@ -16,7 +16,11 @@ from .schema import (
     SemanticOutcome,
     ToolStatus,
 )
-from .semantics import infer_semantic_outcome, operation_key
+from .semantics import (
+    infer_semantic_outcome,
+    is_argument_completion_retry,
+    operation_key,
+)
 
 T = TypeVar("T")
 
@@ -75,6 +79,7 @@ class ToolExecutor:
         structural_key = operation_key(tool_name, arguments)
         calls = self.graph.find_nodes(node_types={NodeType.TOOL_CALL, NodeType.MCP_CALL})
         structural_match: tuple[str, str, float] | None = None
+        completion_match: tuple[str, str, float] | None = None
         for node in reversed(calls):
             if node.metadata.get("tool_name") != tool_name:
                 continue
@@ -84,7 +89,15 @@ class ToolExecutor:
                 return node.node_id, "exact_signature", 1.0
             if structural_match is None and node.metadata.get("operation_key") == structural_key:
                 structural_match = (node.node_id, "structural_operation", 0.8)
-        return structural_match
+            previous_arguments = (
+                node.content.get("arguments", {}) if isinstance(node.content, dict) else {}
+            )
+            if completion_match is None and is_argument_completion_retry(
+                previous_arguments,
+                arguments,
+            ):
+                completion_match = (node.node_id, "argument_completion", 0.9)
+        return structural_match or completion_match
 
     def _record_call(
         self,

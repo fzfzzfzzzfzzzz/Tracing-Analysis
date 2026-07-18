@@ -10,6 +10,7 @@ from tracegraph import (
     NodeType,
     RelevanceState,
     RetentionObligation,
+    RawHardFailureRetentionManager,
     StorageState,
     ToolStatus,
     TraceGraph,
@@ -119,7 +120,8 @@ class SemanticFailureTests(unittest.TestCase):
                 payload={"success": False, "message": "order not found"},
             )
 
-            full_view = GraphLifecycleManager().select(graph, budget=0)
+            full_view = GraphLifecycleManager().select(graph, budget=512)
+            raw_view = RawHardFailureRetentionManager().select(graph, budget=0)
             ablated_view = NoFailureRetentionManager().select(graph, budget=0)
 
             self.assertEqual(
@@ -130,7 +132,11 @@ class SemanticFailureTests(unittest.TestCase):
                 RetentionObligation.RETAIN_UNTIL_ACTION_COMPLETE,
                 result.lifecycle_profile.obligations,
             )
-            self.assertIn(result.node_id, {item.node_id for item in full_view.items})
+            card = next(item for item in full_view.items if "failure_card" in item.reason)
+            self.assertEqual(card.node_type, NodeType.SUMMARY)
+            self.assertIn(result.node_id, card.source_node_ids)
+            self.assertNotEqual(card.content, result.content)
+            self.assertIn(result.node_id, {item.node_id for item in raw_view.items})
             self.assertNotIn(result.node_id, {item.node_id for item in ablated_view.items})
 
     def test_changed_confirmation_argument_forms_forward_retry_resolution(self) -> None:
@@ -162,6 +168,46 @@ class SemanticFailureTests(unittest.TestCase):
                 first_result.lifecycle_profile.validity,
                 ValidityState.NEGATIVE_RESOLVED,
             )
+
+    def test_filling_missing_argument_resolves_failure_card_immediately(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            graph = TraceGraph()
+            executor = ToolExecutor(graph, ArchiveStore(directory))
+            first_call, first_result = executor.record_result(
+                tool_name="find_user_id_by_name_zip",
+                arguments={
+                    "first_name": "Isabella",
+                    "last_name": "Johansson",
+                    "zip": "",
+                },
+                step_id=1,
+                status=ToolStatus.FAILED,
+                payload={"error": "User not found"},
+            )
+            second_call, second_result = executor.record_result(
+                tool_name="find_user_id_by_name_zip",
+                arguments={
+                    "first_name": "Isabella",
+                    "last_name": "Johansson",
+                    "zip": "32286",
+                },
+                step_id=2,
+                status=ToolStatus.SUCCESS,
+                payload={"user_id": "isabella_johansson_2152"},
+            )
+            LifecycleEngine().apply(graph)
+
+            retry = graph.outgoing(first_call.node_id, EdgeType.RETRIED_BY)
+            resolution = graph.outgoing(first_result.node_id, EdgeType.RESOLVED_BY)
+            self.assertEqual([edge.target for edge in retry], [second_call.node_id])
+            self.assertEqual(retry[0].metadata["match_type"], "argument_completion")
+            self.assertEqual([edge.target for edge in resolution], [second_result.node_id])
+            self.assertEqual(
+                first_result.lifecycle_profile.validity,
+                ValidityState.NEGATIVE_RESOLVED,
+            )
+            view = GraphLifecycleManager().select(graph, budget=512)
+            self.assertEqual(view.metadata["failure_card_count"], 0)
 
     def test_failed_retry_supersedes_old_error_and_retains_only_latest(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

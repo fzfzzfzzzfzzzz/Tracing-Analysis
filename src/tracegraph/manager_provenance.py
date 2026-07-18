@@ -67,6 +67,20 @@ _MANAGER_PROVENANCE: dict[str, dict[str, Any]] = {
             "is verified, provider usage is recorded, and no fallback occurs."
         ),
     },
+    "acon_official_with_failure_cards": {
+        "implementation_kind": "external_official_adapter_plus_native_method",
+        "main_result_eligible": False,
+        "runtime_eligibility_required": True,
+        "reference": "phase3_p4_research_protocol",
+        "official_code": "https://github.com/microsoft/acon",
+        "source_snapshot_sha": "d63f9ae18959dc7215ff62899c94c5e8c56847ae",
+        "note": (
+            "P4 live-only combination: the hash-verified official ACON context "
+            "plan is held fixed and bounded native Failure Cards are added as "
+            "independent context fragments. Runtime ACON provenance and usage "
+            "requirements still apply."
+        ),
+    },
     "ours_without_graph_edges": {
         "implementation_kind": "native_ablation",
         "main_result_eligible": True,
@@ -83,7 +97,7 @@ _MANAGER_PROVENANCE: dict[str, dict[str, Any]] = {
         "implementation_kind": "native_ablation",
         "main_result_eligible": True,
         "reference": "research_protocol",
-        "note": "Unresolved-failure hard retention disabled.",
+        "note": "Failure Card retention disabled; raw traces remain archived.",
     },
     "ours_without_constraint_retention": {
         "implementation_kind": "native_ablation",
@@ -91,11 +105,23 @@ _MANAGER_PROVENANCE: dict[str, dict[str, Any]] = {
         "reference": "research_protocol",
         "note": "Constraint hard retention disabled.",
     },
+    "raw_hard_failure_retention": {
+        "implementation_kind": "native_phase2_baseline",
+        "main_result_eligible": True,
+        "reference": "phase2_research_protocol",
+        "note": (
+            "Frozen phase-two behavior: unresolved negative evidence, active records, "
+            "and audit-required calls can enter unbounded mandatory raw context."
+        ),
+    },
     "full_ours": {
         "implementation_kind": "native_method",
         "main_result_eligible": True,
-        "reference": "research_protocol",
-        "note": "Graph-constrained lifecycle context manager.",
+        "reference": "phase3_research_protocol",
+        "note": (
+            "Scoped compact failure-card manager with expiry rules, archive/context "
+            "separation, and a bounded negative-evidence budget."
+        ),
     },
 }
 

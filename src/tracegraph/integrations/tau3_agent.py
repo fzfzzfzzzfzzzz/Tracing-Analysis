@@ -25,13 +25,18 @@ from tau2.utils.llm_utils import generate
 from tracegraph.adapters import TauTraceImporter
 from tracegraph.archive import ArchiveStore
 from tracegraph.capture import TOKEN_ACCOUNTING_VERSION, estimate_tokens
-from tracegraph.context import ContextItem, ContextView, build_context_managers
+from tracegraph.context import (
+    ContextItem,
+    ContextView,
+    GraphLifecycleManager,
+    build_context_managers,
+)
 from tracegraph.integrations.acon import (
     AconContextPlan,
     canonical_message_json,
     load_official_acon_adapter,
 )
-from tracegraph.message_protocol import close_message_ordinals
+from tracegraph.message_protocol import project_context_items_to_messages
 from tracegraph.schema import NodeType
 
 
@@ -54,7 +59,10 @@ class TraceGraphTauAgent(LLMAgent):
             last_k=int(os.environ.get("TRACEGRAPH_LAST_K", "8"))
         )
         self.acon_adapter = None
-        if self.manager_name == "acon_official":
+        if self.manager_name in {
+            "acon_official",
+            "acon_official_with_failure_cards",
+        }:
             project_root = Path(__file__).resolve().parents[3]
             config_path = Path(
                 os.environ.get(
@@ -79,7 +87,8 @@ class TraceGraphTauAgent(LLMAgent):
         elif self.manager_name not in managers:
             raise ValueError(
                 f"unknown TRACEGRAPH_MANAGER={self.manager_name!r}; "
-                f"choices={sorted([*managers, 'acon_official'])}"
+                "choices="
+                f"{sorted([*managers, 'acon_official', 'acon_official_with_failure_cards'])}"
             )
         else:
             self.context_manager = managers[self.manager_name]
@@ -107,23 +116,12 @@ class TraceGraphTauAgent(LLMAgent):
         view: ContextView,
         graph,
     ) -> tuple[list[Message], list[str]]:
-        ordinals: set[int] = {len(state.messages)}
-        compressed_fragments: list[str] = []
-        for item in view.items:
-            node = graph.nodes.get(item.node_id)
-            ordinal = node.metadata.get("source_message_ordinal") if node else None
-            if item.node_type in {NodeType.SUMMARY, NodeType.ARCHIVE_HANDLE}:
-                compressed_fragments.append(
-                    json.dumps(item.content, ensure_ascii=False, default=str)
-                )
-            elif isinstance(ordinal, int):
-                ordinals.add(ordinal)
-            else:
-                compressed_fragments.append(
-                    json.dumps(item.content, ensure_ascii=False, default=str)
-                )
         dumped_messages = [self._dump_message(message) for message in state.messages]
-        ordinals = close_message_ordinals(dumped_messages, ordinals)
+        ordinals, compressed_fragments = project_context_items_to_messages(
+            dumped_messages,
+            view.items,
+            graph.nodes,
+        )
         selected = [
             message
             for ordinal, message in enumerate(state.messages, start=1)
@@ -134,6 +132,10 @@ class TraceGraphTauAgent(LLMAgent):
             str(dumped_messages[ordinal - 1].get("role") or "")
             for ordinal in sorted(ordinals)
         ]
+        view.metadata["graph_selected_representation_tokens"] = view.selected_tokens
+        view.metadata["protocol_closed_message_tokens"] = sum(
+            estimate_tokens(dumped_messages[ordinal - 1]) for ordinal in ordinals
+        )
         return selected, compressed_fragments
 
     def _acon_view(self, graph, plan: AconContextPlan, messages: list[Message]) -> ContextView:
@@ -185,7 +187,7 @@ class TraceGraphTauAgent(LLMAgent):
             }
         )
         return ContextView(
-            manager="acon_official",
+            manager=self.manager_name,
             items=items,
             original_tokens=original_tokens,
             budget=self.context_budget,
@@ -260,6 +262,68 @@ class TraceGraphTauAgent(LLMAgent):
             )
             context_messages.extend(selected_messages)
             view = self._acon_view(graph, acon_plan, state.messages)
+            if self.manager_name == "acon_official_with_failure_cards":
+                card_view = GraphLifecycleManager().select(
+                    graph,
+                    budget=self.context_budget,
+                )
+                card_items = [
+                    item
+                    for item in card_view.items
+                    if item.node_type == NodeType.SUMMARY
+                    and item.reason.startswith("failure_card")
+                ]
+                if card_items:
+                    context_messages.insert(
+                        len(state.system_messages) + 1,
+                        SystemMessage(
+                            role="system",
+                            content=(
+                                "<active_trace_context>\n"
+                                + "\n".join(
+                                    json.dumps(
+                                        item.content,
+                                        ensure_ascii=False,
+                                        default=str,
+                                    )
+                                    for item in card_items
+                                )
+                                + "\n</active_trace_context>"
+                            ),
+                        ),
+                    )
+                    view.items.extend(card_items)
+                    covered_by_cards = {
+                        node_id
+                        for item in card_items
+                        for node_id in item.source_node_ids
+                    }
+                    view.excluded_node_ids = [
+                        node_id
+                        for node_id in view.excluded_node_ids
+                        if node_id not in covered_by_cards
+                    ]
+                view.metadata.update(
+                    {
+                        "failure_card_overlay": True,
+                        "failure_card_budget_fraction": card_view.metadata.get(
+                            "failure_card_budget_fraction"
+                        ),
+                        "failure_card_budget": card_view.metadata.get(
+                            "failure_card_budget"
+                        ),
+                        "failure_card_count": len(card_items),
+                        "failure_card_tokens": sum(
+                            item.token_count for item in card_items
+                        ),
+                        "raw_failure_messages_selected_by_overlay": 0,
+                    }
+                )
+            view.metadata["graph_selected_representation_tokens"] = view.selected_tokens
+            view.metadata["protocol_closed_message_tokens"] = sum(
+                estimate_tokens(self._dump_message(message))
+                for message in selected_messages
+            )
         else:
             view = self.context_manager.select(graph, budget=self.context_budget)
             view.metadata["token_accounting"] = TOKEN_ACCOUNTING_VERSION
@@ -292,7 +356,7 @@ class TraceGraphTauAgent(LLMAgent):
             response.cost = agent_cost + compressor_cost
             raw_data = dict(response.raw_data or {})
             raw_data["tracegraph_context_management"] = {
-                "manager": "acon_official",
+                "manager": self.manager_name,
                 "agent_generation_cost_usd": agent_cost,
                 "compressor_cost_usd": compressor_cost,
                 "total_turn_cost_usd": response.cost,

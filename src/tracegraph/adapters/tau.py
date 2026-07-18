@@ -24,7 +24,11 @@ from ..schema import (
     SemanticOutcome,
     ToolStatus,
 )
-from ..semantics import infer_semantic_outcome, operation_key
+from ..semantics import (
+    infer_semantic_outcome,
+    is_argument_completion_retry,
+    operation_key,
+)
 
 
 def _as_dict(value: Any) -> dict[str, Any]:
@@ -362,6 +366,27 @@ class TauTraceImporter:
                     retry_match = failed_by_operation.get(structural_key)
                     match_type = "structural_operation"
                     confidence = 0.8
+                if retry_match is None:
+                    seen_failed_calls: set[str] = set()
+                    for prior_call_id, prior_result_id in reversed(
+                        list(failed_by_signature.values())
+                    ):
+                        if prior_call_id in seen_failed_calls:
+                            continue
+                        seen_failed_calls.add(prior_call_id)
+                        prior_call = graph.nodes[prior_call_id]
+                        if prior_call.metadata.get("tool_name") != tool_name:
+                            continue
+                        prior_arguments = (
+                            prior_call.content.get("arguments", {})
+                            if isinstance(prior_call.content, dict)
+                            else {}
+                        )
+                        if is_argument_completion_retry(prior_arguments, arguments):
+                            retry_match = (prior_call_id, prior_result_id)
+                            match_type = "argument_completion"
+                            confidence = 0.9
+                            break
                 if retry_match is not None:
                     graph.connect(
                         retry_match[0],

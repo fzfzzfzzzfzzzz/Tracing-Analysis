@@ -11,6 +11,7 @@ from .archive import ArchiveStore
 from .context import build_context_managers
 from .experiments import ExperimentConfig, ExperimentRunner, discover_graphs
 from .graph import TraceGraph
+from .interventions import InterventionConfig, run_p1_interventions
 from .synthetic import build_synthetic_trace
 
 
@@ -49,6 +50,15 @@ def build_parser() -> argparse.ArgumentParser:
     experiment.add_argument("--manager", action="append", default=[])
     experiment.add_argument("--no-online-replay", action="store_true")
     experiment.add_argument("--provenance", default="cli")
+
+    interventions = subparsers.add_parser(
+        "run-p1-interventions",
+        help="run the deterministic four-condition phase-three P1 matrix",
+    )
+    interventions.add_argument("--output", type=Path, required=True)
+    interventions.add_argument("--tasks-per-kind", type=int, default=8)
+    interventions.add_argument("--base-seed", type=int, default=4100)
+    interventions.add_argument("--budget", type=int, default=512)
     return parser
 
 
@@ -93,6 +103,17 @@ def main(argv: list[str] | None = None) -> int:
             archive=archive_store,
         )
         manifest = runner.run(discover_graphs(args.input), args.output)
+        print(json.dumps(manifest, ensure_ascii=False, indent=2))
+        return 0
+    if args.command == "run-p1-interventions":
+        manifest = run_p1_interventions(
+            args.output,
+            config=InterventionConfig(
+                tasks_per_kind=args.tasks_per_kind,
+                base_seed=args.base_seed,
+                budget=args.budget,
+            ),
+        )
         print(json.dumps(manifest, ensure_ascii=False, indent=2))
         return 0
     return 2

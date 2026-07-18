@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "matrix_id": "p4_acon_card_smoke_v1",
+  "description": "P4 strongest-compressor smoke comparing official ACON alone with the same ACON plan plus bounded Failure Cards.",
+  "agent_model": "zai/glm-4.7-flash",
+  "user_model": "zai/glm-4.7-flash",
+  "token_accounting": "content_estimate_v2",
+  "temperature": 0.0,
+  "base_seed": 4400,
+  "trials": 1,
+  "max_steps": 50,
+  "normalize_user_stop": true,
+  "timeout_seconds": 900,
+  "inter_run_delay_seconds": 20,
+  "estimated_cost_per_session_usd": 0.0002,
+  "domains": [
+    {
+      "name": "retail",
+      "task_ids": ["27"]
+    }
+  ],
+  "conditions": [
+    {"manager": "acon_official", "budget": "4096", "run_label": "acon"},
+    {"manager": "acon_official_with_failure_cards", "budget": "4096", "run_label": "acon_card"}
+  ],
+  "gates": {
+    "phase": "P4",
+    "requires_p4_go": true,
+    "required_gate_report": "outputs/phase3/gates/phase3_gate_report.json"
+  },
+  "interpretation_warning": "Do not execute before phase3_gate_report.json has p4.go_gate_passed=true. Both conditions must have verified ACON provenance, complete compressor usage, and zero fallback."
+}

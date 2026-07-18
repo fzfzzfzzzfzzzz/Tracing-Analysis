@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "matrix_id": "p3_card_smoke_v1",
+  "description": "Phase-three live smoke for retain/remove/raw/card conditions after failure-card P0/P1.",
+  "agent_model": "zai/glm-4.7-flash",
+  "user_model": "zai/glm-4.7-flash",
+  "token_accounting": "content_estimate_v2",
+  "temperature": 0.0,
+  "base_seed": 4300,
+  "trials": 1,
+  "max_steps": 50,
+  "normalize_user_stop": true,
+  "timeout_seconds": 900,
+  "inter_run_delay_seconds": 20,
+  "estimated_cost_per_session_usd": 0.0001,
+  "domains": [
+    {
+      "name": "retail",
+      "task_ids": ["27"]
+    }
+  ],
+  "conditions": [
+    {"manager": "full_trajectory", "budget": "none"},
+    {"manager": "ours_without_failure_retention", "budget": "4096"},
+    {"manager": "raw_hard_failure_retention", "budget": "4096"},
+    {"manager": "full_ours", "budget": "4096"}
+  ],
+  "gates": {
+    "purpose": "pipeline_smoke_only",
+    "required_p1_manifest": "outputs/phase3/p1_interventions_v1/manifest.json",
+    "p2_human_construct_validation": "not_run"
+  },
+  "interpretation_warning": "Pipeline smoke only. P2 human construct validation has not run, so this cannot satisfy the formal P3 gate or authorize P4 expansion."
+}

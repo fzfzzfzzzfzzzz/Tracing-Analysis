@@ -7,9 +7,10 @@
 | session 内在线增量建图 | `ToolExecutor`, `ContextManagedAgent` | runtime tests |
 | retries/resolves/supersedes/compresses | `capture.py`, `adapters/tau.py`, `lifecycle.py` | adapter/lifecycle/runtime tests |
 | 完整生命周期 | `LifecycleState`, `LifecycleEngine` | lifecycle tests |
-| 未解决错误不可删除 | `safety_decision()` | hard-constraint test |
-| 唯一 evidence 不可删除 | `safety_decision()` | hard-constraint test |
-| side effect 外部保存 | `ArchiveStore`, Audit-required | side-effect test |
+| 未解决错误逻辑保留且原文可恢复 | `failure_cards.py`, `ArchiveStore` | scoped card、expiry、archive separation tests |
+| 未解决错误不自动原文回注 | `GraphLifecycleManager`, `project_context_items_to_messages()` | card budget 与 protocol projection tests |
+| 唯一不可恢复 evidence 硬保护；可恢复 evidence 预算内优先 | `GraphLifecycleManager` | lifecycle context / synthetic experiment tests |
+| side effect 外部保存但不自动进入 active context | `ArchiveStore`, Audit-required | archive separation tests |
 | summary + raw_ref 可恢复 | `compress_nodes()` | archive/compression test |
 | active context view | `context.py` | context tests |
 | Full trajectory agent | `runtime.py` + `FullTrajectoryManager` | runtime tests |
@@ -24,7 +25,12 @@
 | 正式矩阵与成本门控 | `matrix.py`, `plan_glm_matrix.py`, frozen JSON config | 10 runs / 30 sessions dry-run；secret/cost/duplicate validation tests |
 | Stage 1 聚合与 gate | `stage1.py`, `analyze_glm_stage1.py` | 30/30 sessions/traces；官方 reward/action/termination；完整性硬门槛 |
 | Paired live 聚合 | `paired.py`, `analyze_live_matrix.py` | manager/分域指标、Pass^1–Pass^k、task+trial 配对、exact McNemar、Holm 校正、bootstrap、selected-context token 差 |
-| 压缩消息协议闭包 | `message_protocol.py`, `tau3_agent.py` | tool call/result 闭包、最近 user anchor、在线 Last-k 故障条件复验 |
+| 压缩消息协议闭包 | `message_protocol.py`, `tau3_agent.py` | tool call/result 闭包、最近 user anchor、Failure Card 不恢复历史工具交换 |
+| 第三阶段 Failure Card P0 | `failure_cards.py`, `FailureCard`, `GraphLifecycleManager`, `RawHardFailureRetentionManager` | scope 聚合、分类、expiry、card budget、legacy 对照 tests |
+| 第三阶段 P1 机制干预 | `interventions.py`, `run-p1-interventions` | 4 类 × 8 tasks × 4 conditions；128/128 图有效；controlled precision/expiry = 1.0 |
+| 第三阶段 P2 failure-chain 双标 | `failure_chain_annotation.py`, export/score scripts | 32 controlled + 28 natural；Codex 临时 A/B、provenance/identity/warning、裁决和评分完成；formal gate 拒绝非人工 provenance |
+| 第三阶段 P3/P4 gate | `phase3_gates.py`, `evaluate_phase3_gates.py`, matrix execution guard | 24-session evaluator-fix 平衡补跑与 60-session 修复后复合分析完成；P3 数据完整但 formal gate 不通过；P4 No-Go 时 API 前拒绝 |
+| ACON + Failure Card | `acon_official_with_failure_cards`, `tau3_agent.py` | 官方 ACON plan + bounded native card overlay；runtime eligibility required；最新 P4 gate 为 No-Go |
 | 真实预算选择 | `budget_sweep.py`, `run_budget_sweep.py` | `content_estimate_v2` 的 30 图 2048/4096/8192/12288/16384 sweep；推荐 4096 |
 | 人工双标工具 | `annotation.py`, export/score scripts | 盲化双表、隔离 key、Cohen's κ、裁决表 tests |
 | 生命周期分歧诊断 | `lifecycle_diagnostics.py`, `analyze_lifecycle_disagreements.py` | 修正版 30 个 lifecycle/no-lifecycle 配对、11 个 raw 成功分歧、4 个失败信号配对、12 条优先 trace；修复前 120 条定向盲标包仅用于错误分析 |
@@ -34,10 +40,10 @@
 
 ## 尚需真实外部资源的事项
 
-1. 为生命周期 gold labels 安排两位独立人工标注者并完成裁决；基于本轮 Stage 1 图生成的 120 条 blind pilot 包已准备。
-2. 用人工 gold 计算机器生命周期标签的混淆矩阵，并优先检查 retail 上 Full Ours 与 no-lifecycle 的分歧。
-3. 已根据官方历史轨迹选出 failure-rich 任务；corrected 90-session failure-retention 矩阵正在执行，完成后需确认 GLM 是否真实复现 Error/retry/resolve。
-4. 将任务扩到每域 10–20 个，并将 proxy baseline 替换成论文/官方强实现后再形成论文主表。
+1. 当前 P4 已判 No-Go，不需要为继续当前扩展而临时找人工；若投稿或重新主张构念有效性，再安排两位独立人工从无 Codex 标签泄漏的干净副本开始标注。
+2. 若开启新一轮方法实验，先针对 Codex 临时结果暴露的 expiry precision `0.744` 和 scope error `0.400` 收缩规则，再重新预注册任务与门槛。
+3. 当前 60-session 修复后复合数据集可用于负结果和 measurement 分析，但不得写成一次连续运行或正式 human-validated P3 成功。
+4. 只有新证据令 P4 gate 转为 Go 后，才运行 ACON+card、第二模型家族和第二环境；不得绕过现有 No-Go。
 
 官方 τ³ 所需 `uv`、CPython 3.12 和隔离环境已经安装并通过 `tau2 check-data`、TraceGraph editable import、`tracegraph_agent`/`tracegraph_user_simulator` registry 注册及上游 CLI 入口验证。GLM mock live task 已通过；两次 retail 真实 pilot 和三图离线结构分析已执行并按失败边界记录。
 

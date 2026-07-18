@@ -15,12 +15,16 @@ param(
         "ours_without_lifecycle_states",
         "ours_without_failure_retention",
         "ours_without_constraint_retention",
+        "raw_hard_failure_retention",
+        "acon_official",
+        "acon_official_with_failure_cards",
         "full_ours"
     )]
     [string]$Manager = "full_trajectory",
     [string]$Budget = "none",
     [string]$AgentModel = "",
     [string]$UserModel = "",
+    [string]$EvaluatorModel = "",
     [int]$AgentMaxTokens = 512,
     [int]$UserMaxTokens = 256,
     [int]$NumTrials = 1,
@@ -73,6 +77,9 @@ if ([string]::IsNullOrWhiteSpace($UserModel)) {
 }
 if ([string]::IsNullOrWhiteSpace($AgentModel) -or [string]::IsNullOrWhiteSpace($UserModel)) {
     throw "Set AgentModel/UserModel or TRACEGRAPH_AGENT_MODEL/TRACEGRAPH_USER_MODEL."
+}
+if (-not [string]::IsNullOrWhiteSpace($EvaluatorModel)) {
+    $env:TRACEGRAPH_TAU_NL_EVALUATOR_MODEL = $EvaluatorModel
 }
 if ([string]::IsNullOrWhiteSpace($TaskSetName)) {
     $TaskSetName = $Domain
@@ -150,6 +157,7 @@ $runConfig = [pscustomobject]@{
     budget = $Budget
     agent_model = $AgentModel
     user_model = $UserModel
+    evaluator_model = $EvaluatorModel
     user_implementation = $userImplementation
     seed = $Seed
     trials = $NumTrials
