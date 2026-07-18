@@ -13,7 +13,7 @@ python -m compileall -q src tests scripts
 
 覆盖归档 hash、类型边、图持久化、失败/重试/side effect、生命周期硬约束、可恢复压缩、全部 manager、消融开关、指标、固定 agent loop、τ 当前/旧格式、完整实验输出和无未来前缀图。
 
-本次最终复验结果：59/59 tests 通过，`compileall` 通过，CLI smoke 生成的图与 archive 校验均通过；本次新增/修改 Python 文件通过 Ruff 检查。
+当前复验结果：69/69 tests 通过，`compileall` 通过，全仓 `src/`、`scripts/`、`tests/` Ruff 检查通过；CLI smoke 生成的图与 archive 校验均通过。
 
 ## 当前官方 τ³ 环境验证
 
@@ -54,11 +54,18 @@ python -m compileall -q src tests scripts
 - 第二次 `retail/0`：正常 `user_stop`，4/4 read actions，但错误键盘 variant 导致 write 0/1、DB 0、官方 reward 0；
 - 三图 2048-token 离线 suite：12 个 manager、生命周期、Oracle、前缀回放与 manifest 全部生成，archive 校验通过。
 - `glm-4.7-flash` Stage 1：30/30 sessions、16/30 success、normal stop 0.90、0 infrastructure error、实际成本 `$0.00`；
-- 新 30 图机器生命周期、Oracle、12-manager offline、4096/8192/16384 sweep 均完成，推荐预算 16384；
+- 30 条 Stage 1 图已从错误的 prompt-usage 节点计量修复为 `content_estimate_v2`；1,931,320 旧计量 tokens 重算为 155,205 内容估算 tokens，0 validation error；
+- 修正后 Stage 1 中位内容轨迹为 4,875，仍通过 ≥4096 gate；真实累计 agent prompt usage 中位数为 57,485；
+- 新 30 图机器生命周期、Oracle、12-manager offline 与 2048/4096/8192/12288/16384 sweep 均完成，修正版推荐预算 4096；
 - 2-task × 4-condition paired smoke：8/8 sessions/traces、8/8 正常停止、0 infra、所有 archive hash 有效；
 - 10-task × 4-condition preliminary paired pilot：40/40 sessions/traces、40/40 archives、490 archive objects 全部验证通过；
 - preliminary pilot 精确 `infrastructure_error` 为 0；Full Trajectory 的 2 个 wall-clock timeout 被分析器按基础设施型中止排除；
+- 旧 10 tasks × 4 conditions × 3 trials paired matrix 的 120/120 raw sessions/traces 仍保留，但压缩条件受旧 token 口径影响，已降级为修复前诊断；
+- `content_estimate_v2` corrected paired smoke：8/8 sessions/traces/archives、62 archive objects、0 graph/archive/API/参数/基础设施错误；四条件均成功 1/2；
+- `content_estimate_v2` corrected lifecycle matrix：40/40 runs、120/120 sessions/traces、1,768 archive objects、0 graph/archive-reference/API/参数错误；termination 为 107 `user_stop`、11 `max_steps`、2 wall-clock `timeout`；
+- corrected lifecycle matrix 的 Full Trajectory/Last-k/No-lifecycle/Full Ours raw success 分别为 13/30、13/30、14/30、17/30；Full Ours 对 Full Trajectory 的 28 个有效配对成功率差为 +0.1429，95% CI 跨 0；
 - 压缩消息协议闭包在真实 `retail/0 + last_k` 故障条件上复验通过，不再产生非法 ToolMessage 序列。
+- corrected failure-retention matrix `g47f_fr_c2` 完成 30/30 runs、90/90 sessions/traces；90/90 TraceGraph validation 通过，1,460 个 archive objects hash 全部有效，missing raw refs、graph errors、zero-token traces、malformed sessions 均为 0。Full Trajectory / Ours without failure retention / Full Ours raw success 分别为 10/30、4/30、7/30；Full Ours 相对 no-failure 的 25 个有效配对 success delta 为 +0.0800，95% CI [0.0000, 0.2000]，McNemar p=0.5000。全矩阵只有 2 条真实 `retries` 边、0 条 `resolves` 边，因此 H4 在当前 τ³ + GLM-4.7-Flash 组合下仍不可识别。
 
 retail 结果不重解释为成功，也不作为 context manager 主结果。详细成本、诊断与结构 pilot 见 `docs/GLM_PILOT.md`。
 
@@ -80,14 +87,17 @@ retail 结果不重解释为成功，也不作为 context manager 主结果。�
 - 新 30 个 enrichment 后的 TraceGraph 均通过 `validate-trace`；
 - 合并的 440 个 archive objects 全部通过 hash 校验；
 - gate 聚合器读取官方 reward、termination、action checks、DB/NL/communication checks 与真实 TraceGraph token；
-- `glm-4.7-flash` Stage 1 判定 `pass`：success 0.5333、normal stop 0.90、median tool calls 7、median tokens 41,282.5、infra 0；
-- 新 4096/8192/16384 结构 sweep 推荐 16384，并同时检查 Oracle 与 Full Ours 实际溢出率；
+- `glm-4.7-flash` Stage 1 判定 `pass`：success 0.5333、normal stop 0.90、median tool calls 7、修正后 median content tokens 4,875、infra 0；
+- 修正版 2048/4096/8192/12288/16384 结构 sweep 推荐 4096，并同时检查 mandatory context、Full Ours 溢出、Constraint/Failure/Evidence retention 与 unsafe removal；
 - 12 managers × 30 graphs 离线结构实验及 8,868 条 prefix replay rows 生成成功；
-- paired live 聚合器输出 manager 指标、task+trial 配对、exact McNemar、bootstrap CI 和 selected-context token 配对差；
+- paired live 聚合器输出 manager/分域指标、Pass^1–Pass^k、task+trial 配对、exact McNemar、Holm 校正、bootstrap CI 和 selected-context token 配对差；
 - 8-session paired smoke 完整，Full Trajectory/Last-k/No-lifecycle/Full Ours 分别成功 2/2、2/2、1/2、1/2；只作为 pipeline smoke；
 - 40-session preliminary pilot 完整，四条件原始成功分别为 4/10、6/10、4/10、5/10；Full Ours 对 Full Trajectory 的 8 个有效配对成功率差为 0，selected-context token 配对均值差为 -27,146.4；
 - Full Ours 对 no-lifecycle 的 10 个直接配对成功率差为 +0.10、McNemar `p=1.0`，当前只作为机器生命周期标签的待验证信号；
-- 双标导出生成 120 条盲化样本，两份表独立顺序且不含机器预测；评分器验证 ID/标签并计算 Cohen's κ。
+- 旧 120-session 三轮矩阵的成功数仍可作为修复前运行记录，但其 manager 效果比较已撤回；替代的 `g47f_ml_c2` 已用 4096 和 runtime token-accounting guard 完整执行；
+- `g47f_ml_c2` 的 Full Ours 对 Full Trajectory 配对结果为 28 eligible / 2 timeout-excluded、success delta +0.1429、95% CI [-0.0714, 0.3571]、McNemar p=0.3438；estimated selected-context delta 的区间低于 0，但 actual provider input delta 区间跨 0；
+- corrected smoke 同时验证估算 context tokens、累计 agent provider input tokens 与每次调用 provider input tokens；Last-k 在两个任务上每次调用平均少约 1,356 prompt tokens，但累计差受调用次数影响；
+- 双标导出从 `g47f_s1_v1` 的 30 个真实图生成 120 条盲化样本，两份 CSV 各 120 条、独立顺序且不含机器预测；预测只保存在隔离 key 中，评分器验证 ID/标签并计算 Cohen's κ。
 
 ## 官方公开历史轨迹兼容验证
 

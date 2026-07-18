@@ -1,6 +1,10 @@
 # GLM Stage 1 正式结果（2026-07-16）
 
 > 本页记录 `zai/glm-4.5-air` 的历史 Stage 1。随后免费 `zai/glm-4.7-flash` 已用同一 gate 重跑并通过；最新结果见 [GLM-4.7-Flash 机器生命周期标签实验结果](GLM47_FLASH_RESULTS.md)。
+>
+> 本页旧预算 sweep 使用了后来确认有误的 prompt-usage 节点计量；其中
+> 16,384 推荐值已撤回，不得用于新实验。当前统一口径与 4,096 推荐预算见
+> [Token 计量修正](TOKEN_ACCOUNTING.md)。
 
 ## 决策
 

@@ -1,6 +1,6 @@
 {
-  "matrix_id": "g47f_ml_3t1",
-  "description": "DEPRECATED pre-correction three-trial matrix retained only as a historical configuration record.",
+  "matrix_id": "g47f_ml_c2",
+  "description": "Corrected three-trial paired live matrix using content-only context-budget accounting.",
   "agent_model": "zai/glm-4.7-flash",
   "user_model": "zai/glm-4.7-flash",
   "token_accounting": "content_estimate_v2",
@@ -28,16 +28,16 @@
     },
     {
       "manager": "last_k",
-      "budget": "16384"
+      "budget": "4096"
     },
     {
       "manager": "ours_without_lifecycle_states",
-      "budget": "16384"
+      "budget": "4096"
     },
     {
       "manager": "full_ours",
-      "budget": "16384"
+      "budget": "4096"
     }
   ],
-  "interpretation_warning": "DEPRECATED: the original g47f_ml_3t1 run used prompt-inflated node sizes. Do not reuse this matrix ID or its 16384 budget for new evidence. Use configs/glm47_flash_machine_lifecycle_paired_3trial_v2.json."
+  "interpretation_warning": "This corrected matrix replaces g47f_ml_3t1 for inferential use. Graph node sizes and context budgets use deterministic content-only estimates; provider prompt/output usage is reported separately. Lifecycle states remain machine-inferred pseudo labels until independent human annotation is complete."
 }

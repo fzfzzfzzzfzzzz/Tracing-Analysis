@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from ..archive import ArchiveStore
-from ..capture import estimate_tokens
+from ..capture import TOKEN_ACCOUNTING_VERSION, estimate_tokens
 from ..graph import TraceGraph
 from ..lifecycle import LifecycleEngine
 from ..schema import EdgeType, LifecycleState, Node, NodeType, ToolStatus
@@ -30,19 +30,6 @@ def _parse_content(value: Any) -> Any:
         return json.loads(value)
     except (json.JSONDecodeError, TypeError):
         return value
-
-
-def _usage_tokens(message: dict[str, Any]) -> int | None:
-    usage = _as_dict(message.get("usage"))
-    for key in ("total_tokens", "total_token_count", "tokens"):
-        if isinstance(usage.get(key), (int, float)):
-            return int(usage[key])
-    inputs = usage.get("input_tokens", usage.get("prompt_tokens", 0))
-    outputs = usage.get("output_tokens", usage.get("completion_tokens", 0))
-    if isinstance(inputs, (int, float)) and isinstance(outputs, (int, float)):
-        total = int(inputs + outputs)
-        return total or None
-    return None
 
 
 class TauTraceImporter:
@@ -193,6 +180,7 @@ class TauTraceImporter:
             session_id=f"tau_{simulation_id}",
             metadata={
                 "source": "tau_bench_json",
+                "token_accounting": TOKEN_ACCOUNTING_VERSION,
                 "simulation_id": simulation_id,
                 "task_id": simulation.get("task_id"),
                 "trial": simulation.get("trial"),
@@ -274,6 +262,7 @@ class TauTraceImporter:
                         metadata={
                             "source": "user_message",
                             "source_message_ordinal": ordinal,
+                            "provider_usage": _as_dict(message.get("usage")),
                         },
                     )
                 # Current τ³ also permits user-side tools. They are captured below.
@@ -284,11 +273,12 @@ class TauTraceImporter:
                     content,
                     step_id,
                     lifecycle=LifecycleState.ACTIVE,
-                    token_count=_usage_tokens(message) or estimate_tokens(content),
+                    token_count=estimate_tokens(content),
                     metadata={
                         "source": "assistant_message",
                         "source_message_ordinal": ordinal,
                         "final": False,
+                        "provider_usage": _as_dict(message.get("usage")),
                     },
                 )
                 decisions.append(decision)

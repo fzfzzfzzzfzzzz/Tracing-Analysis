@@ -1,6 +1,7 @@
 import copy
 import unittest
 
+from tracegraph.capture import TOKEN_ACCOUNTING_VERSION
 from tracegraph.matrix import build_matrix_plan, require_execution_budget
 
 
@@ -36,6 +37,13 @@ class MatrixPlanTests(unittest.TestCase):
         self.assertEqual(plan["inter_run_delay_seconds"], 2.5)
         self.assertEqual(
             plan["paired_invariants"]["inter_run_delay_seconds"], 2.5
+        )
+        self.assertEqual(plan["token_accounting"], TOKEN_ACCOUNTING_VERSION)
+        self.assertTrue(
+            all(
+                run["token_accounting"] == TOKEN_ACCOUNTING_VERSION
+                for run in plan["runs"]
+            )
         )
 
     def test_rejects_any_secret_like_config_key(self):
@@ -79,6 +87,12 @@ class MatrixPlanTests(unittest.TestCase):
         config = sample_config()
         config["inter_run_delay_seconds"] = -1
         with self.assertRaisesRegex(ValueError, "inter_run_delay_seconds"):
+            build_matrix_plan(config)
+
+    def test_rejects_stale_token_accounting(self):
+        config = sample_config()
+        config["token_accounting"] = "prompt_usage_v1"
+        with self.assertRaisesRegex(ValueError, "token_accounting"):
             build_matrix_plan(config)
 
 

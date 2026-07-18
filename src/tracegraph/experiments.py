@@ -15,9 +15,9 @@ from .archive import ArchiveStore
 from .context import ContextItem, ContextManager, ContextView, build_context_managers
 from .graph import TraceGraph
 from .lifecycle import LifecycleEngine
-from .metrics import EvaluationMetrics, evaluate_view
+from .metrics import evaluate_view
 from .manager_provenance import manager_provenance
-from .schema import Edge, LifecycleState, Node, NodeType, utc_now
+from .schema import Edge, Node, utc_now
 
 
 @dataclass(slots=True)

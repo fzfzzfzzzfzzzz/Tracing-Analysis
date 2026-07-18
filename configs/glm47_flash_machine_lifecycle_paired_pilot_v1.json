@@ -1,8 +1,9 @@
 {
   "matrix_id": "g47f_ml_p2",
-  "description": "Rate-limit-aware preliminary paired live pilot for machine-inferred lifecycle pseudo labels after GLM-4.7-Flash passed Stage 1 and compressed-message protocol closure was verified.",
+  "description": "DEPRECATED pre-correction single-trial pilot retained only as a historical configuration record.",
   "agent_model": "zai/glm-4.7-flash",
   "user_model": "zai/glm-4.7-flash",
+  "token_accounting": "content_estimate_v2",
   "normalize_user_stop": true,
   "base_seed": 300,
   "trials": 1,
@@ -38,5 +39,5 @@
       "budget": "16384"
     }
   ],
-  "interpretation_warning": "This is a one-trial preliminary paired pilot, not the final statistical matrix. Lifecycle states are machine-inferred pseudo labels, not human gold labels. Proxy conclusions must be verified after independent human annotation."
+  "interpretation_warning": "DEPRECATED: the original run used prompt-inflated node sizes. Do not reuse this matrix ID or its 16384 budget for new evidence. Use the content_estimate_v2 corrected configs."
 }

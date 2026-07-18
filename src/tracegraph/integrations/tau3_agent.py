@@ -24,7 +24,7 @@ from tau2.utils.llm_utils import generate
 
 from tracegraph.adapters import TauTraceImporter
 from tracegraph.archive import ArchiveStore
-from tracegraph.capture import estimate_tokens
+from tracegraph.capture import TOKEN_ACCOUNTING_VERSION, estimate_tokens
 from tracegraph.context import ContextItem, ContextView, build_context_managers
 from tracegraph.integrations.acon import (
     AconContextPlan,
@@ -41,6 +41,15 @@ class TraceGraphTauAgent(LLMAgent):
     def __init__(self, tools, domain_policy, llm, llm_args=None):
         super().__init__(tools=tools, domain_policy=domain_policy, llm=llm, llm_args=llm_args)
         self.manager_name = os.environ.get("TRACEGRAPH_MANAGER", "full_ours")
+        expected_token_accounting = os.environ.get("TRACEGRAPH_TOKEN_ACCOUNTING")
+        if (
+            expected_token_accounting
+            and expected_token_accounting != TOKEN_ACCOUNTING_VERSION
+        ):
+            raise ValueError(
+                "TRACEGRAPH_TOKEN_ACCOUNTING does not match runtime: "
+                f"{expected_token_accounting!r} != {TOKEN_ACCOUNTING_VERSION!r}"
+            )
         managers = build_context_managers(
             last_k=int(os.environ.get("TRACEGRAPH_LAST_K", "8"))
         )
@@ -172,6 +181,7 @@ class TraceGraphTauAgent(LLMAgent):
                 "policy_compressed": False,
                 "task_compressed": False,
                 "budget_ignored": self.context_budget is not None,
+                "token_accounting": TOKEN_ACCOUNTING_VERSION,
             }
         )
         return ContextView(
@@ -221,6 +231,7 @@ class TraceGraphTauAgent(LLMAgent):
         }
         graph = self.importer.import_simulation(simulation, policy=self.domain_policy)
         graph.metadata["context_manager"] = self.manager_name
+        graph.metadata["token_accounting"] = TOKEN_ACCOUNTING_VERSION
         acon_plan = None
         if self.acon_adapter is not None:
             dumped_messages = [self._dump_message(item) for item in state.messages]
@@ -251,6 +262,7 @@ class TraceGraphTauAgent(LLMAgent):
             view = self._acon_view(graph, acon_plan, state.messages)
         else:
             view = self.context_manager.select(graph, budget=self.context_budget)
+            view.metadata["token_accounting"] = TOKEN_ACCOUNTING_VERSION
             selected_messages, fragments = self._select_messages(state, view, graph)
             context_messages = list(state.system_messages)
             if fragments:

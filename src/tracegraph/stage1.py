@@ -46,6 +46,27 @@ def _tool_call_count(simulation: dict[str, Any]) -> int:
     return count
 
 
+def _provider_usage_sum(
+    simulation: dict[str, Any],
+    *,
+    role: str,
+    keys: tuple[str, ...],
+) -> float | None:
+    values: list[float] = []
+    for message in simulation.get("messages") or []:
+        if not isinstance(message, dict) or message.get("role") != role:
+            continue
+        usage = message.get("usage")
+        if not isinstance(usage, dict):
+            continue
+        for key in keys:
+            value = usage.get(key)
+            if isinstance(value, (int, float)):
+                values.append(float(value))
+                break
+    return sum(values) if values else None
+
+
 def _reward_diagnostics(simulation: dict[str, Any]) -> dict[str, Any]:
     reward_info = simulation.get("reward_info")
     if not isinstance(reward_info, dict):
@@ -125,6 +146,7 @@ def _trace_record(path: Path, project_root: Path) -> dict[str, Any]:
     return {
         "trace_file": relative_path,
         "trace_session_id": trace.get("session_id"),
+        "token_accounting": metadata.get("token_accounting"),
         "estimated_trajectory_tokens": token_count,
         "trace_node_count": len(nodes),
         "trace_edge_count": len(trace.get("edges") or []),
@@ -170,6 +192,11 @@ def _group_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
     traces = [
         row for row in rows if row.get("estimated_trajectory_tokens") is not None
     ]
+    provider_input_rows = [
+        row
+        for row in evaluated
+        if row.get("agent_provider_input_tokens") is not None
+    ]
     return {
         "sessions": len(rows),
         "evaluated_sessions": len(evaluated),
@@ -183,6 +210,12 @@ def _group_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "median_tool_calls": _median([row["tool_calls"] for row in evaluated]),
         "median_estimated_trajectory_tokens": _median(
             [row["estimated_trajectory_tokens"] for row in traces]
+        ),
+        "median_agent_provider_input_tokens": _median(
+            [
+                row["agent_provider_input_tokens"]
+                for row in provider_input_rows
+            ]
         ),
         "total_actual_cost_usd": round(
             sum(row["total_cost_usd"] for row in rows), 8
@@ -264,6 +297,20 @@ def analyze_stage1_plan(
                 "infrastructure_error": termination == _INFRASTRUCTURE_TERMINATION,
                 "tool_calls": _tool_call_count(simulation),
                 "message_count": len(simulation.get("messages") or []),
+                "agent_provider_input_tokens": _provider_usage_sum(
+                    simulation,
+                    role="assistant",
+                    keys=("prompt_tokens", "input_tokens", "input_token_count"),
+                ),
+                "agent_provider_output_tokens": _provider_usage_sum(
+                    simulation,
+                    role="assistant",
+                    keys=(
+                        "completion_tokens",
+                        "output_tokens",
+                        "output_token_count",
+                    ),
+                ),
                 "duration_seconds": simulation.get("duration"),
                 "agent_cost_usd": float(simulation.get("agent_cost") or 0.0),
                 "user_cost_usd": float(simulation.get("user_cost") or 0.0),
@@ -326,6 +373,13 @@ def analyze_stage1_plan(
         "median_tool_calls": _median([row["tool_calls"] for row in evaluated_rows]),
         "median_estimated_trajectory_tokens": _median(
             [row["estimated_trajectory_tokens"] for row in trace_rows]
+        ),
+        "median_agent_provider_input_tokens": _median(
+            [
+                row["agent_provider_input_tokens"]
+                for row in evaluated_rows
+                if row.get("agent_provider_input_tokens") is not None
+            ]
         ),
         "infrastructure_error_rate": _rate(infrastructure_count, observed_sessions),
         "total_actual_cost_usd": round(
@@ -409,6 +463,14 @@ def analyze_stage1_plan(
             "normal_stop": "official termination is user_stop or agent_stop",
             "infrastructure_error": "official termination is infrastructure_error",
             "estimated_trajectory_tokens": "sum of TraceGraph node token_count",
+            "token_accounting": (
+                "content_estimate_v2 excludes provider prompt history from "
+                "individual graph-node sizes"
+            ),
+            "agent_provider_input_tokens": (
+                "sum of upstream assistant-message prompt/input usage; actual "
+                "agent-generation input telemetry when present"
+            ),
             "rate_denominator": "evaluated simulations exclude infrastructure_error",
             "trace_alignment": "single-concurrency trial order paired with trace completion order",
         },
@@ -423,6 +485,14 @@ def analyze_stage1_plan(
             "graph_validation_errors": graph_validation_error_count,
             "zero_token_traces": zero_token_trace_count,
             "malformed_sessions": len(malformed_sessions),
+            "token_accounting_versions": dict(
+                sorted(
+                    Counter(
+                        str(row.get("token_accounting") or "legacy_unspecified")
+                        for row in trace_rows
+                    ).items()
+                )
+            ),
         },
         "metrics": metrics,
         "termination_reasons": dict(

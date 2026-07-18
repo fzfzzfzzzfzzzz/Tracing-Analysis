@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from .capture import TOKEN_ACCOUNTING_VERSION
+
 KNOWN_DOMAINS = {
     "mock",
     "airline",
@@ -76,6 +78,14 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
     user_model = str(config.get("user_model", ""))
     if not agent_model or not user_model:
         raise ValueError("agent_model and user_model are required")
+    token_accounting = str(
+        config.get("token_accounting", TOKEN_ACCOUNTING_VERSION)
+    )
+    if token_accounting != TOKEN_ACCOUNTING_VERSION:
+        raise ValueError(
+            "matrix token_accounting must match the runtime implementation: "
+            f"{TOKEN_ACCOUNTING_VERSION}"
+        )
 
     domain_entries = config.get("domains")
     condition_entries = config.get("conditions")
@@ -136,6 +146,7 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
                         "base_seed": base_seed,
                         "max_steps": max_steps,
                         "timeout_seconds": timeout_seconds,
+                        "token_accounting": token_accounting,
                         "save_to": run_slug,
                         "trace_output_dir": f"outputs/tau3_live/{matrix_id}/{run_slug}",
                     }
@@ -149,12 +160,14 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
         "agent_model": agent_model,
         "user_model": user_model,
         "normalize_user_stop": normalize_user_stop,
+        "token_accounting": token_accounting,
         "paired_invariants": {
             "base_seed": base_seed,
             "trials": trials,
             "max_steps": max_steps,
             "timeout_seconds": timeout_seconds,
             "inter_run_delay_seconds": inter_run_delay_seconds,
+            "token_accounting": token_accounting,
             "task_ids_by_domain": {item["name"]: item["task_ids"] for item in domains},
         },
         "inter_run_delay_seconds": inter_run_delay_seconds,

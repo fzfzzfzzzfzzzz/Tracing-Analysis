@@ -4,7 +4,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from tracegraph.paired import analyze_live_matrix, write_live_matrix_report
+from tracegraph.paired import (
+    _holm_adjust,
+    analyze_live_matrix,
+    write_live_matrix_report,
+)
 
 
 def _plan() -> dict:
@@ -57,8 +61,15 @@ def _simulation(
 def _write_run(root: Path, run: dict, reward: float) -> None:
     result_dir = root / "results" / run["save_to"]
     result_dir.mkdir(parents=True)
+    simulation = _simulation(run["run_id"], reward)
+    simulation["messages"][0]["usage"] = {
+        "prompt_tokens": (
+            1000 if run["manager"] == "full_trajectory" else 400
+        ),
+        "completion_tokens": 50,
+    }
     (result_dir / "results.json").write_text(
-        json.dumps({"simulations": [_simulation(run["run_id"], reward)]}),
+        json.dumps({"simulations": [simulation]}),
         encoding="utf-8",
     )
     trace = root / run["trace_output_dir"] / run["run_id"] / "trace.json"
@@ -90,6 +101,24 @@ def _write_run(root: Path, run: dict, reward: float) -> None:
 
 
 class PairedMatrixTests(unittest.TestCase):
+    def test_holm_adjustment_is_step_down_and_preserves_missing_values(self):
+        self.assertEqual(
+            _holm_adjust(
+                {
+                    "small": 0.01,
+                    "middle": 0.04,
+                    "large": 0.5,
+                    "missing": None,
+                }
+            ),
+            {
+                "small": 0.03,
+                "middle": 0.08,
+                "large": 0.5,
+                "missing": None,
+            },
+        )
+
     def test_matches_multi_trial_traces_by_simulation_id(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -165,6 +194,15 @@ class PairedMatrixTests(unittest.TestCase):
                 for row in report["sessions"]
             }
             self.assertEqual(tokens_by_simulation, {"sim-a": 1111, "sim-b": 2222})
+            metrics = report["condition_metrics"]["full_trajectory"]
+            self.assertEqual(metrics["minimum_evaluated_trials_per_task"], 2)
+            self.assertEqual(metrics["pass_hat_ks"], {1: 0.5, 2: 0.0})
+            self.assertEqual(
+                report["domain_condition_metrics"]["full_trajectory"]["retail"][
+                    "pass_hat_ks"
+                ],
+                {1: 0.5, 2: 0.0},
+            )
 
     def test_reports_condition_metrics_and_paired_outcomes(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -204,8 +242,41 @@ class PairedMatrixTests(unittest.TestCase):
             self.assertEqual(comparison["comparator_only_success"], 1)
             self.assertEqual(comparison["success_rate_delta"], 0.5)
             self.assertEqual(comparison["exact_mcnemar_p"], 1.0)
+            self.assertEqual(comparison["holm_adjusted_mcnemar_p"], 1.0)
             self.assertEqual(
                 comparison["mean_total_selected_context_tokens_delta"], -3000.0
+            )
+            self.assertEqual(
+                report["condition_metrics"]["full_trajectory"][
+                    "mean_agent_provider_input_tokens"
+                ],
+                1000.0,
+            )
+            self.assertEqual(
+                report["condition_metrics"]["full_trajectory"][
+                    "agent_provider_input_usage_coverage"
+                ],
+                1.0,
+            )
+            self.assertEqual(
+                report["counts"]["missing_agent_provider_input_usage"],
+                0,
+            )
+            self.assertEqual(
+                comparison["mean_agent_provider_input_tokens_delta"],
+                -600.0,
+            )
+            self.assertEqual(
+                report["condition_metrics"]["full_trajectory"][
+                    "mean_agent_provider_input_tokens_per_call"
+                ],
+                1000.0,
+            )
+            self.assertEqual(
+                comparison[
+                    "mean_agent_provider_input_tokens_per_call_delta"
+                ],
+                -600.0,
             )
 
             output = root / "analysis"

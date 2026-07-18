@@ -52,6 +52,8 @@ def _powershell_command(project_root: Path, run: dict) -> list[str]:
         str(run["base_seed"]),
         "-TimeoutSeconds",
         str(run["timeout_seconds"]),
+        "-TokenAccounting",
+        run["token_accounting"],
         "-SaveTo",
         run["save_to"],
         "-TraceOutputDir",

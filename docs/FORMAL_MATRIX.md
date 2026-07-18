@@ -57,10 +57,10 @@ python scripts/plan_glm_matrix.py `
 
 ## 后续阶段
 
-1. Stage 1 通过后，从真实 mandatory-context 分布选择预算；当前 retail 图表明 2048 过低，应同时评估 4096、8192、16384，或先引入可验证 policy 摘要。
+1. Stage 1 通过后，从真实 mandatory-context 分布选择预算；`content_estimate_v2` sweep 已确认 2048 过低、4096 为最小结构可行预算。
 2. 固定一个预算后，运行 Full Trajectory、7 个 baseline、4 个 ablation 和 Full Ours；相同 task、trial、seed、模型与 user adapter，只替换 context manager。
-3. pilot 通过后再扩到每域 10–20 tasks，并执行 paired bootstrap、McNemar/permutation 与 Holm correction。
+3. 当前 10-task × 3-trial paired pilot 完成后，先基于人工 gold 改进生命周期标签和失败任务覆盖，再扩到每域 10–20 tasks，并执行 paired bootstrap、McNemar/permutation 与 Holm correction。
 
-`glm-4.7-flash` 重跑已完成 30/30 sessions，并以 success `0.5333`、normal stop `0.90`、infrastructure error `0` 通过全部 gate。新 30 图 sweep 仍推荐 16384；2-task × 4-condition 的 rate-limit-aware paired pipeline smoke 和 `configs/glm47_flash_machine_lifecycle_paired_pilot_v1.json` 的 10-task × 4-condition single-trial preliminary pilot 均已完成。40-session pilot 中 Full Ours 与 Full Trajectory 在 8 个有效配对上成功率持平，平均累计 selected-context tokens 少 27,146.4，但置信区间跨 0；下一步是扩到至少 3 trials，而不是继续使用已失败的 `glm-4.5-air` 配置。
+`glm-4.7-flash` 重跑已完成 30/30 sessions，并以 success `0.5333`、normal stop `0.90`、infrastructure error `0` 通过全部 gate。重计量后的中位内容轨迹为 `4,875`，30 图 sweep 推荐 4096。旧 `g47f_ml_3t1` 的官方 reward 可保留，但其压缩条件使用了错误的 prompt-usage 节点大小，因此已从正式效果结论中撤回。替代配置为 `configs/glm47_flash_machine_lifecycle_paired_3trial_v2.json`；failure-rich 替代配置为 `configs/glm47_flash_failure_retention_paired_3trial_v2.json`。两者都冻结 `content_estimate_v2`，运行时版本不一致会在 API 调用前后 fail closed。详见 [Token 计量修正](TOKEN_ACCOUNTING.md)。
 
 矩阵配置可设置非负 `inter_run_delay_seconds`。该值写入 manifest 并在每个 run 后显式等待，用于披露和控制免费端点的瞬时限流，不改变单个 session 内的模型、seed 或 context-manager 条件。

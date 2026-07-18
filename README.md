@@ -69,7 +69,9 @@ python -m tracegraph run-offline `
 
 正式矩阵默认只生成零费用 manifest；执行必须显式提供估算成本上限，见 [正式实验矩阵](docs/FORMAL_MATRIX.md)。
 
-`zai/glm-4.5-air` 的首轮 30-session Stage 1 官方 task success 为 0.40，历史结果见 [Stage 1 正式结果](docs/STAGE1_RESULTS.md)。随后使用免费 `zai/glm-4.7-flash` 按同一 10-task × 3-trial gate 重跑，取得 `16/30 = 0.5333`、normal stop `0.90`、0 infrastructure error、实际成本 `$0.00`，全部 gate 通过。30 图机器生命周期/Oracle/预算实验、8-session pipeline smoke 和 40-session single-trial preliminary paired pilot 见 [GLM-4.7-Flash 结果](docs/GLM47_FLASH_RESULTS.md)。
+`zai/glm-4.5-air` 的首轮 30-session Stage 1 官方 task success 为 0.40，历史结果见 [Stage 1 正式结果](docs/STAGE1_RESULTS.md)。随后使用免费 `zai/glm-4.7-flash` 按同一 10-task × 3-trial gate 重跑并通过全部 gate。轨迹审计发现旧 paired matrix 把 provider prompt usage 错计为消息节点大小，因此旧 120-session reward 只保留为修复前诊断，不再作为 context-manager 效果结论；`content_estimate_v2` 修正版把图预算与真实 provider usage 分离，并将推荐预算重选为 4096。修正版 `g47f_ml_c2` 已完成 120/120 sessions：Full Ours 的 raw success 为 17/30，相对 Full Trajectory 的 28 个有效配对成功率差为 `+0.1429`，但 95% CI 跨 0；全部 120 个图和 1,768 个归档对象通过校验。完整结果与边界见 [Token 计量修正](docs/TOKEN_ACCOUNTING.md) 和 [GLM-4.7-Flash 结果](docs/GLM47_FLASH_RESULTS.md)。
+
+failure-rich 修正版 `g47f_fr_c2` 也已完成 90/90 sessions：Full Trajectory / Ours without failure retention / Full Ours raw success 分别为 10/30、4/30、7/30。Full Ours 相对去掉 failure retention 的有效配对成功率差为 `+0.0800`，但 McNemar p=0.5000，且全矩阵只有 2 条真实 `retries` 边、0 条 `resolves` 边。因此当前只能说明 failure retention 有弱正向点估计，不能证明 H4；下一步应做人工 gold 与受控故障注入或 SWE-bench 类长轨迹扩展。
 
 ## 官方 ACON 外部 baseline
 
@@ -94,7 +96,9 @@ $env:TRACEGRAPH_ACON_CONFIG = "configs/acon_tau3.json"
 - [正式实验矩阵与成本门控](docs/FORMAL_MATRIX.md)
 - [Stage 1 正式结果与决策](docs/STAGE1_RESULTS.md)
 - [GLM-4.7-Flash 机器标签实验结果](docs/GLM47_FLASH_RESULTS.md)
+- [Token 计量修正与实验版本边界](docs/TOKEN_ACCOUNTING.md)
 - [生命周期人工双标协议](docs/LIFECYCLE_ANNOTATION.md)
+- [生命周期分歧诊断与 failure-rich 任务选择](docs/LIFECYCLE_DIAGNOSTICS.md)
 - [强 baseline 官方实现审计](docs/STRONG_BASELINES.md)
 - [数据与结果格式](docs/DATA_FORMAT.md)
 - [已执行验证](docs/VALIDATION.md)

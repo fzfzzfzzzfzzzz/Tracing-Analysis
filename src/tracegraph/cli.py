@@ -24,7 +24,7 @@ def build_parser() -> argparse.ArgumentParser:
     archive = subparsers.add_parser("verify-archive", help="verify all archive object hashes")
     archive.add_argument("path", type=Path)
 
-    managers = subparsers.add_parser("list-managers", help="list baselines and ablations")
+    subparsers.add_parser("list-managers", help="list baselines and ablations")
 
     synthetic = subparsers.add_parser(
         "make-synthetic", help="create a labeled synthetic trace for smoke testing"

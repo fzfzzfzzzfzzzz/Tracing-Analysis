@@ -7,7 +7,7 @@ import json
 import math
 import random
 import statistics
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -37,6 +37,45 @@ def _tool_call_count(simulation: dict[str, Any]) -> int:
             continue
         calls = message.get("tool_calls") or message.get("function_calls") or []
         count += 1 if isinstance(calls, dict) else len(calls)
+    return count
+
+
+def _provider_usage_sum(
+    simulation: dict[str, Any],
+    *,
+    role: str,
+    keys: tuple[str, ...],
+) -> float | None:
+    values: list[float] = []
+    for message in simulation.get("messages") or []:
+        if not isinstance(message, dict) or message.get("role") != role:
+            continue
+        usage = message.get("usage")
+        if not isinstance(usage, dict):
+            continue
+        for key in keys:
+            value = usage.get(key)
+            if isinstance(value, (int, float)):
+                values.append(float(value))
+                break
+    return sum(values) if values else None
+
+
+def _provider_usage_count(
+    simulation: dict[str, Any],
+    *,
+    role: str,
+    keys: tuple[str, ...],
+) -> int:
+    count = 0
+    for message in simulation.get("messages") or []:
+        if not isinstance(message, dict) or message.get("role") != role:
+            continue
+        usage = message.get("usage")
+        if not isinstance(usage, dict):
+            continue
+        if any(isinstance(usage.get(key), (int, float)) for key in keys):
+            count += 1
     return count
 
 
@@ -71,6 +110,7 @@ def _trace_record(path: Path, project_root: Path) -> dict[str, Any]:
         "trace_file": relative_path,
         "trace_session_id": trace.get("session_id"),
         "source_simulation_id": metadata.get("simulation_id"),
+        "token_accounting": metadata.get("token_accounting"),
         "estimated_trajectory_tokens": sum(
             int(node.get("token_count") or 0)
             for node in nodes
@@ -109,6 +149,41 @@ def _median(values: list[float]) -> float | None:
     return float(statistics.median(values)) if values else None
 
 
+def _pass_hat_k(num_trials: int, success_count: int, k: int) -> float:
+    if num_trials < k:
+        raise ValueError("num_trials must be at least k")
+    return math.comb(success_count, k) / math.comb(num_trials, k)
+
+
+def _pass_hat_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    by_task: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        if not row["infrastructure_error"]:
+            by_task[(row["domain"], row["task_id"])].append(row)
+    if not by_task:
+        return {
+            "task_count": 0,
+            "minimum_evaluated_trials_per_task": 0,
+            "pass_hat_ks": {},
+        }
+    minimum_trials = min(len(task_rows) for task_rows in by_task.values())
+    values = {}
+    for k in range(1, minimum_trials + 1):
+        values[k] = statistics.fmean(
+            _pass_hat_k(
+                len(task_rows),
+                sum(bool(row["task_success"]) for row in task_rows),
+                k,
+            )
+            for task_rows in by_task.values()
+        )
+    return {
+        "task_count": len(by_task),
+        "minimum_evaluated_trials_per_task": minimum_trials,
+        "pass_hat_ks": values,
+    }
+
+
 def _condition_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
     evaluated = [row for row in rows if not row["infrastructure_error"]]
     traces = [
@@ -119,6 +194,24 @@ def _condition_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
         for row in rows
         if row.get("total_selected_context_tokens") is not None
     ]
+    provider_input_rows = [
+        row
+        for row in evaluated
+        if row.get("agent_provider_input_tokens") is not None
+    ]
+    provider_output_rows = [
+        row
+        for row in evaluated
+        if row.get("agent_provider_output_tokens") is not None
+    ]
+    provider_input_tokens = sum(
+        float(row["agent_provider_input_tokens"])
+        for row in provider_input_rows
+    )
+    provider_input_calls = sum(
+        int(row["agent_provider_generation_calls"])
+        for row in provider_input_rows
+    )
     return {
         "sessions": len(rows),
         "evaluated_sessions": len(evaluated),
@@ -133,6 +226,10 @@ def _condition_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "infrastructure_errors": sum(row["infrastructure_error"] for row in rows),
         "infrastructure_error_rate": _rate(
             sum(row["infrastructure_error"] for row in rows), len(rows)
+        ),
+        "agent_provider_input_usage_sessions": len(provider_input_rows),
+        "agent_provider_input_usage_coverage": _rate(
+            len(provider_input_rows), len(evaluated)
         ),
         "median_tool_calls": _median(
             [float(row["tool_calls"]) for row in evaluated]
@@ -169,9 +266,33 @@ def _condition_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 if row.get("mean_context_compression_ratio") is not None
             ]
         ),
+        "mean_agent_provider_input_tokens": _mean(
+            [
+                float(row["agent_provider_input_tokens"])
+                for row in provider_input_rows
+            ]
+        ),
+        "median_agent_provider_input_tokens": _median(
+            [
+                float(row["agent_provider_input_tokens"])
+                for row in provider_input_rows
+            ]
+        ),
+        "mean_agent_provider_output_tokens": _mean(
+            [
+                float(row["agent_provider_output_tokens"])
+                for row in provider_output_rows
+            ]
+        ),
+        "mean_agent_provider_input_tokens_per_call": (
+            provider_input_tokens / provider_input_calls
+            if provider_input_calls
+            else None
+        ),
         "total_actual_cost_usd": round(
             sum(float(row["total_cost_usd"]) for row in rows), 8
         ),
+        **_pass_hat_metrics(rows),
     }
 
 
@@ -214,6 +335,22 @@ def _paired_bootstrap(
         "ci95_low": estimates[low_index],
         "ci95_high": estimates[high_index],
     }
+
+
+def _holm_adjust(p_values: dict[str, float | None]) -> dict[str, float | None]:
+    adjusted: dict[str, float | None] = {name: None for name in p_values}
+    ranked = sorted(
+        (float(value), name)
+        for name, value in p_values.items()
+        if value is not None
+    )
+    running_max = 0.0
+    count = len(ranked)
+    for rank, (value, name) in enumerate(ranked):
+        corrected = min(1.0, (count - rank) * value)
+        running_max = max(running_max, corrected)
+        adjusted[name] = running_max
+    return adjusted
 
 
 def analyze_live_matrix(
@@ -322,6 +459,39 @@ def analyze_live_matrix(
                 "infrastructure_error": infrastructure_error,
                 "tool_calls": _tool_call_count(simulation),
                 "message_count": len(simulation.get("messages") or []),
+                "agent_provider_input_tokens": _provider_usage_sum(
+                    simulation,
+                    role="assistant",
+                    keys=("prompt_tokens", "input_tokens", "input_token_count"),
+                ),
+                "agent_provider_generation_calls": _provider_usage_count(
+                    simulation,
+                    role="assistant",
+                    keys=("prompt_tokens", "input_tokens", "input_token_count"),
+                ),
+                "agent_provider_output_tokens": _provider_usage_sum(
+                    simulation,
+                    role="assistant",
+                    keys=(
+                        "completion_tokens",
+                        "output_tokens",
+                        "output_token_count",
+                    ),
+                ),
+                "user_provider_input_tokens": _provider_usage_sum(
+                    simulation,
+                    role="user",
+                    keys=("prompt_tokens", "input_tokens", "input_token_count"),
+                ),
+                "user_provider_output_tokens": _provider_usage_sum(
+                    simulation,
+                    role="user",
+                    keys=(
+                        "completion_tokens",
+                        "output_tokens",
+                        "output_token_count",
+                    ),
+                ),
                 "duration_seconds": simulation.get("duration"),
                 "agent_cost_usd": float(simulation.get("agent_cost") or 0.0),
                 "user_cost_usd": float(simulation.get("user_cost") or 0.0),
@@ -381,6 +551,20 @@ def analyze_live_matrix(
         )
         for manager in managers
     }
+    domains = sorted({row["domain"] for row in session_rows})
+    domain_condition_metrics = {
+        manager: {
+            domain: _condition_metrics(
+                [
+                    row
+                    for row in session_rows
+                    if row["manager"] == manager and row["domain"] == domain
+                ]
+            )
+            for domain in domains
+        }
+        for manager in managers
+    }
 
     by_manager_key = {
         (
@@ -409,6 +593,8 @@ def analyze_live_matrix(
         excluded_pairs = 0
         deltas: list[float] = []
         selected_context_token_deltas: list[float] = []
+        agent_provider_input_token_deltas: list[float] = []
+        agent_provider_input_per_call_deltas: list[float] = []
         for domain, task_id, trial in task_trial_keys:
             reference = by_manager_key.get(
                 (reference_manager, domain, task_id, trial)
@@ -433,6 +619,27 @@ def analyze_live_matrix(
                     float(candidate["total_selected_context_tokens"])
                     - float(reference["total_selected_context_tokens"])
                 )
+            if (
+                reference.get("agent_provider_input_tokens") is not None
+                and candidate.get("agent_provider_input_tokens") is not None
+            ):
+                agent_provider_input_token_deltas.append(
+                    float(candidate["agent_provider_input_tokens"])
+                    - float(reference["agent_provider_input_tokens"])
+                )
+                reference_calls = int(
+                    reference.get("agent_provider_generation_calls") or 0
+                )
+                candidate_calls = int(
+                    candidate.get("agent_provider_generation_calls") or 0
+                )
+                if reference_calls and candidate_calls:
+                    agent_provider_input_per_call_deltas.append(
+                        float(candidate["agent_provider_input_tokens"])
+                        / candidate_calls
+                        - float(reference["agent_provider_input_tokens"])
+                        / reference_calls
+                    )
             if reference_success and comparator_success:
                 both_success += 1
             elif reference_success:
@@ -464,7 +671,33 @@ def analyze_live_matrix(
                 samples=bootstrap_samples,
                 seed=bootstrap_seed,
             ),
+            "mean_agent_provider_input_tokens_delta": _mean(
+                agent_provider_input_token_deltas
+            ),
+            "agent_provider_input_token_delta_bootstrap": _paired_bootstrap(
+                agent_provider_input_token_deltas,
+                samples=bootstrap_samples,
+                seed=bootstrap_seed,
+            ),
+            "mean_agent_provider_input_tokens_per_call_delta": _mean(
+                agent_provider_input_per_call_deltas
+            ),
+            "agent_provider_input_tokens_per_call_delta_bootstrap": (
+                _paired_bootstrap(
+                    agent_provider_input_per_call_deltas,
+                    samples=bootstrap_samples,
+                    seed=bootstrap_seed,
+                )
+            ),
         }
+    holm_adjusted = _holm_adjust(
+        {
+            comparator: comparison["exact_mcnemar_p"]
+            for comparator, comparison in paired_comparisons.items()
+        }
+    )
+    for comparator, adjusted_p in holm_adjusted.items():
+        paired_comparisons[comparator]["holm_adjusted_mcnemar_p"] = adjusted_p
 
     return {
         "schema_version": "1.0",
@@ -473,6 +706,10 @@ def analyze_live_matrix(
         "reference_manager": reference_manager,
         "definitions": {
             "task_success": "official reward equals 1 within 1e-6",
+            "pass_hat_k": (
+                "mean over tasks of C(successful evaluated trials, k) / "
+                "C(evaluated trials, k); infrastructure sessions are excluded"
+            ),
             "normal_stop": "official termination is user_stop or agent_stop",
             "infrastructure_error": "official termination is infrastructure_error",
             "infrastructure_timeout": (
@@ -482,6 +719,23 @@ def analyze_live_matrix(
             "pair_key": "domain + task_id + trial",
             "estimated_trajectory_tokens": "sum of all TraceGraph node token_count; this is not selected context size",
             "total_selected_context_tokens": "sum of ContextView selected_tokens over live agent turns",
+            "agent_provider_input_tokens": (
+                "sum of upstream assistant-message prompt/input usage; this is "
+                "the actual agent-generation input telemetry when present"
+            ),
+            "agent_provider_input_tokens_per_call": (
+                "agent provider input tokens divided by assistant generations; "
+                "reported alongside cumulative input because conditions may "
+                "produce different trajectory lengths"
+            ),
+            "token_accounting": (
+                "content_estimate_v2 excludes provider prompt history from "
+                "individual graph-node sizes and context-budget selection"
+            ),
+            "holm_adjusted_mcnemar_p": (
+                "Holm step-down family-wise correction over comparator "
+                "McNemar p-values for the selected reference manager"
+            ),
         },
         "counts": {
             "expected_runs": expected_runs,
@@ -497,8 +751,22 @@ def analyze_live_matrix(
             "graph_validation_errors": graph_validation_error_count,
             "zero_token_traces": zero_token_trace_count,
             "malformed_sessions": len(malformed_sessions),
+            "missing_agent_provider_input_usage": sum(
+                not row["infrastructure_error"]
+                and row.get("agent_provider_input_tokens") is None
+                for row in session_rows
+            ),
+            "token_accounting_versions": dict(
+                sorted(
+                    Counter(
+                        str(row.get("token_accounting") or "legacy_unspecified")
+                        for row in trace_rows
+                    ).items()
+                )
+            ),
         },
         "condition_metrics": condition_metrics,
+        "domain_condition_metrics": domain_condition_metrics,
         "paired_comparisons": paired_comparisons,
         "termination_reasons": dict(
             sorted(Counter(row["termination_reason"] for row in session_rows).items())

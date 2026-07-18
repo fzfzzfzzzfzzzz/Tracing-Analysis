@@ -168,6 +168,49 @@ class TauAdapterTests(unittest.TestCase):
                 {"tau_task_7_trial_0", "tau_task_7_trial_1"},
             )
 
+    def test_prompt_usage_is_not_charged_as_message_content(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            payload = {
+                "task_id": 8,
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": "hello",
+                        "usage": {
+                            "prompt_tokens": 400,
+                            "completion_tokens": 200,
+                        },
+                    },
+                    {
+                        "role": "assistant",
+                        "content": "brief answer",
+                        "usage": {
+                            "prompt_tokens": 5000,
+                            "completion_tokens": 300,
+                        },
+                    },
+                ],
+            }
+            source = Path(directory) / "usage.json"
+            source.write_text(json.dumps(payload), encoding="utf-8")
+
+            graph = TauTraceImporter(
+                ArchiveStore(Path(directory) / "archive")
+            ).import_path(source)[0]
+
+            user_goal = [
+                node
+                for node in graph.find_nodes(node_types={NodeType.GOAL})
+                if node.metadata.get("source") == "user_message"
+            ][0]
+            decision = graph.find_nodes(node_types={NodeType.DECISION})[0]
+            self.assertEqual(user_goal.token_count, 2)
+            self.assertEqual(decision.token_count, 3)
+            self.assertEqual(
+                decision.metadata["provider_usage"]["prompt_tokens"],
+                5000,
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

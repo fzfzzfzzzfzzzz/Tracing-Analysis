@@ -27,6 +27,7 @@ param(
     [int]$MaxSteps = 30,
     [int]$Seed = 300,
     [int]$TimeoutSeconds = 600,
+    [string]$TokenAccounting = "",
     [string]$SaveTo = "",
     [string]$TraceOutputDir = "",
     [switch]$VerboseLogs,
@@ -92,6 +93,9 @@ if ([string]::IsNullOrWhiteSpace($TraceOutputDir)) {
 $env:TRACEGRAPH_MANAGER = $Manager
 $env:TRACEGRAPH_BUDGET = $Budget
 $env:TRACEGRAPH_OUTPUT_DIR = $TraceOutputDir
+if (-not [string]::IsNullOrWhiteSpace($TokenAccounting)) {
+    $env:TRACEGRAPH_TOKEN_ACCOUNTING = $TokenAccounting
+}
 $userImplementation = if ($NormalizeUserStop) {
     "tracegraph_user_simulator"
 } else {
@@ -150,6 +154,7 @@ $runConfig = [pscustomobject]@{
     seed = $Seed
     trials = $NumTrials
     max_steps = $MaxSteps
+    token_accounting = $TokenAccounting
     save_to = $SaveTo
     trace_output = $TraceOutputDir
 }

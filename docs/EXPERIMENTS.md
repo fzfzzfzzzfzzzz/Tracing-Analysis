@@ -77,7 +77,7 @@ AgentDiet/ACON/Agent-Omit 的官方实现可用性、接口差异和 τ³ 接入
 
 ## 7. 统计
 
-- τ 任务成功率：paired bootstrap 95% CI；多 trial 报 Pass^k。
+- τ 任务成功率：paired bootstrap 95% CI；多 trial 报官方组合估计 `Pass^k = mean_task[C(c_i,k)/C(n_i,k)]`，其中基础设施型中止不进入 `n_i`。
 - token/cost/overhead：按相同 task+trial 做配对差异与 bootstrap CI。
 - policy violation / repeated failure：McNemar 或配对 permutation test。
 - 多预算、多 domain 比较做 Holm correction。
@@ -93,6 +93,6 @@ AgentDiet/ACON/Agent-Omit 的官方实现可用性、接口差异和 τ³ 接入
 
 项目提供默认关闭的确定性 user-stop 协议 adapter；是否启用必须在所有条件中固定。`glm-4.7-flash` 已提供零成本可用路径，并通过模型适用性 gate。免费端点可能瞬时限流，因此矩阵显式记录跨 run 冷却，infrastructure error 仍单独排除。
 
-下一阶段 Full Trajectory 适用性 gate 已冻结为 10 tasks × 3 trials，默认只生成 manifest，不调用 API；任务、seed、成本估算、执行 cap 和通过阈值见 [正式实验矩阵](FORMAL_MATRIX.md)。
+Full Trajectory 适用性 gate 已冻结并完成 10 tasks × 3 trials；任务、seed、成本估算、执行 cap 和通过阈值见 [正式实验矩阵](FORMAL_MATRIX.md)。
 
-历史 `glm-4.5-air` Stage 1 为 `12/30 = 0.40`。`glm-4.7-flash` 随后用同一 10-task × 3-trial gate 重跑，取得 `16/30 = 0.5333` 并通过全部 gate；30 图机器生命周期、Oracle、预算 sweep、8-session paired pipeline smoke 和 40-session single-trial preliminary paired pilot 见 [GLM-4.7-Flash 结果](GLM47_FLASH_RESULTS.md)。当前 paired pilot 只有一个 trial，且有两个 Full Trajectory wall-clock timeout，仍不构成论文主结果。
+历史 `glm-4.5-air` Stage 1 为 `12/30 = 0.40`。`glm-4.7-flash` 随后用同一 gate 取得 `16/30 = 0.5333` 并通过全部条件。对 Stage 1 图执行 `content_estimate_v2` 重计量后，中位内容轨迹为 4,875 tokens，gate 仍通过；预算 sweep 推荐 4096。旧 120-session paired matrix 的 reward/termination 保留为诊断，但其压缩条件受旧 token 口径影响，不能进入正式效果结论。替代的 corrected smoke、`g47f_ml_c2` 和 failure-rich `g47f_fr_c2` 使用冻结的 4096 预算，并同时报告估算 context tokens 与真实 agent provider input usage。详细边界见 [Token 计量修正](TOKEN_ACCOUNTING.md) 和 [GLM-4.7-Flash 结果](GLM47_FLASH_RESULTS.md)。

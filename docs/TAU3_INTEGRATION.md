@@ -25,7 +25,8 @@
 ```powershell
 $env:OPENAI_API_KEY = "..."
 $env:TRACEGRAPH_MANAGER = "full_ours"
-$env:TRACEGRAPH_BUDGET = "16384"
+$env:TRACEGRAPH_BUDGET = "4096"
+$env:TRACEGRAPH_TOKEN_ACCOUNTING = "content_estimate_v2"
 $env:TRACEGRAPH_OUTPUT_DIR = "outputs/tau3_live/full_ours"
 
 .\.venv\Scripts\uv.exe run --project vendor\tau3-bench python scripts\tau3_cli.py run `
@@ -77,8 +78,9 @@ runner 不会显示 API key，并在 `.env` 未被 Git 忽略时拒绝运行。�
 - tool result 与对应 assistant tool call 做闭包，避免产生无前置调用的非法 ToolMessage。
 - 若压缩切片以 assistant/tool 开头，补入其前最近的 user message 作为协议锚点；实际 ordinals/roles 写入 context-view metadata。
 - summary/archive handle 作为 `<active_trace_context>` system fragment 进入模型。
+- 节点预算使用 `content_estimate_v2` 内容估算；provider prompt/output usage 单独记录，不进入节点大小。
 - 每次调用前保存 `trace.json` 与 `context_views.jsonl`，原始 tool payload 存入 session archive。
 
 ## 当前验证边界
 
-核心与 adapter 已在本地通过 59 项测试。官方隔离环境已用 `uv 0.11.29` 安装 CPython 3.12.13 与 `tau2 1.0.0`，并通过 `tau2 check-data`；`tracegraph 0.1.0` 已以 editable 模式导入，`tracegraph_agent` 与可选 `tracegraph_user_simulator` 已在上游 registry 中注册。`glm-4.7-flash` 已完成 mock reward 1.0、30-session Stage 1 pass、8-session paired pipeline smoke 和 40-session single-trial preliminary paired pilot；完整结果见 [GLM-4.7-Flash 结果](GLM47_FLASH_RESULTS.md)。
+核心与 adapter 已在本地通过自动化测试。官方隔离环境已用 `uv 0.11.29` 安装 CPython 3.12.13 与 `tau2 1.0.0`，并通过 `tau2 check-data`；`tracegraph 0.1.0` 已以 editable 模式导入，`tracegraph_agent` 与可选 `tracegraph_user_simulator` 已在上游 registry 中注册。`glm-4.7-flash` 已完成 mock reward 1.0、30-session Stage 1 pass、8-session `content_estimate_v2` smoke 和 120-session corrected lifecycle matrix。旧 paired 矩阵保留为修复前诊断；详见 [Token 计量修正](TOKEN_ACCOUNTING.md) 与 [GLM-4.7-Flash 结果](GLM47_FLASH_RESULTS.md)。

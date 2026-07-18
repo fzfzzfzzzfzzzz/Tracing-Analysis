@@ -12,6 +12,8 @@ from .schema import EdgeType, LifecycleState, Node, NodeType, ToolStatus
 
 T = TypeVar("T")
 
+TOKEN_ACCOUNTING_VERSION = "content_estimate_v2"
+
 
 def estimate_tokens(value: Any) -> int:
     """Deterministic fallback token estimate used when provider usage is absent."""
@@ -194,4 +196,3 @@ class ToolExecutor:
         relation = EdgeType.FAILED_WITH if is_failure else EdgeType.PRODUCES
         self.graph.connect(call.node_id, result.node_id, relation)
         return call, result
-

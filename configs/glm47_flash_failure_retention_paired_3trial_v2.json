@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "matrix_id": "g47f_fr_c2",
+  "description": "Corrected failure-rich follow-up using content-only context-budget accounting.",
+  "agent_model": "zai/glm-4.7-flash",
+  "user_model": "zai/glm-4.7-flash",
+  "token_accounting": "content_estimate_v2",
+  "temperature": 0.0,
+  "base_seed": 302,
+  "trials": 3,
+  "max_steps": 50,
+  "normalize_user_stop": true,
+  "timeout_seconds": 900,
+  "inter_run_delay_seconds": 20,
+  "estimated_cost_per_session_usd": 0.0001,
+  "domains": [
+    {
+      "name": "retail",
+      "task_ids": [
+        "27",
+        "33",
+        "34",
+        "76",
+        "36"
+      ]
+    },
+    {
+      "name": "airline",
+      "task_ids": [
+        "21",
+        "13",
+        "37",
+        "23",
+        "17"
+      ]
+    }
+  ],
+  "conditions": [
+    {
+      "manager": "full_trajectory",
+      "budget": "none"
+    },
+    {
+      "manager": "ours_without_failure_retention",
+      "budget": "4096"
+    },
+    {
+      "manager": "full_ours",
+      "budget": "4096"
+    }
+  ],
+  "interpretation_warning": "This corrected matrix replaces the interrupted g47f_fr_3t1 run. Tasks were selected using observed errors and exact-signature retries in official GPT-4.1 histories. Graph node sizes and context budgets use deterministic content-only estimates; provider prompt/output usage is reported separately. Historical failure richness does not guarantee that GLM-4.7-Flash will reproduce the same failures."
+}
