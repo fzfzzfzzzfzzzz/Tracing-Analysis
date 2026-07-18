@@ -14,7 +14,6 @@ from tracegraph.schema import (
     EdgeType,
     NodeType,
     RelevanceState,
-    RetentionObligation,
     SemanticOutcome,
     ValidityState,
 )

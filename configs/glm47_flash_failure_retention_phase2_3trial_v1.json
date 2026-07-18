@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "matrix_id": "p2fr1",
+  "description": "Phase-2 failure-enriched H4 confirmation after factorized lifecycle and failed-retry supersession.",
+  "agent_model": "zai/glm-4.7-flash",
+  "user_model": "zai/glm-4.7-flash",
+  "token_accounting": "content_estimate_v2",
+  "temperature": 0.0,
+  "base_seed": 503,
+  "trials": 3,
+  "max_steps": 50,
+  "normalize_user_stop": true,
+  "timeout_seconds": 900,
+  "inter_run_delay_seconds": 20,
+  "estimated_cost_per_session_usd": 0.0001,
+  "domains": [
+    {
+      "name": "retail",
+      "task_ids": ["36", "76"]
+    },
+    {
+      "name": "airline",
+      "task_ids": ["21", "23"]
+    }
+  ],
+  "conditions": [
+    {
+      "manager": "ours_without_failure_retention",
+      "budget": "4096"
+    },
+    {
+      "manager": "full_ours",
+      "budget": "4096"
+    }
+  ],
+  "interpretation_warning": "Failure-enriched confirmatory follow-up. Tasks were frozen before this run from schema-v2 reanalysis of the earlier g47f_fr_c2 trajectories: these four tasks were the only ones with retry/resolve signal. New base seed 503 and fresh live sessions are used. Report task success, termination, structural signal, selected-context tokens, and actual provider input; do not generalize to all tau3 tasks."
+}
