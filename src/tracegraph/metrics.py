@@ -9,7 +9,13 @@ from .archive import ArchiveStore
 from .context import ContextView
 from .graph import TraceGraph
 from .lifecycle import LifecycleEngine
-from .schema import EdgeType, LifecycleState, NodeType
+from .schema import (
+    EdgeType,
+    LifecycleState,
+    NodeType,
+    RetentionObligation,
+    ValidityState,
+)
 
 
 def _rate(numerator: int, denominator: int) -> float:
@@ -53,16 +59,14 @@ def evaluate_view(
         node.node_id
         for node in graph.nodes.values()
         if node.lifecycle == LifecycleState.CRITICAL_EVIDENCE
-        or any(
-            edge.target in final_ids
-            for edge in graph.outgoing(node.node_id, EdgeType.SUPPORTS)
-        )
+        or RetentionObligation.CRITICAL_EVIDENCE in node.lifecycle_profile.obligations
+        or any(edge.target in final_ids for edge in graph.outgoing(node.node_id, EdgeType.SUPPORTS))
     }
     unresolved_ids = {
         node.node_id
         for node in graph.nodes.values()
-        if node.node_type == NodeType.ERROR
-        and not graph.incoming(node.node_id, EdgeType.RESOLVES)
+        if node.lifecycle_profile.validity == ValidityState.NEGATIVE_UNRESOLVED
+        or (node.node_type == NodeType.ERROR and not graph.resolving_edges(node.node_id))
     }
     constraint_ids = {
         node.node_id
@@ -71,9 +75,7 @@ def evaluate_view(
     }
     path_hits = 0
     for decision_id in final_ids:
-        supporters = {
-            edge.source for edge in graph.incoming(decision_id, EdgeType.SUPPORTS)
-        }
+        supporters = {edge.source for edge in graph.incoming(decision_id, EdgeType.SUPPORTS)}
         if supporters & covered:
             path_hits += 1
 
@@ -89,7 +91,11 @@ def evaluate_view(
     else:
         recovered = sum(1 for node in recoverable_nodes if archive.exists(node.raw_ref or ""))
 
-    retry_edges = [edge for edge in graph.edges.values() if edge.edge_type == EdgeType.RETRIES]
+    retry_edges = [
+        edge
+        for edge in graph.edges.values()
+        if edge.edge_type in {EdgeType.RETRIED_BY, EdgeType.RETRIES}
+    ]
     # This is the observed repeated-failure count in the source trajectory.
     # Counterfactual repetitions caused by a particular context view require a
     # live run and must not be fabricated from offline omission.

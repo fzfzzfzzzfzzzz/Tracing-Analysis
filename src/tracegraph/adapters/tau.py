@@ -16,7 +16,15 @@ from ..archive import ArchiveStore
 from ..capture import TOKEN_ACCOUNTING_VERSION, estimate_tokens
 from ..graph import TraceGraph
 from ..lifecycle import LifecycleEngine
-from ..schema import EdgeType, LifecycleState, Node, NodeType, ToolStatus
+from ..schema import (
+    EdgeType,
+    LifecycleState,
+    Node,
+    NodeType,
+    SemanticOutcome,
+    ToolStatus,
+)
+from ..semantics import infer_semantic_outcome, operation_key
 
 
 def _as_dict(value: Any) -> dict[str, Any]:
@@ -223,8 +231,10 @@ class TauTraceImporter:
 
         pending_calls: dict[str, Node] = {}
         call_signatures: dict[str, tuple[str, str]] = {}
+        call_operation_keys: dict[str, str] = {}
         failed_by_signature: dict[tuple[str, str], tuple[str, str]] = {}
-        latest_success: dict[tuple[str, str], str] = {}
+        failed_by_operation: dict[str, tuple[str, str]] = {}
+        latest_success: dict[str, str] = {}
         recent_results: list[str] = []
         decisions: list[Node] = []
         user_turns = 0
@@ -283,9 +293,16 @@ class TauTraceImporter:
                 )
                 decisions.append(decision)
                 for result_id in recent_results:
+                    semantic_outcome = graph.nodes[result_id].metadata.get("semantic_outcome")
                     relation = (
                         EdgeType.BLOCKS
                         if graph.nodes[result_id].node_type == NodeType.ERROR
+                        or semantic_outcome
+                        in {
+                            SemanticOutcome.NEGATIVE.value,
+                            SemanticOutcome.POLICY_DENIED.value,
+                            SemanticOutcome.TEST_FAILED.value,
+                        }
                         else EdgeType.SUPPORTS
                     )
                     graph.connect(result_id, decision.node_id, relation, confidence=0.5)
@@ -298,15 +315,18 @@ class TauTraceImporter:
                 if not isinstance(call_payload, dict):
                     continue
                 function = _as_dict(call_payload.get("function"))
-                tool_name = str(
-                    call_payload.get("name") or function.get("name") or "unknown_tool"
-                )
+                tool_name = str(call_payload.get("name") or function.get("name") or "unknown_tool")
                 arguments = call_payload.get("arguments", function.get("arguments", {}))
                 arguments = _parse_content(arguments)
                 if not isinstance(arguments, dict):
                     arguments = {"value": arguments}
                 call_id = str(call_payload.get("id") or f"turn_{step_id}_call_{index}")
                 side_effect = self._is_side_effect(tool_name)
+                canonical_arguments = json.dumps(
+                    arguments, ensure_ascii=False, sort_keys=True, default=str
+                )
+                signature = (tool_name, canonical_arguments)
+                structural_key = operation_key(tool_name, arguments)
                 raw_ref = self._archive(
                     call_payload,
                     kind="tau_tool_call",
@@ -318,9 +338,7 @@ class TauTraceImporter:
                     {"tool_name": tool_name, "arguments": arguments, "call_id": call_id},
                     step_id,
                     lifecycle=(
-                        LifecycleState.AUDIT_REQUIRED
-                        if side_effect
-                        else LifecycleState.ACTIVE
+                        LifecycleState.AUDIT_REQUIRED if side_effect else LifecycleState.ACTIVE
                     ),
                     token_count=estimate_tokens(arguments),
                     raw_ref=raw_ref,
@@ -330,16 +348,28 @@ class TauTraceImporter:
                         "call_id": call_id,
                         "requestor": role,
                         "source_message_ordinal": ordinal,
+                        "canonical_arguments": canonical_arguments,
+                        "operation_key": structural_key,
                     },
                 )
                 pending_calls[call_id] = call
-                signature = (
-                    tool_name,
-                    json.dumps(arguments, ensure_ascii=False, sort_keys=True, default=str),
-                )
                 call_signatures[call_id] = signature
-                if signature in failed_by_signature:
-                    graph.connect(call.node_id, failed_by_signature[signature][0], EdgeType.RETRIES)
+                call_operation_keys[call_id] = structural_key
+                retry_match = failed_by_signature.get(signature)
+                match_type = "exact_signature"
+                confidence = 1.0
+                if retry_match is None:
+                    retry_match = failed_by_operation.get(structural_key)
+                    match_type = "structural_operation"
+                    confidence = 0.8
+                if retry_match is not None:
+                    graph.connect(
+                        retry_match[0],
+                        call.node_id,
+                        EdgeType.RETRIED_BY,
+                        confidence=confidence,
+                        metadata={"match_type": match_type, "inferred": True},
+                    )
                 if decisions:
                     graph.connect(decisions[-1].node_id, call.node_id, EdgeType.LEADS_TO)
                 for constraint in constraint_nodes:
@@ -378,6 +408,7 @@ class TauTraceImporter:
                 )
                 pending_calls[call_id] = call
                 call_signatures[call_id] = ("unknown_tool", "{}")
+                call_operation_keys[call_id] = operation_key("unknown_tool", {})
             payload = _parse_content(content)
             legacy_error = isinstance(content, str) and content.lstrip().lower().startswith(
                 ("error:", "error ")
@@ -385,6 +416,7 @@ class TauTraceImporter:
             structured_error = isinstance(payload, dict) and bool(payload.get("error", False))
             is_error = bool(message.get("error", False)) or legacy_error or structured_error
             status = ToolStatus.FAILED if is_error else ToolStatus.SUCCESS
+            semantic_outcome = infer_semantic_outcome(payload, status)
             raw_ref = self._archive(
                 message,
                 kind="tau_tool_error" if is_error else "tau_tool_observation",
@@ -396,9 +428,7 @@ class TauTraceImporter:
                 payload,
                 step_id,
                 lifecycle=(
-                    LifecycleState.UNRESOLVED_FAILURE
-                    if is_error
-                    else LifecycleState.ACTIVE
+                    LifecycleState.UNRESOLVED_FAILURE if is_error else LifecycleState.ACTIVE
                 ),
                 token_count=estimate_tokens(payload),
                 raw_ref=raw_ref,
@@ -407,6 +437,7 @@ class TauTraceImporter:
                     "tool_name": call.metadata.get("tool_name"),
                     "call_id": call_id,
                     "source_message_ordinal": ordinal,
+                    "semantic_outcome": semantic_outcome.value,
                 },
             )
             graph.connect(
@@ -415,24 +446,99 @@ class TauTraceImporter:
                 EdgeType.FAILED_WITH if is_error else EdgeType.PRODUCES,
             )
             signature = call_signatures.get(call_id, ("unknown_tool", "{}"))
-            if is_error:
+            structural_key = call_operation_keys.get(call_id, operation_key(signature[0], {}))
+            semantic_negative = semantic_outcome in {
+                SemanticOutcome.NEGATIVE,
+                SemanticOutcome.POLICY_DENIED,
+                SemanticOutcome.TEST_FAILED,
+            }
+            retry_call_ids = set(graph.retry_predecessors(call.node_id))
+            if semantic_negative:
+                for prior_call_id in retry_call_ids:
+                    prior_results = graph.outgoing(
+                        prior_call_id, EdgeType.FAILED_WITH
+                    ) + graph.outgoing(prior_call_id, EdgeType.PRODUCES)
+                    for prior_edge in prior_results:
+                        prior_result = graph.nodes[prior_edge.target]
+                        prior_outcome = prior_result.metadata.get("semantic_outcome")
+                        if prior_result.node_type == NodeType.ERROR or prior_outcome in {
+                            SemanticOutcome.NEGATIVE.value,
+                            SemanticOutcome.POLICY_DENIED.value,
+                            SemanticOutcome.TEST_FAILED.value,
+                        }:
+                            if not graph.resolving_edges(
+                                prior_result.node_id
+                            ) and not graph.superseding_edges(prior_result.node_id):
+                                graph.connect(
+                                    prior_result.node_id,
+                                    result.node_id,
+                                    EdgeType.SUPERSEDED_BY,
+                                    metadata={"inferred_from_failed_retry": True},
+                                )
+                if retry_call_ids:
+                    failed_by_signature = {
+                        key: value
+                        for key, value in failed_by_signature.items()
+                        if value[0] not in retry_call_ids
+                    }
+                    failed_by_operation = {
+                        key: value
+                        for key, value in failed_by_operation.items()
+                        if value[0] not in retry_call_ids
+                    }
                 failed_by_signature[signature] = (call.node_id, result.node_id)
+                failed_by_operation[structural_key] = (call.node_id, result.node_id)
             else:
-                prior_failure = failed_by_signature.pop(signature, None)
-                if prior_failure is not None:
-                    graph.connect(result.node_id, prior_failure[1], EdgeType.RESOLVES)
-                previous_observation = latest_success.get(signature)
+                resolved_call_ids = retry_call_ids
+                for prior_call_id in resolved_call_ids:
+                    prior_results = graph.outgoing(
+                        prior_call_id, EdgeType.FAILED_WITH
+                    ) + graph.outgoing(prior_call_id, EdgeType.PRODUCES)
+                    for prior_edge in prior_results:
+                        prior_result = graph.nodes[prior_edge.target]
+                        prior_outcome = prior_result.metadata.get("semantic_outcome")
+                        if prior_result.node_type == NodeType.ERROR or prior_outcome in {
+                            SemanticOutcome.NEGATIVE.value,
+                            SemanticOutcome.POLICY_DENIED.value,
+                            SemanticOutcome.TEST_FAILED.value,
+                        }:
+                            if (
+                                prior_result.node_type == NodeType.OBSERVATION
+                                and semantic_outcome != SemanticOutcome.POSITIVE
+                            ):
+                                continue
+                            graph.connect(
+                                prior_result.node_id,
+                                result.node_id,
+                                EdgeType.RESOLVED_BY,
+                                metadata={"inferred_from_retry": True},
+                            )
+                if resolved_call_ids:
+                    failed_by_signature = {
+                        key: value
+                        for key, value in failed_by_signature.items()
+                        if value[0] not in resolved_call_ids
+                    }
+                    failed_by_operation = {
+                        key: value
+                        for key, value in failed_by_operation.items()
+                        if value[0] not in resolved_call_ids
+                    }
+                previous_observation = latest_success.get(structural_key)
                 if previous_observation is not None:
-                    graph.connect(result.node_id, previous_observation, EdgeType.SUPERSEDES)
-                latest_success[signature] = result.node_id
+                    graph.connect(
+                        previous_observation,
+                        result.node_id,
+                        EdgeType.SUPERSEDED_BY,
+                    )
+                latest_success[structural_key] = result.node_id
             recent_results.append(result.node_id)
 
         if decisions:
             decisions[-1].metadata["final"] = True
         transitions = LifecycleEngine().apply(graph)
         graph.metadata["lifecycle_transitions"] = {
-            node_id: [before.value, after.value]
-            for node_id, (before, after) in transitions.items()
+            node_id: [before.value, after.value] for node_id, (before, after) in transitions.items()
         }
         graph.metadata["graph_validation_errors"] = graph.validate()
         return graph

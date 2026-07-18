@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from .graph import TraceGraph
+from .schema import EdgeType, NodeType, SemanticOutcome, ValidityState
 
 
 _TRACE_COUNT_FIELDS = (
@@ -21,6 +22,10 @@ _TRACE_COUNT_FIELDS = (
     "retry_edges",
     "resolve_edges",
     "supersede_edges",
+    "negative_observation_nodes",
+    "unresolved_negative_nodes",
+    "canonical_forward_edges",
+    "temporally_reversed_forward_edges",
     "context_view_count",
     "views_with_selected_errors",
     "selected_error_items",
@@ -47,19 +52,12 @@ def _context_view_summary(trace_path: Path) -> dict[str, int]:
         if not isinstance(view, dict):
             continue
         summary["context_view_count"] += 1
-        items = [
-            item
-            for item in (view.get("items") or [])
-            if isinstance(item, dict)
-        ]
-        error_items = [
-            item for item in items if item.get("node_type") == "error"
-        ]
+        items = [item for item in (view.get("items") or []) if isinstance(item, dict)]
+        error_items = [item for item in items if item.get("node_type") == "error"]
         summary["selected_error_items"] += len(error_items)
         summary["views_with_selected_errors"] += bool(error_items)
         summary["unresolved_failure_reason_items"] += sum(
-            "unresolved_failure" in str(item.get("reason") or "")
-            for item in error_items
+            "unresolved_failure" in str(item.get("reason") or "") for item in error_items
         )
         selected = view.get("selected_tokens")
         budget = view.get("budget")
@@ -76,7 +74,30 @@ def _trace_summary(path: Path) -> dict[str, Any]:
     graph = TraceGraph.load(path)
     node_types = Counter(node.node_type.value for node in graph.nodes.values())
     lifecycle_states = Counter(node.lifecycle.value for node in graph.nodes.values())
+    profile_validity = Counter(
+        node.lifecycle_profile.validity.value for node in graph.nodes.values()
+    )
+    profile_obligations = Counter(
+        obligation.value
+        for node in graph.nodes.values()
+        for obligation in node.lifecycle_profile.obligations
+    )
     edge_types = Counter(edge.edge_type.value for edge in graph.edges.values())
+    canonical_forward_types = {
+        EdgeType.PROVIDES_INPUT,
+        EdgeType.RETRIED_BY,
+        EdgeType.RESOLVED_BY,
+        EdgeType.SUPERSEDED_BY,
+        EdgeType.SUMMARIZED_BY,
+    }
+    canonical_forward_edges = [
+        edge for edge in graph.edges.values() if edge.edge_type in canonical_forward_types
+    ]
+    negative_outcomes = {
+        SemanticOutcome.NEGATIVE.value,
+        SemanticOutcome.POLICY_DENIED.value,
+        SemanticOutcome.TEST_FAILED.value,
+    }
     return {
         "session_id": graph.session_id,
         "node_count": len(graph.nodes),
@@ -84,11 +105,24 @@ def _trace_summary(path: Path) -> dict[str, Any]:
         "error_nodes": node_types["error"],
         "side_effect_nodes": sum(node.side_effect for node in graph.nodes.values()),
         "failed_with_edges": edge_types["failed_with"],
-        "retry_edges": edge_types["retries"],
-        "resolve_edges": edge_types["resolves"],
-        "supersede_edges": edge_types["supersedes"],
+        "retry_edges": edge_types["retries"] + edge_types["retried_by"],
+        "resolve_edges": edge_types["resolves"] + edge_types["resolved_by"],
+        "supersede_edges": edge_types["supersedes"] + edge_types["superseded_by"],
+        "negative_observation_nodes": sum(
+            node.node_type == NodeType.OBSERVATION
+            and node.metadata.get("semantic_outcome") in negative_outcomes
+            for node in graph.nodes.values()
+        ),
+        "unresolved_negative_nodes": profile_validity[ValidityState.NEGATIVE_UNRESOLVED.value],
+        "canonical_forward_edges": len(canonical_forward_edges),
+        "temporally_reversed_forward_edges": sum(
+            graph.nodes[edge.source].step_id > graph.nodes[edge.target].step_id
+            for edge in canonical_forward_edges
+        ),
         "node_type_counts": dict(sorted(node_types.items())),
         "lifecycle_counts": dict(sorted(lifecycle_states.items())),
+        "profile_validity_counts": dict(sorted(profile_validity.items())),
+        "profile_obligation_counts": dict(sorted(profile_obligations.items())),
         "edge_type_counts": dict(sorted(edge_types.items())),
         **_context_view_summary(path),
     }
@@ -115,12 +149,12 @@ def _priority_tier(*, disagreement: bool, failure_signal: bool) -> str:
 
 
 def _prefix_trace(prefix: str, summary: dict[str, Any]) -> dict[str, Any]:
-    values = {
-        f"{prefix}_{field}": summary[field] for field in _TRACE_COUNT_FIELDS
-    }
+    values = {f"{prefix}_{field}": summary[field] for field in _TRACE_COUNT_FIELDS}
     values[f"{prefix}_session_id"] = summary["session_id"]
     values[f"{prefix}_node_type_counts"] = summary["node_type_counts"]
     values[f"{prefix}_lifecycle_counts"] = summary["lifecycle_counts"]
+    values[f"{prefix}_profile_validity_counts"] = summary["profile_validity_counts"]
+    values[f"{prefix}_profile_obligation_counts"] = summary["profile_obligation_counts"]
     values[f"{prefix}_edge_type_counts"] = summary["edge_type_counts"]
     return values
 
@@ -139,9 +173,7 @@ def analyze_lifecycle_disagreements(
     """Compare aligned live sessions and rank traces for label validation."""
 
     project_root = project_root.resolve()
-    sessions = [
-        row for row in report.get("sessions") or [] if isinstance(row, dict)
-    ]
+    sessions = [row for row in report.get("sessions") or [] if isinstance(row, dict)]
     by_key = {
         (
             str(row.get("manager") or ""),
@@ -151,9 +183,7 @@ def analyze_lifecycle_disagreements(
         ): row
         for row in sessions
     }
-    reference_keys = sorted(
-        key[1:] for key in by_key if key[0] == reference_manager
-    )
+    reference_keys = sorted(key[1:] for key in by_key if key[0] == reference_manager)
     if not reference_keys:
         raise ValueError(f"reference manager has no sessions: {reference_manager}")
 
@@ -165,9 +195,7 @@ def analyze_lifecycle_disagreements(
         reference = by_key[(reference_manager, domain, task_id, trial)]
         comparator = by_key.get((comparator_manager, domain, task_id, trial))
         if comparator is None:
-            missing_pairs.append(
-                {"domain": domain, "task_id": task_id, "trial": trial}
-            )
+            missing_pairs.append({"domain": domain, "task_id": task_id, "trial": trial})
             continue
         reference_trace_path = project_root / str(reference.get("trace_file") or "")
         comparator_trace_path = project_root / str(comparator.get("trace_file") or "")
@@ -193,9 +221,7 @@ def analyze_lifecycle_disagreements(
             )
         )
         failure_signal = failure_signal_count > 0
-        tier = _priority_tier(
-            disagreement=disagreement, failure_signal=failure_signal
-        )
+        tier = _priority_tier(disagreement=disagreement, failure_signal=failure_signal)
         reference_tokens = reference.get("total_selected_context_tokens")
         comparator_tokens = comparator.get("total_selected_context_tokens")
         token_delta = (
@@ -254,11 +280,7 @@ def analyze_lifecycle_disagreements(
                 if row["comparator_trace_file"] == path
             ),
             0
-            if next(
-                row["domain"]
-                for row in pair_rows
-                if row["comparator_trace_file"] == path
-            )
+            if next(row["domain"] for row in pair_rows if row["comparator_trace_file"] == path)
             == "retail"
             else 1,
             path,
@@ -276,33 +298,24 @@ def analyze_lifecycle_disagreements(
                 "task_id": task_id,
                 "trials": len(rows),
                 "reference_successes": sum(row["reference_success"] for row in rows),
-                "comparator_successes": sum(
-                    row["comparator_success"] for row in rows
-                ),
+                "comparator_successes": sum(row["comparator_success"] for row in rows),
                 "success_delta": statistics.fmean(
-                    float(row["comparator_success"])
-                    - float(row["reference_success"])
+                    float(row["comparator_success"]) - float(row["reference_success"])
                     for row in rows
                 ),
-                "success_disagreements": sum(
-                    row["success_disagreement"] for row in rows
-                ),
+                "success_disagreements": sum(row["success_disagreement"] for row in rows),
                 "reference_only_successes": sum(
                     row["direction"] == "reference_only_success" for row in rows
                 ),
                 "comparator_only_successes": sum(
                     row["direction"] == "comparator_only_success" for row in rows
                 ),
-                "failure_signal_pairs": sum(
-                    row["has_failure_signal"] for row in rows
-                ),
+                "failure_signal_pairs": sum(row["has_failure_signal"] for row in rows),
                 "retry_edge_pairs": sum(
-                    row["reference_retry_edges"] + row["comparator_retry_edges"] > 0
-                    for row in rows
+                    row["reference_retry_edges"] + row["comparator_retry_edges"] > 0 for row in rows
                 ),
                 "selected_error_pairs": sum(
-                    row["reference_selected_error_items"]
-                    + row["comparator_selected_error_items"]
+                    row["reference_selected_error_items"] + row["comparator_selected_error_items"]
                     > 0
                     for row in rows
                 ),
@@ -327,12 +340,8 @@ def analyze_lifecycle_disagreements(
             "reference_pairs": len(reference_keys),
             "matched_pairs": len(pair_rows),
             "missing_pairs": len(missing_pairs),
-            "success_disagreements": sum(
-                row["success_disagreement"] for row in pair_rows
-            ),
-            "pairs_with_failure_signal": sum(
-                row["has_failure_signal"] for row in pair_rows
-            ),
+            "success_disagreements": sum(row["success_disagreement"] for row in pair_rows),
+            "pairs_with_failure_signal": sum(row["has_failure_signal"] for row in pair_rows),
             "pairs_with_retry_edges": sum(
                 row["reference_retry_edges"] + row["comparator_retry_edges"] > 0
                 for row in pair_rows
@@ -342,18 +351,14 @@ def analyze_lifecycle_disagreements(
                 for row in pair_rows
             ),
             "pairs_with_selected_error_items": sum(
-                row["reference_selected_error_items"]
-                + row["comparator_selected_error_items"]
-                > 0
+                row["reference_selected_error_items"] + row["comparator_selected_error_items"] > 0
                 for row in pair_rows
             ),
             "reference_unresolved_failure_reason_items": sum(
-                row["reference_unresolved_failure_reason_items"]
-                for row in pair_rows
+                row["reference_unresolved_failure_reason_items"] for row in pair_rows
             ),
             "comparator_unresolved_failure_reason_items": sum(
-                row["comparator_unresolved_failure_reason_items"]
-                for row in pair_rows
+                row["comparator_unresolved_failure_reason_items"] for row in pair_rows
             ),
             "selected_comparator_traces": len(selected_trace_paths),
         },
@@ -404,9 +409,7 @@ def write_lifecycle_diagnostics(report: dict[str, Any], output_dir: Path) -> Non
             for key in flat:
                 if key not in fieldnames:
                     fieldnames.append(key)
-        with (output_dir / name).open(
-            "w", encoding="utf-8-sig", newline=""
-        ) as handle:
+        with (output_dir / name).open("w", encoding="utf-8-sig", newline="") as handle:
             writer = csv.DictWriter(handle, fieldnames=fieldnames)
             if fieldnames:
                 writer.writeheader()

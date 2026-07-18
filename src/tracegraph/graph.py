@@ -8,7 +8,16 @@ from pathlib import Path
 from threading import RLock
 from typing import Any, Iterable
 
-from .schema import Edge, EdgeType, LifecycleState, Node, NodeType, new_id
+from .schema import (
+    Edge,
+    EdgeType,
+    LifecycleProfile,
+    LifecycleState,
+    Node,
+    NodeType,
+    StorageState,
+    new_id,
+)
 
 
 class GraphValidationError(ValueError):
@@ -27,7 +36,7 @@ _EDGE_SIGNATURES: dict[EdgeType, tuple[set[NodeType], set[NodeType]]] = {
         {NodeType.DECISION},
     ),
     EdgeType.BLOCKS: (
-        {NodeType.ERROR, NodeType.CONSTRAINT},
+        {NodeType.ERROR, NodeType.OBSERVATION, NodeType.CONSTRAINT},
         {NodeType.TOOL_CALL, NodeType.MCP_CALL, NodeType.DECISION},
     ),
     EdgeType.RESOLVES: ({NodeType.OBSERVATION, NodeType.DECISION}, {NodeType.ERROR}),
@@ -44,15 +53,45 @@ _EDGE_SIGNATURES: dict[EdgeType, tuple[set[NodeType], set[NodeType]]] = {
         {NodeType.DECISION},
         {NodeType.TOOL_CALL, NodeType.MCP_CALL},
     ),
+    EdgeType.PROVIDES_INPUT: (
+        {NodeType.OBSERVATION, NodeType.ERROR, NodeType.SUMMARY, NodeType.ARCHIVE_HANDLE},
+        {NodeType.DECISION},
+    ),
+    EdgeType.RETRIED_BY: (
+        {NodeType.TOOL_CALL, NodeType.MCP_CALL},
+        {NodeType.TOOL_CALL, NodeType.MCP_CALL},
+    ),
+    EdgeType.RESOLVED_BY: (
+        {NodeType.ERROR, NodeType.OBSERVATION},
+        {NodeType.OBSERVATION, NodeType.DECISION},
+    ),
+    EdgeType.SUPERSEDED_BY: (
+        {NodeType.OBSERVATION, NodeType.ERROR},
+        {NodeType.OBSERVATION, NodeType.ERROR},
+    ),
+    EdgeType.SUMMARIZED_BY: (
+        {NodeType.OBSERVATION, NodeType.ERROR, NodeType.CONSTRAINT},
+        {NodeType.SUMMARY},
+    ),
+}
+
+_TEMPORAL_FORWARD_EDGE_TYPES = {
+    EdgeType.PROVIDES_INPUT,
+    EdgeType.RETRIED_BY,
+    EdgeType.RESOLVED_BY,
+    EdgeType.SUPERSEDED_BY,
+    EdgeType.SUMMARIZED_BY,
 }
 
 
 class TraceGraph:
     """A thread-safe, in-memory trace graph with JSON persistence."""
 
-    schema_version = "1.0"
+    schema_version = "2.0"
 
-    def __init__(self, session_id: str | None = None, metadata: dict[str, Any] | None = None) -> None:
+    def __init__(
+        self, session_id: str | None = None, metadata: dict[str, Any] | None = None
+    ) -> None:
         self.session_id = session_id or new_id("session")
         self.metadata = metadata or {}
         self.nodes: dict[str, Node] = {}
@@ -92,6 +131,15 @@ class TraceGraph:
                         f"invalid {edge.edge_type.value} signature: "
                         f"{source_type.value} -> {target_type.value}"
                     )
+                if (
+                    edge.edge_type in _TEMPORAL_FORWARD_EDGE_TYPES
+                    and self.nodes[edge.source].step_id > self.nodes[edge.target].step_id
+                ):
+                    raise GraphValidationError(
+                        f"temporally reversed {edge.edge_type.value} edge: "
+                        f"step {self.nodes[edge.source].step_id} -> "
+                        f"step {self.nodes[edge.target].step_id}"
+                    )
             self.edges[edge.edge_id] = edge
         return edge
 
@@ -128,6 +176,34 @@ class TraceGraph:
             if edge.source == node_id and (edge_type is None or edge.edge_type == edge_type)
         ]
 
+    def resolving_edges(self, node_id: str) -> list[Edge]:
+        """Return canonical v2 and legacy v1 edges that resolve ``node_id``."""
+
+        return self.outgoing(node_id, EdgeType.RESOLVED_BY) + self.incoming(
+            node_id, EdgeType.RESOLVES
+        )
+
+    def superseding_edges(self, node_id: str) -> list[Edge]:
+        """Return later observations that supersede ``node_id``."""
+
+        return self.outgoing(node_id, EdgeType.SUPERSEDED_BY) + self.incoming(
+            node_id, EdgeType.SUPERSEDES
+        )
+
+    def summarizing_edges(self, node_id: str) -> list[Edge]:
+        """Return summaries that replace ``node_id`` in active context."""
+
+        return self.outgoing(node_id, EdgeType.SUMMARIZED_BY) + self.incoming(
+            node_id, EdgeType.COMPRESSES
+        )
+
+    def retry_predecessors(self, node_id: str) -> list[str]:
+        """Return failed calls retried by ``node_id`` under either schema."""
+
+        predecessors = [edge.source for edge in self.incoming(node_id, EdgeType.RETRIED_BY)]
+        predecessors.extend(edge.target for edge in self.outgoing(node_id, EdgeType.RETRIES))
+        return list(dict.fromkeys(predecessors))
+
     def neighbors(self, node_id: str, *, reverse: bool = False) -> list[str]:
         edges = self.incoming(node_id) if reverse else self.outgoing(node_id)
         return [edge.source if reverse else edge.target for edge in edges]
@@ -160,12 +236,18 @@ class TraceGraph:
                 queue.append(edge.target)
         return False
 
-    def set_lifecycle(self, node_id: str, state: LifecycleState, *, active: bool | None = None) -> None:
+    def set_lifecycle(
+        self, node_id: str, state: LifecycleState, *, active: bool | None = None
+    ) -> None:
         with self._lock:
             node = self.nodes[node_id]
             node.lifecycle = state
             if active is not None:
                 node.active = active
+
+    def set_lifecycle_profile(self, node_id: str, profile: LifecycleProfile) -> None:
+        with self._lock:
+            self.nodes[node_id].lifecycle_profile = profile
 
     def find_nodes(
         self,
@@ -199,11 +281,18 @@ class TraceGraph:
                 errors.append(f"edge {edge.edge_id} has invalid source type")
             if self.nodes[edge.target].node_type not in targets:
                 errors.append(f"edge {edge.edge_id} has invalid target type")
+            if (
+                edge.edge_type in _TEMPORAL_FORWARD_EDGE_TYPES
+                and self.nodes[edge.source].step_id > self.nodes[edge.target].step_id
+            ):
+                errors.append(f"edge {edge.edge_id} is temporally reversed")
         for node in self.nodes.values():
             if node.side_effect and not node.raw_ref:
                 errors.append(f"side-effect node {node.node_id} is missing raw_ref")
             if node.lifecycle == LifecycleState.ARCHIVED and not node.raw_ref:
                 errors.append(f"archived node {node.node_id} is missing raw_ref")
+            if node.lifecycle_profile.storage == StorageState.ARCHIVED and not node.raw_ref:
+                errors.append(f"profile-archived node {node.node_id} is missing raw_ref")
         return errors
 
     def to_dict(self) -> dict[str, Any]:
@@ -218,6 +307,9 @@ class TraceGraph:
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "TraceGraph":
         graph = cls(session_id=data["session_id"], metadata=dict(data.get("metadata", {})))
+        source_version = str(data.get("schema_version", "1.0"))
+        if source_version != cls.schema_version:
+            graph.metadata.setdefault("loaded_schema_version", source_version)
         for item in data.get("nodes", []):
             graph.add_node(Node.from_dict(item))
         for item in data.get("edges", []):
@@ -243,4 +335,3 @@ class TraceGraph:
             self.add_node(node)
         for edge in edges:
             self.add_edge(edge)
-

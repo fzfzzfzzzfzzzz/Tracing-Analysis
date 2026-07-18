@@ -159,7 +159,12 @@ class ContextManagedAgent:
                     NodeType.SUMMARY,
                     NodeType.ARCHIVE_HANDLE,
                 }:
-                    graph.connect(decision.node_id, item.node_id, EdgeType.USES, confidence=0.8)
+                    graph.connect(
+                        item.node_id,
+                        decision.node_id,
+                        EdgeType.PROVIDES_INPUT,
+                        confidence=0.8,
+                    )
 
             if not turn.tool_calls:
                 final_text = turn.content
@@ -198,11 +203,6 @@ class ContextManagedAgent:
                     )
                 call.metadata["provider_call_id"] = request.call_id or f"step_{step_id}_{index}"
                 graph.connect(decision.node_id, call.node_id, EdgeType.LEADS_TO)
-                if result.node_type == NodeType.OBSERVATION:
-                    for retry in graph.outgoing(call.node_id, EdgeType.RETRIES):
-                        failed_edges = graph.outgoing(retry.target, EdgeType.FAILED_WITH)
-                        for failed_edge in failed_edges:
-                            graph.connect(result.node_id, failed_edge.target, EdgeType.RESOLVES)
 
         if decisions:
             graph.nodes[decisions[-1]].metadata["final"] = True

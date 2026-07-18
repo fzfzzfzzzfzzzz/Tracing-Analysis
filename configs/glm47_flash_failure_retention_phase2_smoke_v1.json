@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "matrix_id": "p2s2",
+  "description": "Phase-2 failure-retention smoke after factorized lifecycle, forward retry/resolve edges, and failed-retry supersession.",
+  "agent_model": "zai/glm-4.7-flash",
+  "user_model": "zai/glm-4.7-flash",
+  "token_accounting": "content_estimate_v2",
+  "temperature": 0.0,
+  "base_seed": 402,
+  "trials": 1,
+  "max_steps": 50,
+  "normalize_user_stop": true,
+  "timeout_seconds": 900,
+  "inter_run_delay_seconds": 20,
+  "estimated_cost_per_session_usd": 0.0001,
+  "domains": [
+    {
+      "name": "airline",
+      "task_ids": ["21", "23"]
+    }
+  ],
+  "conditions": [
+    {
+      "manager": "ours_without_failure_retention",
+      "budget": "4096"
+    },
+    {
+      "manager": "full_ours",
+      "budget": "4096"
+    }
+  ],
+  "interpretation_warning": "Pipeline and signal smoke only. Tasks 21 and 23 were selected because schema-v2 reimport found structural retry/resolve signal in prior trajectories. Effectiveness claims require the frozen multi-task rerun."
+}

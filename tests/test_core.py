@@ -100,9 +100,13 @@ class ToolExecutorTests(unittest.TestCase):
                 payload={"items": [1]},
             )
             retry_edges = [
-                edge for edge in graph.edges.values() if edge.edge_type == EdgeType.RETRIES
+                edge for edge in graph.edges.values() if edge.edge_type == EdgeType.RETRIED_BY
             ]
             self.assertEqual(len(retry_edges), 1)
+            self.assertLessEqual(
+                graph.nodes[retry_edges[0].source].step_id,
+                graph.nodes[retry_edges[0].target].step_id,
+            )
 
     def test_side_effect_call_is_auditable(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

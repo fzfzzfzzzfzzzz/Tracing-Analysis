@@ -43,6 +43,15 @@ class EdgeType(str, Enum):
     COMPRESSES = "compresses"
     RETRIES = "retries"
     LEADS_TO = "leads_to"
+    # Canonical v2 relations are directed from earlier evidence/action to the
+    # later event that consumes, revises, or discharges it.  The legacy
+    # relations above remain readable so existing experiment traces migrate
+    # without a destructive rewrite.
+    PROVIDES_INPUT = "provides_input"
+    RETRIED_BY = "retried_by"
+    RESOLVED_BY = "resolved_by"
+    SUPERSEDED_BY = "superseded_by"
+    SUMMARIZED_BY = "summarized_by"
 
 
 class LifecycleState(str, Enum):
@@ -55,6 +64,146 @@ class LifecycleState(str, Enum):
     SUPERSEDED = "superseded"
     ARCHIVED = "archived"
     AUDIT_REQUIRED = "audit_required"
+
+
+class RelevanceState(str, Enum):
+    """Whether a record is still useful to the agent's current decision."""
+
+    UNCLASSIFIED = "unclassified"
+    ACTIVE = "active"
+    DORMANT = "dormant"
+    CONSUMED = "consumed"
+
+
+class ValidityState(str, Enum):
+    """Epistemic state, kept independent from relevance and storage."""
+
+    UNKNOWN = "unknown"
+    VALID = "valid"
+    NEGATIVE_UNRESOLVED = "negative_unresolved"
+    NEGATIVE_RESOLVED = "negative_resolved"
+    SUPERSEDED = "superseded"
+
+
+class StorageState(str, Enum):
+    """Physical representation of a record in the active context system."""
+
+    RAW_IN_CONTEXT = "raw_in_context"
+    SUMMARIZED_IN_CONTEXT = "summarized_in_context"
+    ARCHIVED = "archived"
+    EVICTED = "evicted"
+
+
+class RetentionObligation(str, Enum):
+    """Hard reasons that prevent a record from being silently discarded."""
+
+    CRITICAL_EVIDENCE = "critical_evidence"
+    ACTIVE_CONSTRAINT = "active_constraint"
+    AUDIT_REQUIRED = "audit_required"
+    RETAIN_UNTIL_ACTION_COMPLETE = "retain_until_action_complete"
+
+
+class SemanticOutcome(str, Enum):
+    """Semantic result of a tool call, separate from transport execution."""
+
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    INCONCLUSIVE = "inconclusive"
+    POLICY_DENIED = "policy_denied"
+    TEST_FAILED = "test_failed"
+
+
+@dataclass(slots=True)
+class LifecycleProfile:
+    """Factorized lifecycle state used by schema v2.
+
+    A node can now be consumed but still be critical evidence, or archived but
+    still audit-required.  Those combinations were impossible to represent in
+    the legacy single-label lifecycle enum.
+    """
+
+    relevance: RelevanceState = RelevanceState.UNCLASSIFIED
+    validity: ValidityState = ValidityState.UNKNOWN
+    storage: StorageState = StorageState.RAW_IN_CONTEXT
+    obligations: tuple[RetentionObligation, ...] = ()
+    scope: dict[str, Any] = field(default_factory=dict)
+    confidence: float = 1.0
+    inferred_by: str = "uninitialized"
+    inference_version: str = "lifecycle_profile_v2"
+    trigger_node_ids: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        if not 0.0 <= self.confidence <= 1.0:
+            raise ValueError("lifecycle profile confidence must be between 0 and 1")
+        self.obligations = tuple(dict.fromkeys(self.obligations))
+        self.trigger_node_ids = tuple(dict.fromkeys(self.trigger_node_ids))
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "relevance": self.relevance.value,
+            "validity": self.validity.value,
+            "storage": self.storage.value,
+            "obligations": [item.value for item in self.obligations],
+            "scope": dict(self.scope),
+            "confidence": self.confidence,
+            "inferred_by": self.inferred_by,
+            "inference_version": self.inference_version,
+            "trigger_node_ids": list(self.trigger_node_ids),
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "LifecycleProfile":
+        values = dict(data)
+        values["relevance"] = RelevanceState(
+            values.get("relevance", RelevanceState.UNCLASSIFIED.value)
+        )
+        values["validity"] = ValidityState(values.get("validity", ValidityState.UNKNOWN.value))
+        values["storage"] = StorageState(values.get("storage", StorageState.RAW_IN_CONTEXT.value))
+        values["obligations"] = tuple(
+            RetentionObligation(item) for item in values.get("obligations", ())
+        )
+        values["trigger_node_ids"] = tuple(values.get("trigger_node_ids", ()))
+        return cls(**values)
+
+    @classmethod
+    def from_legacy(
+        cls,
+        *,
+        lifecycle: LifecycleState,
+        node_type: NodeType,
+        active: bool,
+        side_effect: bool,
+    ) -> "LifecycleProfile":
+        relevance = RelevanceState.ACTIVE if active else RelevanceState.CONSUMED
+        validity = ValidityState.UNKNOWN
+        storage = StorageState.RAW_IN_CONTEXT
+        obligations: list[RetentionObligation] = []
+        if lifecycle == LifecycleState.UNRESOLVED_FAILURE:
+            validity = ValidityState.NEGATIVE_UNRESOLVED
+            obligations.append(RetentionObligation.RETAIN_UNTIL_ACTION_COMPLETE)
+        elif lifecycle == LifecycleState.RESOLVED_FAILURE:
+            validity = ValidityState.NEGATIVE_RESOLVED
+        elif lifecycle == LifecycleState.SUPERSEDED:
+            validity = ValidityState.SUPERSEDED
+        elif node_type in {NodeType.OBSERVATION, NodeType.SUMMARY}:
+            validity = ValidityState.VALID
+        if lifecycle == LifecycleState.ARCHIVED:
+            storage = StorageState.ARCHIVED
+        if lifecycle == LifecycleState.CRITICAL_EVIDENCE:
+            obligations.append(RetentionObligation.CRITICAL_EVIDENCE)
+        if lifecycle == LifecycleState.AUDIT_REQUIRED or side_effect:
+            obligations.append(RetentionObligation.AUDIT_REQUIRED)
+        if node_type == NodeType.CONSTRAINT and active:
+            obligations.append(RetentionObligation.ACTIVE_CONSTRAINT)
+        return cls(
+            relevance=relevance,
+            validity=validity,
+            storage=storage,
+            obligations=tuple(obligations),
+            confidence=0.5,
+            inferred_by="legacy_projection",
+            inference_version="legacy_to_lifecycle_profile_v2",
+        )
 
 
 class ToolStatus(str, Enum):
@@ -81,6 +230,7 @@ class Node:
     side_effect: bool = False
     active: bool = True
     metadata: dict[str, Any] = field(default_factory=dict)
+    lifecycle_profile: LifecycleProfile = field(default_factory=LifecycleProfile)
     node_id: str = field(default_factory=lambda: new_id("node"))
     created_at: str = field(default_factory=utc_now)
 
@@ -88,6 +238,7 @@ class Node:
         data = asdict(self)
         data["node_type"] = self.node_type.value
         data["lifecycle"] = self.lifecycle.value
+        data["lifecycle_profile"] = self.lifecycle_profile.to_dict()
         return data
 
     @classmethod
@@ -95,6 +246,16 @@ class Node:
         values = dict(data)
         values["node_type"] = NodeType(values["node_type"])
         values["lifecycle"] = LifecycleState(values["lifecycle"])
+        profile = values.get("lifecycle_profile")
+        if isinstance(profile, dict):
+            values["lifecycle_profile"] = LifecycleProfile.from_dict(profile)
+        else:
+            values["lifecycle_profile"] = LifecycleProfile.from_legacy(
+                lifecycle=values["lifecycle"],
+                node_type=values["node_type"],
+                active=bool(values.get("active", True)),
+                side_effect=bool(values.get("side_effect", False)),
+            )
         return cls(**values)
 
 
@@ -122,4 +283,3 @@ class Edge:
         values = dict(data)
         values["edge_type"] = EdgeType(values["edge_type"])
         return cls(**values)
-

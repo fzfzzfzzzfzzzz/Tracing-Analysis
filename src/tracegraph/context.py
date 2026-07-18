@@ -10,7 +10,16 @@ from typing import Any, Callable, Iterable
 from .capture import estimate_tokens
 from .graph import TraceGraph
 from .lifecycle import LifecycleEngine
-from .schema import EdgeType, LifecycleState, Node, NodeType
+from .schema import (
+    EdgeType,
+    LifecycleState,
+    Node,
+    NodeType,
+    RelevanceState,
+    RetentionObligation,
+    StorageState,
+    ValidityState,
+)
 
 
 @dataclass(slots=True)
@@ -125,7 +134,9 @@ class ContextManager(ABC):
         return ContextView(
             manager=self.name,
             items=item_list,
-            original_tokens=sum(node.token_count or estimate_tokens(node.content) for node in all_nodes),
+            original_tokens=sum(
+                node.token_count or estimate_tokens(node.content) for node in all_nodes
+            ),
             budget=budget,
             excluded_node_ids=[node.node_id for node in all_nodes if node.node_id not in selected],
             metadata=metadata or {},
@@ -137,7 +148,11 @@ def _fits(current: int, item: ContextItem, budget: int | None) -> bool:
 
 
 def _truncate_summary(content: Any, max_tokens: int = 32) -> str:
-    text = content if isinstance(content, str) else json.dumps(content, ensure_ascii=False, default=str)
+    text = (
+        content
+        if isinstance(content, str)
+        else json.dumps(content, ensure_ascii=False, default=str)
+    )
     max_chars = max(16, max_tokens * 4)
     return text if len(text) <= max_chars else text[: max_chars - 1] + "…"
 
@@ -229,7 +244,9 @@ class LLMOnlyPruningManager(ContextManager):
     def _score(self, node: Node, graph: TraceGraph) -> float:
         if self.scorer is not None:
             return float(self.scorer(node, graph))
-        score = node.step_id / max(1, max((item.step_id for item in graph.nodes.values()), default=1))
+        score = node.step_id / max(
+            1, max((item.step_id for item in graph.nodes.values()), default=1)
+        )
         if node.node_type in {NodeType.ERROR, NodeType.CONSTRAINT, NodeType.DECISION}:
             score += 1.0
         if node.lifecycle == LifecycleState.CRITICAL_EVIDENCE:
@@ -319,32 +336,48 @@ class GraphLifecycleManager(ContextManager):
 
     def _reasons(self, graph: TraceGraph, node: Node) -> list[str]:
         reasons: list[str] = []
+        profile = node.lifecycle_profile
+        is_negative = profile.validity in {
+            ValidityState.NEGATIVE_UNRESOLVED,
+            ValidityState.NEGATIVE_RESOLVED,
+        }
         # Ablations must disable the target signal completely; otherwise the
         # generic Active/blocks rules would silently reintroduce it.
         if node.node_type == NodeType.CONSTRAINT and not self.retain_constraints:
             return reasons
-        if node.node_type == NodeType.ERROR and not self.retain_failures:
+        if (node.node_type == NodeType.ERROR or is_negative) and not self.retain_failures:
             return reasons
         if node.node_type in {NodeType.GOAL, NodeType.SUBGOAL} and node.active:
             reasons.append("active_goal")
         if self.retain_constraints and node.node_type == NodeType.CONSTRAINT and node.active:
             reasons.append("active_constraint")
-        if self.retain_failures and node.node_type == NodeType.ERROR:
-            if not graph.incoming(node.node_id, EdgeType.RESOLVES):
-                reasons.append("unresolved_failure")
-        if node.side_effect:
+        if self.retain_failures and profile.validity == ValidityState.NEGATIVE_UNRESOLVED:
+            reasons.append(
+                "unresolved_failure"
+                if node.node_type == NodeType.ERROR
+                else "unresolved_negative_evidence"
+            )
+        if RetentionObligation.AUDIT_REQUIRED in profile.obligations or node.side_effect:
             reasons.append("audit_required")
-        if self.use_lifecycle and node.lifecycle in {
-            LifecycleState.ACTIVE,
-            LifecycleState.CRITICAL_EVIDENCE,
-            LifecycleState.AUDIT_REQUIRED,
-        }:
-            reasons.append(f"lifecycle:{node.lifecycle.value}")
+        if self.use_lifecycle:
+            if profile.relevance == RelevanceState.ACTIVE:
+                reasons.append("lifecycle:active")
+            if RetentionObligation.CRITICAL_EVIDENCE in profile.obligations:
+                reasons.append("obligation:critical_evidence")
+            if (
+                self.retain_constraints
+                and RetentionObligation.ACTIVE_CONSTRAINT in profile.obligations
+            ):
+                reasons.append("obligation:active_constraint")
+            if (
+                self.retain_failures
+                and RetentionObligation.RETAIN_UNTIL_ACTION_COMPLETE in profile.obligations
+            ):
+                reasons.append("obligation:retain_until_action_complete")
         if self.use_graph_edges:
             final_ids = self.engine.final_decision_ids(graph)
             if any(
-                edge.target in final_ids
-                for edge in graph.outgoing(node.node_id, EdgeType.SUPPORTS)
+                edge.target in final_ids for edge in graph.outgoing(node.node_id, EdgeType.SUPPORTS)
             ):
                 reasons.append("supports_final_decision")
             if graph.outgoing(node.node_id, EdgeType.BLOCKS):
@@ -362,7 +395,14 @@ class GraphLifecycleManager(ContextManager):
             if reasons:
                 mandatory.append(ContextItem.from_node(node, ",".join(reasons)))
                 continue
-            if node.lifecycle in {LifecycleState.RESOLVED_FAILURE, LifecycleState.SUPERSEDED}:
+            profile = node.lifecycle_profile
+            if profile.validity in {
+                ValidityState.NEGATIVE_RESOLVED,
+                ValidityState.SUPERSEDED,
+            } or node.lifecycle in {
+                LifecycleState.RESOLVED_FAILURE,
+                LifecycleState.SUPERSEDED,
+            }:
                 summary = _truncate_summary(node.content, 16)
                 item = ContextItem(
                     node_id=node.node_id,
@@ -375,7 +415,10 @@ class GraphLifecycleManager(ContextManager):
                     preserves_sources=False,
                 )
                 optional.append((node.step_id + 10_000, item))
-            elif node.lifecycle == LifecycleState.ARCHIVED:
+            elif (
+                profile.storage == StorageState.ARCHIVED
+                or node.lifecycle == LifecycleState.ARCHIVED
+            ):
                 if node.raw_ref:
                     handle = ContextItem(
                         node_id=node.node_id,
@@ -406,6 +449,7 @@ class GraphLifecycleManager(ContextManager):
                 "use_lifecycle": self.use_lifecycle,
                 "retain_failures": self.retain_failures,
                 "retain_constraints": self.retain_constraints,
+                "lifecycle_profile_version": "lifecycle_profile_v2",
                 "mandatory_tokens": sum(item.token_count for item in mandatory),
                 "over_budget_due_to_hard_constraints": budget is not None
                 and sum(item.token_count for item in mandatory) > budget,

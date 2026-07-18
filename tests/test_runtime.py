@@ -46,11 +46,19 @@ class RuntimeTests(unittest.TestCase):
             self.assertEqual(result.termination_reason, "model_final")
             self.assertEqual(result.final_text, "ALPHA is the verified answer.")
             self.assertEqual(
-                len([edge for edge in graph.edges.values() if edge.edge_type == EdgeType.RETRIES]),
+                len(
+                    [edge for edge in graph.edges.values() if edge.edge_type == EdgeType.RETRIED_BY]
+                ),
                 1,
             )
             self.assertEqual(
-                len([edge for edge in graph.edges.values() if edge.edge_type == EdgeType.RESOLVES]),
+                len(
+                    [
+                        edge
+                        for edge in graph.edges.values()
+                        if edge.edge_type == EdgeType.RESOLVED_BY
+                    ]
+                ),
                 1,
             )
             errors = graph.find_nodes(node_types={NodeType.ERROR})

@@ -51,7 +51,7 @@ def tau3_fixture() -> dict:
                     {
                         "id": "c2",
                         "role": "tool",
-                        "content": "{\"status\": \"cancelled\"}",
+                        "content": '{"status": "cancelled"}',
                         "error": False,
                         "turn_idx": 6,
                     },
@@ -79,15 +79,27 @@ class TauAdapterTests(unittest.TestCase):
             self.assertEqual(len(errors), 1)
             self.assertEqual(errors[0].lifecycle, LifecycleState.RESOLVED_FAILURE)
             self.assertEqual(
-                len([edge for edge in graph.edges.values() if edge.edge_type == EdgeType.RETRIES]),
+                len(
+                    [edge for edge in graph.edges.values() if edge.edge_type == EdgeType.RETRIED_BY]
+                ),
                 1,
             )
             self.assertEqual(
-                len([edge for edge in graph.edges.values() if edge.edge_type == EdgeType.RESOLVES]),
+                len(
+                    [
+                        edge
+                        for edge in graph.edges.values()
+                        if edge.edge_type == EdgeType.RESOLVED_BY
+                    ]
+                ),
                 1,
             )
             self.assertTrue(
-                all(store.exists(node.raw_ref or "") for node in graph.nodes.values() if node.raw_ref)
+                all(
+                    store.exists(node.raw_ref or "")
+                    for node in graph.nodes.values()
+                    if node.raw_ref
+                )
             )
 
     def test_import_current_directory_results(self) -> None:
@@ -115,7 +127,9 @@ class TauAdapterTests(unittest.TestCase):
             }
             source = Path(directory) / "legacy.json"
             source.write_text(json.dumps(payload), encoding="utf-8")
-            graph = TauTraceImporter(ArchiveStore(Path(directory) / "archive")).import_path(source)[0]
+            graph = TauTraceImporter(ArchiveStore(Path(directory) / "archive")).import_path(source)[
+                0
+            ]
             self.assertEqual(graph.metadata["task_success"], 0.5)
             decisions = graph.find_nodes(node_types={NodeType.DECISION})
             self.assertTrue(decisions[-1].metadata["final"])
@@ -133,7 +147,7 @@ class TauAdapterTests(unittest.TestCase):
                                 "id": "legacy-call",
                                 "function": {
                                     "name": "book_reservation",
-                                    "arguments": "{\"id\": \"A-1\"}",
+                                    "arguments": '{"id": "A-1"}',
                                 },
                             }
                         ],
@@ -148,7 +162,9 @@ class TauAdapterTests(unittest.TestCase):
             }
             source = Path(directory) / "legacy-error.json"
             source.write_text(json.dumps(payload), encoding="utf-8")
-            graph = TauTraceImporter(ArchiveStore(Path(directory) / "archive")).import_path(source)[0]
+            graph = TauTraceImporter(ArchiveStore(Path(directory) / "archive")).import_path(source)[
+                0
+            ]
             errors = graph.find_nodes(node_types={NodeType.ERROR})
             self.assertEqual(len(errors), 1)
             self.assertEqual(errors[0].lifecycle, LifecycleState.UNRESOLVED_FAILURE)
@@ -194,9 +210,9 @@ class TauAdapterTests(unittest.TestCase):
             source = Path(directory) / "usage.json"
             source.write_text(json.dumps(payload), encoding="utf-8")
 
-            graph = TauTraceImporter(
-                ArchiveStore(Path(directory) / "archive")
-            ).import_path(source)[0]
+            graph = TauTraceImporter(ArchiveStore(Path(directory) / "archive")).import_path(source)[
+                0
+            ]
 
             user_goal = [
                 node
