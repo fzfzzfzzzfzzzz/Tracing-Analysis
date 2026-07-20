@@ -1,21 +1,50 @@
 # Tools Tracing 项目 Agent 交接文档
 
-> 快照日期：2026-07-19
+> 快照日期：2026-07-20（Phase 4 P3b-A 更新）
 > 仓库：`E:\科研\Tools Tracing`
-> 当前测试基线：`103 passed`
-> 当前研究判定：P0/P1 工程与机制实验完成；P2 为 Codex 临时版、不是人工 gold；P3 修复后复合分析完成；P4 工程完成但扩展实验按预注册 gate 判定为 **No-Go**。
+> 当前测试基线：`117 passed`，ruff 全仓通过
+> 当前研究判定：P0/P1 工程与机制实验完成；P2 为 Codex 临时版、不是人工 gold；P3 修复后复合分析完成；原 P4 扩展实验为 **No-Go**；Phase 4/P3b-A 的投稿级研究基础设施 gate 已通过，但正向经验主张与 P3b-B 外部实验仍为 **No-Go**。
 
 ## 0. 接手后的第一条原则
 
 不要继续运行 P4，不要原样扩大现有 P3 矩阵，也不要把 Codex A/B 改名为人工标注。
 
-当前最有价值的下一步不是增加模型、环境或 baseline，而是修复 P3 的**机制可识别性**：把“Card 是否应该继续保留”和“Card 因何失效”分开，随后用相同失败前缀的 fork 实验直接比较 Card 与 Remove。
+P3 的**机制可识别性基础设施**已经在 Phase 4/P3b-A 修复：状态/原因已拆分，trajectory/evaluator 已解耦，next-3-action 指标已在冻结矩阵回放。不要增加模型、环境或 baseline，也不要直接启动 common-prefix fork。下一步只能是先准备 10 个 hash 匹配、Card 真正可见的可重放 prefix，并在用户明确批准 40 个短分支、模型、预算和停止条件后再运行 pilot；独立人工 v2 gold 仍是正式经验主张的 blocker。
+
+### 0.1 Phase 4/P3b-A 最新状态
+
+实施计划与结果：
+
+- `第四阶段修改计划.md`
+- `docs/PHASE4_RESULTS.md`
+- `outputs/phase4/phase4_gate_report.json`
+
+已完成：
+
+- failure-chain v2：60/60 非破坏迁移，2 个 lossy expiry 显式审计，两份干净人工盲表；
+- provisional v2 诊断：retention precision `0.176`、recall `1.000`、expiry-cause accuracy `0.744`；仍不是人工 gold；
+- immutable generation artifact、append-only evaluator attempts、raw response 保存和 simulation/hash reward merge；
+- 零 API 故障注入 10/10 checks 通过；
+- Phase 3 冻结矩阵 next-3-action 回放：60 sessions、49 eligible events、45 有 action、98/98 action-view 对齐；
+- Card 条件：7 events、6 有 action、目标 Card 可见 12 次、repeat/repair/resolve 为 `0/1/1`；仅为 post-hoc，不是因果结果；
+- `phase4.engineering_gate_passed=true`；
+- `phase4.empirical_claim_gate_passed=false`；
+- `p3b_b.go_gate_passed=false` 且 `external_api_execution_authorized=false`。
+
+新增产物必须保留：
+
+- `outputs/phase4/failure_chain_v2/`
+- `outputs/phase4/post_failure_phase3_diagnostic/`
+- `outputs/phase4/trajectory_protocol_audit.json`
+- `outputs/phase4/phase4_gate_report.json`
+
+下文第 5 节是本次更新前的 P3b 设计依据；其中 P3b-A 已执行完毕，P3b-B 仍未获授权。
 
 ## 1. 接手须知
 
 ### 1.1 工作树不是干净状态
 
-当前仓库包含大量尚未提交的第三阶段修改和新增文件。这些修改是本阶段工作的主体，不是可随意清理的临时文件。
+当前仓库包含尚未提交的第四阶段修改和新增文件。这些修改是本阶段工作的主体，不是可随意清理的临时文件。
 
 禁止执行：
 

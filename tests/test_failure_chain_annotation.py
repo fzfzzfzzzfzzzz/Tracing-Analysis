@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import csv
-import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -42,7 +41,6 @@ class FailureChainAnnotationTests(unittest.TestCase):
     ) -> None:
         with path.open(encoding="utf-8-sig", newline="") as handle:
             rows = list(csv.DictReader(handle))
-            fields = handle.seek(0) or list(rows[0])
         for row in rows:
             for field in LABEL_FIELDS:
                 row[field] = predictions[row["annotation_id"]][field]

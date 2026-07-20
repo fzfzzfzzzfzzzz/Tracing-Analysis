@@ -170,7 +170,7 @@ def _initial_trace(
             "content": f"Complete {spec.intervention_kind} for {spec.entity_id}.",
         }
     ]
-    goal = graph.create_node(
+    graph.create_node(
         NodeType.GOAL,
         messages[0]["content"],
         0,

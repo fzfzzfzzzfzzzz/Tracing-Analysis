@@ -18,6 +18,7 @@
 - hash 固定的 Microsoft ACON 官方 observation/history optimizer 外部适配器；
 - 主指标与结构可靠性指标、JSONL/CSV 聚合结果和 provenance 清单；
 - 第三阶段 P1 受控干预、P2 failure-chain 双盲包/评分器、P3/P4 fail-closed Go/No-Go；
+- 第四阶段 factorized v2 构念、immutable trajectory/offline evaluator 协议、next-3-action 指标和独立工程/经验门禁；
 - Windows/Linux、Python 3.11–3.13 CI。
 
 ## 快速开始
@@ -90,6 +91,8 @@ $env:TRACEGRAPH_ACON_CONFIG = "configs/acon_tau3.json"
 
 第三阶段已按预注册停止规则收口：P1 的 128-run 机制实验通过；P2 已完成明确标注 provenance 的 Codex 临时 A/B，但不是独立人工 gold；P3 已完成 24-session 平衡补跑和 60-session 修复后复合分析；P4 的 ACON+card 工程与门禁完成，但最新 gate 为 No-Go，因此没有绕过门禁运行扩展。精确数值和 blocker 见 [第三阶段执行结果](docs/PHASE3_RESULTS.md)。
 
+第四阶段已按 handoff 完成零 API 的 P3b-A 可识别性修复：v2 将 Card retention 状态与 expiry cause 拆分；τ³ 支持先持久化 trajectory、再离线评测与按 simulation/hash 合并 reward；冻结的 60-session 复合矩阵已生成 next-3-action 报告（49 个 eligible failure events、98/98 action-view 对齐）。工程 gate 已通过，但 v2 仍是 Codex provisional，common-prefix fork 尚未执行，因此正向经验主张与 P3b-B 继续 No-Go。实现、数值和复现命令见 [第四阶段执行结果](docs/PHASE4_RESULTS.md)。
+
 ## 文档
 
 - [架构与数据流](docs/ARCHITECTURE.md)
@@ -106,6 +109,8 @@ $env:TRACEGRAPH_ACON_CONFIG = "configs/acon_tau3.json"
 - [强 baseline 官方实现审计](docs/STRONG_BASELINES.md)
 - [第三阶段修改计划](第三阶段修改计划.md)
 - [第三阶段执行结果与门槛状态](docs/PHASE3_RESULTS.md)
+- [第四阶段修改计划](第四阶段修改计划.md)
+- [第四阶段执行结果与门槛状态](docs/PHASE4_RESULTS.md)
 - [数据与结果格式](docs/DATA_FORMAT.md)
 - [已执行验证](docs/VALIDATION.md)
 - [调研报告逐项追踪](docs/REQUIREMENTS_TRACEABILITY.md)

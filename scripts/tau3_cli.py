@@ -41,45 +41,18 @@ def _configure_nl_evaluator() -> None:
     model = os.environ.get("TRACEGRAPH_TAU_NL_EVALUATOR_MODEL", "").strip()
     if not model:
         return
-    import tau2.config as tau_config
-
     evaluator_args = {
         "temperature": 0.0,
         "max_tokens": 512,
         "extra_body": {"thinking": {"type": "disabled"}},
     }
-    tau_config.DEFAULT_LLM_NL_ASSERTIONS = model
-    tau_config.DEFAULT_LLM_NL_ASSERTIONS_ARGS = evaluator_args
+    from tracegraph.tau3_offline import configure_tau_nl_evaluator
 
-    # Importing ``tau2.config`` first executes ``tau2.__init__``.  The package
-    # initializer eagerly imports the NL evaluator, whose module copies these
-    # defaults with ``from tau2.config import ...``.  Update those copied
-    # module globals too; changing only ``tau2.config`` leaves the evaluator on
-    # the upstream OpenAI default despite the apparently-correct config value.
-    import tau2.evaluator.evaluator_nl_assertions as nl_evaluator
-    from tau2.utils.llm_utils import extract_json_from_llm_response
-
-    nl_evaluator.DEFAULT_LLM_NL_ASSERTIONS = model
-    nl_evaluator.DEFAULT_LLM_NL_ASSERTIONS_ARGS = evaluator_args
-
-    class _EvaluatorJsonAdapter:
-        """Keep strict JSON first, then accept a fenced LLM JSON object."""
-
-        @staticmethod
-        def loads(value: str) -> object:
-            try:
-                return json.loads(value)
-            except json.JSONDecodeError:
-                extracted = extract_json_from_llm_response(value)
-                if extracted == value:
-                    raise
-                return json.loads(extracted)
-
-    # The upstream evaluator binds the stdlib ``json`` module as a module
-    # global and calls only ``json.loads``.  Rebinding that one evaluator
-    # global keeps the compatibility change local; it does not monkeypatch
-    # Python's shared json module or any vendor source file.
-    nl_evaluator.json = _EvaluatorJsonAdapter
+    configure_tau_nl_evaluator(
+        model=model,
+        args=evaluator_args,
+        json_mode="strict_then_extract",
+    )
     os.environ["TRACEGRAPH_TAU_NL_EVALUATOR_ARGS"] = json.dumps(
         evaluator_args,
         ensure_ascii=True,
@@ -89,6 +62,10 @@ def _configure_nl_evaluator() -> None:
 
 
 _configure_nl_evaluator()
+
+from tracegraph.tau3_offline import install_decoupled_tau3_runner_from_env  # noqa: E402
+
+install_decoupled_tau3_runner_from_env()
 
 from tracegraph.integrations.tau3_agent import register_tau3_agent  # noqa: E402
 from tracegraph.integrations.tau3_user import register_tau3_user  # noqa: E402

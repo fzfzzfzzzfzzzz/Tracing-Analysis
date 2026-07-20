@@ -34,6 +34,8 @@ param(
     [string]$TokenAccounting = "",
     [string]$SaveTo = "",
     [string]$TraceOutputDir = "",
+    [string]$TrajectoryStore = "",
+    [switch]$GenerationOnly,
     [switch]$VerboseLogs,
     [switch]$NormalizeUserStop,
     [switch]$DryRun
@@ -100,6 +102,15 @@ if ([string]::IsNullOrWhiteSpace($TraceOutputDir)) {
 $env:TRACEGRAPH_MANAGER = $Manager
 $env:TRACEGRAPH_BUDGET = $Budget
 $env:TRACEGRAPH_OUTPUT_DIR = $TraceOutputDir
+if ($GenerationOnly) {
+    if ([string]::IsNullOrWhiteSpace($TrajectoryStore)) {
+        throw "GenerationOnly requires an explicit TrajectoryStore path."
+    }
+    $env:TRACEGRAPH_TAU_TRAJECTORY_STORE = $TrajectoryStore
+    $env:TRACEGRAPH_TAU_EXECUTION_MODE = "generation_only"
+} elseif (-not [string]::IsNullOrWhiteSpace($TrajectoryStore)) {
+    throw "TrajectoryStore is only valid with GenerationOnly."
+}
 if (-not [string]::IsNullOrWhiteSpace($TokenAccounting)) {
     $env:TRACEGRAPH_TOKEN_ACCOUNTING = $TokenAccounting
 }
@@ -165,6 +176,8 @@ $runConfig = [pscustomobject]@{
     token_accounting = $TokenAccounting
     save_to = $SaveTo
     trace_output = $TraceOutputDir
+    trajectory_store = $TrajectoryStore
+    execution_mode = if ($GenerationOnly) { "generation_only" } else { "coupled_upstream" }
 }
 $runConfig
 if ($DryRun) {

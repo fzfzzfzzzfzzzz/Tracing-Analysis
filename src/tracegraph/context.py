@@ -14,7 +14,6 @@ from .lifecycle import LifecycleEngine
 from .schema import (
     EdgeType,
     FailureCard,
-    FailureClass,
     LifecycleState,
     Node,
     NodeType,
