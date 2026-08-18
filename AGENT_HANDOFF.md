@@ -1,15 +1,65 @@
 # Tools Tracing 项目 Agent 交接文档
 
+> **2026-08-01 Phase 5.2 执行中（外部限流暂停）：** P52-WP0 checkpoint 已冻结，SHA-256
+> 为 `0827bc97ffe661156ab6120a0bebe8e56a5957f1104a63a8c98989cabd54f0d0`。方案 A 的
+> GLM 双遍盲化协议、15-tool `ToolEffectSpec` 注册表、实体/字段状态机、可恢复 runner、
+> 共识/门禁和 held-out evaluator 已实现。冻结集为 261 prefixes，其中 185 个调用
+> `glm-4.7-flash` 两遍、76 个结构化为无机会；每遍 1,092 个 call/result 单元，共 370
+> 请求，估算输入 3,528,760 token，低于 3,600,000 硬上限。全语料无标签预演覆盖
+> 1,092 个预测，determinism、future-suffix independence、EventGraph unchanged、archive、
+> protocol、projection-send-forbidden 均为 100%。首个真实请求成功；随后同一 Pass B 单元
+> 四次收到 Z.AI HTTP 429/code 1305。2026-08-01 再探测时 Pass B 成功，但下一条请求立即
+> 再次 429，说明限流只短暂解除；当前 7/400 HTTP attempts、2/370 valid，累计 usage 为
+> 16,085 input / 1,016 output，已保存脱敏响应和 `pause_0002`，收集是“可恢复暂停”，不是质量
+> No-Go。恢复时只能先用 `scripts/record_phase52_pricing_snapshot.py` 记录追加式官方免费价格
+> 复核，再把新快照路径和哈希交给原 runner；禁止付费、第二模型、fallback、
+> Scheme B 或行为实验。最新全量验证为 `190 passed`，Ruff/compileall/diff-check、配置 schema、
+> 370-request regeneration 和 partial-artifact hash audit 均通过。完整说明见
+> [`docs/PHASE52_IMPLEMENTATION.md`](docs/PHASE52_IMPLEMENTATION.md)。
+
+> **2026-08-01 Phase 5.1 P51-G0 Stop：** 已按独立增量计划完成纯本地生命周期证据
+> ceiling audit。全部 261 个冻结 prefixes 均纳入，185 个 cost-eligible；Grade A
+> `complete_scalar_consumption` 将有缩减的 eligible prefixes 从 F5 的 4 个提高到 10 个，
+> Grade B 乐观上限也只有 36 个，低于改变配对中位数所需的预冻结 93 个，且中位数仍为
+> `0`。P51-G0 判定 `stop_old_corpus_path`。这不推翻结构化运行时证据的方向，而是说明旧
+> traces 不含足够的 effect scope/version/receipt/consumption 事实；不得继续在旧语料调规则，
+> 也不得自动进入新遥测采集。结果见
+> [`docs/PHASE51_LIFECYCLE_EVIDENCE_RESULTS.md`](docs/PHASE51_LIFECYCLE_EVIDENCE_RESULTS.md)。
+> F5-G1 仍为 No-Go，Structured/外部试验仍未授权，provider generations 仍为 0；最新全量
+> 验证为 `177 passed`、ruff/compileall/diff-check 通过。
+
+> **2026-07-28 Phase 5 F5-G1 No-Go：** outcome-blind development manifest 已冻结全部
+> 261 个旧 decision prefixes（30 sessions；185 个 cost-eligible）。离线 replay-v2 的
+> determinism、future-suffix、protocol、root/critical recall、archive reactivation 和
+> request hash 均为 100%，policy/confirmation/receipt false-dead 为 0；但仅 4/185 个
+> eligible prefixes 降低完整 serialized input，paired median Prune−Raw token delta 为
+> `0`，未达到预冻结的 `<0` 门槛。因此停止在 F5-G2、GDSC-Structured 与所有外部 pilot
+> 之前；不得筛选有利 prefix、放宽阈值或覆盖 replay-v1/v2。权威结果见
+> [`docs/PHASE5_RESULTS.md`](docs/PHASE5_RESULTS.md)；外部 sessions 仍为 0。
+
+> **2026-07-28 Phase 5 规划通知：** 项目级下一阶段已经明确为 [`第五阶段修改计划.md`](第五阶段修改计划.md)。新主线把 GDSC 收敛为 agent 内的生命周期图上下文模块：先以 `GDSC-Prune` 验证 dead tool trace 的安全回收，再独立检验 `GDSC-Structured` 的 Live Subgraph 结构化投影。本文下述 Phase 4 R2/E0 No-Go、数值、artifact 和停止事实保持历史有效；Phase 5 是新预注册版本，不追溯降低或改写旧30%门槛。该规划文档本身不授权新的外部模型会话。
+
+> **2026-07-21 研究重置通知：** 本文件主体记录的是 Phase 4/P3b-A 完成时的历史快照。关于“下一步只能做 Failure Card common-prefix fork”、Card-only P3b-B、禁止扩展一般决策状态表示/benchmark/baseline，以及以 Card negative-results 收口的指令，均已被 [`第四阶段修改计划.md`](第四阶段修改计划.md) v2.0 取代。客观结果、代码位置、provenance 和外部 API gate 仍然有效；新的主线是 Graph-Constrained Decision-State Compiler（GDSC）。
+
 > 快照日期：2026-07-20（Phase 4 P3b-A 更新）
 > 仓库：`E:\科研\Tools Tracing`
-> 当前测试基线：`117 passed`，ruff 全仓通过
-> 当前研究判定：P0/P1 工程与机制实验完成；P2 为 Codex 临时版、不是人工 gold；P3 修复后复合分析完成；原 P4 扩展实验为 **No-Go**；Phase 4/P3b-A 的投稿级研究基础设施 gate 已通过，但正向经验主张与 P3b-B 外部实验仍为 **No-Go**。
+> 当前测试状态：GDSC 改造前基线 `117 passed`；R2 完成时 `144 passed`；R2.1 后最新全量 `147 passed`，ruff 全仓通过
+> 当前研究判定：GDSC R0 development gate 通过，R1 工程完成；R2 因 median serialized reduction `14.956% <30%` 为 No-Go。R2.1 的真实发送口径为 `15.723%`，而完整 policy + native schemas 固定成本下界的最大 median 降幅仅 `28.451% <30%`，故裁决为不可达、分支 B，不实现 v1.1。E0 也因每域仅 5 tasks、median actions 7/6 及证据缺失为 No-Go。继续停止在 R3 前，外部会话 0/340。
 
 ## 0. 接手后的第一条原则
 
-不要继续运行 P4，不要原样扩大现有 P3 矩阵，也不要把 Codex A/B 改名为人工标注。
+不要原样扩大现有 P3 Card 矩阵，也不要把 Codex A/B 改名为人工标注。旧 P3b-B 仍不得直接运行。
 
-P3 的**机制可识别性基础设施**已经在 Phase 4/P3b-A 修复：状态/原因已拆分，trajectory/evaluator 已解耦，next-3-action 指标已在冻结矩阵回放。不要增加模型、环境或 baseline，也不要直接启动 common-prefix fork。下一步只能是先准备 10 个 hash 匹配、Card 真正可见的可重放 prefix，并在用户明确批准 40 个短分支、模型、预算和停止条件后再运行 pilot；独立人工 v2 gold 仍是正式经验主张的 blocker。
+P3 的**机制可识别性基础设施**已经在 Phase 4/P3b-A 修复：状态/原因已拆分，trajectory/evaluator 已解耦，next-3-action 指标已在冻结矩阵回放。这些成果保留为 FailureGuard 机制切片与新 common-prefix 框架的基础。GDSC 的 PromptBundle、DecisionStateGraph、benchmark eligibility 与多表示编译器现已实现；由于 R2/E0 双门禁失败，外部 representation fork 与 R4 matrix 不得执行。
+
+### 0.A GDSC 执行与交接规则
+
+- `117 passed` 是 GDSC 改造前冻结基线；新增实现后的验证结果为 `144 passed` 与全仓 ruff 通过。
+- `TraceGraph`/EventGraph 和旧 `full_ours` 行为是兼容边界，不追溯改写；GDSC 使用新 manager `decision_state_compiler`、版本 `gdsc_core_v1`。
+- 五层成本、R0–R4 门禁、样本冻结和停止规则以 [`docs/GDSC_PREREGISTRATION.md`](docs/GDSC_PREREGISTRATION.md) 为准；任何主张先查 [`docs/CLAIM_EVIDENCE_MATRIX.md`](docs/CLAIM_EVIDENCE_MATRIX.md)。
+- GDSC 的实际运行状态只写入 [`docs/PHASE4_GDSC_RESULTS.md`](docs/PHASE4_GDSC_RESULTS.md)。没有产物 hash、运行 manifest 和 gate 报告的项目必须保持“未运行/未判定”，不得从计划或单元测试推断为正向结果。
+- 本轮经验范围固定为 τ³ retail/airline development evidence。没有第二 primary benchmark 和两位独立人工 gold 时，即使 R4 全部通过，也不得写成最终 AAAI 双 benchmark 或正式 construct-validity 结论。
+- 外部运行固定 fail closed：仅 `zai/glm-4.7-flash` 免费额度，无付费或模型 fallback；启动前重核价格并把证据写入 manifest。E0、R2 或 R3 任一门禁失败即停止后续矩阵。
 
 ### 0.1 Phase 4/P3b-A 最新状态
 
@@ -455,9 +505,9 @@ temperature=0 不等于 API 轨迹完全可重复。当前 `--seed` 主要进入
 
 但是现在不应立即增加第二模型或第二环境；主机制在单环境内尚不可识别，扩展只会增加成本和解释混乱。
 
-## 5. 下一步：P3b 可识别性修复
+## 5. 历史下一步：P3b 可识别性修复（已完成 A；B 不再是当前主线）
 
-按以下顺序执行。不要并行启动 P4。
+以下内容保留用于解释旧 Phase 4/P3b-A 的来源和复用旧 Card fork 基础设施，不再作为当前行动顺序。当前顺序以《第四阶段修改计划》v2.0 为准。
 
 ## 5.1 P3b-A：零 API 成本
 
@@ -610,9 +660,9 @@ pilot 只估计事件率和 discordant-pair rate，不作论文显著性结论�
 - 哪些负证据具有可行动性；
 - compact Card 为什么在当前自然 τ³ 轨迹中事件率不足。
 
-## 6. 明确禁止事项
+## 6. 历史禁止事项与当前有效边界
 
-接手 agent 不得：
+以下 provenance、数据完整性和授权边界继续有效；第 8 项只禁止绕过旧 gate 续跑旧矩阵，不再禁止按 GDSC v2.0 在新 eligibility、预注册和授权后引入必要的 benchmark、模型或 baseline。
 
 1. 把 `codex_provisional` 改成 `human_independent`；
 2. 把同模型同会话 A/B 写成两位人工标注；
@@ -621,7 +671,7 @@ pilot 只估计事件率和 discordant-pair rate，不作论文显著性结论�
 5. 使用原始 43 个有效 session 宣称无偏 P3；
 6. 把 repaired composite 写成一次连续正式运行；
 7. 绕过 `p4.go_gate_passed=false`；
-8. 继续 ACON live、第二模型、第二环境或更大旧矩阵；
+8. 在旧 `p4.go_gate_passed=false` 下继续 ACON+Card live、第二模型、第二环境或更大旧 Card 矩阵；
 9. 用 total session token 单独声称 Card 因果节省；
 10. 在保存 trajectory 之前调用易失败 evaluator；
 11. 在旧标签体系上直接安排昂贵人工标注；
@@ -748,12 +798,84 @@ p4.go_gate_passed = false
 - [ ] 阅读本文件和 `docs/PHASE3_RESULTS.md`；
 - [ ] 运行 `git ... status --short`，确认不覆盖现有修改；
 - [ ] 确认 P1/P2/P3/gate JSON 存在；
-- [ ] 运行测试并得到 `103 passed`；
+- [ ] 运行测试并至少复现 GDSC 改造后的 `144 passed`；
 - [ ] 确认没有外部实验进程仍在运行；
-- [ ] 将任务限定为 P3b-A，除非用户明确授权进入 P3b-B；
+- [ ] 读取 `docs/PHASE4_GDSC_RESULTS.md`：当前 R2/E0 均为 No-Go，不得启动 representation fork 或 benchmark matrix；
 - [ ] 保留所有 provenance、失败批次和 evaluator raw response；
 - [ ] 每次准备启动 API 前先向用户报告 session 数、模型、预计成本和停止条件。
 
-## 10. 一句话交接结论
+## 10. 一句话交接结论（2026-07-21 GDSC 执行后）
 
-工程已经成功消除了“原始失败消息无界反复回注”，但自然 τ³ 轨迹中的真实 failure/retry/resolve 事件太少，现有 P3 的 token 和 repeated-action 点估计被轨迹随机性混杂；下一位 agent 应先完成零成本的标签/评分拆分和 trajectory/evaluator 解耦，再用 common-prefix fork 验证 Failure Card 相对 Remove 的真实边际作用。
+GDSC 工程与最终请求成本核算已经实现，R0 证实 192-view 成本错位和足够 oracle headroom；但 R2 的 serialized reduction 只有 `14.956%`，E0 数据也不具备进入 common-prefix pilot 的资格。下一位 agent 应把这次结果作为诚实的 No-Go 诊断，优先分析完整 policy/tool-schema 固定成本和 benchmark eligibility 缺口；不得绕过门禁启动 R3/R4，也不得通过调阈值或补样本改写本轮结论。
+
+## 11. 2026-08-01 Phase 5.2 GLM-5.2 e1 试跑交接
+
+用户已明确授权将 Phase 5.2 伪标注输入发送到 Z.AI `open.bigmodel.cn` 的 `GLM-5.2`，先跑 10 个请求，无报错再全量。为保持原 `glm-4.7-flash` e0 条件不可污染，已新增独立条件：
+
+- config：`configs/phase52_lifecycle_modeling_glm52.json`
+- output：`outputs/phase5_2/e1_glm52_pseudolabel_v1`
+- model：`zai/glm-5.2`
+- pricing snapshot SHA-256：`216525a2e3c749b1f9a7b81d9eb68c35f3da7290dcd6ea5ed8184dc5a4dbbef8`
+- frozen requests：370
+- estimated input tokens：3,528,234
+
+为支持该条件，`load_phase52_config` 现在允许两种明确协议：原 `glm-4.7-flash` 免费条件，和带有 `paid_use_authorized_by_user=true`、`condition_id=e1_glm52_pseudolabel_v1` 的 `glm-5.2` 条件。runner 的价格预检也已分支：free 条件仍必须三项免费；paid 条件必须有显式付费授权和非负 USD/M token 价格。`verify_phase52_artifacts.py`、`preflight_phase52_state_machine.py`、`report_phase52_collection_pause.py` 新增 `--config`，以便 e0/e1 独立验账。
+
+已完成本地检查：
+
+- `python -m pytest tests\test_phase52_lifecycle_modeling.py`：13 passed
+- Ruff target files：passed
+- e1 request build：370 requests, provider_requests=0
+- e1 state-machine preflight：261 prefixes / 1,092 predictions，所有 integrity rates 100%
+- e1 verifier：valid, regenerated_requests=370
+
+真实 GLM-5.2 smoke 第一条请求 `pass_a_08654b21b5f4685c8b12` 返回 HTTP 429，因此按计划停止，没有继续跑剩余 9 条或全量。当前 e1 状态：
+
+- pause report：`outputs/phase5_2/e1_glm52_pseudolabel_v1/pause_reports/pause_0001.json`
+- report SHA-256：`8bdf0093fa462a8e99f3b7c7b5c9c1b9d06789a85846d44487375c82dbc4f8be`
+- attempts：1
+- valid labels：0
+- usage：0 input / 0 output token
+- failure is quality No-Go：false
+
+恢复 e1 时先重新核价，继续同一 frozen request set；不得把 e1 与 e0 标签混合作为同一条件，不得训练 Scheme B，不得启动外部行为实验。
+
+## 12. 2026-08-10 Phase 5.2 Qwen3.7-Plus e2 结果
+
+用户授权开始阿里云百炼 `qwen3.7-plus` 的 Phase 5.2 伪标注实验。已建立独立条件，未覆盖 e0/e1：
+
+- config：`configs/phase52_lifecycle_modeling_qwen37plus.json`
+- output：`outputs/phase5_2/e2_qwen37plus_pseudolabel_v1`
+- model：`aliyun-bailian/qwen3.7-plus`
+- pricing snapshot SHA-256：`81c525e8bc599b10e549eb64859ca2c05d816eef897bdba57fde8a44496ccc8e`
+- frozen requests：370
+- estimated input tokens：3,527,768
+
+前 10 个真实请求全部 HTTP 200 且标签合法，因此继续全量。续跑在 `pass_a_842b87d6eaf6a211bf97` 停止：该 20-span calibration 请求连续两次把 `superseded` 放入 `disposition`，而它只属于 `terminal_reason`。单请求唯一重试已耗尽，不得原地恢复或手工改写。
+
+停止状态：
+
+- provider attempts：75，全部 HTTP 200
+- valid labels：72/370；完整双遍 prefix：36/185
+- invalid response attempts：3
+- usage：816,109 input / 37,047 output / 853,156 total token
+- 未折扣估算费用：0.266035 USD
+- pause report：`outputs/phase5_2/e2_qwen37plus_pseudolabel_v1/pause_reports/pause_0001.json`
+- report SHA-256：`308307a3e61706185edaa18c6dda2093c374bd0afb05d8b01e6a2990c0d9d04e`
+- failure is quality No-Go：true
+
+本条件未形成完整伪标注人口，因此不得计算/报告总体 opportunity prevalence、双遍 κ 或 held-out 状态机质量；`pseudolabel_gate.json`、`pseudolabel_summary.json` 和最终 manifest 均不应存在。详细报告见 `docs/PHASE52_QWEN37PLUS_PILOT_RESULTS.md`。如继续，必须新建独立条件并预注册协议修改；不得覆盖 e2 或拼接 e0/e1/e2 标签。
+
+## 13. 2026-08-10 relation-first e3 调试交接
+
+用户批准按 relation-first 建议继续调试。所有版本均独立保存：
+
+- v1：`outputs/phase5_2/e3_qwen37plus_relation_first_v1`，请求准备预计 3,605,838 token，超过 3,600,000 上限后在 provider_requests=0 时中止；目录保留。
+- v2：`outputs/phase5_2/e3_qwen37plus_relation_first_v2`，四值 `current_target_need` 在定向失败 prefix 上连续两次被错误填为 `superseded`；0 valid / 2 attempts，停止报告 SHA `b6deff7253e3e02ca1597676018f7ec6ad178ad454c973dd5908c22cbf2fb551`。
+- v3：`outputs/phase5_2/e3_qwen37plus_relation_first_v3`，将当前目标需要性改为两个布尔字段，模型不再输出 disposition；程序 fail-closed 推导 disposition。
+
+v3 定向复现和补充调试共 10/10 请求一次合法，覆盖 5 个完整双遍 prefix、55 个 span。格式问题已修复，但 safe 二元一致率为 0.80、κ=0.4954、全字段一致 12/55、consensus safe 8、consensus uncertain 43。逐字段一致率最低的是 relation_target_ids（0.418），其次 obligations（0.800）和 required_for_current_target（0.855）。原 20-span 困难 prefix 的 safe 一致率仅 0.60、全字段一致 1/20。
+
+debug report：`outputs/phase5_2/e3_qwen37plus_relation_first_v3/debug_reports/relation_first_debug_0001.json`，SHA `2a0b9317a81bede9dfcb84a39475fc8850771d4a2f3a4684b57041a00a13fb4e`。详细说明见 `docs/PHASE52_RELATION_FIRST_DEBUG_RESULTS.md`。
+
+当前判断是“结构接口已改善，但语义稳定性不足”，不是生命周期方向 No-Go。不得把 5-prefix 定向样本当正式门禁或继续全量。下一步若获批准，应新建 chunked-labeling 调试条件，保留完整 prefix 上下文而缩小每次输出的 span 数；必须重新冻结请求人口、成本和门禁，不得覆盖或拼接 e2/e3 标签。

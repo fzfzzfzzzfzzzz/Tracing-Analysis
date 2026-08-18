@@ -1,0 +1,48 @@
+{
+  "schema_version": "gdsc_preregistered_matrix_v1",
+  "matrix_id": "gdsc_tau3_r4_dev_v1",
+  "benchmark": "tau3",
+  "domains": [
+    {"name": "retail", "task_count": 10, "selection": "structural_then_task_id"},
+    {"name": "airline", "task_count": 10, "selection": "structural_then_task_id"}
+  ],
+  "task_selection_uses_gdsc_outcomes": false,
+  "seeds": [300, 301],
+  "conditions": [
+    {"manager": "full_trajectory", "label": "Full Trajectory"},
+    {"manager": "acon_official", "label": "Official ACON", "config": "configs/acon_tau3.json"},
+    {"manager": "decision_state_compiler", "label": "GDSC-Core", "version": "gdsc_core_v1"},
+    {"manager": "acon_official_with_gdsc_state", "label": "Official ACON + GDSC State"}
+  ],
+  "model": "zai/glm-4.7-flash",
+  "user_model": "zai/glm-4.7-flash",
+  "compressor_model": "zai/glm-4.7-flash",
+  "temperature": 0,
+  "max_steps": 50,
+  "timeout_seconds": 900,
+  "inter_run_delay_seconds": 20,
+  "planned_sessions": 160,
+  "pre_r3_full_tranche_sessions": 20,
+  "post_r3_remaining_sessions": 140,
+  "common_prefix_pilot": {
+    "prefixes": 30,
+    "prefixes_per_domain": 15,
+    "representations": ["raw_message", "compiled", "drop"],
+    "replicates": 2,
+    "branches": 180,
+    "max_agent_tool_actions": 3,
+    "auto_retry": false
+  },
+  "cumulative_external_session_cap": 340,
+  "pricing": {
+    "required_input_price_usd": 0.0,
+    "required_output_price_usd": 0.0,
+    "verification_required_at_launch": true,
+    "nonzero_estimate_action": "fail_closed",
+    "paid_fallback_allowed": false,
+    "model_fallback_allowed": false
+  },
+  "gate_sequence": ["r0_development", "e0", "r2", "r3", "r4"],
+  "external_api_execution_authorized_by_config": false,
+  "maximum_allowed_claim": "tau3_cross_domain_development_positive_evidence"
+}

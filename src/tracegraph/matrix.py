@@ -35,6 +35,8 @@ KNOWN_MANAGERS = {
     "ours_without_constraint_retention",
     "raw_hard_failure_retention",
     "full_ours",
+    "decision_state_compiler",
+    "acon_official_with_gdsc_state",
 }
 
 _SENSITIVE_KEY_PARTS = ("api_key", "secret", "credential", "password", "access_token")
@@ -76,8 +78,32 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
     if inter_run_delay_seconds < 0:
         raise ValueError("inter_run_delay_seconds must be non-negative")
     cost_per_session = float(config.get("estimated_cost_per_session_usd", 0.0))
-    if cost_per_session <= 0:
-        raise ValueError("estimated_cost_per_session_usd must be positive")
+    free_provider = bool(config.get("free_provider", False))
+    if cost_per_session < 0 or (cost_per_session == 0 and not free_provider):
+        raise ValueError(
+            "estimated_cost_per_session_usd must be positive unless "
+            "free_provider=true"
+        )
+    pricing_snapshot = config.get("pricing_snapshot") or {}
+    if free_provider:
+        if not isinstance(pricing_snapshot, dict):
+            raise ValueError("free_provider requires a pricing_snapshot object")
+        required_pricing = {
+            "source_url",
+            "checked_at",
+            "input_usd_per_mtok",
+            "output_usd_per_mtok",
+        }
+        missing_pricing = sorted(required_pricing - set(pricing_snapshot))
+        if missing_pricing:
+            raise ValueError(
+                "free_provider pricing_snapshot is missing: "
+                + ", ".join(missing_pricing)
+            )
+        if float(pricing_snapshot["input_usd_per_mtok"]) != 0 or float(
+            pricing_snapshot["output_usd_per_mtok"]
+        ) != 0:
+            raise ValueError("free_provider requires zero input/output pricing")
 
     agent_model = str(config.get("agent_model", ""))
     user_model = str(config.get("user_model", ""))
@@ -167,6 +193,14 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
                 )
 
     session_count = len(runs) * trials
+    max_external_sessions = int(config.get("max_external_sessions", session_count))
+    if max_external_sessions <= 0:
+        raise ValueError("max_external_sessions must be positive")
+    if session_count > max_external_sessions:
+        raise ValueError(
+            f"planned {session_count} sessions exceed max_external_sessions="
+            f"{max_external_sessions}"
+        )
     return {
         "schema_version": "1.0",
         "matrix_id": matrix_id,
@@ -192,6 +226,9 @@ def build_matrix_plan(config: dict[str, Any]) -> dict[str, Any]:
         "session_count": session_count,
         "estimated_cost_per_session_usd": cost_per_session,
         "estimated_total_cost_usd": round(session_count * cost_per_session, 6),
+        "free_provider": free_provider,
+        "pricing_snapshot": pricing_snapshot,
+        "max_external_sessions": max_external_sessions,
         "gates": config.get("gates", {}),
         "interpretation_warning": str(config.get("interpretation_warning", "")),
         "runs": runs,
@@ -258,4 +295,21 @@ def require_codex_provisional_p2(report: dict[str, Any] | None) -> None:
             "provisional P3 execution requires a structurally complete, explicitly "
             "Codex-labelled P2 report: "
             + json.dumps(checks, ensure_ascii=False, sort_keys=True)
+        )
+
+
+def require_gdsc_stage_gate(
+    report: dict[str, Any] | None,
+    stage: str,
+) -> None:
+    """Fail closed before a GDSC external stage unless its frozen gate passed."""
+
+    if not isinstance(report, dict):
+        raise ValueError(f"{stage} execution requires a GDSC gate report")
+    stage_report = (report.get("stages") or {}).get(stage) or {}
+    if not bool(stage_report.get("passed")):
+        blockers = stage_report.get("blockers") or ["unknown"]
+        raise ValueError(
+            f"{stage} is not authorized by the GDSC gate: "
+            + ", ".join(str(item) for item in blockers)
         )

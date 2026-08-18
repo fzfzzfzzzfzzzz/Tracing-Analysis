@@ -243,12 +243,19 @@ class TraceGraph:
                     "legacy_edge_id": legacy.edge_id,
                 }
             )
-            self.connect(
-                legacy.target,
-                legacy.source,
-                canonical_type,
-                confidence=legacy.confidence,
-                metadata=metadata,
+            self.add_edge(
+                Edge(
+                    source=legacy.target,
+                    target=legacy.source,
+                    edge_type=canonical_type,
+                    confidence=legacy.confidence,
+                    metadata=metadata,
+                    edge_id=(
+                        f"edge_normalized_{legacy.edge_id}_"
+                        f"{canonical_type.value}"
+                    ),
+                    created_at=legacy.created_at,
+                )
             )
         if additions:
             self.metadata["legacy_lifecycle_edges_normalized"] = (

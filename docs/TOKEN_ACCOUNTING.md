@@ -1,6 +1,20 @@
 # Token 计量修正与实验版本边界
 
-## 问题
+## GDSC v2.0：从内容估算到最终请求责任
+
+`content_estimate_v2` 仍用于旧 TraceGraph 节点与 graph-selected 层，但不能代表 GDSC 的最终 prompt 成本。GDSC 对以下五层分别计量：graph-selected、compiled、protocol-closed、serialized request、provider-actual。前三层解释编译过程；离线预算以完整 serialized request 为准；live 效果以 provider-actual 为准。
+
+serialized request 必须覆盖 system、messages、tool schemas 和 provider 协议格式开销，并记录 serializer/tokenizer 版本与 request hash。工具 schema 不得作为“固定项”从条件差异中静默排除。provider-actual 只接受上游返回 usage；缺失、估补、request hash 不匹配或将 compressor usage 漏出 session total 都令该样本失去主结果资格。
+
+成本报告至少同时给出：每 action input、session agent input/output、user simulator input/output、ACON compressor input/output、编译本地开销、净 token cost 与 provider monetary cost。即使价格为零，也必须报告 token cost，且在 live 启动时重核免费价格并冻结证据。
+
+软实验预算与 provider hard limit 分开：软预算不可行时保留 hard state并标记 `conservative_over_budget=true`、`matched_budget_eligible=false`；provider hard limit 超出则不得发送。只比较未超软预算样本会产生选择偏差，因此 fallback 率与排除数必须并列报告。
+
+旧结果中的 `estimated_selected_tokens`、`protocol_closed_tokens` 和 `agent_provider_input_tokens` 保持原含义，不追溯改名为上述新层。R0 已对冻结的 192 个旧 `full_ours` context views 完成独立复现：192/192 存在 graph-selected / protocol-closed 错位，中位错位 `42.040%`。旧记录没有 serialized request/provider-actual 字段，因此这两层保持 null，不能从 closure 估算冒充。
+
+## `content_estimate_v2` 历史修正
+
+### 问题
 
 2026-07-16 的轨迹审计发现，旧版 τ 导入器曾把 assistant 消息的
 `prompt_tokens + completion_tokens` 作为该消息节点自身的 `token_count`。

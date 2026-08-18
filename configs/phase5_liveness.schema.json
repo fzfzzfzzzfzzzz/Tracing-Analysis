@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.tracegraph.dev/schemas/phase5_liveness_config_v1.json",
+  "title": "Phase 5 lifecycle graph context configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "phase",
+    "plan_version",
+    "manager",
+    "interfaces",
+    "governance",
+    "compatibility",
+    "outputs",
+    "external_execution",
+    "gates"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "phase5_liveness_config_v1"
+    },
+    "phase": {
+      "const": "phase5"
+    },
+    "plan_version": {
+      "const": "phase5_liveness_v1"
+    },
+    "manager": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "implementation_version",
+        "strategies"
+      ],
+      "properties": {
+        "name": {
+          "const": "lifecycle_graph_context"
+        },
+        "implementation_version": {
+          "const": "lifecycle_graph_context_v1"
+        },
+        "strategies": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "prune",
+            "structured"
+          ],
+          "properties": {
+            "prune": {
+              "$ref": "#/$defs/strategy"
+            },
+            "structured": {
+              "$ref": "#/$defs/strategy"
+            }
+          }
+        }
+      }
+    },
+    "interfaces": {
+      "type": "object"
+    },
+    "governance": {
+      "type": "object"
+    },
+    "compatibility": {
+      "type": "object"
+    },
+    "outputs": {
+      "type": "object"
+    },
+    "external_execution": {
+      "type": "object"
+    },
+    "gates": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "strategy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_version",
+        "status",
+        "projection"
+      ],
+      "properties": {
+        "policy_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "active_development",
+            "gated_after_f5_g2"
+          ]
+        },
+        "projection": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

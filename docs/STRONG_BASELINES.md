@@ -1,5 +1,20 @@
 # 强 baseline 官方实现审计
 
+## GDSC R4 冻结比较条件
+
+R4 只允许以下四个条件；它们使用相同 task、seed、agent/user model、temperature、step/timeout 和 evaluator。`full_ours` 不在这组条件中改名或替换，其历史结果继续按原 manager 解释。
+
+| 条件 | 实现身份 | 成本要求 | 结果资格 |
+| --- | --- | --- | --- |
+| Full Trajectory | 原生完整历史 | 记录完整 serialized/provider actual | E0 通过且 snapshot/usage 完整 |
+| official ACON | hash-pinned `microsoft/acon` adapter | agent + user + compressor 全成本 | source hash 匹配、无 fallback、usage 完整 |
+| GDSC-Core | `decision_state_compiler` / `gdsc_core_v1` | 五层成本、risk artifact 与 request hash 完整 | R0、R2、R3 gate 全通过 |
+| official ACON + GDSC state | `acon_official_with_gdsc_state` | 同时计 ACON compressor 与 GDSC 编译成本 | 同时满足 ACON runtime 与 GDSC eligibility |
+
+R4 不是“谁成功率最高”单指标竞赛。GDSC 相对 Full 必须同时满足 token/cost、success non-inferiority、安全与恢复指标；相对 ACON 还需 matched-cost reliability 或 matched-reliability token 优势。未运行的条件不得因 adapter 或单元测试存在而标为主结果 eligible。
+
+## Phase 3 历史 baseline 审计
+
 本页记录 2026-07-16 对 AgentDiet、ACON 和 Agent-Omit 的论文/代码审计。目标是防止 deterministic proxy 被误报为论文官方方法。
 
 ## 当前结论

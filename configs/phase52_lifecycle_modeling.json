@@ -1,0 +1,116 @@
+{
+  "schema_version": "phase52_lifecycle_modeling_config_v1",
+  "phase": "5.2",
+  "inputs": {
+    "development_manifest": "outputs/phase5/e0_development_v1/development_prefix_manifest.json",
+    "development_manifest_sha256": "4da20d81ccbc61635baad08edad684234b3f74c0a51f0ca82612232b5fdd86f7",
+    "tool_schemas": "outputs/phase5/e0_development_v1/tool_schemas.json",
+    "tool_schemas_sha256": "02f6290f1867da5ae9734bdd8091305727db1b62fc048a508ade892aace2f622",
+    "phase51_rows": "outputs/phase5_1/e0_evidence_ceiling_v1/prefix_rows.jsonl"
+  },
+  "output_root": "outputs/phase5_2/e0_glm_pseudolabel_v1",
+  "model": {
+    "provider": "zai",
+    "api_model": "glm-4.7-flash",
+    "report_identity": "zai/glm-4.7-flash",
+    "temperature": 0.0,
+    "thinking": "disabled",
+    "max_output_tokens": 4096,
+    "fallback_forbidden": true,
+    "paid_use_forbidden": true
+  },
+  "pricing_snapshot": {
+    "checked_at": "2026-08-01",
+    "pricing_url": "https://docs.z.ai/guides/overview/pricing",
+    "model_url": "https://docs.z.ai/guides/llm/glm-4.7",
+    "input_price": "free",
+    "cached_input_price": "free",
+    "output_price": "free",
+    "context_window_tokens": 200000,
+    "maximum_output_tokens": 128000,
+    "valid_for_days": 1,
+    "must_stop_if_not_free": true
+  },
+  "annotation": {
+    "passes": ["pass_a", "pass_b"],
+    "pass_a_order": "chronological",
+    "pass_b_order": "sha256(prefix_id + 'pass_b') seeded digest rank",
+    "one_request_per_prefix_per_pass": true,
+    "retry_per_request_max": 1,
+    "request_count_hard_max": 400,
+    "estimated_input_tokens_hard_max": 3600000,
+    "actual_output_tokens_hard_max": 500000,
+    "expected_eligible_prefixes": 185,
+    "expected_no_opportunity_prefixes": 76,
+    "expected_prefix_span_units": 1092,
+    "dispositions": [
+      "live_critical",
+      "live_noncritical",
+      "safe_to_evict",
+      "uncertain"
+    ],
+    "terminal_reasons": [
+      "active",
+      "consumed",
+      "superseded",
+      "invalidated",
+      "resolved",
+      "duplicate",
+      "audit_required",
+      "unknown"
+    ],
+    "obligations": ["policy", "confirmation", "retry", "receipt", "audit"]
+  },
+  "split": {
+    "development_task_ids": ["0", "1", "2"],
+    "calibration_task_ids": ["3"],
+    "held_out_task_ids": ["4"],
+    "group_by": ["domain", "task_id"],
+    "trial_split_forbidden": true
+  },
+  "gates": {
+    "pseudolabel": {
+      "complete_prefixes_min": 185,
+      "safe_binary_agreement_min": 0.8,
+      "cohen_kappa_min": 0.6,
+      "consensus_safe_units_min": 20,
+      "protected_safe_units_max": 0
+    },
+    "state_machine_held_out": {
+      "safe_precision_min": 0.9,
+      "live_critical_recall_min": 0.95,
+      "severe_false_dead_max": 0,
+      "consensus_safe_identified_min": 5,
+      "must_exceed_phase51_grade_a": true,
+      "integrity_rate_min": 1.0
+    }
+  },
+  "governance": {
+    "machine_labels_are_human_gold": false,
+    "machine_labels_may_generate_hard_dead": false,
+    "predictions_may_mutate_event_graph": false,
+    "offline_projection_may_be_sent": false,
+    "external_behavior_experiment_authorized": false,
+    "scheme_b_authorized": false,
+    "historical_93_is_lifecycle_gate": false,
+    "phase51_grade_b_name": "current_exact_match_candidate_set_ceiling",
+    "phase4_and_phase5_no_go_preserved": true
+  },
+  "tool_effect_specs": [
+    {"tool_name": "get_order_details", "effect_type": "read", "entity_type": "order", "entity_keys": ["order_id"], "read_scope": ["*"], "write_scope": [], "snapshot": "complete", "receipt_required": false, "invalidation_scope": []},
+    {"tool_name": "get_reservation_details", "effect_type": "read", "entity_type": "reservation", "entity_keys": ["reservation_id"], "read_scope": ["*"], "write_scope": [], "snapshot": "complete", "receipt_required": false, "invalidation_scope": []},
+    {"tool_name": "get_product_details", "effect_type": "read", "entity_type": "product", "entity_keys": ["product_id"], "read_scope": ["*"], "write_scope": [], "snapshot": "complete", "receipt_required": false, "invalidation_scope": []},
+    {"tool_name": "get_user_details", "effect_type": "read", "entity_type": "user", "entity_keys": ["user_id"], "read_scope": ["*"], "write_scope": [], "snapshot": "complete", "receipt_required": false, "invalidation_scope": []},
+    {"tool_name": "get_flight_status", "effect_type": "read", "entity_type": "flight", "entity_keys": ["flight_number", "date"], "read_scope": ["status"], "write_scope": [], "snapshot": "complete", "receipt_required": false, "invalidation_scope": []},
+    {"tool_name": "find_user_id_by_name_zip", "effect_type": "lookup", "entity_type": "user_lookup", "entity_keys": ["first_name", "last_name", "zip"], "read_scope": ["user_id"], "write_scope": [], "snapshot": "complete", "receipt_required": false, "invalidation_scope": []},
+    {"tool_name": "transfer_to_human_agents", "effect_type": "handoff", "entity_type": "conversation", "entity_keys": [], "read_scope": [], "write_scope": ["handoff"], "snapshot": "none", "receipt_required": true, "invalidation_scope": []},
+    {"tool_name": "modify_pending_order_items", "effect_type": "write", "entity_type": "order", "entity_keys": ["order_id"], "read_scope": [], "write_scope": ["items", "payment", "status"], "snapshot": "partial", "receipt_required": true, "invalidation_scope": ["items", "payment", "status"]},
+    {"tool_name": "exchange_delivered_order_items", "effect_type": "write", "entity_type": "order", "entity_keys": ["order_id"], "read_scope": [], "write_scope": ["items", "payment", "status"], "snapshot": "partial", "receipt_required": true, "invalidation_scope": ["items", "payment", "status"]},
+    {"tool_name": "list_all_product_types", "effect_type": "read", "entity_type": "product_catalog", "entity_keys": [], "read_scope": ["product_types"], "write_scope": [], "snapshot": "complete", "receipt_required": false, "invalidation_scope": []},
+    {"tool_name": "return_delivered_order_items", "effect_type": "write", "entity_type": "order", "entity_keys": ["order_id"], "read_scope": [], "write_scope": ["items", "payment", "status"], "snapshot": "partial", "receipt_required": true, "invalidation_scope": ["items", "payment", "status"]},
+    {"tool_name": "cancel_reservation", "effect_type": "write", "entity_type": "reservation", "entity_keys": ["reservation_id"], "read_scope": [], "write_scope": ["status"], "snapshot": "partial", "receipt_required": true, "invalidation_scope": ["status"]},
+    {"tool_name": "search_direct_flight", "effect_type": "query", "entity_type": "flight_search", "entity_keys": ["origin", "destination", "date"], "read_scope": ["results"], "write_scope": [], "snapshot": "complete", "receipt_required": false, "invalidation_scope": []},
+    {"tool_name": "search_onestop_flight", "effect_type": "query", "entity_type": "flight_search", "entity_keys": ["origin", "destination", "date"], "read_scope": ["results"], "write_scope": [], "snapshot": "complete", "receipt_required": false, "invalidation_scope": []},
+    {"tool_name": "send_certificate", "effect_type": "write", "entity_type": "user", "entity_keys": ["user_id"], "read_scope": [], "write_scope": ["certificate", "balance"], "snapshot": "partial", "receipt_required": true, "invalidation_scope": ["certificate", "balance"]}
+  ]
+}

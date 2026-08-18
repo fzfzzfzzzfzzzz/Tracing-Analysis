@@ -1,6 +1,98 @@
 # 已执行验证
 
-## 自动化测试
+## Phase 5.2 验证合同
+
+Phase 5.2 新增以下 fail-closed 检查：
+
+- 370 个请求可从 frozen manifest/schema 和当前代码逐个重建相同 request hash 与 opaque mapping；
+- reward、未来事件、F5/5.1 label、prune result、token gain 和未知 event ID 在发送前被拒绝；
+- 缺失/重复 span、非法 enum、截断 JSON、额外字段和未知 relation/evidence ID 不能形成有效标签；
+- 结构化模型响应最多重试一次；429/网络/5xx 不消耗结构化重试名额，但每次 HTTP 尝试都计入 400 全局上限并立即暂停；
+- 输入估算、实际 prompt、实际 output 和请求次数达到任一硬上限时停止；
+- 15 个已观察工具必须被 `ToolEffectSpec` 一一覆盖，未知工具统一 `uncertain`；
+- 完整/局部 snapshot、字段相交/不相交、retry、scalar consumption、receipt、reactivation 和 future suffix 均有测试；
+- 同一 provider 消息只有在其中所有 call-level span 均 safe 时才能进入禁止发送的整组离线投影；
+- 原 EventGraph、archive 和 Phase 4/5/5.1 受保护 outputs 哈希不得变化。
+
+当前全量无标签预演覆盖 261 prefixes/1,092 predictions，determinism、future-suffix、
+EventGraph unchanged、archive、protocol 和 send-forbidden 均为 100%。双遍伪标签仍因外部
+rate limit 不完整，所以 pseudolabel gate 和 held-out semantic gate 都未形成。
+
+## Phase 5 F5-WP0–WP3 离线工程验证（2026-07-28）
+
+F5-WP0 checkpoint 在任何 tracked Phase 5 实现修改前冻结：dirty diff、tracked patch、
+untracked 源文件包、三棵 Phase 4 artifact 树逐文件 hash、pytest/ruff/diff-check 日志均已
+保存。checkpoint 自身 hash 复算通过，`outputs/gdsc_r0_audit`、
+`outputs/gdsc_r2_1`、`outputs/phase4` 的 tree hash 在实现后仍完全一致。详情见
+[Phase 5 checkpoint](PHASE5_CHECKPOINT.md)和
+[Phase 5 results ledger](PHASE5_RESULTS.md)。
+
+当前新增离线验证：
+
+- `DecisionLifecycleGraph`、`LivenessRoots`、`LiveSubgraph`、`LifecycleContextView`
+  canonical round-trip/hash；
+- same-prefix determinism、future-suffix independence，以及旧派生 lifecycle 标记不污染
+  prefix hash；
+- explicit superseded/resolved 工具 span 回收；
+- query change 对旧 span 的 raw-ref reactivation；
+- archive verifier 缺失或 tamper 时 uncertainty-to-live；
+- pending/missing result、side-effect receipt、parallel span 部分 live 时不 false-dead；
+- duplicate/out-of-order/missing tool result 的 send-ineligible fail closed；
+- retained raw messages 逐字段相等、system/tool schemas 固定、完整 request hash；
+- soft budget 不诱发额外删除，hard limit 阻止发送；
+- provider usage 只允许 join 同一 request hash；
+- manager 不修改 EventGraph；
+- `gdsc_structured_v1` 在 F5-G2 前明确拒绝。
+
+F5-E0 随后冻结并回放了 30 个旧 session 的全部 261 个 decision prefixes：
+
+- development manifest：
+  `4da20d81ccbc61635baad08edad684234b3f74c0a51f0ca82612232b5fdd86f7`；
+- 261/261 prefix hash、determinism、future-suffix、protocol、root/critical recall 和
+  request hash 检查通过；
+- 4/4 实际 evicted spans 的 archive hash 恢复与 query reactivation 通过；
+- policy/confirmation/side-effect receipt false-dead 均为 0；
+- 外部 provider generations 保持 0。
+
+F5-G1 最终为 **No-Go**：185 个预冻结 cost-eligible prefixes 中仅 4 个完整 serialized
+request 下降，paired median Prune−Raw token delta 为 `0`，未达到预冻结的严格 `<0`
+门槛。权威 gate 位于
+`outputs/phase5/e0_development_v1/prune_replay_v2/f5_g1_gate.json`。因此停止在 F5-G2、
+Structured 和外部 pilot 之前；不得通过筛选有利 prefix 或修改阈值补跑。
+
+最终全量回归为 `172 passed in 6.95s`；ruff 为 `All checks passed!`，compileall 与
+`git diff --check` 通过。上述结果只支持工程 invariant 和 F5-G1 No-Go，不支持在线
+节省、success non-inferiority、安全性或 ContextSafetyBench validity 主张。
+
+## GDSC 验证状态（2026-07-21 实际执行）
+
+改造前冻结基线是 `117 passed`、ruff 通过；改造后全量回归为 `144 passed`、ruff 通过。下方更早的 `69/69` 是历史快照。R0 通过，R2/E0 为 No-Go；精确 artifact 和停止原因见 [GDSC 结果账本](PHASE4_GDSC_RESULTS.md)。
+
+新增验证清单：
+
+- protocol closure：并行 tool calls、缺失 result、tool schema 成本、稳定 request hash；
+- DecisionStateGraph：稳定 state hash、未来 suffix 不影响 prefix、conflict/supersession、slot、confirmation、side-effect receipt；
+- representations：关键字段等价、claim provenance、archive tamper、非法 NegativeGuard、Omit 审计；
+- compiler：hard coverage、provenance、protocol、budget 四类 invariant，软/硬预算失败、beam tie-break 与六项消融；
+- risk：task-group split 无泄漏、artifact round-trip、high-risk recall/ECE/Brier gate；
+- τ³：snapshot restore、实际发送对象与 request hash 一致、provider usage 回填、新旧 manager 兼容；
+- governance：旧 Phase 1–4 artifact hash 不变，旧 `full_ours` 行为不变，任何 gate 失败在外部调用前停止。
+
+推荐集成检查：
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m pytest -q
+& .venv/Scripts/ruff.exe check src scripts tests
+python -m compileall -q src tests scripts
+git -c "safe.directory=E:/科研/Tools Tracing" diff --check
+```
+
+R0/R2/E0 的输入 hash、逐项 gate 值与停止原因已冻结在 `outputs/gdsc_r0_audit/`。R3/R4 因前置门禁失败保持“未运行”，不是“默认通过”。
+
+## Phase 1–4 历史验证
+
+### 自动化测试
 
 本地核心环境：Windows、Python 3.11.9。
 
@@ -132,3 +224,47 @@ retail 结果不重解释为成功，也不作为 context manager 主结果。�
 - 只有 Full Trajectory 实际产生了历史 reward；其他条件 reward 为空，不能根据离线 view 声称 task success。
 - 200 条中有 64 条的 mandatory context 超过 2048 token，正式实验需要更高预算或经过人工/模型验证的 policy 摘要。
 - proxy baselines 不替代 AgentDiet/ACON 官方实现或真正 LLM scorer。
+
+## GDSC v2.0 R0–R2 验证（2026-07-21）
+
+- 改造前冻结基线 `117 passed`；改造后全量 `144 passed`，ruff 全绿，`git diff --check` 返回 0；
+- R0 对旧 Phase 3 `full_ours` 的 192 个 context views 复现 192/192 graph-selected / protocol-closed 错位，中位错位 `42.040%`；
+- 候选 oracle headroom 中位数为 airline `40.602%`、retail `63.798%`，R0 development gate 通过；
+- E1 数据集固定为 30 source graphs、261 decision points、5,153 candidate objects、15,856 representation rows；
+- R2 使用 native τ³ retail/airline OpenAI tool schemas、beam=16、五预算 `[2048,4096,8192,12288,16384]` 与六项消融；按稳定 ID 分 3 个 shard 后合并，唯一 decision points 为 261，budget rows 1,305，ablation rows 1,566；
+- structured equivalence `5372/5372`、provisional decision sufficiency `261/261`、hard coverage `100%`；2048/4096 fallback `100%`，8192 起 fallback `0%`，故主预算为 8192；
+- 主预算 median raw/compiled serialized tokens 为 `6451/5063`，median reduction `14.956%`，低于 `30%`，R2 gate 失败；
+- E0 中 retail/airline 各 5 tasks，median actions 分别 7/6；动态 provider history、snapshot replay、native evaluator/success 证据不完整，判定 `stop_before_r3`；
+- R3/R4 external sessions `0/340`，模型调用成本 `$0.00`。没有调低阈值、增样本、挑结果或自动补跑。
+
+冻结证据：`outputs/gdsc_r0_audit/prompt_costs/prompt_cost_profile.json`、`outputs/gdsc_r0_audit/benchmark_eligibility.json`、`outputs/gdsc_r0_audit/decision_points/decision_point_dataset.json`、`outputs/gdsc_r0_audit/r2_offline/r2_offline_mechanism.json`。完整结论见 [`PHASE4_GDSC_RESULTS.md`](PHASE4_GDSC_RESULTS.md)。
+
+## GDSC R2.1 成本归因验证（2026-07-22）
+
+- `baseline_manifest.json` 冻结历史 R0/R2 JSON、逐点 CSV 和 config；全部 embedded hash 复算有效；
+- 同一 261 个 decision points 均重建成功，历史 baseline request/cost 匹配 `261/261`；
+- compiler bundle 经 Tau Message 模型往返并转换为 LiteLLM prompt 后，request hash 匹配 `261/261`；
+- prompt hash 只覆盖 provider input 的 model/messages/tools；`tool_choice`、retry 与 generation controls 单列为 invocation envelope；
+- policy 单次暴露、native tool schemas 顶层一致、constructive hard-state coverage 均为 `261/261`；
+- runtime raw/compiled median 为 `6509/5063`，当前降幅 `15.723%`；固定 policy + tools floor 为 `4608`，理论最大降幅 `28.451%`；constructive hard-state floor 为 `4881`，降幅 `20.178%`；
+- airline/retail fixed-floor 上界分别为 `29.347%/26.583%`，均低于 30%；
+- 裁决 `unreachable_under_frozen_fixed_cost`，因此不实现 v1.1，不运行 R3/R4；
+- 三份结果 JSON embedded hash 分别为 `e8085159…`、`5e8a1295…`、`a3237d3c…`；逐点 CSV 261 行，组件中位数 CSV 与 SVG 已生成；
+- 全程没有 provider generation，外部 sessions 仍为 `0/340`，没有降低阈值、补样本或挑选 prefix。
+
+冻结证据目录：`outputs/gdsc_r2_1/`。完整裁决见 [`PHASE4_GDSC_RESULTS.md`](PHASE4_GDSC_RESULTS.md)。
+
+## Phase 5.1 lifecycle-evidence 验证（2026-08-01）
+
+- `177 passed in 7.24s`；全仓 Ruff、compileall、`git diff --check` 通过；
+- Phase 5.1 config 通过 Draft 2020-12 schema 检查；
+- 261/261 prefix hash、冻结 F5 replay baseline、同前缀 artifact determinism、future-suffix
+  independence、Grade A/ceiling protocol validity 与 request hash 均为 100%；
+- Grade A 的 policy/confirmation/side-effect receipt false-dead 均为 0；
+- 证据单测覆盖完整标量与 singleton wrapper、多字段结果只能进入 Grade B、JSON 类型不强制
+  转换、future suffix 不可见、side-effect receipt 只保留、跨 prefix overlay 拒绝和稳定 edge ID；
+- 旧受保护树哈希保持：`gdsc_r0_audit=15ac8851…`、`gdsc_r2_1=12e44336…`、
+  `phase4=85a75eb9…`、`phase5=be1871f1…`；
+- Phase 5.1 audit tree SHA-256 为
+  `d0f2bb7009c3c4e03175bdc118a2fe9099e09eba2f6c56fd68fb0c1454c3bc4c`；
+- task reward/treatment outcome 均未访问，ceiling request 未发送，external provider generations=0。

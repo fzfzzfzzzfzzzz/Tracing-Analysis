@@ -1,8 +1,10 @@
 # 第四阶段执行结果：可识别性、评测解耦与局部窗口
 
+> **2026-07-21 范围说明：** 本文件记录的是旧 Phase 4/P3b-A 的历史执行结果，数值、provenance、工程 gate 和外部 API No-Go 仍然有效；其 Card-only 下一步与 negative-results 收口建议已被新版 [`第四阶段修改计划.md`](../第四阶段修改计划.md) v2.0 取代。当前同名计划链接指向研究重置版，不应误认为本结果执行了 GDSC 计划。
+
 > 快照日期：2026-07-20
 >
-> 计划：[`第四阶段修改计划.md`](../第四阶段修改计划.md)
+> 历史执行依据：旧版《第四阶段修改计划：Failure Card 可识别性与投稿级证据链》（保存在 Git 历史）；当前替代计划：[`第四阶段修改计划.md`](../第四阶段修改计划.md) v2.0
 >
 > 结论：Phase 4 **工程 gate 通过**；正向经验主张 gate 与 P3b-B 外部实验 gate 均为 **No-Go**
 >
@@ -190,8 +192,10 @@ python -m pytest -q
 git -c "safe.directory=E:/科研/Tools Tracing" diff --check
 ```
 
-## 7. 下一步与停止条件
+## 7. 历史下一步与停止条件（已被 GDSC v2.0 取代）
 
-本阶段没有执行 P3b-B。若用户后续授权，仍必须先冻结 10 个可重放 prefix，并在 Card/Remove 分叉前验证 conversation 与 environment hash 完全相同；40 个短分支的模型、成本上限和停止条件需单独报告。
+本阶段没有执行 P3b-B。以下 Card/Remove 设计是该历史阶段当时的局部机制建议，不再是项目唯一或当前下一步。当前研究顺序以 GDSC v2.0 的 PromptBundle、DecisionStateGraph、benchmark eligibility 和多表示 common-prefix intervention 为准；任何外部实验仍需单独授权。
 
-若没有 10 个有效 Card-visible prefix，或 next-3 repeated/repair 没有 discordant pairs，项目应停止扩大，转为 measurement / negative-results 投稿。即使 pilot 有方向性结果，也不能自动启动正式矩阵；应先据 discordant rate 重新计算样本量并向用户报告。
+历史设计要求是：若执行旧 P3b-B，必须先冻结 10 个可重放 prefix，并在 Card/Remove 分叉前验证 conversation 与 environment hash 完全相同；40 个短分支的模型、成本上限和停止条件需单独报告。
+
+若没有 10 个有效 Card-visible prefix，或 next-3 repeated/repair 没有 discordant pairs，只能判定 FailureGuard/H4 在该设置下不可识别，不能再据此否定总体 graph-constrained decision-state compilation 方向。任何 pilot 有方向性结果都不能自动启动正式矩阵；应先据 discordant rate 重新计算样本量并向用户报告。

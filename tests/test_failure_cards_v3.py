@@ -65,6 +65,41 @@ class FailureCardBuilderTests(unittest.TestCase):
         self.assertEqual(cards, [])
         self.assertEqual(events[0]["expiry_trigger"], FailureExpiryTrigger.RESOLVED.value)
 
+    def test_legacy_lifecycle_normalization_is_byte_deterministic(self) -> None:
+        graph = TraceGraph(session_id="legacy-determinism")
+        failure = graph.create_node(
+            NodeType.ERROR,
+            {"error": "temporary failure"},
+            1,
+            node_id="failure",
+        )
+        result = graph.create_node(
+            NodeType.OBSERVATION,
+            {"ok": True},
+            2,
+            node_id="result",
+        )
+        graph.connect(
+            result.node_id,
+            failure.node_id,
+            EdgeType.RESOLVES,
+        )
+        serialized = graph.to_dict()
+
+        first = TraceGraph.from_dict(serialized)
+        second = TraceGraph.from_dict(serialized)
+
+        self.assertEqual(first.to_dict(), second.to_dict())
+        canonical = first.outgoing("failure", EdgeType.RESOLVED_BY)
+        self.assertEqual(len(canonical), 1)
+        self.assertEqual(
+            canonical[0].edge_id,
+            (
+                f"edge_normalized_{next(iter(graph.edges))}_"
+                "resolved_by"
+            ),
+        )
+
     def test_failed_retry_keeps_one_card_for_latest_failure(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             graph = TraceGraph()

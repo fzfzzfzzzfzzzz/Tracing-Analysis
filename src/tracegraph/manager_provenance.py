@@ -123,6 +123,46 @@ _MANAGER_PROVENANCE: dict[str, dict[str, Any]] = {
             "separation, and a bounded negative-evidence budget."
         ),
     },
+    "decision_state_compiler": {
+        "implementation_kind": "native_gdsc_method",
+        "main_result_eligible": True,
+        "runtime_eligibility_required": True,
+        "reference": "gdsc_v2_research_protocol",
+        "context_policy_version": "gdsc_core_v1",
+        "note": (
+            "Graph-constrained, provenance-preserving decision-state compiler. "
+            "Main-result eligibility requires serialized-cost, construct, safety, "
+            "and stage-gate evidence from the same frozen runtime."
+        ),
+    },
+    "lifecycle_graph_context": {
+        "implementation_kind": "native_lifecycle_graph_context",
+        "main_result_eligible": False,
+        "runtime_eligibility_required": True,
+        "reference": "phase5_liveness_v1",
+        "context_policy_version": "gdsc_prune_v1",
+        "structured_policy_version": "gdsc_structured_v1",
+        "implementation_status": "f5_g1_no_go",
+        "note": (
+            "Phase 5 identity for LiveSubgraph and deletion-only GDSC-Prune. "
+            "F5-G1 failed the frozen aggregate serialized-cost criterion, so "
+            "GDSC-Structured and all external pilots remain blocked. "
+            "Main-result eligibility is false."
+        ),
+    },
+    "acon_official_with_gdsc_state": {
+        "implementation_kind": "external_official_adapter_plus_gdsc_state_layer",
+        "main_result_eligible": False,
+        "runtime_eligibility_required": True,
+        "reference": "gdsc_v2_research_protocol",
+        "official_code": "https://github.com/microsoft/acon",
+        "source_snapshot_sha": "d63f9ae18959dc7215ff62899c94c5e8c56847ae",
+        "context_policy_version": "gdsc_core_v1",
+        "note": (
+            "Hash-pinned official ACON context plan with the native GDSC verified "
+            "state/safety layer. Eligibility requires both ACON and GDSC runtime gates."
+        ),
+    },
 }
 
 

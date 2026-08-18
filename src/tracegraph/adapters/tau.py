@@ -7,6 +7,7 @@ in the upstream Python 3.12/``uv`` environment.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from collections.abc import Iterator
 from pathlib import Path
@@ -42,6 +43,19 @@ def _parse_content(value: Any) -> Any:
         return json.loads(value)
     except (json.JSONDecodeError, TypeError):
         return value
+
+
+def _stable_node_id(
+    simulation_id: str,
+    kind: str,
+    ordinal: int,
+    index: int = 0,
+) -> str:
+    """Return a prefix-stable event identifier for deterministic re-imports."""
+
+    payload = f"{simulation_id}\x1f{kind}\x1f{ordinal}\x1f{index}".encode("utf-8")
+    digest = hashlib.sha256(payload).hexdigest()[:24]
+    return f"{kind}_{digest}"
 
 
 class TauTraceImporter:
@@ -215,6 +229,7 @@ class TauTraceImporter:
             NodeType.GOAL,
             goal_content,
             0,
+            node_id=_stable_node_id(simulation_id, "goal", 0),
             lifecycle=LifecycleState.ACTIVE,
             token_count=estimate_tokens(goal_content),
             metadata={"source": "task"},
@@ -227,6 +242,7 @@ class TauTraceImporter:
                     NodeType.CONSTRAINT,
                     effective_policy,
                     0,
+                    node_id=_stable_node_id(simulation_id, "constraint", 0),
                     lifecycle=LifecycleState.ACTIVE,
                     token_count=estimate_tokens(effective_policy),
                     metadata={"source": "domain_policy"},
@@ -254,6 +270,9 @@ class TauTraceImporter:
                             NodeType.CONSTRAINT,
                             content,
                             step_id,
+                            node_id=_stable_node_id(
+                                simulation_id, "constraint", ordinal
+                            ),
                             lifecycle=LifecycleState.ACTIVE,
                             token_count=estimate_tokens(content),
                             metadata={
@@ -271,6 +290,11 @@ class TauTraceImporter:
                         node_type,
                         content,
                         step_id,
+                        node_id=_stable_node_id(
+                            simulation_id,
+                            "subgoal" if node_type == NodeType.SUBGOAL else "goal",
+                            ordinal,
+                        ),
                         lifecycle=LifecycleState.ACTIVE,
                         token_count=estimate_tokens(content),
                         metadata={
@@ -281,13 +305,21 @@ class TauTraceImporter:
                     )
                 # Current τ³ also permits user-side tools. They are captured below.
 
-            if role in {"assistant", "agent"} and content:
+            tool_calls = message.get("tool_calls") or message.get("function_calls") or []
+            if isinstance(tool_calls, dict):
+                tool_calls = [tool_calls]
+
+            if role in {"assistant", "agent"} and (content or tool_calls):
+                decision_content: Any = content
+                if decision_content is None:
+                    decision_content = {"tool_calls": tool_calls}
                 decision = graph.create_node(
                     NodeType.DECISION,
-                    content,
+                    decision_content,
                     step_id,
+                    node_id=_stable_node_id(simulation_id, "decision", ordinal),
                     lifecycle=LifecycleState.ACTIVE,
-                    token_count=estimate_tokens(content),
+                    token_count=estimate_tokens(decision_content),
                     metadata={
                         "source": "assistant_message",
                         "source_message_ordinal": ordinal,
@@ -312,9 +344,6 @@ class TauTraceImporter:
                     graph.connect(result_id, decision.node_id, relation, confidence=0.5)
                 recent_results = []
 
-            tool_calls = message.get("tool_calls") or message.get("function_calls") or []
-            if isinstance(tool_calls, dict):
-                tool_calls = [tool_calls]
             for index, call_payload in enumerate(tool_calls):
                 if not isinstance(call_payload, dict):
                     continue
@@ -341,6 +370,9 @@ class TauTraceImporter:
                     NodeType.TOOL_CALL,
                     {"tool_name": tool_name, "arguments": arguments, "call_id": call_id},
                     step_id,
+                    node_id=_stable_node_id(
+                        simulation_id, "tool_call", ordinal, index
+                    ),
                     lifecycle=(
                         LifecycleState.AUDIT_REQUIRED if side_effect else LifecycleState.ACTIVE
                     ),
@@ -422,6 +454,9 @@ class TauTraceImporter:
                     NodeType.TOOL_CALL,
                     {"tool_name": "unknown_tool", "arguments": {}, "call_id": call_id},
                     step_id,
+                    node_id=_stable_node_id(
+                        simulation_id, "tool_call", ordinal
+                    ),
                     token_count=1,
                     raw_ref=raw_call_ref,
                     metadata={
@@ -452,6 +487,11 @@ class TauTraceImporter:
                 NodeType.ERROR if is_error else NodeType.OBSERVATION,
                 payload,
                 step_id,
+                node_id=_stable_node_id(
+                    simulation_id,
+                    "error" if is_error else "observation",
+                    ordinal,
+                ),
                 lifecycle=(
                     LifecycleState.UNRESOLVED_FAILURE if is_error else LifecycleState.ACTIVE
                 ),

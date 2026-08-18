@@ -1,6 +1,26 @@
 # 完整实验协议
 
-## 0. 环境与固定变量
+## GDSC R0–R4 冻结顺序（当前主线）
+
+本节取代旧文档中“P4 只可运行 ACON+Card”的行动顺序，但不改写任何历史结果。正式参数见 [GDSC 预注册](GDSC_PREREGISTRATION.md)；结果只登记在 [GDSC 结果账本](PHASE4_GDSC_RESULTS.md)。
+
+1. **R0 治理与成本审计**：冻结旧 Phase 1–4 hashes，复现 192-view graph/closure 成本错位，并证明至少一个候选子集有 ≥30% provider-token oracle headroom。失败即停止。
+2. **R1 状态层**：验证纯 tool-call assistant 也生成 Decision、同 prefix 重建 hash 稳定、未来 suffix 不影响 prefix，且所有 reducer 从 neutral lifecycle 只读 cutoff 内事件。
+3. **R2 多表示机制**：运行 E1/E4 与 `[2048,4096,8192,12288,16384]` serialized-budget sweep。主预算是达到 hard coverage 100% 且 conservative fallback ≤5% 的最小预算；同时必须通过结构等价、decision sufficiency 和 ≥30% median serialized marginal-cost 降幅门禁。
+   - 实际 R2 为 No-Go 后执行零 API R2.1：冻结历史 hash，对同一 261 点按真实 τ³/LiteLLM prompt 口径归因，并计算保留完整 policy/native schemas/hard state 时的可达性下界。结果 fixed-floor 最大 median 降幅为 `28.451% <30%`，故采用不可达分支，不实现 v1.1。
+4. **E0 完整 eligibility**：每个域至少 10 tasks、median actions ≥10、dynamic-history ≥40%、headroom ≥30%、至少三类 lifecycle 现象各 ≥30 decision points、snapshot 可重放、Full success 在 20%–85%、native evaluator 能识别成功与副作用。任务仅按结构特征选择并以 task ID 稳定排序。
+5. **R3 common-prefix pilot**：先运行 R4 Full 首 seed 的 20 sessions并复用为 eligibility/prefix capture；E0 失败不进入 fork。通过后冻结 retail/airline 各 15 prefixes，运行 `30 × 3 treatments × 2 replicates = 180` 个最多 3-action 的短分支。
+6. **R4 development matrix**：仅在 R3 全部 gate 通过后运行剩余矩阵。固定 10 retail + 10 airline tasks、2 seeds、4 conditions，共 160 sessions；前述 20 个 Full sessions计入总数。
+
+R3/R4 temperature=0、并发=1，不自动补跑。R4 四条件固定为 Full Trajectory、hash-pinned official ACON、GDSC-Core、official ACON + GDSC safety/state layer。agent、user simulator 和 ACON compressor 固定 `zai/glm-4.7-flash`，max steps=50、timeout=900 秒、run 间隔20秒。启动前必须重新核验免费价格；任何非零计费估算、额度不足、模型 fallback 或累计超过 340 个外部分支/会话均在调用前 fail closed。
+
+本轮只允许得出“τ³ retail/airline 跨域 development evidence”。第二 benchmark 和两位独立人工 gold 不在本轮范围，不能因 τ³ 正向结果宣称最终 AAAI 证据链已完成。
+
+当前执行已在 R2.1 与 E0 双重停止；R3/R4 列表保留为冻结协议，不是待自动执行任务。
+
+## 历史通用协议
+
+### 0. 环境与固定变量
 
 正式比较中固定：benchmark task IDs、trial seeds、agent model、user model、工具集合、max steps、temperature 和并发度。唯一变化是 context manager。每个条件使用相同 token budget；Full Trajectory 作为不受 budget 限制的性能上界。
 

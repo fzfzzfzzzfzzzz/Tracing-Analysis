@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.tracegraph.dev/schemas/phase51_lifecycle_evidence_config_v1.json",
+  "title": "Phase 5.1 deterministic lifecycle evidence configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "phase",
+    "plan_version",
+    "status",
+    "baseline",
+    "inputs",
+    "evidence",
+    "ceiling_projection",
+    "gates",
+    "outputs",
+    "external_execution"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "phase51_lifecycle_evidence_config_v1"
+    },
+    "phase": {
+      "const": "phase5_1"
+    },
+    "plan_version": {
+      "const": "phase51_lifecycle_evidence_v1"
+    },
+    "status": {
+      "const": "offline_evidence_ceiling_only"
+    },
+    "baseline": {
+      "$ref": "#/$defs/object"
+    },
+    "inputs": {
+      "$ref": "#/$defs/object"
+    },
+    "evidence": {
+      "$ref": "#/$defs/object"
+    },
+    "ceiling_projection": {
+      "$ref": "#/$defs/object"
+    },
+    "gates": {
+      "$ref": "#/$defs/object"
+    },
+    "outputs": {
+      "$ref": "#/$defs/object"
+    },
+    "external_execution": {
+      "$ref": "#/$defs/object"
+    }
+  },
+  "$defs": {
+    "object": {
+      "type": "object"
+    }
+  }
+}

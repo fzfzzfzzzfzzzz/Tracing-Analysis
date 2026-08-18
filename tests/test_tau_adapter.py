@@ -63,6 +63,37 @@ def tau3_fixture() -> dict:
 
 
 class TauAdapterTests(unittest.TestCase):
+    def test_reimport_uses_stable_event_ids_and_captures_tool_only_decision(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            payload = {
+                "id": "stable-prefix",
+                "task_id": "stable-task",
+                "messages": [
+                    {"role": "user", "content": "look it up"},
+                    {
+                        "role": "assistant",
+                        "content": None,
+                        "tool_calls": [
+                            {"id": "call-1", "name": "lookup", "arguments": {"id": 7}}
+                        ],
+                    },
+                    {
+                        "role": "tool",
+                        "tool_call_id": "call-1",
+                        "content": {"status": "ok"},
+                    },
+                ],
+            }
+            importer = TauTraceImporter(ArchiveStore(Path(directory) / "archive"))
+
+            first = importer.import_simulation(payload)
+            second = importer.import_simulation(payload)
+
+            self.assertEqual(set(first.nodes), set(second.nodes))
+            decisions = first.find_nodes(node_types={NodeType.DECISION})
+            self.assertEqual(len(decisions), 1)
+            self.assertEqual(decisions[0].content["tool_calls"][0]["id"], "call-1")
+
     def test_import_current_monolithic_results(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

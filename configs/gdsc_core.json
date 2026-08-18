@@ -1,0 +1,37 @@
+{
+  "schema_version": "gdsc_config_v1",
+  "manager": "decision_state_compiler",
+  "manager_version": "gdsc_core_v1",
+  "provider_protocol": {
+    "name": "openai_chat",
+    "version": "openai_chat_v1",
+    "model": "zai/glm-4.7-flash",
+    "hard_context_limit": 128000,
+    "serializer_overhead_tokens": 0
+  },
+  "compiler": {
+    "beam_width": 16,
+    "canonical_tie_break": true,
+    "hard_closure_first": true,
+    "risk_model_default": "deterministic_safety_mask_v1",
+    "archive_recovery_enabled": false,
+    "summary_version": "verified_summary_v1",
+    "serialized_budget_sweep": [2048, 4096, 8192, 12288, 16384]
+  },
+  "representations": [
+    "raw_message",
+    "structured_state_delta",
+    "verified_summary",
+    "negative_guard",
+    "archive_handle",
+    "omit"
+  ],
+  "ablations": [
+    "no_graph",
+    "no_lifecycle",
+    "keep_drop_only",
+    "node_cost_only",
+    "no_policy_checker",
+    "no_negative_guard"
+  ]
+}

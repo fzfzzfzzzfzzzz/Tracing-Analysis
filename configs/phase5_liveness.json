@@ -1,0 +1,72 @@
+{
+  "schema_version": "phase5_liveness_config_v1",
+  "phase": "phase5",
+  "plan_version": "phase5_liveness_v1",
+  "manager": {
+    "name": "lifecycle_graph_context",
+    "implementation_version": "lifecycle_graph_context_v1",
+    "strategies": {
+      "prune": {
+        "policy_version": "gdsc_prune_v1",
+        "status": "active_development",
+        "projection": "raw_live_spans_only"
+      },
+      "structured": {
+        "policy_version": "gdsc_structured_v1",
+        "status": "gated_after_f5_g2",
+        "projection": "deterministic_verified_atoms"
+      }
+    }
+  },
+  "interfaces": {
+    "decision_lifecycle_graph": "decision_lifecycle_graph_v1",
+    "liveness_roots": "liveness_roots_v1",
+    "live_subgraph": "live_subgraph_v1",
+    "context_view": "lifecycle_context_view_v1",
+    "provider_protocol": "openai_chat_v1"
+  },
+  "governance": {
+    "checkpoint_id": "f5_wp0_phase4_baseline",
+    "historical_r2_decision": "no_go",
+    "historical_e0_decision": "no_go",
+    "historical_r2_threshold_percent": 30.0,
+    "historical_r2_serialized_reduction_percent": 14.956,
+    "historical_r2_1_runtime_reduction_percent": 15.723,
+    "historical_fixed_cost_max_reduction_percent": 28.451,
+    "retroactive_threshold_change_forbidden": true,
+    "outcome_based_task_selection_forbidden": true
+  },
+  "compatibility": {
+    "legacy_manager": "decision_state_compiler",
+    "legacy_policy_version": "gdsc_core_v1",
+    "legacy_behavior_must_remain_unchanged": true,
+    "protected_output_roots": [
+      "outputs/gdsc_r0_audit",
+      "outputs/gdsc_r2_1",
+      "outputs/phase4"
+    ]
+  },
+  "outputs": {
+    "root": "outputs/phase5",
+    "checkpoint_root": "outputs/phase5/checkpoints",
+    "request_artifact_root": "outputs/phase5/request_artifacts",
+    "external_run_root": "outputs/phase5/external_runs",
+    "overwrite_existing": false
+  },
+  "external_execution": {
+    "provider_generation_authorized": false,
+    "sessions_consumed": 0,
+    "automatic_rerun": false,
+    "paid_fallback": false,
+    "model_fallback": false
+  },
+  "gates": {
+    "structured_online_requires": "f5_g2_passed",
+    "external_prune_pilot_requires": [
+      "f5_g1_passed",
+      "f5_g2_passed",
+      "explicit_user_authorization"
+    ],
+    "fail_closed": true
+  }
+}

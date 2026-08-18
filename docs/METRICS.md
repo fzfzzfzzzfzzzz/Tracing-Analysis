@@ -1,5 +1,108 @@
 # 指标定义
 
+## Phase 5.2 伪标签与状态机门禁
+
+同模型双遍只能报告 machine stability，不能称作独立标注者一致性。`safe_to_evict`
+先二值化为 safe/not-safe，报告 observed agreement 与 Cohen’s κ；共识还要求 disposition、
+terminal reason、relation targets、obligations 全部一致。伪标签前门为：185/185 prefixes
+双遍合法、safe agreement≥0.80、κ≥0.60、consensus safe≥20、protected consensus safe=0。
+
+task 4 held-out 只在前门通过后相对 machine consensus 报告：
+
+- safe-to-evict precision = consensus safe 且预测 safe / 全部预测 safe；
+- live-critical recall = 预测 critical 且 consensus critical / 全部 consensus critical；
+- severe false-dead = 预测 safe 且 consensus critical 的单元数；
+- consensus safe identified，以及同测试集 Phase 5.1 Grade A evicted span 数；
+- determinism、future-suffix independence、archive、protocol、projection-send-forbidden、hash rate。
+
+成本不使用 93 作为生命周期门禁。分别报告 machine-consensus opportunity prevalence、
+opportunity-positive prefixes 的 paired token delta、全部 261 prefixes 的 mean/total/median/
+benefit ratio，以及固定 policy/tool-schema token 和状态机运行/产物维护开销。provider 价格为
+free 也不能写成 token cost 为零。
+
+## Phase 5 LiveSubgraph / Prune 指标
+
+Phase 5 继续使用下文五层成本，但主方法先拆成选择与投影两个可审计对象：
+
+| 指标 | 定义 |
+| --- | --- |
+| Root determinism | 相同 prefix/query 的 root IDs、provenance 与 roots hash 完全一致 |
+| Live-closure determinism | 相同 state/roots 的 live atom/node/span set 与 hash 完全一致 |
+| Future-suffix independence | cutoff 后新增节点、边或旧派生 lifecycle 标记不改变旧 cutoff hash |
+| Safe-to-evict precision | 被判 evictable 的 span 中人工/可执行 gold 为 dead-safe 的比例 |
+| Live-critical recall | gold live-critical spans 被 live closure 保留的比例 |
+| False-dead | policy、confirmation、receipt、pending/retry 或其他 critical span 被错误回收 |
+| Protocol closure | final request 中 call/result 一一对应、方向正确且 parallel span 完整的比例 |
+| Raw preservation | 保留 message 与 FullRaw 同 ordinal message 的逐字段完全相等比例 |
+| Archive reactivation | query 改变后被 evict span 以相同 raw refs/payload hash 恢复的比例 |
+| Treatment integrity | ContextView request hash、实际发送对象与 provider usage join hash 一致 |
+
+`GDSC-Prune` 的成本下降只允许用完整 serialized request 和 provider-actual
+input 报告；graph-selected 或“被删 span”大小不是 provider 节省。软预算不可行时不再
+删除 live evidence，而是设置 `budget_infeasible=true` 与
+`matched_budget_eligible=false`。源协议缺失/重复/逆序 result 或超过 provider hard
+limit 时设置 `send_eligible=false`，不计为 agent task failure。
+
+当前 deterministic fixtures 只支持工程 invariant，不支持任务成功、安全非劣性或
+ContextSafetyBench validity 主张。`GDSC-Structured` 的额外降幅与额外伤害在 F5-G2
+之后相对 Prune 单独计量。
+
+F5-E0 的成本层在 outcome 前冻结为
+`archived_complete_tool_span_count>=1 and message_count>=1`，共 185 个 prefixes。
+F5-G1 要求该层至少一个 prefix 降低完整 serialized request，且 paired
+`Prune−Raw` token delta 的中位数严格 `<0`。实际仅 4/185 下降，中位数为 `0`，因此
+F5-G1 No-Go；不能改用“有 eviction 的四个 prefix”作为事后成本 estimand。
+
+## Phase 5.1 evidence-ceiling 指标
+
+P51-G0 在运行前利用 185 为奇数这一事实冻结覆盖门槛：若每个投影的 token delta 只能为
+非正，要使配对中位数严格 `<0`，至少 `ceil(185/2)=93` 个 eligible prefixes 必须下降。
+
+| 指标 | 冻结定义 | 观察值 |
+| --- | --- | ---: |
+| Grade A reduced prefixes | 只应用完整标量消费 overlay 后，serialized request 低于 Raw 的 eligible 数 | `10/185` |
+| Grade B ceiling reduced prefixes | 把精确实体流/写入失效候选的来源 span 乐观假定可删后的 eligible 数；不能发送 | `36/185` |
+| Grade A paired median delta | Grade-A−Raw 的逐 prefix serialized token 差中位数 | `0` |
+| Grade B ceiling paired median delta | Ceiling−Raw 的逐 prefix serialized token 差中位数 | `0` |
+| Grade A false-dead | root/policy/confirmation/receipt 在 Grade A view 中被删除的总数 | `0` |
+
+因此 P51-G0 的两个覆盖/成本条件均失败。Grade B 的 1,513 条记录是跨 prefix 重复出现的
+候选关系计数，不是独立样本，也不能用来替代 36 个实际缩减 prefix 的 estimand。
+
+## GDSC 五层成本口径
+
+以下五层不得混写；每层均报告逐 turn 与 session 累计值，并保存计量器版本。
+
+| 层 | 定义 | 主要用途 |
+| --- | --- | --- |
+| Graph-selected | EventGraph 中被候选方案选择的原始/逻辑内容成本 | 解释图选择，不作 provider 节省主张 |
+| Compiled | 表示变换后 payload 的成本 | 比较 raw、state、summary、guard 等表示 |
+| Protocol-closed | 补齐 tool-call/result、user anchor 等协议闭包后的消息成本 | 检查闭包放大 |
+| Serialized request | system、messages、tool schemas 与协议格式开销的完整请求成本 | 离线预算和 matched-cost 主口径 |
+| Provider-actual | provider 返回的 input/output tokens 与 cost | live 效果主口径；缺失时不得估补为 actual |
+
+`input/action` 是 provider input tokens 除以 agent tool actions；`session total` 同时报告 agent、user simulator、compressor 的输入/输出与净 token cost。软预算超限 turn 从 matched-budget estimand 排除但单独计数；provider hard limit 中止属于基础设施/协议失败，不当作 agent task failure。
+
+## GDSC 可靠性与门禁指标
+
+| 指标 | 冻结定义 |
+| --- | --- |
+| Hard coverage | query 要求的 hard atoms 在可见、验证过的表示中被覆盖的比例；archive-only 不计关键证据覆盖 |
+| Representation equivalence | structured representation 的关键字段与 verified source atoms 完全一致的比例 |
+| Provisional decision sufficiency | 无未来信息的 prefix reviewer/规则检查认为 bundle 足以支持下一动作的比例 |
+| Conservative fallback | 因软预算不可行而返回 over-budget bundle 的 turn 比例 |
+| Omission harm | 相同 prefix 下 Compiled/Drop 相对 Raw 新增 policy violation、不可逆副作用或关键决策错误 |
+| Treatment integrity | 发送 request hash 与冻结 treatment artifact 一致，且 snapshot/state/query/hash 均可重放 |
+| Risk calibration | task-held-out high-risk recall、ECE、Brier score 与 harm-positive 数 |
+
+R2 gate 要求：关键字段等价 100%、provisional sufficiency ≥95%、相对 Raw 的 median serialized marginal cost 至少下降 30%、hard coverage 100%、conservative fallback ≤5%。统计风险模型还必须有至少 20 个 harm positives、high-risk recall ≥0.90、ECE ≤0.10 且 Brier 优于常数基线，否则 R4 使用 deterministic safety mask。
+
+R3 要求 Compiled 相对 Raw 的 median provider input 至少下降 15%，不得出现 Compiled 独有 policy violation/不可逆副作用，representation-induced harm 最多 1/30 prefix，并至少有 5 个 Compiled/Drop discordant prefixes且多数支持 Compiled。
+
+R4 的“τ³ 跨域 development positive evidence”是合取判定：GDSC-Core input/action 至少下降 15%且 bootstrap 95% CI 上界 `< 0`；session total 与净 token cost下降；success risk-difference 95% CI 下界 `≥ -0.05`；policy/collateral、action、repeat、recovery均不恶化；相对 ACON 存在 matched-cost reliability 或 matched-reliability token 优势；retail 与 airline 方向一致。任何一项未满足都不能写成正向结果。
+
+## 历史 H1–H6 指标
+
 调研报告第 8 节留空。本项目根据 H1–H6 将其补成以下可计算指标。
 
 ## 主指标

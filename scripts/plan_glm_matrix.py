@@ -16,6 +16,7 @@ from tracegraph.matrix import (
     build_matrix_plan,
     require_codex_provisional_p2,
     require_execution_budget,
+    require_gdsc_stage_gate,
     require_phase3_p2_construct_gate,
     require_phase3_p4_go,
 )
@@ -83,6 +84,7 @@ def main() -> None:
     parser.add_argument("--phase3-gate-report", type=Path)
     parser.add_argument("--p2-report", type=Path)
     parser.add_argument("--provisional-p2-report", type=Path)
+    parser.add_argument("--gdsc-gate-report", type=Path)
     args = parser.parse_args()
 
     config = json.loads(args.config.read_text(encoding="utf-8"))
@@ -141,6 +143,16 @@ def main() -> None:
             else None
         )
         require_phase3_p4_go(gate_report)
+    required_gdsc_stage = str(
+        (plan.get("gates") or {}).get("requires_gdsc_stage") or ""
+    )
+    if required_gdsc_stage:
+        gdsc_gate_report = (
+            json.loads(args.gdsc_gate_report.read_text(encoding="utf-8"))
+            if args.gdsc_gate_report
+            else None
+        )
+        require_gdsc_stage_gate(gdsc_gate_report, required_gdsc_stage)
 
     for index, command in enumerate(commands, start=1):
         print(f"[{index}/{len(commands)}] executing {plan['runs'][index - 1]['run_id']}")

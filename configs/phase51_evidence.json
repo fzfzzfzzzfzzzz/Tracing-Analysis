@@ -1,0 +1,114 @@
+{
+  "schema_version": "phase51_lifecycle_evidence_config_v1",
+  "phase": "phase5_1",
+  "plan_version": "phase51_lifecycle_evidence_v1",
+  "status": "offline_evidence_ceiling_only",
+  "baseline": {
+    "phase5_decision": "f5_g1_no_go",
+    "phase5_manifest_sha256": "4da20d81ccbc61635baad08edad684234b3f74c0a51f0ca82612232b5fdd86f7",
+    "phase5_tool_schema_sha256": "02f6290f1867da5ae9734bdd8091305727db1b62fc048a508ade892aace2f622",
+    "phase5_replay_manifest_sha256": "b2430eebe767ddfecc809f020a07d250142dc1454b1a8d4e67e80aa73e2dc081",
+    "phase5_gate_sha256": "1f43ef64a4b91b6d0322c8fd80fecfde85ddccbe966b55c4f2d2cc965f7225aa",
+    "eligible_prefixes": 185,
+    "all_prefixes": 261,
+    "phase5_reduced_prefixes": 4,
+    "phase5_paired_median_serialized_token_delta": 0.0,
+    "historical_r2_threshold_percent": 30.0,
+    "retroactive_change_forbidden": true
+  },
+  "inputs": {
+    "development_manifest": "outputs/phase5/e0_development_v1/development_prefix_manifest.json",
+    "tool_schemas": "outputs/phase5/e0_development_v1/tool_schemas.json",
+    "phase5_replay_rows": "outputs/phase5/e0_development_v1/prune_replay_v2/prefix_rows.jsonl",
+    "selection": "all_frozen_prefixes_outcome_blind",
+    "task_reward_accessed": false,
+    "treatment_outcomes_accessed": false
+  },
+  "evidence": {
+    "grade_a": {
+      "complete_scalar_consumption": {
+        "enabled": true,
+        "verifier": "deterministic_complete_scalar_consumption_v1",
+        "producer_tool_allowlist": [
+          "calculate",
+          "find_user_id_by_email",
+          "find_user_id_by_name_zip"
+        ],
+        "allowed_scalar_types": [
+          "boolean",
+          "integer",
+          "number",
+          "string"
+        ],
+        "allowed_singleton_wrapper_key_regex": "^(id|[a-z][a-z0-9_]*_id|result|value)$",
+        "require_success": true,
+        "require_non_negative_semantic_outcome": true,
+        "require_non_side_effect": true,
+        "require_later_consumer": true,
+        "require_exact_json_type_and_value": true,
+        "require_full_result_exhaustiveness": true,
+        "edge_type": "provides_input",
+        "confidence": 1.0
+      },
+      "side_effect_receipt": {
+        "enabled": true,
+        "verifier": "deterministic_structured_receipt_v1",
+        "action": "retain_only",
+        "confidence": 1.0
+      }
+    },
+    "grade_b_ceiling_only": {
+      "exact_entity_flow_candidate": {
+        "enabled": true,
+        "verifier": "deterministic_exact_entity_overlap_v1",
+        "identifier_key_regex": "(^id$|_id$|^ids$|_ids$|number$|reference$|confirmation_code$|email$|username$)",
+        "require_exact_json_type_and_value": true,
+        "may_generate_hard_dead": false
+      },
+      "mutation_invalidation_candidate": {
+        "enabled": true,
+        "verifier": "deterministic_mutation_entity_overlap_v1",
+        "write_tool_prefix_regex": "^(book|cancel|change|create|delete|exchange|modify|refund|return|send|transfer|update|write)",
+        "require_success": true,
+        "require_exact_json_type_and_value": true,
+        "may_generate_hard_dead": false
+      }
+    },
+    "grade_c": {
+      "free_text_regex_semantics": "disabled",
+      "fuzzy_matching": "disabled",
+      "llm_classification": "disabled",
+      "action": "retain_live_or_provisional"
+    }
+  },
+  "ceiling_projection": {
+    "grade_a": "apply_verified_overlay_then_standard_liveness",
+    "grade_b": "optimistically_evict_source_tool_span_for_ceiling_only",
+    "never_emit_as_provider_request": true,
+    "archive_round_trip_required": true,
+    "protocol_closure_required": true
+  },
+  "gates": {
+    "all_prefixes_included": 261,
+    "eligible_prefixes": 185,
+    "optimistic_reduced_prefix_count_min": 93,
+    "optimistic_paired_median_serialized_token_delta_max_exclusive": 0,
+    "deterministic_rate_min": 1.0,
+    "future_suffix_independence_rate_min": 1.0,
+    "protocol_valid_rate_min": 1.0,
+    "request_hash_match_rate_min": 1.0,
+    "grade_a_false_dead_max": 0,
+    "external_provider_generations_max": 0,
+    "failure_action": "stop_old_corpus_path"
+  },
+  "outputs": {
+    "root": "outputs/phase5_1",
+    "audit_root": "outputs/phase5_1/e0_evidence_ceiling_v1",
+    "overwrite_existing": false
+  },
+  "external_execution": {
+    "provider_generation_authorized": false,
+    "provider_generations": 0,
+    "automatic_rerun": false
+  }
+}

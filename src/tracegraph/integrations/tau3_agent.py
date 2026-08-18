@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+from collections.abc import Mapping
 from pathlib import Path
 from uuid import uuid4
 
@@ -19,8 +20,10 @@ from tau2.data_model.message import (
     Message,
     MultiToolMessage,
     SystemMessage,
+    ToolMessage,
+    UserMessage,
 )
-from tau2.utils.llm_utils import generate
+from tau2.utils.llm_utils import DEFAULT_MAX_RETRIES, generate, to_litellm_messages
 
 from tracegraph.adapters import TauTraceImporter
 from tracegraph.archive import ArchiveStore
@@ -36,15 +39,22 @@ from tracegraph.integrations.acon import (
     canonical_message_json,
     load_official_acon_adapter,
 )
+from tracegraph.integrations.gdsc_manager import GDSCCompilation, GDSCManager
 from tracegraph.message_protocol import project_context_items_to_messages
+from tracegraph.provider_cost import (
+    canonical_request_json,
+    provider_prompt_request,
+    request_sha256,
+)
 from tracegraph.schema import NodeType
 
 
 class TraceGraphTauAgent(LLMAgent):
     """Drop-in τ³ agent whose only changed component is context management."""
 
-    def __init__(self, tools, domain_policy, llm, llm_args=None):
+    def __init__(self, tools, domain_policy, llm, llm_args=None, task=None):
         super().__init__(tools=tools, domain_policy=domain_policy, llm=llm, llm_args=llm_args)
+        self.task = task
         self.manager_name = os.environ.get("TRACEGRAPH_MANAGER", "full_ours")
         expected_token_accounting = os.environ.get("TRACEGRAPH_TOKEN_ACCOUNTING")
         if (
@@ -59,9 +69,11 @@ class TraceGraphTauAgent(LLMAgent):
             last_k=int(os.environ.get("TRACEGRAPH_LAST_K", "8"))
         )
         self.acon_adapter = None
+        self.gdsc_manager = None
         if self.manager_name in {
             "acon_official",
             "acon_official_with_failure_cards",
+            "acon_official_with_gdsc_state",
         }:
             project_root = Path(__file__).resolve().parents[3]
             config_path = Path(
@@ -84,11 +96,26 @@ class TraceGraphTauAgent(LLMAgent):
                 ),
             )
             self.context_manager = None
+            if self.manager_name == "acon_official_with_gdsc_state":
+                self.gdsc_manager = GDSCManager(
+                    model=self.llm,
+                    hard_context_limit=int(
+                        os.environ.get("TRACEGRAPH_PROVIDER_CONTEXT_LIMIT", "200000")
+                    ),
+                )
+        elif self.manager_name == "decision_state_compiler":
+            self.context_manager = None
+            self.gdsc_manager = GDSCManager(
+                model=self.llm,
+                hard_context_limit=int(
+                    os.environ.get("TRACEGRAPH_PROVIDER_CONTEXT_LIMIT", "200000")
+                ),
+            )
         elif self.manager_name not in managers:
             raise ValueError(
                 f"unknown TRACEGRAPH_MANAGER={self.manager_name!r}; "
                 "choices="
-                f"{sorted([*managers, 'acon_official', 'acon_official_with_failure_cards'])}"
+                f"{sorted([*managers, 'acon_official', 'acon_official_with_failure_cards', 'acon_official_with_gdsc_state', 'decision_state_compiler'])}"
             )
         else:
             self.context_manager = managers[self.manager_name]
@@ -100,6 +127,25 @@ class TraceGraphTauAgent(LLMAgent):
         self.archive = ArchiveStore(self.session_root / "archive")
         self.importer = TauTraceImporter(self.archive)
 
+    def _task_payload(self) -> dict:
+        if self.task is None:
+            return {}
+        dumper = getattr(self.task, "model_dump", None)
+        if callable(dumper):
+            value = dumper(mode="json")
+            return value if isinstance(value, dict) else {}
+        return dict(self.task) if isinstance(self.task, dict) else {}
+
+    def _tool_schemas(self) -> list[dict]:
+        schemas: list[dict] = []
+        for tool in self.tools:
+            value = getattr(tool, "openai_schema", None)
+            if callable(value):
+                value = value()
+            if isinstance(value, dict):
+                schemas.append(value)
+        return schemas
+
     @property
     def system_prompt(self) -> str:
         # The policy is represented as a graph Constraint so constraint-retention
@@ -109,6 +155,58 @@ class TraceGraphTauAgent(LLMAgent):
     @staticmethod
     def _dump_message(message: Message) -> dict:
         return message.model_dump(mode="json")
+
+    @staticmethod
+    def _load_message(payload: dict) -> Message:
+        role = str(payload.get("role") or "").lower()
+        message_types = {
+            "system": SystemMessage,
+            "user": UserMessage,
+            "assistant": AssistantMessage,
+            "tool": ToolMessage,
+        }
+        message_type = message_types.get(role)
+        if message_type is None:
+            raise ValueError(f"unsupported compiled message role: {role!r}")
+        if role == "assistant":
+            tool_calls: list[dict] = []
+            for raw_call in payload.get("tool_calls") or ():
+                if not isinstance(raw_call, Mapping):
+                    raise ValueError("compiled assistant tool call must be a mapping")
+                function = raw_call.get("function")
+                function = function if isinstance(function, Mapping) else {}
+                name = function.get("name") or raw_call.get("name")
+                arguments = function.get("arguments", raw_call.get("arguments", {}))
+                if isinstance(arguments, str):
+                    try:
+                        arguments = json.loads(arguments)
+                    except json.JSONDecodeError as exc:
+                        raise ValueError(
+                            "compiled assistant tool arguments must be valid JSON"
+                        ) from exc
+                if not isinstance(arguments, Mapping):
+                    raise ValueError("compiled assistant tool arguments must be an object")
+                tool_calls.append(
+                    {
+                        "id": str(raw_call.get("id") or ""),
+                        "name": str(name or ""),
+                        "arguments": dict(arguments),
+                    }
+                )
+            payload = {
+                "role": "assistant",
+                "content": payload.get("content"),
+                "tool_calls": tool_calls or None,
+            }
+        elif role == "tool":
+            payload = {
+                "role": "tool",
+                "id": str(payload.get("tool_call_id") or payload.get("id") or ""),
+                "content": payload.get("content"),
+            }
+        else:
+            payload = {"role": role, "content": payload.get("content")}
+        return message_type.model_validate(payload)
 
     def _select_messages(
         self,
@@ -197,6 +295,72 @@ class TraceGraphTauAgent(LLMAgent):
             metadata=metadata,
         )
 
+    def _gdsc_view(self, graph, compilation: GDSCCompilation) -> ContextView:
+        items: list[ContextItem] = []
+        covered: set[str] = set()
+        for representation in compilation.bundle.representation_manifest:
+            if representation.get("representation_type") == "omit":
+                continue
+            source_ids = tuple(map(str, representation.get("source_ids") or ()))
+            covered.update(source_ids)
+            source = next(
+                (graph.nodes[node_id] for node_id in source_ids if node_id in graph.nodes),
+                None,
+            )
+            items.append(
+                ContextItem(
+                    node_id=(
+                        source.node_id
+                        if source is not None
+                        else str(representation["representation_id"])
+                    ),
+                    node_type=source.node_type if source is not None else NodeType.SUMMARY,
+                    content=representation.get("payload"),
+                    token_count=int(representation.get("estimated_cost") or 0),
+                    reason=(
+                        "gdsc_representation:"
+                        + str(representation.get("representation_type") or "unknown")
+                    ),
+                    source_node_ids=source_ids,
+                    raw_ref=source.raw_ref if source is not None else None,
+                    preserves_sources=True,
+                )
+            )
+        costs = compilation.bundle.costs
+        return ContextView(
+            manager=self.manager_name,
+            items=items,
+            original_tokens=sum(
+                node.token_count or estimate_tokens(node.content)
+                for node in graph.nodes.values()
+            ),
+            budget=self.context_budget,
+            excluded_node_ids=[node_id for node_id in graph.nodes if node_id not in covered],
+            metadata={
+                "context_policy_version": "gdsc_core_v1",
+                "decision_state_hash": compilation.state.state_hash,
+                "decision_query_hash": compilation.query.query_hash,
+                "graph_selected_representation_tokens": costs.graph_selected,
+                "compiled_representation_tokens": costs.compiled,
+                "protocol_closed_message_tokens": costs.protocol_closed,
+                "serialized_request_estimated_tokens": costs.serialized_request,
+                "matched_budget_eligible": compilation.bundle.matched_budget_eligible,
+                "budget_infeasible": compilation.bundle.budget_infeasible,
+                "hard_limit_exceeded": compilation.bundle.hard_limit_exceeded,
+                "compiler_version": compilation.bundle.compiler_version,
+            },
+        )
+
+    def _persist_gdsc_compilation(self, compilation: GDSCCompilation) -> None:
+        self.session_root.mkdir(parents=True, exist_ok=True)
+        with (self.session_root / "gdsc_compilations.jsonl").open(
+            "a", encoding="utf-8", newline="\n"
+        ) as handle:
+            handle.write(
+                json.dumps(compilation.to_dict(), ensure_ascii=False, default=str)
+                + "\n"
+            )
+
     def _persist(
         self,
         graph,
@@ -216,6 +380,112 @@ class TraceGraphTauAgent(LLMAgent):
                 for record in acon_plan.call_records:
                     handle.write(json.dumps(record.to_dict(), ensure_ascii=False) + "\n")
 
+    def _persist_provider_request(
+        self,
+        context_messages: list[Message],
+        view: ContextView,
+        *,
+        expected_prompt_hash: str | None = None,
+    ) -> str:
+        messages = to_litellm_messages(context_messages)
+        tools = self._tool_schemas()
+        request_kwargs = dict(self.llm_args or {})
+        request_kwargs.setdefault("num_retries", DEFAULT_MAX_RETRIES)
+        prompt_request = provider_prompt_request(
+            model=self.llm,
+            messages=messages,
+            tools=tools,
+        )
+        invocation_request = {
+            **prompt_request,
+            "tool_choice": "auto" if tools else None,
+            **request_kwargs,
+        }
+        prompt_serialized = canonical_request_json(prompt_request)
+        invocation_serialized = canonical_request_json(invocation_request)
+        prompt_sha256 = request_sha256(prompt_request)
+        invocation_sha256 = request_sha256(invocation_request)
+        if expected_prompt_hash is not None and prompt_sha256 != expected_prompt_hash:
+            raise ValueError(
+                "GDSC PromptBundle hash does not match the exact LiteLLM prompt object"
+            )
+        serialized_tokens = estimate_tokens(prompt_serialized)
+        graph_selected_tokens = int(
+            view.metadata.get("graph_selected_representation_tokens", view.selected_tokens)
+        )
+        compiled_tokens = int(
+            view.metadata.get("compiled_representation_tokens", graph_selected_tokens)
+        )
+        protocol_closed_tokens = int(
+            view.metadata.get("protocol_closed_message_tokens", compiled_tokens)
+        )
+        view.metadata.update(
+            {
+                "serialized_request_sha256": prompt_sha256,
+                "prompt_request_sha256": prompt_sha256,
+                "invocation_request_sha256": invocation_sha256,
+                "serialized_request_estimated_tokens": serialized_tokens,
+                "invocation_request_estimated_tokens": estimate_tokens(
+                    invocation_serialized
+                ),
+                "tool_schema_estimated_tokens": estimate_tokens(tools),
+                "serializer_version": "tau3_litellm_prompt_v2",
+                "prompt_cost_layers": {
+                    "graph_selected": graph_selected_tokens,
+                    "compiled": compiled_tokens,
+                    "protocol_closed": protocol_closed_tokens,
+                    "serialized_request": serialized_tokens,
+                    "provider_actual": None,
+                },
+            }
+        )
+        self.session_root.mkdir(parents=True, exist_ok=True)
+        with (self.session_root / "provider_requests.jsonl").open(
+            "a", encoding="utf-8", newline="\n"
+        ) as handle:
+            handle.write(
+                json.dumps(
+                    {
+                        "request_sha256": prompt_sha256,
+                        "prompt_request_sha256": prompt_sha256,
+                        "invocation_request_sha256": invocation_sha256,
+                        "request": prompt_request,
+                        "prompt_request": prompt_request,
+                        "invocation_request": invocation_request,
+                        "manager": self.manager_name,
+                        "serializer_version": "tau3_litellm_prompt_v2",
+                        "estimated_tokens": serialized_tokens,
+                        "cost_layers": view.metadata["prompt_cost_layers"],
+                    },
+                    ensure_ascii=False,
+                    default=str,
+                )
+                + "\n"
+            )
+        return prompt_sha256
+
+    def _persist_provider_usage(self, request_sha256: str, response) -> None:
+        usage = getattr(response, "usage", None) or {}
+        actual_input_tokens = next(
+            (
+                int(usage[key])
+                for key in ("prompt_tokens", "input_tokens", "input_token_count")
+                if usage.get(key) is not None
+            ),
+            None,
+        )
+        payload = {
+            "request_sha256": request_sha256,
+            "provider_usage": usage,
+            "provider_actual_input_tokens": actual_input_tokens,
+            "provider_cost_usd": float(getattr(response, "cost", None) or 0.0),
+            "provider_usage_present": bool(usage),
+        }
+        with (self.session_root / "provider_usage.jsonl").open(
+            "a", encoding="utf-8", newline="\n"
+        ) as handle:
+            handle.write(json.dumps(payload, ensure_ascii=False, default=str) + "\n")
+
     def _generate_next_message(
         self,
         message: ValidAgentInputMessage,
@@ -226,15 +496,22 @@ class TraceGraphTauAgent(LLMAgent):
             state.messages.extend(message.tool_messages)
         else:
             state.messages.append(message)
+        task_payload = self._task_payload()
+        task_id = task_payload.get("id") or self.trace_session_id
         simulation = {
             "id": self.trace_session_id,
-            "task_id": self.trace_session_id,
+            "task_id": task_id,
             "messages": [self._dump_message(item) for item in state.messages],
         }
-        graph = self.importer.import_simulation(simulation, policy=self.domain_policy)
+        graph = self.importer.import_simulation(
+            simulation,
+            task=task_payload,
+            policy=self.domain_policy,
+        )
         graph.metadata["context_manager"] = self.manager_name
         graph.metadata["token_accounting"] = TOKEN_ACCOUNTING_VERSION
         acon_plan = None
+        gdsc_compilation = None
         if self.acon_adapter is not None:
             dumped_messages = [self._dump_message(item) for item in state.messages]
             acon_plan = self.acon_adapter.prepare(
@@ -319,11 +596,78 @@ class TraceGraphTauAgent(LLMAgent):
                         "raw_failure_messages_selected_by_overlay": 0,
                     }
                 )
+            elif self.manager_name == "acon_official_with_gdsc_state":
+                gdsc_compilation = self.gdsc_manager.compile(
+                    graph,
+                    messages=dumped_messages,
+                    system_rules=(),
+                    tool_schemas=self._tool_schemas(),
+                    budget=self.context_budget,
+                )
+                if gdsc_compilation.bundle.hard_limit_exceeded:
+                    raise ValueError("GDSC provider hard context limit exceeded")
+                excluded_types = {
+                    "active_goal",
+                    "open_subgoal",
+                    "global_policy_rule",
+                    "applicable_policy_rule",
+                }
+                overlay_atoms = [
+                    atom.to_dict()
+                    for atom in gdsc_compilation.state.atoms
+                    if atom.atom_type.value not in excluded_types
+                ]
+                if overlay_atoms:
+                    context_messages.insert(
+                        len(state.system_messages) + 1,
+                        SystemMessage(
+                            role="system",
+                            content=(
+                                "<gdsc_verified_state>\n"
+                                + json.dumps(
+                                    overlay_atoms,
+                                    ensure_ascii=False,
+                                    sort_keys=True,
+                                    default=str,
+                                )
+                                + "\n</gdsc_verified_state>"
+                            ),
+                        ),
+                    )
+                view.metadata.update(
+                    {
+                        "gdsc_state_overlay": True,
+                        "decision_state_hash": gdsc_compilation.state.state_hash,
+                        "decision_query_hash": gdsc_compilation.query.query_hash,
+                        "gdsc_overlay_atom_count": len(overlay_atoms),
+                        "context_policy_version": "acon_official_plus_gdsc_core_v1",
+                    }
+                )
             view.metadata["graph_selected_representation_tokens"] = view.selected_tokens
             view.metadata["protocol_closed_message_tokens"] = sum(
                 estimate_tokens(self._dump_message(message))
                 for message in selected_messages
             )
+        elif self.gdsc_manager is not None:
+            provider_messages = to_litellm_messages(list(state.messages))
+            system_rules = [
+                str(self._dump_message(item).get("content") or "")
+                for item in state.system_messages
+            ]
+            gdsc_compilation = self.gdsc_manager.compile(
+                graph,
+                messages=provider_messages,
+                system_rules=system_rules,
+                tool_schemas=self._tool_schemas(),
+                budget=self.context_budget,
+            )
+            if gdsc_compilation.bundle.hard_limit_exceeded:
+                raise ValueError("GDSC provider hard context limit exceeded")
+            context_messages = [
+                self._load_message(dict(payload))
+                for payload in gdsc_compilation.bundle.messages
+            ]
+            view = self._gdsc_view(graph, gdsc_compilation)
         else:
             view = self.context_manager.select(graph, budget=self.context_budget)
             view.metadata["token_accounting"] = TOKEN_ACCOUNTING_VERSION
@@ -341,6 +685,19 @@ class TraceGraphTauAgent(LLMAgent):
                     )
                 )
             context_messages.extend(selected_messages)
+        if gdsc_compilation is not None:
+            self._persist_gdsc_compilation(gdsc_compilation)
+        expected_prompt_hash = (
+            gdsc_compilation.bundle.request_hash
+            if self.manager_name == "decision_state_compiler"
+            and gdsc_compilation is not None
+            else None
+        )
+        request_sha256 = self._persist_provider_request(
+            context_messages,
+            view,
+            expected_prompt_hash=expected_prompt_hash,
+        )
         self._persist(graph, view, acon_plan)
         response = generate(
             model=self.llm,
@@ -349,6 +706,7 @@ class TraceGraphTauAgent(LLMAgent):
             call_name=f"tracegraph_{self.manager_name}",
             **self.llm_args,
         )
+        self._persist_provider_usage(request_sha256, response)
         if acon_plan is not None:
             acon_metadata = acon_plan.metadata()
             compressor_cost = float(acon_metadata["compressor_cost_usd"])
@@ -378,6 +736,7 @@ def create_tracegraph_agent(tools, domain_policy, **kwargs):
         domain_policy=domain_policy,
         llm=kwargs.get("llm"),
         llm_args=kwargs.get("llm_args"),
+        task=kwargs.get("task"),
     )
 
 

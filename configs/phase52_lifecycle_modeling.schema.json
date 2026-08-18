@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Phase 5.2 lifecycle modeling configuration",
+  "type": "object",
+  "required": ["schema_version", "phase", "inputs", "output_root", "model", "pricing_snapshot", "annotation", "split", "gates", "governance", "tool_effect_specs"],
+  "properties": {
+    "schema_version": {"const": "phase52_lifecycle_modeling_config_v1"},
+    "phase": {"const": "5.2"},
+    "inputs": {"type": "object"},
+    "output_root": {"type": "string"},
+    "model": {"type": "object"},
+    "pricing_snapshot": {"type": "object"},
+    "annotation": {"type": "object"},
+    "split": {"type": "object"},
+    "gates": {"type": "object"},
+    "governance": {"type": "object"},
+    "tool_effect_specs": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "items": {
+        "type": "object",
+        "required": ["tool_name", "effect_type", "entity_type", "entity_keys", "read_scope", "write_scope", "snapshot", "receipt_required", "invalidation_scope"],
+        "properties": {
+          "tool_name": {"type": "string", "minLength": 1},
+          "effect_type": {"enum": ["read", "lookup", "query", "write", "handoff"]},
+          "entity_type": {"type": "string", "minLength": 1},
+          "entity_keys": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "read_scope": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "write_scope": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "snapshot": {"enum": ["complete", "partial", "none"]},
+          "receipt_required": {"type": "boolean"},
+          "invalidation_scope": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

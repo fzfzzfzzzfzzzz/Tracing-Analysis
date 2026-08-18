@@ -93,6 +93,12 @@ $env:TRACEGRAPH_ACON_CONFIG = "configs/acon_tau3.json"
 
 第四阶段已按 handoff 完成零 API 的 P3b-A 可识别性修复：v2 将 Card retention 状态与 expiry cause 拆分；τ³ 支持先持久化 trajectory、再离线评测与按 simulation/hash 合并 reward；冻结的 60-session 复合矩阵已生成 next-3-action 报告（49 个 eligible failure events、98/98 action-view 对齐）。工程 gate 已通过，但 v2 仍是 Codex provisional，common-prefix fork 尚未执行，因此正向经验主张与 P3b-B 继续 No-Go。实现、数值和复现命令见 [第四阶段执行结果](docs/PHASE4_RESULTS.md)。
 
+2026-07-21 的研究重置不再把 Failure Card 当作主算法：新的第四阶段主线是 Graph-Constrained Decision-State Compiler（GDSC），目标是把轨迹编译为下一动作所需的最小、可验证、provider-cost-aware 决策状态。旧 P3b-A 保留为 FailureGuard 机制切片和实验基础设施；Card-only fork 与 negative-results 收口不再是唯一下一步。详见 [第四阶段研究重置计划](第四阶段修改计划.md)。
+
+GDSC 的研究协议与结果账本已和历史结果分离：[`GDSC_PREREGISTRATION.md`](docs/GDSC_PREREGISTRATION.md) 冻结 R0–R4 门禁和停止规则，[`CLAIM_EVIDENCE_MATRIX.md`](docs/CLAIM_EVIDENCE_MATRIX.md) 约束每项可写主张所需证据，[`PHASE4_GDSC_RESULTS.md`](docs/PHASE4_GDSC_RESULTS.md) 登记实际运行结果。R0 development gate 通过，但历史 R2 的 median serialized reduction 为 `14.956% < 30%`；R2.1 按真实 τ³/LiteLLM prompt 口径复算为 `15.723%`，且完整 policy + native schemas 的固定成本上界仅允许 `28.451%` 降幅，证明冻结约束下 30% 不可达。E0 eligibility 也不合格，因此不实现 v1.1、不运行 R3/R4，外部会话为 0。
+
+2026-07-28 起，项目级下一阶段明确编号为 **Phase 5**。新计划不再把整个 GDSC 定义为 compiler，而将核心收敛为“基于决策状态图和生命周期的工具轨迹活性分析”：`GDSC-Prune` 只删除当前决策不可达且可安全回收的原始 tool spans，`GDSC-Structured` 原计划再单独检验 live subgraph 的结构化投影。Phase 4 的 R2/E0 No-Go 和30%门槛保持历史冻结。Phase 5 的 outcome-blind F5-E0 已完成：261 个 prefixes 的工程/安全离线不变量通过，但 185 个 cost-eligible prefixes 仅 4 个降低完整 serialized input，paired median Prune−Raw token delta=`0`，未达到冻结的 `<0` 门槛，因此 F5-G1 No-Go，停止在 Structured 与外部 pilot 之前。详见 [第五阶段修改计划](第五阶段修改计划.md)和 [Phase 5 结果账本](docs/PHASE5_RESULTS.md)。
+
 ## 文档
 
 - [架构与数据流](docs/ARCHITECTURE.md)
@@ -109,8 +115,12 @@ $env:TRACEGRAPH_ACON_CONFIG = "configs/acon_tau3.json"
 - [强 baseline 官方实现审计](docs/STRONG_BASELINES.md)
 - [第三阶段修改计划](第三阶段修改计划.md)
 - [第三阶段执行结果与门槛状态](docs/PHASE3_RESULTS.md)
-- [第四阶段修改计划](第四阶段修改计划.md)
-- [第四阶段执行结果与门槛状态](docs/PHASE4_RESULTS.md)
+- [第四阶段研究重置计划（GDSC v2.0）](第四阶段修改计划.md)
+- [旧 Phase 4/P3b-A 执行结果与门槛状态](docs/PHASE4_RESULTS.md)
+- [GDSC R0–R4 预注册](docs/GDSC_PREREGISTRATION.md)
+- [第五阶段修改计划：生命周期活性分析与 Live Subgraph 投影](第五阶段修改计划.md)
+- [GDSC 执行结果与门禁状态](docs/PHASE4_GDSC_RESULTS.md)
+- [GDSC 主张—证据矩阵](docs/CLAIM_EVIDENCE_MATRIX.md)
 - [数据与结果格式](docs/DATA_FORMAT.md)
 - [已执行验证](docs/VALIDATION.md)
 - [调研报告逐项追踪](docs/REQUIREMENTS_TRACEABILITY.md)

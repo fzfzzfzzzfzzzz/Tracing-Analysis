@@ -1,0 +1,36 @@
+{
+  "schema_version": "gdsc_gate_policy_v1",
+  "fail_closed": true,
+  "e0_eligibility": {
+    "minimum_tasks_per_domain": 10,
+    "minimum_median_agent_actions": 10.0,
+    "minimum_dynamic_provider_input_ratio": 0.4,
+    "minimum_oracle_headroom": 0.3,
+    "minimum_lifecycle_classes": 3,
+    "minimum_decision_points_per_lifecycle_class": 30,
+    "minimum_full_success_rate": 0.2,
+    "maximum_full_success_rate": 0.85
+  },
+  "r2_gate": {
+    "minimum_structured_field_equivalence": 1.0,
+    "minimum_provisional_decision_sufficiency": 0.95,
+    "minimum_median_serialized_cost_reduction": 0.3,
+    "maximum_conservative_fallback_rate": 0.05,
+    "required_hard_coverage": 1.0
+  },
+  "risk_gate": {
+    "minimum_harm_positives": 20,
+    "minimum_high_risk_recall": 0.9,
+    "maximum_ece": 0.1,
+    "brier_must_beat_constant": true
+  },
+  "r3_gate": {
+    "required_treatment_and_hash_pass_rate": 1.0,
+    "minimum_compiled_provider_input_reduction": 0.15,
+    "maximum_compiled_unique_harm_prefixes": 1,
+    "minimum_compiled_drop_discordant_prefixes": 5,
+    "require_discordant_majority_supports_compiled": true,
+    "allow_compiled_unique_policy_violation": false,
+    "allow_compiled_unique_irreversible_side_effect": false
+  }
+}

@@ -1,5 +1,7 @@
 # 第三阶段执行结果与门槛状态
 
+> **2026-07-21 历史边界：** 本页只记录 Failure Card 主线的 Phase 3 结果。文中的 P4 No-Go 约束旧 Card/ACON+Card 扩展矩阵，不是否定 GDSC v2.0，也不授权或证明新的 R0–R4。GDSC 状态见 [独立结果账本](PHASE4_GDSC_RESULTS.md)。旧 `full_ours`、数值、provenance 与产物 hash 均不追溯改变。
+
 > 快照日期：2026-07-18
 > 结论：P1 已完成；P2 已完成 **Codex 临时版**，但未取得独立人工 gold；P3 已完成 60-session 修复后复合分析；预注册 P4 gate 为 **No-Go**，因此 P4 扩展实验不应执行。
 
@@ -151,4 +153,4 @@ python scripts/analyze_live_matrix.py `
   --output outputs/phase3/p3_card_retail_codex_repaired_composite_v1_analysis/raw_reference
 ```
 
-当前全量回归：`103 passed`。正式 P4 仍只能在 `evaluate_phase3_gates.py` 输出 `p4.go_gate_passed=true` 后执行。
+本快照当时的全量回归为 `103 passed`；GDSC 改造前冻结基线后来更新为 `117 passed`。两者都是各自时点的历史基线，不代表 GDSC 新实现已经验证。旧 Card-only P4 仍只能在 `evaluate_phase3_gates.py` 输出 `p4.go_gate_passed=true` 后执行；新的 GDSC R0–R4 使用独立预注册和 gate，不能用其中任一 gate 替代另一套协议。

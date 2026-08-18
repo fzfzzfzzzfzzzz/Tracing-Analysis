@@ -4,12 +4,46 @@ from types import SimpleNamespace
 from tracegraph import NodeType
 from tracegraph.context import ContextItem
 from tracegraph.message_protocol import (
+    close_message_protocol,
     close_message_ordinals,
     project_context_items_to_messages,
 )
 
 
 class MessageProtocolTests(unittest.TestCase):
+    def test_typed_closure_records_addition_provenance(self):
+        messages = [
+            {"role": "user", "content": "read"},
+            {
+                "role": "assistant",
+                "tool_calls": [{"id": "call-1", "function": {"name": "read"}}],
+            },
+            {"role": "tool", "tool_call_id": "call-1", "content": "ok"},
+        ]
+
+        result = close_message_protocol(messages, {3})
+
+        self.assertTrue(result.valid)
+        self.assertEqual(result.ordinals, {1, 2, 3})
+        self.assertEqual(
+            {addition.reason for addition in result.additions},
+            {"tool_call_for_selected_result", "leading_user_anchor"},
+        )
+
+    def test_typed_closure_marks_missing_tool_result_invalid(self):
+        messages = [
+            {"role": "user", "content": "write"},
+            {
+                "role": "assistant",
+                "tool_calls": [{"id": "call-1", "function": {"name": "write"}}],
+            },
+        ]
+
+        result = close_message_protocol(messages, {2})
+
+        self.assertFalse(result.valid)
+        self.assertIn("has no result message", result.errors[0])
+
     def test_adds_latest_user_anchor_before_compressed_assistant_slice(self):
         messages = [
             {"role": "user", "content": "initial"},

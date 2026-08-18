@@ -4,8 +4,9 @@ import unittest
 from tracegraph.capture import TOKEN_ACCOUNTING_VERSION
 from tracegraph.matrix import (
     build_matrix_plan,
-    require_execution_budget,
     require_codex_provisional_p2,
+    require_execution_budget,
+    require_gdsc_stage_gate,
     require_phase3_p2_construct_gate,
     require_phase3_p4_go,
 )
@@ -33,6 +34,51 @@ def sample_config():
 
 
 class MatrixPlanTests(unittest.TestCase):
+    def test_gdsc_stage_gate_fails_closed(self) -> None:
+        with self.assertRaisesRegex(ValueError, "R3"):
+            require_gdsc_stage_gate(None, "R3")
+        with self.assertRaisesRegex(ValueError, "eligibility"):
+            require_gdsc_stage_gate(
+                {
+                    "stages": {
+                        "R3": {"passed": False, "blockers": ["eligibility"]}
+                    }
+                },
+                "R3",
+            )
+        require_gdsc_stage_gate(
+            {"stages": {"R3": {"passed": True, "blockers": []}}},
+            "R3",
+        )
+
+    def test_free_provider_requires_zero_pricing_snapshot(self) -> None:
+        config = sample_config()
+        config.update(
+            {
+                "agent_model": "zai/glm-4.7-flash",
+                "user_model": "zai/glm-4.7-flash",
+                "free_provider": True,
+                "estimated_cost_per_session_usd": 0,
+                "pricing_snapshot": {
+                    "source_url": "https://docs.z.ai/guides/overview/pricing",
+                    "checked_at": "2026-07-21",
+                    "input_usd_per_mtok": 0,
+                    "output_usd_per_mtok": 0,
+                },
+                "max_external_sessions": 9,
+            }
+        )
+
+        plan = build_matrix_plan(config)
+
+        self.assertTrue(plan["free_provider"])
+        self.assertEqual(plan["estimated_total_cost_usd"], 0)
+        require_execution_budget(plan, 0)
+
+        config["pricing_snapshot"]["output_usd_per_mtok"] = 0.1
+        with self.assertRaisesRegex(ValueError, "zero input/output"):
+            build_matrix_plan(config)
+
     def test_formal_p3_execution_requires_passing_p2_report(self) -> None:
         with self.assertRaisesRegex(ValueError, "passing P2"):
             require_phase3_p2_construct_gate(None)

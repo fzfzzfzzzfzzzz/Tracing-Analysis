@@ -1,5 +1,29 @@
 # 调研报告逐项追踪
 
+## GDSC v2.0 当前追踪
+
+状态含义：`合同冻结` 表示接口/门禁已在文档预注册，不等于代码或实验通过；工程项由测试验证，机制与 eligibility 项由冻结 artifact 裁决。R2/E0 当前均为 No-Go。
+
+| GDSC 要求 | 预期实现/产物 | 当前证据状态 |
+| --- | --- | --- |
+| EventGraph 兼容、旧 `full_ours` 不变 | 原 `TraceGraph`/manager registry；兼容回归 | 通过；改造后全量 `144 passed` |
+| 稳定事件/atom/edge/state hash | canonical JSON + `DecisionStateGraph` reducer | 通过 deterministic/prefix/suffix tests |
+| 纯 tool-call assistant 生成 Decision | τ³ adapter/EventGraph capture | adapter regression 通过 |
+| cutoff-only neutral reducer | Decision-state reducer | 未来 suffix 不影响 prefix test 通过 |
+| 确定性 `DecisionQuery` | pending operation/retry/schema/policy scope | 候选工具保守保留 tests 通过 |
+| 六类表示与来源约束 | compiler representation manifest | equivalence/provenance/tamper/illegal-guard tests 通过 |
+| hard closure + deterministic beam | compiler，默认 beam=16 | coverage/protocol/budget/tie-break tests 通过 |
+| 软预算与 provider hard limit 分离 | `PromptBundle` budget status | conservative bundle / hard abort tests 通过 |
+| 五层成本 | prompt cost profiler + request artifact + usage completion | 192/192 closure mismatch 已复现；新请求 hash/usage 回填 tests 通过 |
+| deterministic/calibrated omission risk | safety mask；task-held-out logistic artifact | split/round-trip tests 通过；无合格 harm gold，运行时保持 deterministic |
+| benchmark eligibility | `benchmark_eligibility.json` | **E0 No-Go**；retail/airline 均只有 5 tasks、median actions 7/6，且动态历史/snapshot/evaluator 不完整 |
+| 新 manager 与组合条件 | `decision_state_compiler` / `gdsc_core_v1`；`acon_official_with_gdsc_state` | registry/runtime compatibility tests 通过 |
+| τ³ request/snapshot provenance | pre-send request artifact、snapshot restore、post-return usage | request/usage 集成 tests 通过；旧数据 snapshot 证据缺失导致 E0 失败 |
+| R2/R3/R4 gate | `r2_offline_mechanism.json`, `benchmark_eligibility.json` | **R2 No-Go**（14.956% <30%）且 E0 No-Go；R3/R4 未运行 |
+| R2.1 成本归因与可达性 | `cost_attribution.py`, `analyze_gdsc_cost_attribution.py`, `render_gdsc_cost_attribution.py`; `outputs/gdsc_r2_1/` | 261/261 baseline 与 runtime hash；runtime 降幅 15.723%，fixed-floor 上界 28.451% <30%；分支 B，不实现 v1.1 |
+
+## Phase 1–4 历史追踪
+
 | 报告要求 | 实现 | 验证证据 |
 | --- | --- | --- |
 | Trace Capture 全字段 | `capture.py`, `schema.py` | core tests |
@@ -38,12 +62,13 @@
 | Token 口径审计 | `retokenize.py`, provider usage 聚合、matrix runtime guard | 30 条 Stage 1 图重计量；中位 4,875；推荐预算 4096；旧 paired 结果撤回 |
 | 强 baseline provenance | `manager_provenance.py`, `STRONG_BASELINES.md` | manifest 标记 native/proxy、主结果资格和官方来源；unknown fail closed |
 
-## 尚需真实外部资源的事项
+## 当前外部资源与范围边界
 
-1. 当前 P4 已判 No-Go，不需要为继续当前扩展而临时找人工；若投稿或重新主张构念有效性，再安排两位独立人工从无 Codex 标签泄漏的干净副本开始标注。
-2. 若开启新一轮方法实验，先针对 Codex 临时结果暴露的 expiry precision `0.744` 和 scope error `0.400` 收缩规则，再重新预注册任务与门槛。
+1. 旧 Card-only P4 gate 仍是该历史矩阵的 No-Go，不限制按 GDSC 新预注册运行 τ³ development 实验；也不得被 GDSC 工程完成追溯改成 Go。
+2. GDSC 外部运行只允许预注册的免费 `zai/glm-4.7-flash`，无付费/模型 fallback；价格、额度和零成本估算必须在启动时重新核验。
 3. 当前 60-session 修复后复合数据集可用于负结果和 measurement 分析，但不得写成一次连续运行或正式 human-validated P3 成功。
-4. 只有新证据令 P4 gate 转为 Go 后，才运行 ACON+card、第二模型家族和第二环境；不得绕过现有 No-Go。
+4. 两位独立人工 gold 与第二 benchmark 未包含在本轮 τ³-only development 范围；没有它们不得声称最终 construct validity 或 AAAI 双 benchmark evidence。
+5. E0、R2、R3 任一门禁失败都要求停止；不得挑任务、降低阈值、增加样本或自动补跑以追求正向结论。
 
 官方 τ³ 所需 `uv`、CPython 3.12 和隔离环境已经安装并通过 `tau2 check-data`、TraceGraph editable import、`tracegraph_agent`/`tracegraph_user_simulator` registry 注册及上游 CLI 入口验证。GLM mock live task 已通过；两次 retail 真实 pilot 和三图离线结构分析已执行并按失败边界记录。
 
