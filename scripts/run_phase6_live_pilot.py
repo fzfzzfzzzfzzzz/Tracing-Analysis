@@ -16,6 +16,9 @@ from urllib.parse import urlsplit
 
 from tracegraph.decision_state import stable_digest
 from tracegraph.phase6_live import (
+    ANSWER_MAX_CHARS_V2,
+    PROMPT_PROTOCOL_V2,
+    SCORING_PROTOCOL_V1,
     file_sha256,
     load_jsonl,
     parse_submit_answer,
@@ -553,7 +556,14 @@ def main() -> int:
         try:
             if status < 200 or status >= 300:
                 raise ValueError(f"provider HTTP status {status}")
-            answer = parse_submit_answer(response)
+            answer = parse_submit_answer(
+                response,
+                maximum_answer_chars=(
+                    ANSWER_MAX_CHARS_V2
+                    if config.get("prompt_protocol") == PROMPT_PROTOCOL_V2
+                    else None
+                ),
+            )
             visible = set(trial["opaque_event_ids"])
             if set(answer["evidence_record_ids"]).difference(visible):
                 raise ValueError("model cited record IDs that were not visible")
@@ -575,9 +585,17 @@ def main() -> int:
         ledger.append(attempt)
         _assert_budget_after_request(ledger, config)
         score = (
-            score_live_answer(answer, trial, fork_by_id[str(trial["fork_id"])])
+            score_live_answer(
+                answer,
+                trial,
+                fork_by_id[str(trial["fork_id"])],
+                str(config.get("scoring_protocol", SCORING_PROTOCOL_V1)),
+            )
             if valid and answer is not None
             else {
+                "scoring_protocol": str(
+                    config.get("scoring_protocol", SCORING_PROTOCOL_V1)
+                ),
                 "answer_success": False,
                 "answer_fact_match": False,
                 "fact_scope_match": False,
@@ -586,6 +604,7 @@ def main() -> int:
                 "evidence_event_ids": [],
                 "required_evidence_recall": 0.0,
                 "required_anchor_cited": False,
+                "evidence_complete_for_answer": False,
                 "old_fact_used_as_current": False,
             }
         )

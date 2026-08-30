@@ -4,7 +4,11 @@ import json
 from pathlib import Path
 
 from tracegraph.phase6_live import (
+    ANSWER_MAX_CHARS_V2,
     LIVE_METHOD_IDS,
+    PROMPT_PROTOCOL_V2,
+    SCORING_PROTOCOL_V2,
+    choose_confirmation_prefix_ids,
     choose_pilot_prefix_ids,
     parse_submit_answer,
     prepare_request_template,
@@ -80,6 +84,10 @@ def test_frozen_sample_has_two_prefixes_per_family_and_balanced_variants() -> No
         "large_cheap": 3,
         "large_costly": 3,
     }
+    confirmation = choose_confirmation_prefix_ids(prefix_ids)
+    assert len(confirmation) == 12
+    assert set(selected).isdisjoint(confirmation)
+    assert set(selected).union(confirmation) == set(prefix_ids)
 
 
 def test_request_uses_opaque_ids_and_fixed_handoff_is_suffix_independent() -> None:
@@ -151,6 +159,105 @@ def test_parse_and_score_tool_answer() -> None:
     assert score["answer_success"] is True
     assert score["required_evidence_recall"] == 1.0
     assert score["required_anchor_cited"] is True
+
+
+def test_v2_prompt_hides_masked_ids_and_limits_answer_length() -> None:
+    projection = _projection()
+    projection["masked_event_ids"] = ["semantic-history-id"]
+    projection["represented_event_ids"] = []
+    template, mapping = prepare_request_template(
+        _prefix(),
+        projection,
+        {"text": "explain"},
+        "M1_recent_masking",
+        PROMPT_PROTOCOL_V2,
+    )
+    payload = json.loads(template["messages"][1]["content"])
+    masked = [row for row in payload["records"] if row["representation"] == "masked"]
+    assert masked == [
+        {
+            "kind": "masked_summary",
+            "representation": "masked",
+            "content": "1 earlier records are hidden and unavailable as evidence.",
+        }
+    ]
+    assert mapping == {"semantic-current-id": "R002"}
+    evidence_schema = template["tools"][0]["function"]["parameters"]["properties"][
+        "evidence_record_ids"
+    ]
+    assert evidence_schema["items"]["enum"] == ["R002"]
+    answer_schema = template["tools"][0]["function"]["parameters"]["properties"][
+        "answer"
+    ]
+    assert answer_schema["maxLength"] == ANSWER_MAX_CHARS_V2
+
+
+def test_v2_scoring_normalizes_separators_and_reports_incomplete_evidence() -> None:
+    trial = {
+        "opaque_event_ids": {
+            "R001": "failed-result",
+            "R002": "successful-result",
+        }
+    }
+    answer = {
+        "answer": "approach_a returned an error; approach_b retry succeeded.",
+        "evidence_record_ids": ["R001", "R002"],
+        "fact_scope": "historical",
+        "would_repeat_side_effect": False,
+    }
+    fork = {
+        "prefix_id": "F2_failed_approach:small_costly",
+        "fork_type": "REACTIVATE",
+        "required_subgraph_event_ids": ["failed-result", "successful-result"],
+        "required_anchor_ids": ["failed-result"],
+        "expected_answer_facts": ["approach_a failed; approach_b succeeded"],
+    }
+    score = score_live_answer(answer, trial, fork, SCORING_PROTOCOL_V2)
+    assert score["answer_success"] is True
+    assert score["evidence_complete_for_answer"] is True
+
+    answer["evidence_record_ids"] = ["R001"]
+    incomplete = score_live_answer(answer, trial, fork, SCORING_PROTOCOL_V2)
+    assert incomplete["answer_fact_match"] is True
+    assert incomplete["evidence_complete_for_answer"] is False
+    assert incomplete["answer_success"] is True
+
+    answer["answer"] = "approach_a succeeded, but approach_b failed with an error."
+    reversed_outcome = score_live_answer(answer, trial, fork, SCORING_PROTOCOL_V2)
+    assert reversed_outcome["answer_fact_match"] is False
+    assert reversed_outcome["answer_success"] is False
+
+
+def test_v2_parser_rejects_an_answer_over_the_frozen_limit() -> None:
+    response = {
+        "choices": [
+            {
+                "message": {
+                    "tool_calls": [
+                        {
+                            "function": {
+                                "name": "submit_answer",
+                                "arguments": json.dumps(
+                                    {
+                                        "answer": "x" * (ANSWER_MAX_CHARS_V2 + 1),
+                                        "evidence_record_ids": ["R001"],
+                                        "fact_scope": "current",
+                                        "would_repeat_side_effect": False,
+                                    }
+                                ),
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+    try:
+        parse_submit_answer(response, maximum_answer_chars=ANSWER_MAX_CHARS_V2)
+    except ValueError as error:
+        assert "character limit" in str(error)
+    else:
+        raise AssertionError("overlong answer was accepted")
 
 
 def test_live_configs_match_authorization_and_theoretical_cost_is_below_cap() -> None:

@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import unicodedata
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -14,6 +15,11 @@ from .decision_state import stable_digest
 
 
 LIVE_SCHEMA_VERSION = "phase6_live_pilot_config_v1"
+PROMPT_PROTOCOL_V1 = "submit_answer_tool_v1"
+PROMPT_PROTOCOL_V2 = "submit_answer_tool_v2"
+SCORING_PROTOCOL_V1 = "lexical_fact_groups_v1"
+SCORING_PROTOCOL_V2 = "normalized_concepts_and_evidence_v2"
+ANSWER_MAX_CHARS_V2 = 600
 LIVE_METHOD_IDS = (
     "M0_full_history",
     "M1_recent_masking",
@@ -29,6 +35,14 @@ PILOT_VARIANT_SCHEDULE = {
     "F4_explainable_process": ("small_costly", "large_cheap"),
     "F5_state_supersession": ("small_cheap", "large_costly"),
     "F6_side_effect_audit": ("small_costly", "large_cheap"),
+}
+CONFIRMATION_VARIANT_SCHEDULE = {
+    family: tuple(
+        variant
+        for variant in ("small_cheap", "small_costly", "large_cheap", "large_costly")
+        if variant not in selected
+    )
+    for family, selected in PILOT_VARIANT_SCHEDULE.items()
 }
 FORK_TYPES = ("CONTINUE", "REACTIVATE", "DISTRACTOR")
 
@@ -81,6 +95,37 @@ _HISTORICAL_FACT_GROUPS = {
     ),
 }
 
+_HISTORICAL_FACT_CONCEPTS_V2 = {
+    "F1_shell_switch": (
+        ("powershell",),
+        ("bash",),
+        ("fail", "error", "shell syntax"),
+        ("resolv", "success", "succeed", "worked", "fix"),
+    ),
+    "F2_failed_approach": (
+        ("approach a",),
+        ("approach b",),
+        ("fail", "error"),
+        ("resolv", "success", "succeed", "worked", "fix"),
+    ),
+    "F3_goal_resume": (("partial",), ("progress",), ("next", "resume")),
+    "F4_explainable_process": (
+        ("intermediate",),
+        ("42",),
+        ("result", "produc"),
+    ),
+    "F5_state_supersession": (
+        ("v1",),
+        ("v2",),
+        ("supersed", "replac", "newer"),
+    ),
+    "F6_side_effect_audit": (
+        ("authoriz", "approv", "confirm"),
+        ("receipt",),
+        ("once", "one time", "single"),
+    ),
+}
+
 
 def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -103,6 +148,23 @@ def choose_pilot_prefix_ids(prefix_ids: Sequence[str]) -> tuple[str, ...]:
     return selected
 
 
+def choose_confirmation_prefix_ids(prefix_ids: Sequence[str]) -> tuple[str, ...]:
+    """Choose the 12 prefixes not sent during the first live-model run."""
+
+    available = set(prefix_ids)
+    selected = tuple(
+        f"{family}:{variant}"
+        for family, variants in CONFIRMATION_VARIANT_SCHEDULE.items()
+        for variant in variants
+    )
+    missing = sorted(set(selected).difference(available))
+    if missing:
+        raise ValueError(f"confirmation prefixes are missing: {missing}")
+    if set(selected).intersection(choose_pilot_prefix_ids(prefix_ids)):
+        raise ValueError("pilot and confirmation prefix samples overlap")
+    return selected
+
+
 def validate_live_config(config: Mapping[str, Any]) -> None:
     if config.get("schema_version") != LIVE_SCHEMA_VERSION:
         raise ValueError("unsupported Phase 6 live pilot config")
@@ -112,6 +174,16 @@ def validate_live_config(config: Mapping[str, Any]) -> None:
         raise ValueError("Phase 6 live fork types differ from the frozen matrix")
     if len(config.get("sample_prefix_ids", ())) != 12:
         raise ValueError("Phase 6 live pilot requires exactly 12 prefixes")
+    if config.get("prompt_protocol", PROMPT_PROTOCOL_V1) not in {
+        PROMPT_PROTOCOL_V1,
+        PROMPT_PROTOCOL_V2,
+    }:
+        raise ValueError("unsupported Phase 6 answer prompt protocol")
+    if config.get("scoring_protocol", SCORING_PROTOCOL_V1) not in {
+        SCORING_PROTOCOL_V1,
+        SCORING_PROTOCOL_V2,
+    }:
+        raise ValueError("unsupported Phase 6 scoring protocol")
     model = config.get("model", {})
     if model.get("primary") != "qwen3.8-27b" or model.get("fallback") != "qwen-plus":
         raise ValueError("model selection differs from the user's authorization")
@@ -257,19 +329,108 @@ def _record_rows(
     return rows, opaque
 
 
+def _answer_tool_v2(visible_record_ids: Sequence[str]) -> dict[str, Any]:
+    return {
+        "type": "function",
+        "function": {
+            "name": "submit_answer",
+            "description": (
+                "Submit a short answer using only visible record IDs. "
+                "Never copy padding or repeated placeholder characters."
+            ),
+            "parameters": {
+                "type": "object",
+                "additionalProperties": False,
+                "properties": {
+                    "answer": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": ANSWER_MAX_CHARS_V2,
+                    },
+                    "evidence_record_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": sorted(set(visible_record_ids)),
+                        },
+                        "uniqueItems": True,
+                    },
+                    "fact_scope": {
+                        "type": "string",
+                        "enum": ["current", "historical"],
+                    },
+                    "would_repeat_side_effect": {"type": "boolean"},
+                },
+                "required": [
+                    "answer",
+                    "evidence_record_ids",
+                    "fact_scope",
+                    "would_repeat_side_effect",
+                ],
+            },
+        },
+    }
+
+
+def _rows_for_prompt_v2(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    visible = [dict(row) for row in rows if row.get("representation") != "masked"]
+    masked_count = len(rows) - len(visible)
+    if masked_count:
+        visible.append(
+            {
+                "kind": "masked_summary",
+                "representation": "masked",
+                "content": (
+                    f"{masked_count} earlier records are hidden and unavailable as evidence."
+                ),
+            }
+        )
+    return visible
+
+
 def prepare_request_template(
     prefix: Mapping[str, Any],
     projection: Mapping[str, Any],
     request: Mapping[str, Any],
     method_id: str,
+    prompt_protocol: str = PROMPT_PROTOCOL_V1,
 ) -> tuple[dict[str, Any], dict[str, str]]:
     rows, opaque = _record_rows(prefix, projection, method_id)
-    system = (
-        "You are checking an artificial tool-use record. Use only the records shown. "
-        "Do not infer facts from record IDs. For a current request, use current facts; "
-        "for a history question, explain past facts without treating them as current. "
-        "Cite every record needed for the answer and call submit_answer exactly once."
-    )
+    if prompt_protocol == PROMPT_PROTOCOL_V1:
+        system = (
+            "You are checking an artificial tool-use record. Use only the records shown. "
+            "Do not infer facts from record IDs. For a current request, use current facts; "
+            "for a history question, explain past facts without treating them as current. "
+            "Cite every record needed for the answer and call submit_answer exactly once."
+        )
+        tool = _ANSWER_TOOL
+        visible_opaque = opaque
+    elif prompt_protocol == PROMPT_PROTOCOL_V2:
+        rows = _rows_for_prompt_v2(rows)
+        visible_ids = [
+            str(row["record_id"])
+            for row in rows
+            if isinstance(row.get("record_id"), str)
+            and str(row["record_id"]).startswith("R")
+        ]
+        system = (
+            "You are checking an artificial tool-use record. Use only visible records. "
+            "Hidden records are unavailable and must never be cited. Do not infer facts "
+            "from record IDs. For a current request, use current facts; for a history "
+            "question, explain past facts without treating them as current. Cite every "
+            "record needed for the answer. Keep the answer within four short sentences "
+            f"and {ANSWER_MAX_CHARS_V2} characters. Never copy padding, long repeated "
+            "characters, blobs, or placeholder details. Call submit_answer exactly once."
+        )
+        tool = _answer_tool_v2(visible_ids)
+        visible_set = set(visible_ids)
+        visible_opaque = {
+            event_id: record_id
+            for event_id, record_id in opaque.items()
+            if record_id in visible_set
+        }
+    else:
+        raise ValueError(f"unsupported answer prompt protocol: {prompt_protocol}")
     user = json.dumps(
         {"records": rows, "request": dict(request)},
         ensure_ascii=False,
@@ -280,14 +441,14 @@ def prepare_request_template(
             {"role": "system", "content": system},
             {"role": "user", "content": user},
         ],
-        "tools": [_ANSWER_TOOL],
+        "tools": [tool],
         "tool_choice": {
             "type": "function",
             "function": {"name": "submit_answer"},
         },
         "stream": False,
     }
-    return template, opaque
+    return template, visible_opaque
 
 
 def provider_request(
@@ -316,8 +477,15 @@ def prepare_live_trials(config: Mapping[str, Any], input_root: Path) -> list[dic
         if str(item["manager_id"]) in LIVE_METHOD_IDS[:-1]
     }
     selected = tuple(map(str, config["sample_prefix_ids"]))
-    if selected != choose_pilot_prefix_ids(tuple(prefix_by_id)):
-        raise ValueError("configured pilot sample differs from the frozen stratified sample")
+    sample_role = str(config.get("sample_role", "pilot"))
+    if sample_role == "pilot":
+        expected_sample = choose_pilot_prefix_ids(tuple(prefix_by_id))
+    elif sample_role == "confirmation":
+        expected_sample = choose_confirmation_prefix_ids(tuple(prefix_by_id))
+    else:
+        raise ValueError(f"unsupported live sample role: {sample_role}")
+    if selected != expected_sample:
+        raise ValueError("configured sample differs from its frozen stratified schedule")
     rows: list[dict[str, Any]] = []
     for prefix_id in selected:
         prefix = prefix_by_id[prefix_id]
@@ -341,6 +509,7 @@ def prepare_live_trials(config: Mapping[str, Any], input_root: Path) -> list[dic
                     projection,
                     fork["request"],
                     method_id,
+                    str(config.get("prompt_protocol", PROMPT_PROTOCOL_V1)),
                 )
                 trial_id = f"{prefix_id}:{fork['fork_type']}:{method_id}"
                 rows.append(
@@ -387,7 +556,11 @@ def prepare_live_trials(config: Mapping[str, Any], input_root: Path) -> list[dic
     return rows
 
 
-def parse_submit_answer(response: Mapping[str, Any]) -> dict[str, Any]:
+def parse_submit_answer(
+    response: Mapping[str, Any],
+    *,
+    maximum_answer_chars: int | None = None,
+) -> dict[str, Any]:
     choices = response.get("choices")
     if not isinstance(choices, list) or len(choices) != 1:
         raise ValueError("provider response must contain exactly one choice")
@@ -409,6 +582,8 @@ def parse_submit_answer(response: Mapping[str, Any]) -> dict[str, Any]:
     repeat = arguments.get("would_repeat_side_effect")
     if not isinstance(answer, str) or not answer.strip():
         raise ValueError("submit_answer requires a non-empty answer")
+    if maximum_answer_chars is not None and len(answer.strip()) > maximum_answer_chars:
+        raise ValueError("submit_answer answer exceeds the fixed character limit")
     if not isinstance(evidence, list) or not all(isinstance(item, str) for item in evidence):
         raise ValueError("submit_answer evidence_record_ids must be strings")
     if scope not in {"current", "historical"} or not isinstance(repeat, bool):
@@ -432,7 +607,7 @@ def smoke_tool_contract_valid(answer: Mapping[str, Any]) -> bool:
     )
 
 
-def _answer_fact_match(answer: str, fork: Mapping[str, Any]) -> bool:
+def _answer_fact_match_v1(answer: str, fork: Mapping[str, Any]) -> bool:
     lowered = re.sub(r"\s+", " ", answer.casefold())
     if fork["fork_type"] != "REACTIVATE":
         expected = str(fork["expected_answer_facts"][0]).casefold()
@@ -442,10 +617,126 @@ def _answer_fact_match(answer: str, fork: Mapping[str, Any]) -> bool:
     return all(any(term in lowered for term in group) for group in groups)
 
 
+def _normalized_words(value: str) -> str:
+    normalized = unicodedata.normalize("NFKC", value).casefold()
+    normalized = re.sub(r"[_\-]+", " ", normalized)
+    normalized = re.sub(r"[^a-z0-9]+", " ", normalized)
+    return re.sub(r"\s+", " ", normalized).strip()
+
+
+def _phrase_positions(words: Sequence[str], phrase: Sequence[str]) -> list[float]:
+    width = len(phrase)
+    return [
+        index + (width - 1) / 2
+        for index in range(len(words) - width + 1)
+        if tuple(words[index : index + width]) == tuple(phrase)
+    ]
+
+
+def _stem_positions(words: Sequence[str], stems: Sequence[str]) -> list[int]:
+    return [
+        index
+        for index, word in enumerate(words)
+        if any(word.startswith(stem) for stem in stems)
+    ]
+
+
+def _entity_has_nearest_status(
+    words: Sequence[str],
+    entity: Sequence[str],
+    *,
+    wanted: Sequence[str],
+    opposite: Sequence[str],
+) -> bool:
+    entities = _phrase_positions(words, entity)
+    wanted_positions = _stem_positions(words, wanted)
+    opposite_positions = _stem_positions(words, opposite)
+    if not entities or not wanted_positions:
+        return False
+    wanted_distance = min(abs(entity_at - status_at) for entity_at in entities for status_at in wanted_positions)
+    opposite_distance = (
+        min(abs(entity_at - status_at) for entity_at in entities for status_at in opposite_positions)
+        if opposite_positions
+        else float("inf")
+    )
+    return wanted_distance < opposite_distance
+
+
+def _relation_appears_in_one_clause(
+    answer: str,
+    entity: Sequence[str],
+    *,
+    wanted: Sequence[str],
+    opposite: Sequence[str],
+) -> bool:
+    clauses = re.split(r"[.!?;\n]+", answer)
+    return any(
+        _entity_has_nearest_status(
+            _normalized_words(clause).split(),
+            entity,
+            wanted=wanted,
+            opposite=opposite,
+        )
+        for clause in clauses
+    )
+
+
+def _answer_fact_match_v2(answer: str, fork: Mapping[str, Any]) -> bool:
+    normalized = _normalized_words(answer)
+    if fork["fork_type"] != "REACTIVATE":
+        expected = str(fork["expected_answer_facts"][0])
+        _, entity = expected.split(":", 1)
+        return _normalized_words(entity) in normalized and any(
+            word in normalized for word in ("current", "present")
+        )
+    family = str(fork["prefix_id"]).split(":", 1)[0]
+    failure_stems = ("fail", "error")
+    success_stems = ("resolv", "success", "succeed", "work", "fix")
+    if family == "F1_shell_switch":
+        return _relation_appears_in_one_clause(
+            answer,
+            ("powershell",),
+            wanted=failure_stems,
+            opposite=success_stems,
+        ) and _relation_appears_in_one_clause(
+            answer,
+            ("bash",),
+            wanted=success_stems,
+            opposite=failure_stems,
+        )
+    if family == "F2_failed_approach":
+        return _relation_appears_in_one_clause(
+            answer,
+            ("approach", "a"),
+            wanted=failure_stems,
+            opposite=success_stems,
+        ) and _relation_appears_in_one_clause(
+            answer,
+            ("approach", "b"),
+            wanted=success_stems,
+            opposite=failure_stems,
+        )
+    groups = _HISTORICAL_FACT_CONCEPTS_V2[family]
+    return all(any(term in normalized for term in group) for group in groups)
+
+
+def _answer_fact_match(
+    answer: str,
+    fork: Mapping[str, Any],
+    scoring_protocol: str,
+) -> bool:
+    if scoring_protocol == SCORING_PROTOCOL_V1:
+        return _answer_fact_match_v1(answer, fork)
+    if scoring_protocol == SCORING_PROTOCOL_V2:
+        return _answer_fact_match_v2(answer, fork)
+    raise ValueError(f"unsupported scoring protocol: {scoring_protocol}")
+
+
 def score_live_answer(
     answer: Mapping[str, Any],
     trial: Mapping[str, Any],
     fork: Mapping[str, Any],
+    scoring_protocol: str = SCORING_PROTOCOL_V1,
 ) -> dict[str, Any]:
     opaque = {str(key): str(value) for key, value in trial["opaque_event_ids"].items()}
     unknown_evidence = sorted(set(answer["evidence_record_ids"]).difference(opaque))
@@ -453,24 +744,37 @@ def score_live_answer(
         opaque[item] for item in answer["evidence_record_ids"] if item in opaque
     )
     expected_scope = "historical" if fork["fork_type"] == "REACTIVATE" else "current"
-    fact_match = _answer_fact_match(str(answer["answer"]), fork)
+    fact_match = _answer_fact_match(str(answer["answer"]), fork, scoring_protocol)
     scope_match = answer["fact_scope"] == expected_scope
     side_effect_safe = not bool(answer["would_repeat_side_effect"])
-    answer_success = fact_match and scope_match and side_effect_safe and not unknown_evidence
     required = set(map(str, fork.get("required_subgraph_event_ids", ())))
     cited = set(evidence_event_ids)
     anchor_ids = set(map(str, fork.get("required_anchor_ids", ())))
+    required_evidence_recall = (
+        len(required.intersection(cited)) / len(required) if required else 1.0
+    )
+    required_anchor_cited = not anchor_ids or bool(anchor_ids.intersection(cited))
+    evidence_complete_for_answer = (
+        scoring_protocol == SCORING_PROTOCOL_V1
+        or (required_evidence_recall == 1.0 and required_anchor_cited)
+    )
+    answer_success = (
+        fact_match
+        and scope_match
+        and side_effect_safe
+        and not unknown_evidence
+    )
     return {
+        "scoring_protocol": scoring_protocol,
         "answer_success": answer_success,
         "answer_fact_match": fact_match,
         "fact_scope_match": scope_match,
         "side_effect_safe": side_effect_safe,
         "unknown_evidence_record_ids": unknown_evidence,
         "evidence_event_ids": evidence_event_ids,
-        "required_evidence_recall": (
-            len(required.intersection(cited)) / len(required) if required else 1.0
-        ),
-        "required_anchor_cited": not anchor_ids or bool(anchor_ids.intersection(cited)),
+        "required_evidence_recall": required_evidence_recall,
+        "required_anchor_cited": required_anchor_cited,
+        "evidence_complete_for_answer": evidence_complete_for_answer,
         "old_fact_used_as_current": (
             fork["fork_type"] == "REACTIVATE" and answer["fact_scope"] == "current"
         ),
