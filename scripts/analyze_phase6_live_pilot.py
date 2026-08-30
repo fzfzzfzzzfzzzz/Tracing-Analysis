@@ -15,7 +15,7 @@ def main() -> int:
     parser.add_argument(
         "--input",
         type=Path,
-        default=Path("outputs/phase6/e3_qwen38_27b_pilot_v1"),
+        default=Path("outputs/phase6/e3_qwen38_27b_pilot_v2"),
         help="要检查的真实模型试跑结果目录",
     )
     args = parser.parse_args()
