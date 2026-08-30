@@ -1,8 +1,9 @@
-"""Evaluate Phase 4 engineering readiness without authorizing external experiments."""
+"""检查第四阶段工程是否准备好，不授权外部实验。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 from pathlib import Path
 
@@ -17,7 +18,7 @@ def _read(path: Path) -> dict:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--migration-audit", type=Path, required=True)
     parser.add_argument("--v2-construct-report", type=Path, required=True)
     parser.add_argument("--trajectory-protocol-audit", type=Path, required=True)
@@ -42,4 +43,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

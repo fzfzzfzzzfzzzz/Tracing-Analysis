@@ -1,0 +1,29 @@
+{
+  "schema_version": "phase6_controlled_config_v1",
+  "run_id": "e1_controlled_v1",
+  "base_seed": 20260830,
+  "reactivation_budget_tokens": 1024,
+  "recent_tool_spans": 2,
+  "bootstrap_samples": 10000,
+  "output_root": "outputs/phase6/e1_controlled_v1",
+  "specification_path": "第六阶段_怎样暂时收起旧记录并在需要时找回_研究和执行要求_第二版.md",
+  "expected_base_commit": "d5c664c1b3569cef7978ce3448279dd3a1bb3135",
+  "protected_roots": [
+    "outputs/gdsc_r0_audit",
+    "outputs/gdsc_r2_1",
+    "outputs/phase4",
+    "outputs/phase5",
+    "outputs/phase5_1",
+    "outputs/phase5_2"
+  ],
+  "external_provider_calls_allowed": false,
+  "e3_authorized": false,
+  "e4_authorized": false,
+  "preimplementation_validation": {
+    "pytest": "202 passed in 6.43s",
+    "ruff": "All checks passed!",
+    "compileall": "pass",
+    "git_diff_check": "pass",
+    "provider_requests": 0
+  }
+}

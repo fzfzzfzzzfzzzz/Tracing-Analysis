@@ -1,8 +1,9 @@
-"""Apply a frozen Codex label pass to a blind P2 annotation sheet."""
+"""把固定的 Codex 分类结果写入第三阶段盲化表。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import csv
 from pathlib import Path
 
@@ -14,7 +15,7 @@ from tracegraph.failure_chain_annotation import (
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--sheet", type=Path, required=True)
     parser.add_argument("--labels", type=Path, required=True)
     parser.add_argument("--identity", required=True)
@@ -64,4 +65,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

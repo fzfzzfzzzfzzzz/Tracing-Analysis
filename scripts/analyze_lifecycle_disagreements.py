@@ -1,8 +1,9 @@
-"""Rank lifecycle/no-lifecycle disagreements and export a targeted blind set."""
+"""找出两种记录用途判断不一致的地方，并导出人工复核材料。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 from pathlib import Path
 
@@ -15,7 +16,7 @@ from tracegraph.lifecycle_diagnostics import (
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
@@ -72,5 +73,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
-
+    raise SystemExit(run_cli(main))

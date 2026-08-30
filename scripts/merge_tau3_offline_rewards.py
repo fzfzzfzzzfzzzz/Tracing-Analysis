@@ -1,8 +1,9 @@
-"""Materialize append-only offline rewards into a new τ³ results JSON file."""
+"""把离线评分追加到新的 tau3-bench 结果文件，不覆盖原件。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 from pathlib import Path
 
@@ -13,7 +14,7 @@ from tracegraph.trajectory_artifacts import (
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--results", type=Path, required=True)
     parser.add_argument("--store", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -39,4 +40,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

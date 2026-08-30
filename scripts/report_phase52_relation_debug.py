@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Report a partial relation-first Phase 5.2 debugging run without opening gates."""
+"""汇总第五阶段第二次补充的局部调试，不开启下一步。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import sys
 from collections import defaultdict
@@ -42,7 +43,7 @@ def _load_jsonl(path: Path) -> list[dict[str, Any]]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--config",
         type=Path,
@@ -195,4 +196,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

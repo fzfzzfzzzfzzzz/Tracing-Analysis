@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Create an immutable audit report for a paused Phase 5.2 collection."""
+"""为暂停的第五阶段第二次补充收集生成不可覆盖的检查报告。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import sys
 from collections import Counter
@@ -22,7 +23,7 @@ from tracegraph.trajectory_artifacts import sha256_json  # noqa: E402
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--config",
         type=Path,
@@ -129,4 +130,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

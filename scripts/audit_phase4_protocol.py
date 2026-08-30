@@ -1,8 +1,9 @@
-"""Run zero-API fault injection over the Phase 4 trajectory/evaluator protocol."""
+"""不调用外部模型，检查第四阶段保存记录和评分流程的故障处理。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import hashlib
 import json
 import tempfile
@@ -16,7 +17,7 @@ def _sha256(path: Path) -> str:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     project_root = Path(__file__).resolve().parents[1]
@@ -132,4 +133,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

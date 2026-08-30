@@ -1,8 +1,9 @@
-"""Score common-prefix representation harm and the strict R3-to-R4 gate."""
+"""检查不同记录表示是否伤害下一步决定，并判断能否继续。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import csv
 import json
 import sys
@@ -25,7 +26,7 @@ def _load(path: Path) -> list[dict]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -47,4 +48,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

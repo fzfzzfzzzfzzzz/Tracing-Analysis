@@ -1,8 +1,9 @@
-"""Evaluate preregistered E0 eligibility from frozen TraceGraphs only."""
+"""检查固定任务是否适合回答本项目的研究问题。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import csv
 import json
 import sys
@@ -22,7 +23,7 @@ for _stream in (sys.stdout, sys.stderr):
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--thresholds", type=Path)
@@ -54,4 +55,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

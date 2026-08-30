@@ -1,8 +1,7 @@
-"""Command-line entrypoint for graph validation and archive checks."""
+"""检查、导入和整理工具使用记录的主命令。"""
 
 from __future__ import annotations
 
-import argparse
 import json
 from pathlib import Path
 
@@ -12,35 +11,41 @@ from .context import build_context_managers
 from .experiments import ExperimentConfig, ExperimentRunner, discover_graphs
 from .graph import TraceGraph
 from .interventions import InterventionConfig, run_p1_interventions
+from .plain_cli import PlainArgumentParser
 from .synthetic import build_synthetic_trace
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="tracegraph")
+def build_parser() -> PlainArgumentParser:
+    parser = PlainArgumentParser(
+        prog="tracegraph",
+        description="检查、导入或整理已经保存的工具使用记录。",
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    validate = subparsers.add_parser("validate-trace", help="validate a saved trace graph")
-    validate.add_argument("path", type=Path)
+    validate = subparsers.add_parser("validate-trace", help="检查一份工具使用记录是否完整")
+    validate.add_argument("path", type=Path, help="要检查的记录文件")
 
-    archive = subparsers.add_parser("verify-archive", help="verify all archive object hashes")
-    archive.add_argument("path", type=Path)
+    archive = subparsers.add_parser("verify-archive", help="检查单独保存的旧记录及其文件指纹")
+    archive.add_argument("path", type=Path, help="旧记录所在目录")
 
-    subparsers.add_parser("list-managers", help="list baselines and ablations")
+    subparsers.add_parser("list-managers", help="列出可以使用的记录整理办法")
 
     synthetic = subparsers.add_parser(
-        "make-synthetic", help="create a labeled synthetic trace for smoke testing"
+        "make-synthetic", help="生成一份项目自带的示例记录，用来检查程序能否运行"
     )
     synthetic.add_argument("--output", type=Path, required=True)
     synthetic.add_argument("--archive", type=Path, required=True)
 
-    tau = subparsers.add_parser("import-tau", help="import τ-bench/τ³-bench saved results")
+    tau = subparsers.add_parser(
+        "import-tau", help="导入 tau-bench 或 tau3-bench 公开测试任务的保存结果"
+    )
     tau.add_argument("--input", type=Path, required=True)
     tau.add_argument("--output", type=Path, required=True)
     tau.add_argument("--archive", type=Path, required=True)
     tau.add_argument("--policy-file", type=Path)
 
     experiment = subparsers.add_parser(
-        "run-offline", help="run lifecycle, oracle, baseline, and ablation experiments"
+        "run-offline", help="不调用外部模型，比较多种记录整理办法"
     )
     experiment.add_argument("--input", type=Path, required=True)
     experiment.add_argument("--output", type=Path, required=True)
@@ -53,7 +58,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     interventions = subparsers.add_parser(
         "run-p1-interventions",
-        help="run the deterministic four-condition phase-three P1 matrix",
+        help="运行第三阶段四种固定条件的本地比较",
     )
     interventions.add_argument("--output", type=Path, required=True)
     interventions.add_argument("--tasks-per-kind", type=int, default=8)

@@ -1,8 +1,9 @@
-"""Plan or explicitly execute a secret-free GLM τ³ experiment matrix."""
+"""生成 GLM 模型组合实验计划；只有明确指定后才执行。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import os
 import shutil
@@ -75,7 +76,7 @@ def _powershell_command(project_root: Path, run: dict) -> list[str]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--print-commands", action="store_true")
@@ -164,4 +165,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Run corpus-wide Phase 5.2 state-machine integrity checks without labels."""
+"""在使用标签前检查第五阶段第二次补充的全部数据。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import statistics
 import sys
@@ -66,7 +67,7 @@ def _protocol_valid(messages: list[dict[str, Any]]) -> bool:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--config",
         type=Path,
@@ -164,4 +165,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

@@ -1,8 +1,9 @@
-"""Score P2 failure-chain labels and emit the phase-three gate input."""
+"""评分第三阶段失败前因后果人工判断，并生成继续条件输入。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 from pathlib import Path
 
@@ -13,7 +14,7 @@ from tracegraph.failure_chain_annotation import (
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--annotator-a", type=Path, required=True)
     parser.add_argument("--annotator-b", type=Path, required=True)
     parser.add_argument("--annotation-key", type=Path, required=True)
@@ -31,4 +32,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

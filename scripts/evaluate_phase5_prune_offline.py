@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Run outcome-blind FullRaw/GDSC-Prune reconstruction for F5-E0/F5-G1."""
+"""不看最终结果，比较第五阶段保留全部记录与安全删减。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import csv
 import json
 import statistics
@@ -442,7 +443,7 @@ def _write_new_csv(
 
 def main() -> int:
     _configure_utf8_streams()
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--manifest-root", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--model", default="zai/glm-4.7-flash")
@@ -671,4 +672,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

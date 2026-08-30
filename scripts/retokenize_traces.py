@@ -1,8 +1,9 @@
-"""Retokenize saved TraceGraph files with content-only accounting."""
+"""用统一口径重新计算已保存工具使用记录的模型输入量。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import sys
 from pathlib import Path
@@ -17,7 +18,7 @@ for _stream in (sys.stdout, sys.stderr):
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
@@ -48,4 +49,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

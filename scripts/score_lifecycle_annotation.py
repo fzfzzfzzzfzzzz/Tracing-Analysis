@@ -1,8 +1,9 @@
-"""Validate double labels, compute Cohen's kappa, and export disagreements."""
+"""检查两份人工判断，计算一致程度并导出分歧。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 from pathlib import Path
 
@@ -10,7 +11,7 @@ from tracegraph.annotation import score_annotations, write_annotation_score
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--annotator-a", type=Path, required=True)
     parser.add_argument("--annotator-b", type=Path, required=True)
     parser.add_argument("--key", type=Path, required=True)
@@ -38,4 +39,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

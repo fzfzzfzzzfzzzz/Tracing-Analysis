@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Evaluate the frozen Phase 5.2 symbolic state machine without model completions."""
+"""不调用模型，检查第五阶段第二次补充的固定规则程序。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import statistics
 import sys
@@ -139,7 +140,7 @@ def _mean(rows: Sequence[Mapping[str, Any]], key: str) -> float:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--config",
         type=Path,
@@ -465,4 +466,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

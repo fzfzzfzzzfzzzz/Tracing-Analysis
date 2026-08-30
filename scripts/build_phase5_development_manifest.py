@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Freeze the outcome-blind Phase 5 development-prefix manifest."""
+"""固定第五阶段开发数据的文件清单，不读取最终结果。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import sys
 from collections.abc import Mapping
@@ -70,7 +71,7 @@ def _write_new_json(path: Path, value: Mapping[str, Any]) -> None:
 
 def main() -> int:
     _configure_utf8_streams()
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--dataset",
         type=Path,
@@ -121,4 +122,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

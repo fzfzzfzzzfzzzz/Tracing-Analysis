@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Verify frozen Phase 5.2 requests, partial responses, budgets, and hashes."""
+"""检查第五阶段第二次补充的请求、局部响应、上限和文件指纹。"""
 
 from __future__ import annotations
 
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import sys
-import argparse
 from pathlib import Path
 from typing import Any
 
@@ -48,7 +49,7 @@ def _embedded(path: Path, field: str) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--config",
         type=Path,
@@ -169,4 +170,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

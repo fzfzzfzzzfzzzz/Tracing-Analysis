@@ -1,8 +1,9 @@
-"""Evaluate formal P3 completion and the fail-closed P4 Go gate."""
+"""检查第三阶段是否完成，以及是否允许进入下一步。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 from pathlib import Path
 
@@ -17,7 +18,7 @@ def _read(path: Path) -> dict:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--p1-manifest", type=Path, required=True)
     parser.add_argument("--p2-report", type=Path)
     parser.add_argument(
@@ -49,4 +50,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

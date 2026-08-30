@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Freeze all blind Phase 5.2 annotation requests without calling a provider."""
+"""生成第五阶段第二次补充的盲化分类请求，不调用模型。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import sys
 from collections import Counter
@@ -58,7 +59,7 @@ def _file_record(root: Path, path: Path) -> dict[str, Any]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--config",
         type=Path,
@@ -254,4 +255,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

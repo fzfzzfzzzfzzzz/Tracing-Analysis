@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Record a new create-only official-free pricing recheck for Phase 5.2 resume."""
+"""追加记录第五阶段第二次补充恢复前的官方价格复核。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import sys
 from datetime import date, datetime
@@ -20,7 +21,7 @@ from tracegraph.trajectory_artifacts import sha256_json  # noqa: E402
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--checked-at", type=date.fromisoformat, default=date.today())
     parser.add_argument("--confirm-official-free", action="store_true")
     args = parser.parse_args()
@@ -53,4 +54,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

@@ -1,8 +1,9 @@
-"""Rank failure-rich τ³ tasks from saved official full-trajectory results."""
+"""从已保存的官方结果中选择失败较多的 tau3-bench 任务。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 from pathlib import Path
 
@@ -20,18 +21,18 @@ def _mapping(values: list[str], *, label: str) -> dict[str, Path]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--input",
         action="append",
         required=True,
-        help="DOMAIN=PATH to a saved τ³ results JSON; repeat per domain",
+        help="按 DOMAIN=PATH 指定一份已保存的 tau3 结果；每类任务重复一次。",
     )
     parser.add_argument(
         "--split",
         action="append",
         default=[],
-        help="optional DOMAIN=PATH to split_tasks.json",
+        help="可选：按 DOMAIN=PATH 指定 split_tasks.json。",
     )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--top-per-domain", type=int, default=5)
@@ -73,5 +74,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
-
+    raise SystemExit(run_cli(main))
