@@ -1,0 +1,87 @@
+{
+  "schema_version": "phase6_live_pilot_config_v1",
+  "phase": "6-e3",
+  "run_id": "e3_qwen38_27b_pilot_v1",
+  "input_root": "outputs/phase6/e1_controlled_v1",
+  "input_hashes": {
+    "manifest.json": "e86ce411de2929aa6595b0f6efda393a273337166fbf0fb9c89a3a9ab5a57277",
+    "prefixes.jsonl": "29ac8cafc36cb6c174b3585cdbbaafe4fc2128ee93c3b971f8b3ba8822967127",
+    "forks.jsonl": "aff7503d8ef7ab5d157ca0aa9daed3eeeb8ab7b4197eb5f65e354571ec3db065",
+    "manager_outputs.jsonl": "ea1bd2ecc8932abb47052bde0eeacc9e884d1c59065e59fa7e102314337a0268",
+    "lifecycle_gold.jsonl": "89421727d4606fbba45469731c953c451613640ed8a68d6b21832fed108e89e0"
+  },
+  "output_root": "outputs/phase6/e3_qwen38_27b_pilot_v1",
+  "sample_prefix_ids": [
+    "F1_shell_switch:small_cheap",
+    "F1_shell_switch:large_costly",
+    "F2_failed_approach:small_costly",
+    "F2_failed_approach:large_cheap",
+    "F3_goal_resume:small_cheap",
+    "F3_goal_resume:large_costly",
+    "F4_explainable_process:small_costly",
+    "F4_explainable_process:large_cheap",
+    "F5_state_supersession:small_cheap",
+    "F5_state_supersession:large_costly",
+    "F6_side_effect_audit:small_costly",
+    "F6_side_effect_audit:large_cheap"
+  ],
+  "methods": [
+    "M0_full_history",
+    "M1_recent_masking",
+    "M3_lifecycle_eviction_only",
+    "M4_lifecycle_flat_reactivation",
+    "M5_lifecycle_causal_reactivation",
+    "M6_fixed_handoff"
+  ],
+  "fork_types": ["CONTINUE", "REACTIVATE", "DISTRACTOR"],
+  "prompt_protocol": "submit_answer_tool_v1",
+  "model": {
+    "provider": "dashscope",
+    "primary": "qwen3.8-27b",
+    "fallback": "qwen-plus",
+    "fallback_only_if_primary_unavailable": true,
+    "region": "china-beijing",
+    "temperature": 0,
+    "enable_thinking": false,
+    "max_output_tokens": 512,
+    "tool_choice": "submit_answer"
+  },
+  "pricing_snapshot": {
+    "checked_at": "2026-08-30",
+    "pricing_url": "https://help.aliyun.com/zh/model-studio/model-pricing",
+    "availability_url": "https://help.aliyun.com/zh/model-studio/newly-released-models",
+    "currency": "CNY",
+    "region": "china-beijing",
+    "prices_per_million_tokens": {
+      "qwen3.8-27b": {"input": 3.0, "output": 12.0},
+      "qwen-plus": {"input": 0.8, "output": 2.0}
+    },
+    "discount_assumed": false,
+    "free_quota_assumed": false
+  },
+  "limits": {
+    "maximum_cost_cny": 100.0,
+    "request_count_hard_max": 218,
+    "trial_count": 216,
+    "request_input_tokens_hard_max": 50000,
+    "actual_input_tokens_hard_max": 10900000,
+    "actual_output_tokens_hard_max": 112000,
+    "retry_per_request_max": 0,
+    "timeout_seconds": 180
+  },
+  "gates": {
+    "full_history_success_rate_min": 0.95,
+    "infrastructure_completion_rate_min": 0.95,
+    "request_hash_integrity_rate_min": 1.0,
+    "usage_coverage_min": 1.0,
+    "m5_duplicate_side_effects_max": 0,
+    "m5_old_fact_used_as_current_max": 0
+  },
+  "authorization": {
+    "authorized_by_user": true,
+    "authorized_at": "2026-08-30",
+    "maximum_cost_cny": 100.0,
+    "primary_model_requested": "qwen3.8-27b",
+    "fallback_model_requested": "qwen-plus"
+  }
+}
