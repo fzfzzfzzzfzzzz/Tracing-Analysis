@@ -421,6 +421,17 @@ def parse_submit_answer(response: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def smoke_tool_contract_valid(answer: Mapping[str, Any]) -> bool:
+    """Check tool-call availability without imposing task-quality scoring."""
+
+    return bool(
+        str(answer.get("answer", "")).strip()
+        and "R001" in answer.get("evidence_record_ids", ())
+        and answer.get("fact_scope") == "current"
+        and answer.get("would_repeat_side_effect") is False
+    )
+
+
 def _answer_fact_match(answer: str, fork: Mapping[str, Any]) -> bool:
     lowered = re.sub(r"\s+", " ", answer.casefold())
     if fork["fork_type"] != "REACTIVATE":

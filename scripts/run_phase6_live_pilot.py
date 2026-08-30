@@ -22,6 +22,7 @@ from tracegraph.phase6_live import (
     prepare_live_trials,
     provider_request,
     score_live_answer,
+    smoke_tool_contract_valid,
     summarize_live_results,
     theoretical_maximum_cost_cny,
     validate_input_hashes,
@@ -359,13 +360,7 @@ def _select_model(
         error = ""
         try:
             parsed = parse_submit_answer(response) if 200 <= status < 300 else None
-            valid = bool(
-                parsed
-                and "connectivity-ok" in parsed["answer"]
-                and "R001" in parsed["evidence_record_ids"]
-                and parsed["fact_scope"] == "current"
-                and not parsed["would_repeat_side_effect"]
-            )
+            valid = bool(parsed and smoke_tool_contract_valid(parsed))
             if not valid:
                 error = "smoke answer did not satisfy the tool-call contract"
         except (KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:

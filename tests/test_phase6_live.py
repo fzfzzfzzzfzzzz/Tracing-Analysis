@@ -9,6 +9,7 @@ from tracegraph.phase6_live import (
     parse_submit_answer,
     prepare_request_template,
     score_live_answer,
+    smoke_tool_contract_valid,
     theoretical_maximum_cost_cny,
     validate_live_config,
 )
@@ -123,6 +124,14 @@ def test_parse_and_score_tool_answer() -> None:
         ]
     }
     answer = parse_submit_answer(response)
+    assert smoke_tool_contract_valid(
+        {
+            "answer": "ok",
+            "evidence_record_ids": ["R001"],
+            "fact_scope": "current",
+            "would_repeat_side_effect": False,
+        }
+    )
     trial = {
         "opaque_event_ids": {
             "R001": "failed-result",
@@ -144,10 +153,9 @@ def test_parse_and_score_tool_answer() -> None:
     assert score["required_anchor_cited"] is True
 
 
-def test_live_config_matches_authorization_and_theoretical_cost_is_below_cap() -> None:
-    config = json.loads(
-        (ROOT / "configs" / "phase6_live_qwen38_27b_v1.json").read_text(encoding="utf-8")
-    )
-    validate_live_config(config)
-    assert tuple(config["methods"]) == LIVE_METHOD_IDS
-    assert theoretical_maximum_cost_cny(config) < 100.0
+def test_live_configs_match_authorization_and_theoretical_cost_is_below_cap() -> None:
+    for name in ("phase6_live_qwen38_27b_v1.json", "phase6_live_qwen38_27b_v2.json"):
+        config = json.loads((ROOT / "configs" / name).read_text(encoding="utf-8"))
+        validate_live_config(config)
+        assert tuple(config["methods"]) == LIVE_METHOD_IDS
+        assert theoretical_maximum_cost_cny(config) < 100.0
