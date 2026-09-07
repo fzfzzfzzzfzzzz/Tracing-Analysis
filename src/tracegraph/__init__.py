@@ -2,6 +2,15 @@
 
 from importlib.metadata import PackageNotFoundError, version
 
+from .context_engine import (
+    ContextPlan,
+    ContextPolicy,
+    GraphConstrainedPolicy,
+    MemorySnapshot,
+    PolicyRegistry,
+)
+from .legacy import load_legacy_artifact
+
 from .archive import ArchiveStore
 from .capture import ToolExecutor
 from .compiler import CompilerConfig, compile as compile_decision_state
@@ -69,6 +78,8 @@ from .schema import (
 
 __all__ = [
     "ArchiveStore",
+    "ContextPlan",
+    "ContextPolicy",
     "ContextManagedAgent",
     "ContextManager",
     "ContextView",
@@ -81,6 +92,7 @@ __all__ = [
     "FailureClass",
     "FailureExpiryTrigger",
     "GraphLifecycleManager",
+    "GraphConstrainedPolicy",
     "InterventionConfig",
     "InterventionSpec",
     "LifecycleProfile",
@@ -94,6 +106,7 @@ __all__ = [
     "LivenessRoots",
     "LiveSubgraph",
     "ModelTurn",
+    "MemorySnapshot",
     "Node",
     "NodeType",
     "RelevanceState",
@@ -102,6 +115,7 @@ __all__ = [
     "PromptBundle",
     "PromptCost",
     "ProjectionStrategy",
+    "PolicyRegistry",
     "ProviderProtocol",
     "RepresentationCandidate",
     "RepresentationType",
@@ -127,6 +141,7 @@ __all__ = [
     "analyze_liveness",
     "project_context",
     "reduce_event_graph",
+    "load_legacy_artifact",
 ]
 
 try:
