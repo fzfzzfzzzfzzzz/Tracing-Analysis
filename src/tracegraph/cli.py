@@ -7,6 +7,10 @@ from pathlib import Path
 
 from .adapters import TauTraceImporter
 from .archive import ArchiveStore
+from .compression_audit import build_benchmark, validate_benchmark
+from .compression_audit_live import prepare_live_run, run_live_v0
+from .compression_audit_metrics import score_run
+from .compression_audit_runtime import RANKED_REFERENCE_METHODS, run_deterministic
 from .context import build_context_managers
 from .experiments import ExperimentConfig, ExperimentRunner, discover_graphs
 from .graph import TraceGraph
@@ -64,6 +68,47 @@ def build_parser() -> PlainArgumentParser:
     interventions.add_argument("--tasks-per-kind", type=int, default=8)
     interventions.add_argument("--base-seed", type=int, default=4100)
     interventions.add_argument("--budget", type=int, default=512)
+
+    benchmark_build = subparsers.add_parser(
+        "benchmark-build",
+        help="构建失败历史压缩测试集，不调用外部模型",
+    )
+    benchmark_build.add_argument("--config", type=Path, required=True)
+    benchmark_build.add_argument("--output", type=Path, required=True)
+
+    benchmark_validate = subparsers.add_parser(
+        "benchmark-validate",
+        help="检查失败历史压缩测试集及正式发布门槛",
+    )
+    benchmark_validate.add_argument("--dataset", type=Path, required=True)
+    benchmark_validate.add_argument("--require-v1", action="store_true")
+
+    benchmark_run = subparsers.add_parser(
+        "benchmark-run",
+        help="运行确定性检查或受费用上限保护的真实模型试跑",
+    )
+    benchmark_run.add_argument("--config", type=Path, required=True)
+    benchmark_run.add_argument("--dataset", type=Path, required=True)
+    benchmark_run.add_argument("--output", type=Path, required=True)
+    benchmark_run.add_argument(
+        "--mode",
+        choices=("deterministic", "prepare-live", "live"),
+        default="deterministic",
+    )
+    benchmark_run.add_argument("--legacy", action="store_true")
+    benchmark_run.add_argument("--method", action="append", default=[])
+    benchmark_run.add_argument("--query-type", action="append", default=[])
+    benchmark_run.add_argument("--max-new-requests", type=int)
+    benchmark_run.add_argument("--resume", action="store_true")
+
+    benchmark_score = subparsers.add_parser(
+        "benchmark-score",
+        help="按源前缀配对计算审计损失和实际重获成本",
+    )
+    benchmark_score.add_argument("--dataset", type=Path, required=True)
+    benchmark_score.add_argument("--run", type=Path, required=True)
+    benchmark_score.add_argument("--output", type=Path, required=True)
+    benchmark_score.add_argument("--bootstrap-samples", type=int, default=10000)
     return parser
 
 
@@ -120,5 +165,47 @@ def main(argv: list[str] | None = None) -> int:
             ),
         )
         print(json.dumps(manifest, ensure_ascii=False, indent=2))
+        return 0
+    if args.command == "benchmark-build":
+        manifest = build_benchmark(args.config, args.output, workspace=Path.cwd())
+        print(json.dumps(manifest, ensure_ascii=False, indent=2))
+        return 0
+    if args.command == "benchmark-validate":
+        report = validate_benchmark(args.dataset)
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+        if not report["diagnostic_ready"]:
+            return 1
+        return 1 if args.require_v1 and not report["v1_ready"] else 0
+    if args.command == "benchmark-run":
+        if args.mode == "deterministic":
+            report = run_deterministic(
+                args.dataset,
+                args.output,
+                methods=tuple(args.method) or RANKED_REFERENCE_METHODS,
+                legacy=args.legacy,
+                query_types=tuple(args.query_type) or None,
+                config_path=args.config,
+            )
+        elif args.mode == "prepare-live":
+            report = prepare_live_run(args.config, args.dataset, args.output)
+        else:
+            report = run_live_v0(
+                args.config,
+                args.dataset,
+                args.output,
+                workspace=Path.cwd(),
+                max_new_requests=args.max_new_requests,
+                resume=args.resume,
+            )
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+        return 0
+    if args.command == "benchmark-score":
+        report = score_run(
+            args.dataset,
+            args.run,
+            args.output,
+            bootstrap_samples=args.bootstrap_samples,
+        )
+        print(json.dumps(report, ensure_ascii=False, indent=2))
         return 0
     return 2
