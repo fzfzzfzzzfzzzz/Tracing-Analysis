@@ -1,5 +1,7 @@
 """TraceGraph public API."""
 
+from importlib.metadata import PackageNotFoundError, version
+
 from .archive import ArchiveStore
 from .capture import ToolExecutor
 from .compiler import CompilerConfig, compile as compile_decision_state
@@ -127,4 +129,7 @@ __all__ = [
     "reduce_event_graph",
 ]
 
-__version__ = "0.3.0"
+try:
+    __version__ = version("tracegraph")
+except PackageNotFoundError:  # Source trees that have not been installed yet.
+    __version__ = "0+unknown"

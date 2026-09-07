@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tracegraph"
-version = "0.1.0"
+version = "0.3.0"
 description = "Dependency-graph-aware lifecycle management for tool-using agent traces"
 readme = "README.md"
 requires-python = ">=3.11"
