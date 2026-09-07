@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from .adapters import TauTraceImporter
@@ -177,7 +178,13 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(manifest, ensure_ascii=False, indent=2))
         return 0
     if args.command == "benchmark-build":
-        manifest = build_benchmark(args.config, args.output, workspace=Path.cwd())
+        frozen_root = os.environ.get("TRACEGRAPH_FROZEN_ROOT")
+        manifest = build_benchmark(
+            args.config,
+            args.output,
+            workspace=Path.cwd(),
+            source_workspace=Path(frozen_root) if frozen_root else None,
+        )
         print(json.dumps(manifest, ensure_ascii=False, indent=2))
         return 0
     if args.command == "benchmark-validate":

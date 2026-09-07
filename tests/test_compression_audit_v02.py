@@ -107,3 +107,53 @@ def test_development_metadata_forbids_independent_or_aggregate_claims() -> None:
     assert metadata["independent_validation"] is False
     assert metadata["single_aggregate_score"] is None
     assert "Seen v0.1" in metadata["interpretation"]
+
+
+@pytest.mark.parametrize(
+    ("response", "message"),
+    [
+        ({"choices": []}, "exactly one choice"),
+        ({"choices": ["bad"]}, "choice must be an object"),
+        ({"choices": [{"finish_reason": "stop"}]}, "no message object"),
+        (
+            {
+                "choices": [{
+                    "finish_reason": "stop",
+                    "message": {"tool_calls": [{"function": {"name": "wrong"}}]},
+                }]
+            },
+            "wrong submission tool",
+        ),
+        (_response(1), "must be an object"),
+        (_response({"a": "", "e": [], "t": "current", "s": False}), "non-empty"),
+        (_response({"a": "x", "e": ["r", "r"], "t": "current", "s": False}), "unique list"),
+        (_response({"a": "x", "e": [], "t": "future", "s": False}), "current or historical"),
+        (_response({"a": "x", "e": [], "t": "current", "s": 0}), "must be boolean"),
+    ],
+)
+def test_parser_rejects_other_invalid_provider_shapes(
+    response: dict[str, object], message: str
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        parse_development_submission(response)
+
+
+def test_cost_ledger_addition_and_invariants() -> None:
+    first = ReacquisitionCost(model_calls=1, provider_input_tokens=4, cost_cny=0.1)
+    second = ReacquisitionCost(model_calls=1, tool_calls=1, provider_output_tokens=2)
+    total = first + second
+    assert total.to_dict() == {
+        "model_calls": 2,
+        "tool_calls": 1,
+        "provider_input_tokens": 4,
+        "provider_output_tokens": 2,
+        "tool_observation_tokens": 0,
+        "latency_seconds": 0.0,
+        "cost_cny": 0.1,
+    }
+    with pytest.raises(ValueError, match="non-negative"):
+        ReacquisitionCost(cost_cny=-0.1)
+    with pytest.raises(ValueError, match="unsupported"):
+        AgentTurnRecord("turn", "retry", "req", first)
+    with pytest.raises(ValueError, match="exactly one model call"):
+        AgentTurnRecord("turn", "answer", "req", ReacquisitionCost())

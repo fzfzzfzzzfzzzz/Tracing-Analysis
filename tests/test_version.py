@@ -11,6 +11,6 @@ def test_runtime_and_project_versions_match() -> None:
     project = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
     expected = project["project"]["version"]
 
-    assert expected == "0.3.0"
+    assert expected == "0.4.0"
     assert importlib.metadata.version("tracegraph") == expected
     assert tracegraph.__version__ == expected

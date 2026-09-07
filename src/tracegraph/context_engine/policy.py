@@ -27,6 +27,11 @@ from .types import (
 
 _CALL_TYPES = {NodeType.TOOL_CALL, NodeType.MCP_CALL}
 _RESULT_TYPES = {NodeType.OBSERVATION, NodeType.ERROR}
+_QUERY_STOPWORDS = {
+    "a", "an", "and", "are", "do", "explain", "for", "in", "is", "it", "of",
+    "on", "or", "that", "the", "this", "to", "was", "what", "when", "where",
+    "which", "why", "with",
+}
 _CAUSAL_EDGES = {
     EdgeType.PRODUCES,
     EdgeType.FAILED_WITH,
@@ -274,7 +279,7 @@ class GraphConstrainedPolicy:
             "text": str(query_value)
         }
         query_text = str(query_map.get("text") or query_map.get("request") or query_map)
-        query_terms = set(_terms(query_map))
+        query_terms = set(_terms(query_map)).difference(_QUERY_STOPWORDS)
         explicit_ids = set(map(str, query_map.get(
             "referenced_record_ids", query_map.get("referenced_event_ids", ())
         )))

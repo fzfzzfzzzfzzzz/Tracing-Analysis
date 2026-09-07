@@ -410,13 +410,15 @@ def build_benchmark(
     output_root: Path,
     *,
     workspace: Path | None = None,
+    source_workspace: Path | None = None,
 ) -> dict[str, Any]:
     """Build v0.1 diagnostic and the controlled portion of v1 without provider calls."""
 
     config = load_config(config_path)
     root = (workspace or Path.cwd()).resolve()
+    source_root = (source_workspace or root).resolve()
     destination = output_root.resolve()
-    legacy_root = (root / str(config["legacy"]["input_root"])).resolve()
+    legacy_root = (source_root / str(config["legacy"]["input_root"])).resolve()
     expected_legacy_hashes = dict(config["legacy"].get("expected_hashes") or {})
     for name in (
         "prefixes.jsonl",
@@ -472,7 +474,7 @@ def build_benchmark(
     _write_jsonl(private / "all_gold.jsonl", (item.to_dict() for item in controlled_gold))
     annotation_destination = destination / "annotations" / "real"
     annotation_source = (
-        root / str(config["real"].get("normalized_annotation_root", ""))
+        source_root / str(config["real"].get("normalized_annotation_root", ""))
     ).resolve()
     annotations_copied = _copy_real_annotation_inputs(
         annotation_source, annotation_destination
@@ -564,13 +566,11 @@ def build_benchmark(
     }
     _write_json(destination / "manifest.json", manifest)
     return manifest
-
 # Imported late so mutually-referential helpers initialize safely.
 from .controlled import (
     build_queries as build_queries,
     generate_controlled_dataset as generate_controlled_dataset,
 )
-
 from .io import (
     _assert_output_available as _assert_output_available,
     _nonempty as _nonempty,

@@ -2,7 +2,7 @@
 
 这个项目研究一件事：工具调用很多以后，怎样把暂时用不到的旧记录从模型输入里拿开，等真的需要时再准确找回来。
 
-当前 Python 包兼容基线版本为 `0.3.0`。`compression_audit_v1` 的
+当前 Python 包候选版本为 `0.4.0`。`compression_audit_v1` 的
 `v0.1-diagnostic` 是测试集发布层级，不是 Python 包版本。2026-09-08 起，v0.1
 结果只作为已见开发数据用于 0.4.0 工程与算法调试；基于它产生的新数字必须标记
 `development_only=true`，不能作为独立验证或正式 benchmark 结论。

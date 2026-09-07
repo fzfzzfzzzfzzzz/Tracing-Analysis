@@ -296,3 +296,20 @@ def test_missing_archive_and_policy_registry() -> None:
     assert "selected_archive_cannot_be_verified" in plan.safety_reasons
     assert "graph-v4" in PolicyRegistry.defaults().ids()
     assert "acon" in PolicyRegistry.defaults().ids()
+
+
+def test_policy_registry_rejects_duplicates_and_supports_stable_iteration() -> None:
+    registry = PolicyRegistry()
+    beta = GraphConstrainedPolicy("beta")
+    alpha = GraphConstrainedPolicy("alpha")
+    registry.register(beta)
+    registry.register(alpha)
+    assert [policy.policy_id for policy in registry] == ["alpha", "beta"]
+    assert registry.get("alpha") is alpha
+    with pytest.raises(KeyError, match="already registered"):
+        registry.register(GraphConstrainedPolicy("alpha"))
+    replacement = GraphConstrainedPolicy("alpha", causal_closure=False)
+    registry.register(replacement, replace=True)
+    assert registry.get("alpha") is replacement
+    with pytest.raises(KeyError, match="unknown context policy"):
+        registry.get("missing")

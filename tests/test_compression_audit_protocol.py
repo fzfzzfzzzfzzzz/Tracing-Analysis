@@ -41,6 +41,9 @@ from tracegraph.benchmark.compression_audit.runtime import (
 from tracegraph.live_guard import require_live_authorization_id
 
 
+FROZEN_ROOT = Path(os.environ.get("TRACEGRAPH_FROZEN_ROOT", Path.cwd()))
+
+
 class ProtocolIsolationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -146,7 +149,7 @@ class ProtocolIsolationTests(unittest.TestCase):
         self.assertFalse(score_episode(episode, prefix, query, gold)["audit_pass"])
 
     def test_legacy_adapter_preserves_chronology_and_actual_slot_evidence(self):
-        root = Path("outputs/phase6/e1_controlled_v1")
+        root = FROZEN_ROOT / "outputs/phase6/e1_controlled_v1"
         if not root.is_dir():
             self.skipTest("immutable local legacy fixture is not installed")
         prefixes, gold, _ = convert_legacy_diagnostic(root)
@@ -444,12 +447,12 @@ class LiveFailureSafetyTests(unittest.TestCase):
 class PinnedTokenizerTests(unittest.TestCase):
     def test_official_tokenizer_exactly_matches_every_oracle_control(self):
         specification = json.loads(Path("configs/compression_audit_v1.json").read_text(encoding="utf-8"))["v0_live"]["context_tokenizer"]
-        if not Path(specification["path"]).is_file():
+        if not (FROZEN_ROOT / specification["path"]).is_file():
             self.skipTest("optional pinned tokenizer fixture is not downloaded")
-        legacy_root = Path("outputs/phase6/e1_controlled_v1")
+        legacy_root = FROZEN_ROOT / "outputs/phase6/e1_controlled_v1"
         if not legacy_root.is_dir():
             self.skipTest("immutable legacy compatibility fixture is not installed")
-        tokenizer = VerifiedContextTokenizer(specification, Path.cwd())
+        tokenizer = VerifiedContextTokenizer(specification, FROZEN_ROOT)
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             prefixes, gold, queries = convert_legacy_diagnostic(legacy_root)
@@ -466,7 +469,7 @@ class PinnedTokenizerTests(unittest.TestCase):
                 self.assertEqual(row["tokenized_user_input_tokens"], oracle[row["query_id"]]["tokenized_user_input_tokens"])
         bad = {**specification, "sha256": "0" * 64}
         with self.assertRaisesRegex(ValueError, "SHA-256"):
-            VerifiedContextTokenizer(bad, Path.cwd())
+            VerifiedContextTokenizer(bad, FROZEN_ROOT)
 
 
 if __name__ == "__main__":

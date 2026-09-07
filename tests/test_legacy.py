@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 import json
+import os
+from hashlib import sha256
 from pathlib import Path
 
 import pytest
 
 from tracegraph.graph import TraceGraph
+from tracegraph.context_engine import GraphConstrainedPolicy
 from tracegraph.legacy import LegacyArtifact, load_artifact, load_legacy_artifact
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(os.environ.get("TRACEGRAPH_FROZEN_ROOT", Path(__file__).resolve().parents[1]))
 
 
 def test_frozen_v01_manifest_is_read_only_and_hash_verified() -> None:
@@ -71,3 +74,57 @@ def test_manifest_path_traversal_is_rejected(tmp_path: Path) -> None:
     )
     with pytest.raises(ValueError, match="escapes"):
         load_legacy_artifact(manifest)
+
+
+def test_legacy_manifest_rejects_bad_entries_hashes_sizes_and_missing_files(
+    tmp_path: Path,
+) -> None:
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(json.dumps({"artifacts": [1]}), encoding="utf-8")
+    with pytest.raises(ValueError, match="invalid entry"):
+        load_legacy_artifact(manifest)
+
+    payload = tmp_path / "payload.json"
+    payload.write_text("{}", encoding="utf-8")
+    cases = [
+        ({"path": "missing.json", "sha256": "00" * 32}, FileNotFoundError, "missing"),
+        ({"path": "payload.json", "sha256": "00" * 32}, ValueError, "hash mismatch"),
+        (
+            {"path": "payload.json", "sha256": sha256(payload.read_bytes()).hexdigest(), "bytes": 3},
+            ValueError,
+            "size mismatch",
+        ),
+    ]
+    for entry, error_type, message in cases:
+        manifest.write_text(json.dumps({"artifacts": [entry]}), encoding="utf-8")
+        with pytest.raises(error_type, match=message):
+            load_legacy_artifact(manifest)
+
+
+def test_legacy_loader_supports_directory_plain_json_and_typed_v4(tmp_path: Path) -> None:
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(json.dumps({"schema_version": "plain", "value": 1}), encoding="utf-8")
+    artifact = load_legacy_artifact(tmp_path, verify_hashes=False)
+    assert isinstance(artifact, LegacyArtifact)
+    assert artifact.kind == "json"
+    assert artifact.linked_hashes_verified is False
+
+    array_path = tmp_path / "array.json"
+    array_path.write_text("[1, 2]", encoding="utf-8")
+    assert load_legacy_artifact(array_path).payload == (1, 2)
+
+    graph = TraceGraph("typed")
+    snapshot = GraphConstrainedPolicy().snapshot(graph, {}, 32)
+    snapshot_path = tmp_path / "snapshot.json"
+    snapshot_path.write_text(json.dumps(snapshot.to_dict()), encoding="utf-8")
+    loaded_snapshot = load_legacy_artifact(snapshot_path)
+    assert loaded_snapshot.snapshot_hash == snapshot.snapshot_hash
+
+    plan = GraphConstrainedPolicy().materialize(snapshot, "hello", "local")
+    plan_path = tmp_path / "plan.json"
+    plan_path.write_text(json.dumps(plan.to_dict()), encoding="utf-8")
+    loaded_plan = load_legacy_artifact(plan_path)
+    assert loaded_plan.to_dict() == plan.to_dict()
+
+    with pytest.raises(FileNotFoundError, match="does not exist"):
+        load_legacy_artifact(tmp_path / "absent.json")
