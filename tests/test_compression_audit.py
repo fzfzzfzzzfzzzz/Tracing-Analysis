@@ -456,6 +456,7 @@ class CompressionAuditLiveTests(unittest.TestCase):
                 "authorization": {
                     "authorized_by_user": True,
                     "maximum_cost_cny": 100.0,
+                    "authorization_id": "test-live-authorization",
                 },
             }
         }

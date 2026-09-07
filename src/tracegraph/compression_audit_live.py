@@ -38,6 +38,7 @@ from .compression_audit_runtime import (
     reacquisition_tool_schema,
 )
 from .compression_audit_tokenization import VerifiedContextTokenizer, retokenize_trials
+from .live_guard import require_live_authorization_id
 
 
 LIVE_RUN_SCHEMA_VERSION = "compression_audit_live_v0_1"
@@ -497,8 +498,12 @@ def _run_live_v0_locked(
     workspace: Path | None = None,
     max_new_requests: int | None = None,
     resume: bool = False,
+    authorization_id: str | None = None,
 ) -> dict[str, Any]:
     config = load_config(config_path)
+    require_live_authorization_id(
+        config.get("v0_live", {}).get("authorization", {}), authorization_id
+    )
     authorization = validate_live_authorization(config)
     if not authorization["valid"]:
         raise ValueError("; ".join(authorization["errors"]))
@@ -930,6 +935,7 @@ def run_live_v0(
     workspace: Path | None = None,
     max_new_requests: int | None = None,
     resume: bool = False,
+    authorization_id: str | None = None,
 ) -> dict[str, Any]:
     """Serialize writers so concurrent resumes cannot duplicate paid attempts."""
 
@@ -945,6 +951,7 @@ def run_live_v0(
         return _run_live_v0_locked(
             config_path, dataset_root, destination, workspace=workspace,
             max_new_requests=max_new_requests, resume=resume,
+            authorization_id=authorization_id,
         )
     finally:
         lock_path.unlink()

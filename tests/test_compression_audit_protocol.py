@@ -2,6 +2,7 @@
 
 import copy
 import json
+import os
 import tempfile
 import unittest
 from dataclasses import replace
@@ -37,6 +38,7 @@ from tracegraph.compression_audit_runtime import (
     memory_artifact,
     prepare_v0_trials,
 )
+from tracegraph.live_guard import require_live_authorization_id
 
 
 class ProtocolIsolationTests(unittest.TestCase):
@@ -165,6 +167,7 @@ class LiveFailureSafetyTests(unittest.TestCase):
         self.dataset = self.root / "dataset"
         self.prefixes, self.gold, self.queries = minimal_dataset(self.dataset)
         self.config = audit_test_fixtures.CompressionAuditLiveTests().config()
+        self.auth_id = self.config["v0_live"]["authorization"]["authorization_id"]
         self.config["v0_live"]["limits"]["timeout_seconds"] = 1
         self.config_path = self.root / "config.json"
         self.config_path.write_text(json.dumps(self.config), encoding="utf-8")
@@ -173,6 +176,8 @@ class LiveFailureSafetyTests(unittest.TestCase):
         self.credential_patch = patch("tracegraph.compression_audit_live.load_ignored_dashscope_credentials", return_value=("test-only", "https://example.invalid"))
         self.tokenizer_patch = patch("tracegraph.compression_audit_live.VerifiedContextTokenizer")
         self.retokenize_patch = patch("tracegraph.compression_audit_live.retokenize_trials", side_effect=lambda rows, tokenizer: rows)
+        self.live_env_patch = patch.dict(os.environ, {"TRACEGRAPH_DISABLE_LIVE": "0"})
+        self.live_env_patch.start()
         self.config_patch.start()
         self.credential_patch.start()
         tokenizer = self.tokenizer_patch.start().return_value
@@ -181,6 +186,7 @@ class LiveFailureSafetyTests(unittest.TestCase):
         self.retokenize_patch.start()
 
     def tearDown(self):
+        self.live_env_patch.stop()
         self.credential_patch.stop()
         self.config_patch.stop()
         self.retokenize_patch.stop()
@@ -195,9 +201,25 @@ class LiveFailureSafetyTests(unittest.TestCase):
         answer = deterministic_answer(query, gold, bundle)
         return {"usage": {"prompt_tokens": 100, "completion_tokens": 50}, "choices": [{"message": {"role": "assistant", "tool_calls": [{"id": "call-fixture", "type": "function", "function": {"name": "submit_audit_answer", "arguments": json.dumps(answer)}}]}}]}
 
+    def test_live_authorization_requires_matching_explicit_id(self):
+        authorization = self.config["v0_live"]["authorization"]
+        with self.assertRaisesRegex(RuntimeError, "required"):
+            require_live_authorization_id(authorization, None)
+        with self.assertRaisesRegex(RuntimeError, "does not match"):
+            require_live_authorization_id(authorization, "wrong")
+        self.assertEqual(
+            require_live_authorization_id(authorization, self.auth_id), self.auth_id
+        )
+
     def test_actual_request_response_usage_and_fixed_seed_are_recorded(self):
         with patch("tracegraph.compression_audit_live._post_json", return_value=(self.response(), 0.01)) as provider:
-            result = run_live_v0(self.config_path, self.dataset, self.run, max_new_requests=1)
+            result = run_live_v0(
+                self.config_path,
+                self.dataset,
+                self.run,
+                max_new_requests=1,
+                authorization_id=self.auth_id,
+            )
         self.assertEqual(provider.call_count, 1)
         self.assertEqual(result["provider_requests"], 1)
         episode = load_jsonl(self.run / "episodes.jsonl")[0]
@@ -207,7 +229,9 @@ class LiveFailureSafetyTests(unittest.TestCase):
         broken["model_calls"][0]["request"]["seed"] = 2
         self.assertFalse(_request_integrity(broken))
         with self.assertRaises(FileExistsError):
-            run_live_v0(self.config_path, self.dataset, self.run)
+            run_live_v0(
+                self.config_path, self.dataset, self.run, authorization_id=self.auth_id
+            )
 
     def run_two_turn_fixture(self):
         interactive = next(
@@ -227,7 +251,12 @@ class LiveFailureSafetyTests(unittest.TestCase):
         with patch("tracegraph.compression_audit_live.prepare_v0_trials", return_value=[interactive]):
             with patch("tracegraph.compression_audit_live._post_json",
                        side_effect=[(first, 0.01), (self.response(), 0.01)]) as provider:
-                run_live_v0(self.config_path, self.dataset, self.run)
+                run_live_v0(
+                    self.config_path,
+                    self.dataset,
+                    self.run,
+                    authorization_id=self.auth_id,
+                )
                 self.assertEqual(provider.call_count, 2)
         return load_jsonl(self.run / "episodes.jsonl")[0]
 
@@ -283,21 +312,31 @@ class LiveFailureSafetyTests(unittest.TestCase):
 
     def test_network_error_is_durable_counted_and_never_retried(self):
         with patch("tracegraph.compression_audit_live._post_json", side_effect=RuntimeError("fixture timeout")) as provider:
-            result = run_live_v0(self.config_path, self.dataset, self.run)
+            result = run_live_v0(
+                self.config_path, self.dataset, self.run, authorization_id=self.auth_id
+            )
             self.assertEqual(result["provider_requests"], 1)
             self.assertFalse(result["usage_complete"])
             self.assertGreater(result["provider_cost_upper_bound_cny"], 0)
             self.assertEqual(len(load_jsonl(self.run / "provider_attempts.jsonl")), 1)
             self.assertEqual(load_jsonl(self.run / "episodes.jsonl")[0]["status"], "provider_error")
             with self.assertRaisesRegex(RuntimeError, "usage is uncertain"):
-                run_live_v0(self.config_path, self.dataset, self.run, resume=True)
+                run_live_v0(
+                    self.config_path,
+                    self.dataset,
+                    self.run,
+                    resume=True,
+                    authorization_id=self.auth_id,
+                )
             self.assertEqual(provider.call_count, 1)
 
     def test_missing_usage_stops_before_a_second_request(self):
         response = self.response()
         del response["usage"]
         with patch("tracegraph.compression_audit_live._post_json", return_value=(response, 0.01)) as provider:
-            result = run_live_v0(self.config_path, self.dataset, self.run)
+            result = run_live_v0(
+                self.config_path, self.dataset, self.run, authorization_id=self.auth_id
+            )
         self.assertEqual(provider.call_count, 1)
         self.assertFalse(result["usage_complete"])
 
@@ -306,7 +345,13 @@ class LiveFailureSafetyTests(unittest.TestCase):
         write_jsonl(self.run / "provider_attempts.jsonl", [{"request_sha256": "unsettled"}])
         with patch("tracegraph.compression_audit_live._post_json") as provider:
             with self.assertRaisesRegex(RuntimeError, "uncertain outcome"):
-                run_live_v0(self.config_path, self.dataset, self.run, resume=True)
+                run_live_v0(
+                    self.config_path,
+                    self.dataset,
+                    self.run,
+                    resume=True,
+                    authorization_id=self.auth_id,
+                )
         provider.assert_not_called()
 
     def test_parallel_live_writer_is_refused_before_provider_use(self):
@@ -314,14 +359,25 @@ class LiveFailureSafetyTests(unittest.TestCase):
         lock.write_text("fixture writer", encoding="utf-8")
         with patch("tracegraph.compression_audit_live._post_json") as provider:
             with self.assertRaisesRegex(RuntimeError, "writer lock"):
-                run_live_v0(self.config_path, self.dataset, self.run)
+                run_live_v0(
+                    self.config_path,
+                    self.dataset,
+                    self.run,
+                    authorization_id=self.auth_id,
+                )
         provider.assert_not_called()
 
     def test_episode_turn_reservation_prevents_partial_start(self):
         interactive = prepare_v0_trials(self.dataset)[240]
         with patch("tracegraph.compression_audit_live.prepare_v0_trials", return_value=[interactive]):
             with patch("tracegraph.compression_audit_live._post_json") as provider:
-                result = run_live_v0(self.config_path, self.dataset, self.run, max_new_requests=3)
+                result = run_live_v0(
+                    self.config_path,
+                    self.dataset,
+                    self.run,
+                    max_new_requests=3,
+                    authorization_id=self.auth_id,
+                )
         self.assertEqual(result["provider_requests"], 0)
         self.assertEqual(result["completed_episode_count"], 0)
         provider.assert_not_called()
@@ -330,7 +386,13 @@ class LiveFailureSafetyTests(unittest.TestCase):
         response = self.response()
         response["choices"][0]["message"]["tool_calls"] = []
         with patch("tracegraph.compression_audit_live._post_json", return_value=(response, 0.01)):
-            run_live_v0(self.config_path, self.dataset, self.run, max_new_requests=1)
+            run_live_v0(
+                self.config_path,
+                self.dataset,
+                self.run,
+                max_new_requests=1,
+                authorization_id=self.auth_id,
+            )
         result = score_run(self.dataset, self.run, self.root / "score", bootstrap_samples=10)
         gate = next(item for item in result["gates"]["gates"] if item["name"] == "structured_output_coverage")
         self.assertEqual(gate["value"], 0)

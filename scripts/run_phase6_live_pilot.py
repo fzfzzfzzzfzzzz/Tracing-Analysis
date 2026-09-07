@@ -15,6 +15,7 @@ from typing import Any, Mapping
 from urllib.parse import urlsplit
 
 from tracegraph.decision_state import stable_digest
+from tracegraph.live_guard import require_live_authorization_id
 from tracegraph.phase6_live import (
     ANSWER_MAX_CHARS_V2,
     PROMPT_PROTOCOL_V2,
@@ -477,6 +478,11 @@ def main() -> int:
         help="确认人民币费用硬上限",
     )
     parser.add_argument(
+        "--live-authorization-id",
+        required=True,
+        help="必须与新授权配置中的一次性编号完全一致",
+    )
+    parser.add_argument(
         "--smoke-only",
         action="store_true",
         help="只做一次工具调用连通检查，不运行 216 次试验",
@@ -491,6 +497,7 @@ def main() -> int:
     if file_sha256(config_path) != args.confirm_config_sha256.lower():
         raise ValueError("confirmed config SHA-256 does not match")
     config = json.loads(config_path.read_text(encoding="utf-8"))
+    require_live_authorization_id(config.get("authorization", {}), args.live_authorization_id)
     validate_live_config(config)
     if args.confirm_primary_model != config["model"]["primary"]:
         raise ValueError("confirmed primary model does not match")

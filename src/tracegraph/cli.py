@@ -100,6 +100,10 @@ def build_parser() -> PlainArgumentParser:
     benchmark_run.add_argument("--query-type", action="append", default=[])
     benchmark_run.add_argument("--max-new-requests", type=int)
     benchmark_run.add_argument("--resume", action="store_true")
+    benchmark_run.add_argument(
+        "--live-authorization-id",
+        help="仅 live 模式使用；必须与新授权配置中的一次性编号完全一致",
+    )
 
     benchmark_score = subparsers.add_parser(
         "benchmark-score",
@@ -196,6 +200,7 @@ def main(argv: list[str] | None = None) -> int:
                 workspace=Path.cwd(),
                 max_new_requests=args.max_new_requests,
                 resume=args.resume,
+                authorization_id=args.live_authorization_id,
             )
         print(json.dumps(report, ensure_ascii=False, indent=2))
         return 0
