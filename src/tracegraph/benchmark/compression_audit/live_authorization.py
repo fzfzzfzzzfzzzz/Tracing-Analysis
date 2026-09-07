@@ -23,6 +23,7 @@ from ...live_guard import require_live_authorization_id
 from .live_constants import (
     LIVE_RUN_SCHEMA_VERSION as LIVE_RUN_SCHEMA_VERSION,
 )
+from .development_protocol import DEVELOPMENT_ONLY_NOTICE
 
 
 
@@ -182,6 +183,10 @@ def prepare_live_run(
     preflight = {
         "schema_version": LIVE_RUN_SCHEMA_VERSION,
         "benchmark_id": BENCHMARK_ID,
+        "protocol": "v0.1-diagnostic",
+        "development_only": True,
+        "independent_validation": False,
+        "interpretation": DEVELOPMENT_ONLY_NOTICE,
         "config_sha256": file_sha256(config_path),
         "dataset_manifest_sha256": file_sha256(dataset_root / "manifest.json"),
         "repository": git_provenance(Path.cwd()),

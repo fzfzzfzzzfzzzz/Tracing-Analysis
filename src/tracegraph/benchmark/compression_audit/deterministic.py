@@ -18,6 +18,7 @@ from ...compression_audit import BENCHMARK_ID, SCHEMA_VERSION, ContextBundle, Ep
 from .runtime_constants import (
     RANKED_REFERENCE_METHODS as RANKED_REFERENCE_METHODS,
 )
+from .development_protocol import DEVELOPMENT_PROTOCOL, development_metadata
 
 
 
@@ -85,7 +86,10 @@ def run_deterministic(
     query_types: Sequence[str] | None = None,
     seed: int = 20260901,
     config_path: Path | None = None,
+    protocol: str = DEVELOPMENT_PROTOCOL,
 ) -> dict[str, Any]:
+    if protocol not in {"v0.1-diagnostic", DEVELOPMENT_PROTOCOL}:
+        raise ValueError(f"unsupported deterministic protocol: {protocol}")
     if output_root.exists():
         raise FileExistsError(f"benchmark run output already exists: {output_root}")
     if output_root.resolve().is_relative_to(dataset_root.resolve()):
@@ -171,6 +175,8 @@ def run_deterministic(
         "legacy_diagnostic": legacy,
         "methods": list(methods),
         "query_types": sorted(selected_types) if selected_types else "all",
+        "protocol": protocol,
+        "development_only": True,
     }
     (output_root / "run_config.json").write_text(
         json.dumps(run_config, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
@@ -178,6 +184,7 @@ def run_deterministic(
     )
     artifacts = write_file_manifest(output_root)
     manifest = {
+        **development_metadata(run_id=stable_digest(run_config)[:16]),
         "schema_version": SCHEMA_VERSION,
         "benchmark_id": BENCHMARK_ID,
         "mode": "deterministic_visibility_oracle",

@@ -19,6 +19,7 @@ from ...compression_audit import BENCHMARK_ID, EpisodeRecord, FailureChainGold, 
 from ...compression_audit_runtime import answer_tool_schema, load_dataset, parse_submit_answer, prepare_v0_trials, reacquisition_tool_schema
 from ...compression_audit_tokenization import VerifiedContextTokenizer, retokenize_trials
 from ...live_guard import require_live_authorization_id
+from .development_protocol import DEVELOPMENT_ONLY_NOTICE
 
 
 
@@ -107,6 +108,10 @@ def reconcile_live_recordings(source_root: Path, output_root: Path) -> dict[str,
         raise ValueError("incomplete episode/ledger coverage")
     reconciliation = {
         "schema_version": "compression_audit_recording_reconciliation_v1",
+        "protocol": "v0.1-diagnostic",
+        "development_only": True,
+        "independent_validation": False,
+        "interpretation": DEVELOPMENT_ONLY_NOTICE,
         "source_run": str(source_root.resolve()),
         "source_manifest_sha256": file_sha256(source_root / "manifest.json"),
         "source_episodes_sha256": file_sha256(source_root / "episodes.jsonl"),

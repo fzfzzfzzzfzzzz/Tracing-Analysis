@@ -104,6 +104,12 @@ def score_run(
     report = {
         "schema_version": REPORT_SCHEMA_VERSION,
         "benchmark_id": BENCHMARK_ID,
+        "protocol": "v0.2-development",
+        "development_only": True,
+        "independent_validation": False,
+        "interpretation": (
+            "Seen v0.1 development data; results are not independent validation evidence."
+        ),
         "episode_count": len(scored),
         "source_prefix_count": len({item["prefix_id"] for item in scored}),
         "legacy_diagnostic_episode_count": sum(item["source_kind"] == "legacy_diagnostic" for item in scored),
@@ -153,6 +159,16 @@ def score_run(
         "bootstrap_samples": bootstrap_samples,
     }
     gate_report = _v0_gates(scored, counterfactuals)
+    gate_report.update(
+        {
+            "protocol": "v0.2-development",
+            "development_only": True,
+            "independent_validation": False,
+            "interpretation": (
+                "Seen v0.1 development data; results are not independent validation evidence."
+            ),
+        }
+    )
     output_root.mkdir(parents=True, exist_ok=False)
     _write_jsonl(output_root / "scored_episodes.jsonl", scored)
     _write_jsonl(output_root / "counterfactual_pairs.jsonl", counterfactuals)
@@ -163,6 +179,9 @@ def score_run(
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "benchmark_id": BENCHMARK_ID,
+        "protocol": "v0.2-development",
+        "development_only": True,
+        "independent_validation": False,
         "run_path": str(run_path),
         "run_sha256": file_sha256(episode_path),
         "dataset_manifest_sha256": dataset_manifest_hash,

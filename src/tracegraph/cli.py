@@ -11,6 +11,7 @@ from .benchmark.compression_audit.dataset import build_benchmark, validate_bench
 from .benchmark.compression_audit.live import prepare_live_run, run_live_v0
 from .benchmark.compression_audit.metrics import score_run
 from .benchmark.compression_audit.runtime import RANKED_REFERENCE_METHODS, run_deterministic
+from .benchmark.compression_audit.development_protocol import DEVELOPMENT_PROTOCOL
 from .context_engine.context import build_context_managers
 from .experiments import ExperimentConfig, ExperimentRunner, discover_graphs
 from .graph import TraceGraph
@@ -98,6 +99,11 @@ def build_parser() -> PlainArgumentParser:
     benchmark_run.add_argument("--legacy", action="store_true")
     benchmark_run.add_argument("--method", action="append", default=[])
     benchmark_run.add_argument("--query-type", action="append", default=[])
+    benchmark_run.add_argument(
+        "--protocol",
+        choices=("v0.1-diagnostic", DEVELOPMENT_PROTOCOL),
+        help="结构化提交协议；deterministic 默认使用 v0.2-development",
+    )
     benchmark_run.add_argument("--max-new-requests", type=int)
     benchmark_run.add_argument("--resume", action="store_true")
     benchmark_run.add_argument(
@@ -189,10 +195,15 @@ def main(argv: list[str] | None = None) -> int:
                 legacy=args.legacy,
                 query_types=tuple(args.query_type) or None,
                 config_path=args.config,
+                protocol=args.protocol or DEVELOPMENT_PROTOCOL,
             )
         elif args.mode == "prepare-live":
+            if args.protocol == DEVELOPMENT_PROTOCOL:
+                raise ValueError("v0.2-development live execution is not enabled in this release")
             report = prepare_live_run(args.config, args.dataset, args.output)
         else:
+            if args.protocol == DEVELOPMENT_PROTOCOL:
+                raise ValueError("v0.2-development live execution is not enabled in this release")
             report = run_live_v0(
                 args.config,
                 args.dataset,

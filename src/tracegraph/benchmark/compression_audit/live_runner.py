@@ -23,6 +23,7 @@ from ...live_guard import require_live_authorization_id
 from .live_constants import (
     LIVE_RUN_SCHEMA_VERSION as LIVE_RUN_SCHEMA_VERSION,
 )
+from .development_protocol import DEVELOPMENT_ONLY_NOTICE
 
 
 
@@ -312,6 +313,10 @@ def _run_live_v0_locked(
     summary = {
         "schema_version": LIVE_RUN_SCHEMA_VERSION,
         "benchmark_id": BENCHMARK_ID,
+        "protocol": "v0.1-diagnostic",
+        "development_only": True,
+        "independent_validation": False,
+        "interpretation": DEVELOPMENT_ONLY_NOTICE,
         "status": status,
         "stopped_reason": stopped_reason,
         "trial_count": len(trials),

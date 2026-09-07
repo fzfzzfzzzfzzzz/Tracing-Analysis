@@ -123,9 +123,15 @@ python scripts/analyze_phase6_benchmark_preparation.py
 $env:PYTHONPATH = "src"
 python -m tracegraph benchmark-build --config configs/compression_audit_v1.json --output outputs/compression_audit/my_build
 python -m tracegraph benchmark-validate --dataset outputs/compression_audit/my_build
-python -m tracegraph benchmark-run --config configs/compression_audit_v1.json --dataset outputs/compression_audit/my_build --output outputs/compression_audit/my_run --mode deterministic
+python -m tracegraph benchmark-run --config configs/compression_audit_v1.json --dataset outputs/compression_audit/my_build --output outputs/compression_audit/my_run --mode deterministic --protocol v0.2-development
 python -m tracegraph benchmark-score --dataset outputs/compression_audit/my_build --run outputs/compression_audit/my_run --output outputs/compression_audit/my_score
 ```
+
+新开发协议配置见 `configs/compression_audit_v0_2_development.json`。它把结构化提交
+缩短为 `a/e/t/s` 四个必填字段；解析器只解开 provider 包装，不补猜缺失字段。
+格式修复必须另记一次计费 agent turn；模型调用、工具调用、输入、输出、观察量、
+延迟和费用分别报告，不合成单一比例或总分。所有新输出都带
+`development_only=true` 和 `independent_validation=false`。
 
 当前正式 `v1.0` 仍受 100 条真实轨迹双人标注门禁约束，不能用未核验候选替代。协议、指标、费用保护和复现方法见[失败历史压缩 Benchmark 说明](docs/失败历史压缩Benchmark说明.md)，真实数据流程见[失败历史真实轨迹标注指南](docs/失败历史真实轨迹标注指南.md)。
 

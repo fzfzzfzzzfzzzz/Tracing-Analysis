@@ -514,6 +514,9 @@ def build_benchmark(
         "schema_version": MANIFEST_SCHEMA_VERSION,
         "benchmark_id": BENCHMARK_ID,
         "release": "v0.1-diagnostic",
+        "development_protocol": "v0.2-development",
+        "development_only": True,
+        "independent_validation": False,
         "config_path": str(config_path),
         "config_sha256": file_sha256(config_path),
         "repository": git_provenance(root),
@@ -553,16 +556,16 @@ def build_benchmark(
         },
         "v1_ready": bool(real_validation["ready"] and len(real_prefixes) == 100),
         "interpretation": (
-            "The 72 legacy forks are compatibility diagnostics, not independent benchmark "
-            "samples. Formal v1 claims remain blocked until the real-data annotation gate passes."
+            "The v0.1 data have been seen during development. New results are development_only, "
+            "not independent validation evidence, and cannot support a formal benchmark claim. "
+            "The 72 legacy forks remain unranked compatibility diagnostics."
         ),
         "artifacts": file_rows,
     }
     _write_json(destination / "manifest.json", manifest)
     return manifest
 
-
-# Imported after definitions so mutually-referential helpers initialize safely.
+# Imported late so mutually-referential helpers initialize safely.
 from .controlled import (
     build_queries as build_queries,
     generate_controlled_dataset as generate_controlled_dataset,
