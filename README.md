@@ -101,6 +101,22 @@ python scripts/analyze_phase6_benchmark_preparation.py
 
 不要再次运行生成命令覆盖现有结果。结果目录采用“已经存在就拒绝写入”的规则。
 
+### 失败历史压缩 Benchmark
+
+仓库新增 `compression_audit_v1`，专门测量压缩后是否丢失“失败方法、失败原因、切换决定和成功替代方案”，以及为重新获得这些事实增加的真实调用、模型输入量、时间和费用。原有 72 个结果保留为不参与排名的兼容诊断；新受控集是 240 个独立前缀和 1,440 个 episode。
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m tracegraph benchmark-build --config configs/compression_audit_v1.json --output outputs/compression_audit/my_build
+python -m tracegraph benchmark-validate --dataset outputs/compression_audit/my_build
+python -m tracegraph benchmark-run --config configs/compression_audit_v1.json --dataset outputs/compression_audit/my_build --output outputs/compression_audit/my_run --mode deterministic
+python -m tracegraph benchmark-score --dataset outputs/compression_audit/my_build --run outputs/compression_audit/my_run --output outputs/compression_audit/my_score
+```
+
+当前正式 `v1.0` 仍受 100 条真实轨迹双人标注门禁约束，不能用未核验候选替代。协议、指标、费用保护和复现方法见[失败历史压缩 Benchmark 说明](docs/失败历史压缩Benchmark说明.md)，真实数据流程见[失败历史真实轨迹标注指南](docs/失败历史真实轨迹标注指南.md)。
+
+2026-08-31 已完成 v0.1 的 272 个 episode、321 次真实请求，按标价约 2.9268 元。全矩阵未通过机制验收；请求快照记录问题已通过独立账本修复，原始结果保留，答案分数与成本未变。最终 282 项测试通过。详见 [v0.1 冻结诊断运行报告](docs/失败历史压缩Benchmark_v0.1运行报告.md)。
+
 导入 τ³-bench（一个公开的工具调用测试集）保存结果：
 
 ```powershell
@@ -140,6 +156,9 @@ API 是程序之间发送请求的接口。运行任何会调用外部模型 API
 - [第六阶段自动判分怎样修正](docs/第六阶段_自动判分怎样修正.md)
 - [第六阶段公开测试任务准备说明](docs/第六阶段_公开测试任务准备说明.md)
 - [第六阶段每个结论有什么证据](docs/第六阶段_每个结论有什么证据.md)
+- [失败历史压缩 Benchmark 说明](docs/失败历史压缩Benchmark说明.md)
+- [失败历史压缩 Benchmark v0.1 运行报告](docs/失败历史压缩Benchmark_v0.1运行报告.md)
+- [失败历史真实轨迹标注指南](docs/失败历史真实轨迹标注指南.md)
 
 计划、规则与复现说明：
 
