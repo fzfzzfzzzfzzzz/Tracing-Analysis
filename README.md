@@ -74,7 +74,16 @@ MemGym-CodeQA 和 SWE-Gym 的本地准备也已开始：
 
 ## 怎样运行
 
-项目使用 Python 3.11。下面的命令名和参数保持不变：
+项目使用 Python 3.11，并用 `uv.lock` 固定完整开发环境。标准安装和发布前验证命令为：
+
+```powershell
+uv sync --all-extras --group dev
+uv run python scripts/verify_project.py --profile release
+```
+
+日常开发可把 `release` 换成 `core`；需要同时检查 JSON Schema 和确定性
+Benchmark smoke 时使用 `full`。验证脚本会强制禁用 live provider，生成内容只写入系统临时目录。
+已有命令名和参数保持不变，例如：
 
 ```powershell
 $env:PYTHONPATH = "src"
@@ -133,6 +142,8 @@ python -m tracegraph import-tau `
 ```
 
 API 是程序之间发送请求的接口。运行任何会调用外部模型 API 的脚本前，必须重新确认模型、价格、费用上限和停止条件，并取得用户明确授权。
+历史设置里的 `authorized_by_user=true` 不再足够。所有 live 入口还必须使用新设置中的
+`authorization_id`，并在命令行显式传入完全一致的 `--live-authorization-id`；旧授权不能复用。
 
 ## 从哪里看详细内容
 

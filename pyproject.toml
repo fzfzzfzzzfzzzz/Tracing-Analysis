@@ -21,9 +21,17 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6"]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff==0.15.21"]
 analysis = ["pandas>=2.2", "matplotlib>=3.9", "pyarrow>=17"]
 benchmark = ["tokenizers>=0.22.2,<0.24"]
+
+[dependency-groups]
+dev = [
+  "jsonschema>=4.23",
+  "pytest>=8",
+  "pytest-cov>=5",
+  "ruff==0.15.21",
+]
 
 [project.scripts]
 tracegraph = "tracegraph.cli:main"
@@ -38,3 +46,11 @@ addopts = "-ra"
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+
+[tool.coverage.run]
+branch = true
+source = ["tracegraph"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
