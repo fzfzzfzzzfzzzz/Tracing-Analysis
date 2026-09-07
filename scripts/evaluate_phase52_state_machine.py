@@ -24,13 +24,13 @@ from tracegraph.archive import ArchiveStore  # noqa: E402
 from tracegraph.capture import estimate_tokens  # noqa: E402
 from tracegraph.decision_state import stable_digest  # noqa: E402
 from tracegraph.graph import TraceGraph  # noqa: E402
-from tracegraph.lifecycle_annotation import file_sha256, load_phase52_config  # noqa: E402
+from tracegraph.context_engine.annotation import file_sha256, load_phase52_config  # noqa: E402
 from tracegraph.lifecycle_state_machine import (  # noqa: E402
     build_forbidden_offline_projection,
     load_tool_effect_registry,
     replay_lifecycle_state_machine,
 )
-from tracegraph.phase5_offline import (  # noqa: E402
+from tracegraph.context_engine.phase5 import (  # noqa: E402
     build_strict_prefix,
     policy_text,
     prefix_messages,

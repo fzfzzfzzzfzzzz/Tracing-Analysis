@@ -8,7 +8,7 @@ from collections.abc import Mapping, Sequence
 from typing import Any
 
 from .goal_lifecycle import GoalLifecycleState
-from .phase6_scenarios import ScenarioPrefix
+from .phase6.scenarios import ScenarioPrefix
 
 
 E1_THRESHOLDS = {

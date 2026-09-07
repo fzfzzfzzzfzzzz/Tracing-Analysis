@@ -5,7 +5,7 @@ from pathlib import Path
 
 from tracegraph.decision_state import stable_digest
 from tracegraph.goal_lifecycle import GoalLifecycleState
-from tracegraph.phase6_scenarios import (
+from tracegraph.phase6.scenarios import (
     FORK_TYPES,
     SCENARIO_FAMILIES,
     VARIANTS,

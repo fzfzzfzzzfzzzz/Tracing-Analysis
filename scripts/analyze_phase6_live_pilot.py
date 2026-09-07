@@ -7,7 +7,7 @@ from tracegraph.plain_cli import PlainArgumentParser, run_cli
 import json
 from pathlib import Path
 
-from tracegraph.phase6_live import file_sha256, load_jsonl
+from tracegraph.phase6.live import file_sha256, load_jsonl
 
 
 def main() -> int:

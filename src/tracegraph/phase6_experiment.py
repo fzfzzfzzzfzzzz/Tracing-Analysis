@@ -17,7 +17,7 @@ from .goal_lifecycle import (
     analyze_goal_lifecycle,
 )
 from .message_protocol import close_message_protocol
-from .phase6_scenarios import ScenarioFork, ScenarioPrefix
+from .phase6.scenarios import ScenarioFork, ScenarioPrefix
 from .reactivation import (
     ReactivationResult,
     ReactivationTrigger,

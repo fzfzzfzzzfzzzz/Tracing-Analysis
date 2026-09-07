@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from tracegraph.compression_audit_live import reconcile_live_recordings
+from tracegraph.benchmark.compression_audit.live import reconcile_live_recordings
 from tracegraph.plain_cli import PlainArgumentParser
 
 

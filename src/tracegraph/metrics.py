@@ -6,7 +6,7 @@ from dataclasses import asdict, dataclass
 from typing import Any
 
 from .archive import ArchiveStore
-from .context import ContextView
+from .context_engine.context import ContextView
 from .graph import TraceGraph
 from .lifecycle import LifecycleEngine
 from .schema import (

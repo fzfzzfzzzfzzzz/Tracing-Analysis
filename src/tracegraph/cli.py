@@ -7,14 +7,14 @@ from pathlib import Path
 
 from .adapters import TauTraceImporter
 from .archive import ArchiveStore
-from .compression_audit import build_benchmark, validate_benchmark
-from .compression_audit_live import prepare_live_run, run_live_v0
-from .compression_audit_metrics import score_run
-from .compression_audit_runtime import RANKED_REFERENCE_METHODS, run_deterministic
-from .context import build_context_managers
+from .benchmark.compression_audit.dataset import build_benchmark, validate_benchmark
+from .benchmark.compression_audit.live import prepare_live_run, run_live_v0
+from .benchmark.compression_audit.metrics import score_run
+from .benchmark.compression_audit.runtime import RANKED_REFERENCE_METHODS, run_deterministic
+from .context_engine.context import build_context_managers
 from .experiments import ExperimentConfig, ExperimentRunner, discover_graphs
 from .graph import TraceGraph
-from .interventions import InterventionConfig, run_p1_interventions
+from .evaluation.interventions import InterventionConfig, run_p1_interventions
 from .plain_cli import PlainArgumentParser
 from .synthetic import build_synthetic_trace
 

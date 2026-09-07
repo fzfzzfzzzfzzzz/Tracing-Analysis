@@ -7,7 +7,7 @@ import shutil
 import urllib.request
 from pathlib import Path
 
-from tracegraph.compression_audit import file_sha256, load_config
+from tracegraph.benchmark.compression_audit.dataset import file_sha256, load_config
 from tracegraph.plain_cli import PlainArgumentParser
 
 

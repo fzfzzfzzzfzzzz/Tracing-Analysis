@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
 from .capture import estimate_tokens
-from .compression_audit import (
+from .benchmark.compression_audit.dataset import (
     BENCHMARK_ID,
     canonical_json,
     file_sha256,

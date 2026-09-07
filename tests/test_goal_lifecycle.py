@@ -10,7 +10,7 @@ from tracegraph.goal_lifecycle import (
     ProjectionAction,
     analyze_goal_lifecycle,
 )
-from tracegraph.phase6_scenarios import generate_trace_lifecycle_suite
+from tracegraph.phase6.scenarios import generate_trace_lifecycle_suite
 
 
 def test_goal_lifecycle_matches_independent_scenario_gold_and_round_trips() -> None:

@@ -5,7 +5,7 @@ from importlib.metadata import PackageNotFoundError, version
 from .archive import ArchiveStore
 from .capture import ToolExecutor
 from .compiler import CompilerConfig, compile as compile_decision_state
-from .context import (
+from .context_engine.context import (
     ContextManager,
     ContextView,
     GraphLifecycleManager,
@@ -21,7 +21,7 @@ from .decision_state import (
     StateEdgeType,
 )
 from .graph import TraceGraph
-from .interventions import (
+from .evaluation.interventions import (
     InterventionConfig,
     InterventionSpec,
     build_intervention_specs,
@@ -33,7 +33,7 @@ from .lifecycle_context import (
     ProjectionStrategy,
     project_context,
 )
-from .liveness import (
+from .context_engine.liveness import (
     DecisionLifecycleGraph,
     EventLifecycleRecord,
     EventSpan,

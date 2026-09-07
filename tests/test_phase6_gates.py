@@ -7,7 +7,7 @@ from tracegraph.archive import ArchiveStore
 from tracegraph.decision_state import stable_digest
 from tracegraph.phase6_experiment import run_local_method
 from tracegraph.phase6_gates import evaluate_e1_eligibility, evaluate_e2_gate
-from tracegraph.phase6_scenarios import generate_trace_lifecycle_suite
+from tracegraph.phase6.scenarios import generate_trace_lifecycle_suite
 
 
 def test_e1_and_e2_controlled_gates_pass_without_provider_requests() -> None:

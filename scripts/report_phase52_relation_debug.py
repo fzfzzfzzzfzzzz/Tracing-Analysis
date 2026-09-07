@@ -17,7 +17,7 @@ SRC_ROOT = REPO_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
-from tracegraph.lifecycle_annotation import (  # noqa: E402
+from tracegraph.context_engine.annotation import (  # noqa: E402
     cohen_kappa_binary,
     consensus_labels,
     load_phase52_config,

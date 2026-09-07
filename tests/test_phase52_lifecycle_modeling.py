@@ -6,7 +6,7 @@ from copy import deepcopy
 import pytest
 
 from tracegraph.graph import TraceGraph
-from tracegraph.lifecycle_annotation import (
+from tracegraph.context_engine.annotation import (
     AnnotationBudget,
     assert_prefix_only_payload,
     consensus_labels,

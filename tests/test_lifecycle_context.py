@@ -4,7 +4,7 @@ import tempfile
 import unittest
 
 from tracegraph import ArchiveStore, EdgeType, LifecycleState, NodeType, TraceGraph
-from tracegraph.context import (
+from tracegraph.context_engine.context import (
     GraphLifecycleManager,
     LastKManager,
     SummaryOnlyManager,

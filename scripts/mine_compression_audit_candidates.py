@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from tracegraph.compression_audit import load_config
+from tracegraph.benchmark.compression_audit.dataset import load_config
 from tracegraph.compression_audit_real import write_candidate_bundle
 from tracegraph.plain_cli import PlainArgumentParser
 

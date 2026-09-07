@@ -7,10 +7,10 @@ import unittest
 from pathlib import Path
 
 from test_compression_audit import minimal_dataset
-from tracegraph.compression_audit import load_jsonl, write_file_manifest
-from tracegraph.compression_audit_metrics import score_run
+from tracegraph.benchmark.compression_audit.dataset import load_jsonl, write_file_manifest
+from tracegraph.benchmark.compression_audit.metrics import score_run
 from tracegraph.compression_audit_real import load_source_rows, normalize_swe_gym_events
-from tracegraph.compression_audit_runtime import run_deterministic
+from tracegraph.benchmark.compression_audit.runtime import run_deterministic
 
 
 class RealParquetImportTests(unittest.TestCase):

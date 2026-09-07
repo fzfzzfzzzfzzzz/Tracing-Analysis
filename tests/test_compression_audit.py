@@ -6,7 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from tracegraph.cli import build_parser
-from tracegraph.compression_audit import (
+from tracegraph.benchmark.compression_audit.dataset import (
     FailureChainGold,
     PrefixRecord,
     QueryRecord,
@@ -17,16 +17,16 @@ from tracegraph.compression_audit import (
     validate_real_annotations,
     write_file_manifest,
 )
-from tracegraph.compression_audit_live import (
+from tracegraph.benchmark.compression_audit.live import (
     theoretical_maximum_cost_cny,
     validate_live_authorization,
 )
-from tracegraph.compression_audit_metrics import score_episode, score_run
+from tracegraph.benchmark.compression_audit.metrics import score_episode, score_run
 from tracegraph.compression_audit_real import (
     mine_ama_bench_candidates,
     mine_swe_gym_candidates,
 )
-from tracegraph.compression_audit_runtime import (
+from tracegraph.benchmark.compression_audit.runtime import (
     AconCompressionAdapter,
     ReferenceMemoryAdapter,
     counterfactual_bundle,

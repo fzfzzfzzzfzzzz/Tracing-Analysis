@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from tracegraph.paired import (
+from tracegraph.evaluation.paired import (
     _holm_adjust,
     analyze_live_matrix,
     write_live_matrix_report,

@@ -9,7 +9,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
-from tracegraph.context import GraphLifecycleManager, NoFailureRetentionManager
+from tracegraph.context_engine.context import GraphLifecycleManager, NoFailureRetentionManager
 from tracegraph.graph import TraceGraph
 from tracegraph.schema import (
     EdgeType,

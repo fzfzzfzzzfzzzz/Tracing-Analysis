@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from typing import Any, Mapping
 
-from tracegraph.phase6_live import (
+from tracegraph.phase6.live import (
     SCORING_PROTOCOL_V2,
     file_sha256,
     load_jsonl,

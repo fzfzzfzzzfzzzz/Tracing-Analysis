@@ -7,7 +7,7 @@ from tracegraph.plain_cli import PlainArgumentParser, run_cli
 import json
 from pathlib import Path
 
-from tracegraph.failure_chain_annotation_v2 import (
+from tracegraph.context_engine.annotation_v2 import (
     score_failure_chain_annotations_v2,
     write_failure_chain_score_v2,
 )

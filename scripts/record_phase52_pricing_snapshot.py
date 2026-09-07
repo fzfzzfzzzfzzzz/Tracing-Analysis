@@ -16,7 +16,7 @@ SRC_ROOT = REPO_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
-from tracegraph.lifecycle_annotation import load_phase52_config  # noqa: E402
+from tracegraph.context_engine.annotation import load_phase52_config  # noqa: E402
 from tracegraph.trajectory_artifacts import sha256_json  # noqa: E402
 
 

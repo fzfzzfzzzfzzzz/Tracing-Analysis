@@ -16,7 +16,7 @@ from urllib.parse import urlsplit
 
 from tracegraph.decision_state import stable_digest
 from tracegraph.live_guard import require_live_authorization_id
-from tracegraph.phase6_live import (
+from tracegraph.phase6.live import (
     ANSWER_MAX_CHARS_V2,
     PROMPT_PROTOCOL_V2,
     SCORING_PROTOCOL_V1,

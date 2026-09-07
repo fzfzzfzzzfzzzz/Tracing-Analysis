@@ -18,14 +18,14 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from tracegraph.graph import TraceGraph  # noqa: E402
-from tracegraph.lifecycle_annotation import (  # noqa: E402
+from tracegraph.context_engine.annotation import (  # noqa: E402
     annotation_response_function_schema,
     config_sha256,
     file_sha256,
     load_phase52_config,
     prepare_annotation_request,
 )
-from tracegraph.phase5_offline import build_strict_prefix  # noqa: E402
+from tracegraph.context_engine.phase5 import build_strict_prefix  # noqa: E402
 from tracegraph.trajectory_artifacts import sha256_json  # noqa: E402
 
 

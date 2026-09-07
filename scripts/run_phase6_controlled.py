@@ -26,7 +26,7 @@ from tracegraph.phase6_metrics import (
     statistical_report,
     summarize_manager_rows,
 )
-from tracegraph.phase6_scenarios import generate_trace_lifecycle_suite
+from tracegraph.phase6.scenarios import generate_trace_lifecycle_suite
 
 
 def _json_bytes(value: Any) -> bytes:

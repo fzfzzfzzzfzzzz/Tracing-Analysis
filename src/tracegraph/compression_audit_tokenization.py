@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from .capture import estimate_tokens
-from .compression_audit import ContextBundle, canonical_json, file_sha256, stable_digest
+from .benchmark.compression_audit.dataset import ContextBundle, canonical_json, file_sha256, stable_digest
 
 
 class VerifiedContextTokenizer:

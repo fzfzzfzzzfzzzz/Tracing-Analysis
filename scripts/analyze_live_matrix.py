@@ -8,7 +8,7 @@ import json
 import sys
 from pathlib import Path
 
-from tracegraph.paired import analyze_live_matrix, write_live_matrix_report
+from tracegraph.evaluation.paired import analyze_live_matrix, write_live_matrix_report
 
 
 for _stream in (sys.stdout, sys.stderr):

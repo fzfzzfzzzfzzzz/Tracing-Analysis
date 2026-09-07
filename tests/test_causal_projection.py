@@ -6,7 +6,7 @@ from pathlib import Path
 from tracegraph.archive import ArchiveStore
 from tracegraph.causal_projection import causal_reactivation
 from tracegraph.goal_lifecycle import analyze_goal_lifecycle
-from tracegraph.phase6_scenarios import generate_trace_lifecycle_suite
+from tracegraph.phase6.scenarios import generate_trace_lifecycle_suite
 from tracegraph.reactivation import detect_reactivation_trigger, retrieve_anchor_candidates
 
 

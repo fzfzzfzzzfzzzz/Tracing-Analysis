@@ -2,7 +2,7 @@ import unittest
 from types import SimpleNamespace
 
 from tracegraph import NodeType
-from tracegraph.context import ContextItem
+from tracegraph.context_engine.context import ContextItem
 from tracegraph.message_protocol import (
     close_message_protocol,
     close_message_ordinals,

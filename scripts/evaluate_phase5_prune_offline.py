@@ -21,12 +21,12 @@ from tracegraph.integrations.lifecycle_graph_context import (
     LifecycleGraphContextManager,
 )
 from tracegraph.lifecycle_context import ContextView
-from tracegraph.liveness import (
+from tracegraph.context_engine.liveness import (
     DecisionLifecycleGraph,
     LivenessRoots,
     LiveSubgraph,
 )
-from tracegraph.phase5_offline import (
+from tracegraph.context_engine.phase5 import (
     adjudicate_f5_g1,
     build_strict_prefix,
     file_sha256,

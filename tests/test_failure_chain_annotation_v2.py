@@ -11,7 +11,7 @@ from tracegraph.failure_chain_annotation import (
     ANNOTATION_FIELDS as V1_FIELDS,
     export_failure_chain_package,
 )
-from tracegraph.failure_chain_annotation_v2 import (
+from tracegraph.context_engine.annotation_v2 import (
     ANNOTATION_FIELDS,
     V2_LABEL_FIELDS,
     build_failure_chain_items_v2,

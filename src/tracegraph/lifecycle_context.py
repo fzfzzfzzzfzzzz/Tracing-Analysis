@@ -10,7 +10,7 @@ from typing import Any
 from .capture import estimate_tokens
 from .decision_state import stable_digest
 from .graph import TraceGraph
-from .liveness import EventSpan, LiveSubgraph
+from .context_engine.liveness import EventSpan, LiveSubgraph
 from .provider_cost import (
     PromptCost,
     ProviderProtocol,

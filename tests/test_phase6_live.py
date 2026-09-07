@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from tracegraph.phase6_live import (
+from tracegraph.phase6.live import (
     ANSWER_MAX_CHARS_V2,
     LIVE_METHOD_IDS,
     PROMPT_PROTOCOL_V2,

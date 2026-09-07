@@ -26,8 +26,8 @@ from tracegraph.lifecycle_evidence import (
     extract_lifecycle_evidence,
     load_evidence_config,
 )
-from tracegraph.liveness import LiveSubgraph
-from tracegraph.phase5_offline import (
+from tracegraph.context_engine.liveness import LiveSubgraph
+from tracegraph.context_engine.phase5 import (
     build_strict_prefix,
     file_sha256,
     policy_text,

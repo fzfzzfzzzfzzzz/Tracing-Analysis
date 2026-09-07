@@ -21,13 +21,13 @@ if str(SRC_ROOT) not in sys.path:
 from tracegraph.archive import ArchiveStore  # noqa: E402
 from tracegraph.decision_state import stable_digest  # noqa: E402
 from tracegraph.graph import TraceGraph  # noqa: E402
-from tracegraph.lifecycle_annotation import file_sha256, load_phase52_config  # noqa: E402
+from tracegraph.context_engine.annotation import file_sha256, load_phase52_config  # noqa: E402
 from tracegraph.lifecycle_state_machine import (  # noqa: E402
     build_forbidden_offline_projection,
     load_tool_effect_registry,
     replay_lifecycle_state_machine,
 )
-from tracegraph.phase5_offline import build_strict_prefix  # noqa: E402
+from tracegraph.context_engine.phase5 import build_strict_prefix  # noqa: E402
 from tracegraph.provider_cost import close_protocol_messages  # noqa: E402
 from tracegraph.schema import EdgeType, NodeType  # noqa: E402
 from tracegraph.trajectory_artifacts import sha256_json  # noqa: E402

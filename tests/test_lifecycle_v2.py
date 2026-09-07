@@ -17,7 +17,7 @@ from tracegraph import (
     ValidityState,
 )
 from tracegraph.capture import ToolExecutor
-from tracegraph.context import NoFailureRetentionManager
+from tracegraph.context_engine.context import NoFailureRetentionManager
 from tracegraph.graph import GraphValidationError
 
 

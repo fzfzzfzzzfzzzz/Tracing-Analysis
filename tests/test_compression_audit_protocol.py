@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 import test_compression_audit as audit_test_fixtures
 from test_compression_audit import minimal_dataset, write_jsonl
-from tracegraph.compression_audit import (
+from tracegraph.benchmark.compression_audit.dataset import (
     ContextBundle,
     PrefixRecord,
     convert_legacy_diagnostic,
@@ -20,7 +20,7 @@ from tracegraph.compression_audit import (
 )
 from tracegraph.capture import estimate_tokens
 from tracegraph.compression_audit_tokenization import VerifiedContextTokenizer, retokenize_trials
-from tracegraph.compression_audit_live import (
+from tracegraph.benchmark.compression_audit.live import (
     _provider_body,
     _tool_result,
     _usage,
@@ -29,8 +29,8 @@ from tracegraph.compression_audit_live import (
     request_input_token_upper_bound,
     run_live_v0,
 )
-from tracegraph.compression_audit_metrics import _request_integrity, score_episode, score_run
-from tracegraph.compression_audit_runtime import (
+from tracegraph.benchmark.compression_audit.metrics import _request_integrity, score_episode, score_run
+from tracegraph.benchmark.compression_audit.runtime import (
     RANKED_REFERENCE_METHODS,
     ReferenceMemoryAdapter,
     counterfactual_bundle,
@@ -172,25 +172,50 @@ class LiveFailureSafetyTests(unittest.TestCase):
         self.config_path = self.root / "config.json"
         self.config_path.write_text(json.dumps(self.config), encoding="utf-8")
         self.run = self.root / "run"
-        self.config_patch = patch("tracegraph.compression_audit_live.load_config", return_value=self.config)
-        self.credential_patch = patch("tracegraph.compression_audit_live.load_ignored_dashscope_credentials", return_value=("test-only", "https://example.invalid"))
-        self.tokenizer_patch = patch("tracegraph.compression_audit_live.VerifiedContextTokenizer")
-        self.retokenize_patch = patch("tracegraph.compression_audit_live.retokenize_trials", side_effect=lambda rows, tokenizer: rows)
+        self.runner_module = "tracegraph.benchmark.compression_audit.live_runner"
+        self.authorization_module = (
+            "tracegraph.benchmark.compression_audit.live_authorization"
+        )
+        self.config_patches = [
+            patch(f"{self.runner_module}.load_config", return_value=self.config),
+            patch(f"{self.authorization_module}.load_config", return_value=self.config),
+        ]
+        self.credential_patch = patch(
+            f"{self.runner_module}.load_ignored_dashscope_credentials",
+            return_value=("test-only", "https://example.invalid"),
+        )
+        self.tokenizer_patches = [
+            patch(f"{module}.VerifiedContextTokenizer")
+            for module in (self.authorization_module, self.runner_module)
+        ]
+        self.retokenize_patches = [
+            patch(
+                f"{module}.retokenize_trials",
+                side_effect=lambda rows, tokenizer: rows,
+            )
+            for module in (self.authorization_module, self.runner_module)
+        ]
         self.live_env_patch = patch.dict(os.environ, {"TRACEGRAPH_DISABLE_LIVE": "0"})
         self.live_env_patch.start()
-        self.config_patch.start()
+        for config_patch in self.config_patches:
+            config_patch.start()
         self.credential_patch.start()
-        tokenizer = self.tokenizer_patch.start().return_value
-        tokenizer.provenance = {"fixture_only": True}
-        tokenizer.count.side_effect = estimate_tokens
-        self.retokenize_patch.start()
+        for tokenizer_patch in self.tokenizer_patches:
+            tokenizer = tokenizer_patch.start().return_value
+            tokenizer.provenance = {"fixture_only": True}
+            tokenizer.count.side_effect = estimate_tokens
+        for retokenize_patch in self.retokenize_patches:
+            retokenize_patch.start()
 
     def tearDown(self):
         self.live_env_patch.stop()
         self.credential_patch.stop()
-        self.config_patch.stop()
-        self.retokenize_patch.stop()
-        self.tokenizer_patch.stop()
+        for config_patch in reversed(self.config_patches):
+            config_patch.stop()
+        for retokenize_patch in reversed(self.retokenize_patches):
+            retokenize_patch.stop()
+        for tokenizer_patch in reversed(self.tokenizer_patches):
+            tokenizer_patch.stop()
         self.directory.cleanup()
 
     def response(self):
@@ -212,7 +237,7 @@ class LiveFailureSafetyTests(unittest.TestCase):
         )
 
     def test_actual_request_response_usage_and_fixed_seed_are_recorded(self):
-        with patch("tracegraph.compression_audit_live._post_json", return_value=(self.response(), 0.01)) as provider:
+        with patch("tracegraph.benchmark.compression_audit.live_runner._post_json", return_value=(self.response(), 0.01)) as provider:
             result = run_live_v0(
                 self.config_path,
                 self.dataset,
@@ -248,9 +273,14 @@ class LiveFailureSafetyTests(unittest.TestCase):
                 }}],
             }}],
         }
-        with patch("tracegraph.compression_audit_live.prepare_v0_trials", return_value=[interactive]):
-            with patch("tracegraph.compression_audit_live._post_json",
-                       side_effect=[(first, 0.01), (self.response(), 0.01)]) as provider:
+        with patch(
+            f"{self.authorization_module}.prepare_v0_trials", return_value=[interactive]
+        ), patch(
+            f"{self.runner_module}.prepare_v0_trials", return_value=[interactive]
+        ), patch(
+            f"{self.runner_module}._post_json",
+            side_effect=[(first, 0.01), (self.response(), 0.01)],
+        ) as provider:
                 run_live_v0(
                     self.config_path,
                     self.dataset,
@@ -267,7 +297,7 @@ class LiveFailureSafetyTests(unittest.TestCase):
         self.assertEqual(episode["model_calls"], load_jsonl(self.run / "provider_ledger.jsonl"))
 
     def test_recording_reconciliation_changes_no_answer_or_source_file(self):
-        from tracegraph.compression_audit import file_sha256, write_file_manifest
+        from tracegraph.benchmark.compression_audit.dataset import file_sha256, write_file_manifest
 
         episode = self.run_two_turn_fixture()
         original_answer = copy.deepcopy(episode["answer"])
@@ -279,7 +309,7 @@ class LiveFailureSafetyTests(unittest.TestCase):
         write_file_manifest(self.run)
         source_hash = file_sha256(self.run / "episodes.jsonl")
         output = self.root / "reconciled"
-        with patch("tracegraph.compression_audit_live._post_json") as provider:
+        with patch("tracegraph.benchmark.compression_audit.live_runner._post_json") as provider:
             result = reconcile_live_recordings(self.run, output)
         provider.assert_not_called()
         corrected = load_jsonl(output / "episodes.jsonl")[0]
@@ -292,7 +322,7 @@ class LiveFailureSafetyTests(unittest.TestCase):
             reconcile_live_recordings(self.run, output)
 
     def test_recording_reconciliation_refuses_an_inconsistent_durable_request(self):
-        from tracegraph.compression_audit import write_file_manifest
+        from tracegraph.benchmark.compression_audit.dataset import write_file_manifest
 
         self.run_two_turn_fixture()
         ledger = load_jsonl(self.run / "provider_ledger.jsonl")
@@ -311,7 +341,7 @@ class LiveFailureSafetyTests(unittest.TestCase):
         self.assertFalse((self.run / "derived").exists())
 
     def test_network_error_is_durable_counted_and_never_retried(self):
-        with patch("tracegraph.compression_audit_live._post_json", side_effect=RuntimeError("fixture timeout")) as provider:
+        with patch("tracegraph.benchmark.compression_audit.live_runner._post_json", side_effect=RuntimeError("fixture timeout")) as provider:
             result = run_live_v0(
                 self.config_path, self.dataset, self.run, authorization_id=self.auth_id
             )
@@ -333,7 +363,7 @@ class LiveFailureSafetyTests(unittest.TestCase):
     def test_missing_usage_stops_before_a_second_request(self):
         response = self.response()
         del response["usage"]
-        with patch("tracegraph.compression_audit_live._post_json", return_value=(response, 0.01)) as provider:
+        with patch("tracegraph.benchmark.compression_audit.live_runner._post_json", return_value=(response, 0.01)) as provider:
             result = run_live_v0(
                 self.config_path, self.dataset, self.run, authorization_id=self.auth_id
             )
@@ -343,7 +373,7 @@ class LiveFailureSafetyTests(unittest.TestCase):
     def test_interrupted_attempt_cannot_be_retransmitted(self):
         prepare_live_run(self.config_path, self.dataset, self.run)
         write_jsonl(self.run / "provider_attempts.jsonl", [{"request_sha256": "unsettled"}])
-        with patch("tracegraph.compression_audit_live._post_json") as provider:
+        with patch("tracegraph.benchmark.compression_audit.live_runner._post_json") as provider:
             with self.assertRaisesRegex(RuntimeError, "uncertain outcome"):
                 run_live_v0(
                     self.config_path,
@@ -357,7 +387,7 @@ class LiveFailureSafetyTests(unittest.TestCase):
     def test_parallel_live_writer_is_refused_before_provider_use(self):
         lock = self.root / ".run.live.lock"
         lock.write_text("fixture writer", encoding="utf-8")
-        with patch("tracegraph.compression_audit_live._post_json") as provider:
+        with patch("tracegraph.benchmark.compression_audit.live_runner._post_json") as provider:
             with self.assertRaisesRegex(RuntimeError, "writer lock"):
                 run_live_v0(
                     self.config_path,
@@ -369,8 +399,11 @@ class LiveFailureSafetyTests(unittest.TestCase):
 
     def test_episode_turn_reservation_prevents_partial_start(self):
         interactive = prepare_v0_trials(self.dataset)[240]
-        with patch("tracegraph.compression_audit_live.prepare_v0_trials", return_value=[interactive]):
-            with patch("tracegraph.compression_audit_live._post_json") as provider:
+        with patch(
+            f"{self.authorization_module}.prepare_v0_trials", return_value=[interactive]
+        ), patch(
+            f"{self.runner_module}.prepare_v0_trials", return_value=[interactive]
+        ), patch(f"{self.runner_module}._post_json") as provider:
                 result = run_live_v0(
                     self.config_path,
                     self.dataset,
@@ -385,7 +418,7 @@ class LiveFailureSafetyTests(unittest.TestCase):
     def test_invalid_structured_response_is_not_counted_as_valid_output(self):
         response = self.response()
         response["choices"][0]["message"]["tool_calls"] = []
-        with patch("tracegraph.compression_audit_live._post_json", return_value=(response, 0.01)):
+        with patch("tracegraph.benchmark.compression_audit.live_runner._post_json", return_value=(response, 0.01)):
             run_live_v0(
                 self.config_path,
                 self.dataset,

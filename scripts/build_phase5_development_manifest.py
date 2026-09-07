@@ -11,7 +11,7 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
-from tracegraph.phase5_offline import (
+from tracegraph.context_engine.phase5 import (
     build_development_manifest,
     tool_schema_artifact,
 )
