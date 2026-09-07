@@ -900,3 +900,24 @@ debug report：`outputs/phase5_2/e3_qwen37plus_relation_first_v3/debug_reports/r
 - “错误再次发生”这条专门找回规则与历史追问规则重叠，不能单独判断作用。
 
 先读[第六阶段自己设计的测试结果](docs/第六阶段_自己设计的测试结果.md)、[真实模型小规模试跑结果](docs/第六阶段_真实模型小规模试跑结果.md)、[每个结论有什么证据](docs/第六阶段_每个结论有什么证据.md)和现有结果文件清单。生成脚本拒绝覆盖已有目录；如果修改测试题，必须使用新的版本和运行编号，不能改写现有结果。
+
+## 15. 2026-09-08 TraceGraph 0.4 工程化交接
+
+`compression_audit_v1` 的 v0.1 诊断实现已在分支
+`codex/tracegraph-0.4-hardening` 上先按原样保存为两个基线提交。基线离线复现生成
+240 个前缀、1,440 个问题和 10,080 个确定性 episode；静态数据检查通过，
+`v1_ready=false`，外部模型请求为 0。
+
+0.4 工作明确直接使用已见的 v0.1 数据做开发，因此后续结果只能写成
+`development_only`，不能当作独立复验。Python 包先统一为 `0.3.0` 兼容基线，
+破坏性模块重构和新策略使用 `0.4.0`。Benchmark 的 `v0.1-diagnostic` 与包版本互不替代。
+
+冻结结果仍位于 `outputs/compression_audit/`，不得覆盖。关键保护性哈希为：
+
+- `v0_1_handoff/manifest.json`：`d33c12ce2b2c5dacefa6ce353fb46df80d2a766510aa398ae1a07961d38a249b`
+- `v0_1_qwen_live_reconciled/run_summary.json`：`dbdae96e99d54fede54452778522dd317bdd192276707ca19769f4c0ff6fdca4`
+- `v0_1_qwen_live_score_reconciled/gate_report.json`：`4eb0bd86f94e891a692cae8a4d76befb49380e3c5da35d36bfeff294ddd1d7d9`
+- `v0_1_qwen_live_score_reconciled/report.json`：`109efc483d285726a882514bab52cf2e1eb2ebe2d280a0964fcc84a36d4a654f`
+
+2026-08-31 的外部模型授权已经结束。0.4 实施、验证和复现均只允许本地确定性
+路径；任何 live 请求必须重新核对当日价格并取得新的明确授权。
