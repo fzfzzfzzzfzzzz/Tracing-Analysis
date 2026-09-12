@@ -10,6 +10,9 @@
     "protocol",
     "development_only",
     "independent_validation",
+    "default_provider",
+    "default_model",
+    "structured_output",
     "retrieval_budget_tokens",
     "submission_fields",
     "format_repair",
@@ -22,6 +25,18 @@
     "protocol": {"const": "v0.2-development"},
     "development_only": {"const": true},
     "independent_validation": {"const": false},
+    "default_provider": {"const": "dashscope"},
+    "default_model": {"const": "qwen3.7-plus"},
+    "structured_output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "strict", "enable_thinking"],
+      "properties": {
+        "type": {"const": "json_schema"},
+        "strict": {"const": true},
+        "enable_thinking": {"const": false}
+      }
+    },
     "retrieval_budget_tokens": {"const": 1024},
     "submission_fields": {
       "type": "array",

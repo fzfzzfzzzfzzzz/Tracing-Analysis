@@ -88,6 +88,11 @@ python -m tracegraph benchmark-score `
 
 `--mode live` 仅接受 DashScope `qwen3.8-27b`、温度 0、关闭 thinking、最大输出 512、固定 seed、无 fallback 和无 provider retry；当日价格、368 次请求和 100 元授权任一项不成立时，在首个付费请求前失败。`--max-new-requests` 只在 episode 边界暂停。调用前持久化 attempt，返回后保存原始请求、响应和 usage；usage 缺失或网络结果不确定时立即停止，续跑不能自动重发。并发写入同一 run 会被锁拒绝。
 
+上面是冻结 v0.1 运行的复现约束，不是未来实验的默认值。v0.2 开发协议从
+2026-09-08 起默认使用 DashScope `qwen3.7-plus`，关闭 thinking，并采用严格 JSON
+Schema 结构化输出。v0.2 的 live 执行在当前版本仍未开放；启用前还需要固定对应
+tokenizer、刷新当日价格并取得新的外部请求授权。
+
 付费运行前安装 `benchmark` 可选依赖，并下载配置中固定 SHA-256 的官方 tokenizer：
 
 ```powershell

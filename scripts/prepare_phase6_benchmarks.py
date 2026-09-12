@@ -17,7 +17,7 @@ def main() -> int:
     parser.add_argument(
         "--config",
         type=Path,
-        default=ROOT / "configs" / "phase6_benchmark_prepare_v2.json",
+        default=ROOT / "configs" / "phase6_benchmark_prepare_v3.json",
         help="写明官方来源、固定版本和本地位置的配置文件",
     )
     parser.add_argument("--output", type=Path, help="结果保存位置；默认使用配置中的位置")
@@ -48,7 +48,7 @@ def main() -> int:
     parser.add_argument(
         "--model",
         default=None,
-        help="只用于费用试算的模型；默认是 qwen3.8-27b",
+        help="只用于费用试算的模型；默认是 qwen3.7-plus",
     )
     args = parser.parse_args()
     report = prepare_benchmarks(

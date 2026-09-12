@@ -86,7 +86,7 @@ def _fixture(tmp_path: Path, *, duplicate_split: bool = False) -> Path:
             }
         ],
         "budget": {
-            "default_model": "qwen3.8-27b",
+            "default_model": "qwen3.7-plus",
             "methods_per_task": 5,
             "trials_per_method": 1,
             "requests_per_trial": 1,
@@ -94,13 +94,26 @@ def _fixture(tmp_path: Path, *, duplicate_split: bool = False) -> Path:
             "output_tokens_per_request": 100,
             "maximum_cost_cny": 100.0,
             "prices_per_million_tokens": {
-                "qwen3.8-27b": {"input": 3.0, "output": 12.0}
+                "qwen3.7-plus": {"input": 2.0, "output": 8.0}
             },
         },
     }
     config_path = tmp_path / "config.json"
     config_path.write_text(json.dumps(config), encoding="utf-8")
     return config_path
+
+
+def test_repository_default_is_qwen37plus_without_rewriting_historical_v2() -> None:
+    root = Path(__file__).resolve().parents[1]
+    current = load_benchmark_config(root / "configs" / "phase6_benchmark_prepare_v3.json")
+    historical = load_benchmark_config(root / "configs" / "phase6_benchmark_prepare_v2.json")
+    assert current["budget"]["default_model"] == "qwen3.7-plus"
+    assert current["budget"]["structured_output"] == {
+        "type": "json_schema",
+        "strict": True,
+        "enable_thinking": False,
+    }
+    assert historical["budget"]["default_model"] == "qwen3.8-27b"
 
 
 def test_ready_inputs_write_deterministic_hashes_and_no_requests(tmp_path: Path) -> None:
@@ -176,7 +189,7 @@ def test_budget_is_only_a_calculation_and_honors_cap(tmp_path: Path) -> None:
         ),
     )
     assert report["request_count"] == 50
-    assert report["estimated_cost_cny"] == pytest.approx(9.9576)
+    assert report["estimated_cost_cny"] == pytest.approx(6.6384)
     assert report["status"] == "within_limit"
     assert report["provider_requests_made"] == 0
 
@@ -193,7 +206,7 @@ def test_budget_counts_every_request_in_a_multi_turn_task(tmp_path: Path) -> Non
         ),
     )
     assert report["request_count"] == 5_500
-    assert report["estimated_cost_cny"] == pytest.approx(1_095.336)
+    assert report["estimated_cost_cny"] == pytest.approx(730.224)
     assert report["status"] == "over_limit"
     assert report["provider_requests_made"] == 0
 

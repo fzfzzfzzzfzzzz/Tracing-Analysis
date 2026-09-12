@@ -14,6 +14,8 @@ from typing import Any, Iterator
 SCHEMA_VERSION = "phase6_benchmark_preparation_v1"
 SELECTION_SCHEMA_VERSION = "phase6_benchmark_task_splits_v1"
 SUPPORTED_DATA_SUFFIXES = {".json", ".jsonl", ".parquet"}
+DEFAULT_BUDGET_MODEL = "qwen3.7-plus"
+SUPPORTED_BUDGET_MODELS = frozenset({DEFAULT_BUDGET_MODEL, "qwen3.8-27b"})
 
 
 def sha256_file(path: Path) -> str:
@@ -96,11 +98,15 @@ def load_benchmark_config(path: Path) -> dict[str, Any]:
     budget = payload.get("budget")
     if not isinstance(budget, dict):
         raise ValueError("budget must be an object")
-    if budget.get("default_model") != "qwen3.8-27b":
-        raise ValueError("default model must remain qwen3.8-27b")
+    default_model = budget.get("default_model")
+    if default_model not in SUPPORTED_BUDGET_MODELS:
+        raise ValueError(
+            "default model must be qwen3.7-plus; qwen3.8-27b is accepted only "
+            "for frozen historical preparation configs"
+        )
     prices = budget.get("prices_per_million_tokens")
-    if not isinstance(prices, dict) or "qwen3.8-27b" not in prices:
-        raise ValueError("missing qwen3.8-27b price snapshot")
+    if not isinstance(prices, dict) or default_model not in prices:
+        raise ValueError(f"missing {default_model} price snapshot")
     return payload
 
 

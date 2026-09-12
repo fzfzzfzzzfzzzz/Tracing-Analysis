@@ -9,6 +9,8 @@ from tracegraph.benchmark.compression_audit.development_protocol import (
     ReacquisitionCost,
     development_metadata,
     parse_development_submission,
+    submission_json_schema,
+    submission_response_format,
     submission_tool_schema,
 )
 
@@ -44,6 +46,21 @@ def test_submission_schema_is_short_and_closed() -> None:
     assert parameters["additionalProperties"] is False
 
 
+def test_qwen37plus_response_format_uses_the_same_strict_schema() -> None:
+    response_format = submission_response_format()
+    assert response_format == {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "compression_audit_v02",
+            "strict": True,
+            "schema": submission_json_schema(),
+        },
+    }
+    assert response_format["json_schema"]["schema"] == (
+        submission_tool_schema()["function"]["parameters"]
+    )
+
+
 def test_parser_only_unwraps_complete_provider_submission() -> None:
     parsed = parse_development_submission(
         _response({"a": "Use the cached receipt", "e": ["r-2"], "t": "current", "s": False})
@@ -54,6 +71,25 @@ def test_parser_only_unwraps_complete_provider_submission() -> None:
         "fact_scope": "current",
         "would_repeat_side_effect": False,
     }
+
+
+def test_parser_accepts_json_schema_message_content() -> None:
+    parsed = parse_development_submission(
+        {
+            "choices": [
+                {
+                    "finish_reason": "stop",
+                    "message": {
+                        "content": json.dumps(
+                            {"a": "Use receipt", "e": ["r-2"], "t": "current", "s": False}
+                        )
+                    },
+                }
+            ]
+        }
+    )
+    assert parsed["answer"] == "Use receipt"
+    assert parsed["evidence_record_ids"] == ["r-2"]
 
 
 @pytest.mark.parametrize(
@@ -103,6 +139,12 @@ def test_format_repair_is_a_separate_billed_turn() -> None:
 
 def test_development_metadata_forbids_independent_or_aggregate_claims() -> None:
     metadata = development_metadata(run_id="run-1")
+    assert metadata["default_model"] == "qwen3.7-plus"
+    assert metadata["structured_output"] == {
+        "type": "json_schema",
+        "strict": True,
+        "enable_thinking": False,
+    }
     assert metadata["development_only"] is True
     assert metadata["independent_validation"] is False
     assert metadata["single_aggregate_score"] is None

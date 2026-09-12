@@ -1,0 +1,88 @@
+{
+  "schema_version": "phase6_benchmark_preparation_v1",
+  "run_id": "phase6_public_tasks_preparation_v3",
+  "prepared_at": "2026-09-08",
+  "output_root": "outputs/phase6/public_tasks_preparation_v3",
+  "external_provider_calls_allowed": false,
+  "supersedes_preparation_run": "phase6_public_tasks_preparation_v2",
+  "supersession_reason": "Future budget planning now defaults to qwen3.7-plus so strict JSON Schema structured output can be used; frozen qwen3.8-27b runs remain unchanged",
+  "benchmarks": [
+    {
+      "id": "memgym-codeqa",
+      "official_name": "MemGym-CodeQA",
+      "availability": "pending",
+      "local_code_root": "vendor/phase6-benchmarks/memgym",
+      "local_data_root": "data/phase6_benchmarks/memgym_codeqa",
+      "selection_file": "configs/phase6_memgym_codeqa_task_splits_v1.json",
+      "task_id_fields": ["instance_id"],
+      "source_split_fields": ["split"],
+      "default_source_split": "train",
+      "expected_rows": 4289,
+      "expected_files": [],
+      "upstream": {
+        "code_repository": "https://github.com/WujiangXu/MemGym",
+        "code_commit": "50b404e6ae4e1fcd453d3e07963eb3e6312cbded",
+        "data_repository": "https://huggingface.co/datasets/MemGym/memgym-codeqa-instances",
+        "data_revision": null,
+        "paper": "https://arxiv.org/abs/2605.20833",
+        "release_status_source": "https://github.com/WujiangXu/MemGym/blob/50b404e6ae4e1fcd453d3e07963eb3e6312cbded/docs/data.md",
+        "code_license": "Apache-2.0",
+        "planned_data_license": "MIT"
+      }
+    },
+    {
+      "id": "swe-gym",
+      "official_name": "SWE-Gym",
+      "availability": "public",
+      "local_code_root": "vendor/phase6-benchmarks/swe-gym",
+      "local_data_root": "data/phase6_benchmarks/swe_gym",
+      "selection_file": "configs/phase6_swe_gym_task_splits_v1.json",
+      "task_id_fields": ["instance_id"],
+      "source_split_fields": ["split"],
+      "default_source_split": "train",
+      "expected_rows": 2438,
+      "expected_files": [
+        {
+          "path": "data/train-00000-of-00001.parquet",
+          "bytes": 43644473,
+          "sha256": "60569cea74bb281f7a5579467436a2bc1932c6e0c5f2f7fa0d084392abd9ad97"
+        }
+      ],
+      "upstream": {
+        "code_repository": "https://github.com/SWE-Gym/SWE-Gym",
+        "code_commit": "b681068ca20628c6987b7416cc4cf03f06b77ba5",
+        "data_repository": "https://huggingface.co/datasets/SWE-Gym/SWE-Gym",
+        "data_revision": "26a6eae79ae9cb6d4307c3cc99c126fbf23cb3f0",
+        "paper": "https://arxiv.org/abs/2412.21139",
+        "code_license": "Apache-2.0",
+        "data_license": "MIT"
+      }
+    }
+  ],
+  "budget": {
+    "default_model": "qwen3.7-plus",
+    "methods_per_task": 5,
+    "trials_per_method": 1,
+    "requests_per_trial": 55,
+    "input_tokens_per_request": 50000,
+    "output_tokens_per_request": 4096,
+    "maximum_cost_cny": 100.0,
+    "currency": "CNY",
+    "region": "china-beijing",
+    "pricing_checked_at": "2026-09-08",
+    "pricing_source": "https://help.aliyun.com/zh/model-studio/qwen3-7-plus",
+    "request_count_basis": "MemGym reports about 110 turns for two paired SWE-Gym rollouts; use 55 requests per single rollout for conservative planning",
+    "structured_output": {
+      "type": "json_schema",
+      "strict": true,
+      "enable_thinking": false
+    },
+    "prices_per_million_tokens": {
+      "qwen3.7-plus": {
+        "input": 2.0,
+        "output": 8.0,
+        "maximum_input_tokens_for_price_tier": 256000
+      }
+    }
+  }
+}

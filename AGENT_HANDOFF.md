@@ -932,3 +932,9 @@ debug report：`outputs/phase5_2/e3_qwen37plus_relation_first_v3/debug_reports/r
 
 2026-08-31 的外部模型授权已经结束。0.4 实施、验证和复现均只允许本地确定性
 路径；任何 live 请求必须重新核对当日价格并取得新的明确授权。
+
+2026-09-08 后续开发默认模型改为 DashScope `qwen3.7-plus`。新默认写入
+`configs/compression_audit_v0_2_development.json` 和
+`configs/phase6_benchmark_prepare_v3.json`，使用关闭 thinking 的严格 JSON Schema
+结构化输出。冻结 v0.1 的 `qwen3.8-27b` 配置、白名单与结果不得追溯修改；当前版本
+仍不开放 v0.2 live，启用前需补齐模型 tokenizer、当日价格快照和新授权。

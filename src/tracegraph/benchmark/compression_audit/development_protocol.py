@@ -9,11 +9,46 @@ from typing import Any
 
 
 DEVELOPMENT_PROTOCOL = "v0.2-development"
+DEFAULT_DEVELOPMENT_MODEL = "qwen3.7-plus"
 DEVELOPMENT_ONLY_NOTICE = (
     "Seen v0.1 development data; results are development_only and are not "
     "independent validation evidence."
 )
 SUBMISSION_TOOL_NAME = "submit_compression_audit_v02"
+SUBMISSION_SCHEMA_NAME = "compression_audit_v02"
+
+
+def submission_json_schema() -> dict[str, Any]:
+    """Return the shared strict JSON Schema for v0.2 answers."""
+
+    return {
+        "type": "object",
+        "additionalProperties": False,
+        "properties": {
+            "a": {"type": "string", "minLength": 1},
+            "e": {
+                "type": "array",
+                "items": {"type": "string", "minLength": 1},
+                "uniqueItems": True,
+            },
+            "t": {"type": "string", "enum": ["current", "historical"]},
+            "s": {"type": "boolean"},
+        },
+        "required": ["a", "e", "t", "s"],
+    }
+
+
+def submission_response_format() -> dict[str, Any]:
+    """Return DashScope/OpenAI-compatible strict structured-output settings."""
+
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": SUBMISSION_SCHEMA_NAME,
+            "strict": True,
+            "schema": submission_json_schema(),
+        },
+    }
 
 
 def submission_tool_schema() -> dict[str, Any]:
@@ -24,21 +59,7 @@ def submission_tool_schema() -> dict[str, Any]:
         "function": {
             "name": SUBMISSION_TOOL_NAME,
             "description": "Submit one audit answer with cited record IDs.",
-            "parameters": {
-                "type": "object",
-                "additionalProperties": False,
-                "properties": {
-                    "a": {"type": "string", "minLength": 1},
-                    "e": {
-                        "type": "array",
-                        "items": {"type": "string", "minLength": 1},
-                        "uniqueItems": True,
-                    },
-                    "t": {"type": "string", "enum": ["current", "historical"]},
-                    "s": {"type": "boolean"},
-                },
-                "required": ["a", "e", "t", "s"],
-            },
+            "parameters": submission_json_schema(),
         },
     }
 
@@ -64,14 +85,19 @@ def parse_development_submission(response: Mapping[str, Any]) -> dict[str, Any]:
 
     message, finish_reason = _provider_message(response)
     calls = message.get("tool_calls")
-    if not isinstance(calls, list) or len(calls) != 1:
-        reason = f" after finish_reason={finish_reason}" if finish_reason else ""
-        raise ValueError(f"expected exactly one structured tool call{reason}")
-    call = calls[0]
-    function = call.get("function") if isinstance(call, Mapping) else None
-    if not isinstance(function, Mapping) or function.get("name") != SUBMISSION_TOOL_NAME:
-        raise ValueError("provider called the wrong submission tool")
-    arguments = function.get("arguments")
+    if calls is not None:
+        if not isinstance(calls, list) or len(calls) != 1:
+            reason = f" after finish_reason={finish_reason}" if finish_reason else ""
+            raise ValueError(f"expected exactly one structured tool call{reason}")
+        call = calls[0]
+        function = call.get("function") if isinstance(call, Mapping) else None
+        if not isinstance(function, Mapping) or function.get("name") != SUBMISSION_TOOL_NAME:
+            raise ValueError("provider called the wrong submission tool")
+        arguments = function.get("arguments")
+    else:
+        if "content" not in message:
+            raise ValueError("expected exactly one structured tool call or JSON Schema response")
+        arguments = message.get("content")
     if isinstance(arguments, str):
         try:
             arguments = json.loads(arguments)
@@ -184,6 +210,13 @@ def development_metadata(*, run_id: str) -> dict[str, Any]:
         "schema_version": "compression_audit_development_v0_2",
         "protocol": DEVELOPMENT_PROTOCOL,
         "run_id": run_id,
+        "default_provider": "dashscope",
+        "default_model": DEFAULT_DEVELOPMENT_MODEL,
+        "structured_output": {
+            "type": "json_schema",
+            "strict": True,
+            "enable_thinking": False,
+        },
         "development_only": True,
         "independent_validation": False,
         "interpretation": DEVELOPMENT_ONLY_NOTICE,

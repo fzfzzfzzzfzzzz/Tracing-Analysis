@@ -4,6 +4,13 @@
   "protocol": "v0.2-development",
   "development_only": true,
   "independent_validation": false,
+  "default_provider": "dashscope",
+  "default_model": "qwen3.7-plus",
+  "structured_output": {
+    "type": "json_schema",
+    "strict": true,
+    "enable_thinking": false
+  },
   "retrieval_budget_tokens": 1024,
   "submission_fields": ["a", "e", "t", "s"],
   "format_repair": {

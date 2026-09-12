@@ -65,7 +65,7 @@
         "prices_per_million_tokens"
       ],
       "properties": {
-        "default_model": {"const": "qwen3.8-27b"},
+        "default_model": {"enum": ["qwen3.7-plus", "qwen3.8-27b"]},
         "methods_per_task": {"type": "integer", "minimum": 1},
         "trials_per_method": {"type": "integer", "minimum": 1},
         "requests_per_trial": {"type": "integer", "minimum": 1},
