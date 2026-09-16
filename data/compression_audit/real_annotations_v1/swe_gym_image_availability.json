@@ -1,0 +1,482 @@
+[
+  {
+    "task_id": "bokeh__bokeh-12867",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.bokeh_s_bokeh-12867:latest",
+    "available": true,
+    "digest": "sha256:4ca8475c08036706de6aef5fd649d1b6930d9be8062857c1ea84a9e05db8f221",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "bokeh__bokeh-13298",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.bokeh_s_bokeh-13298:latest",
+    "available": true,
+    "digest": "sha256:f5d0047ecf6152d1aa7d7e941d06203e0a92c448f1153daa4be1689c737aa21b",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "bokeh__bokeh-13391",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.bokeh_s_bokeh-13391:latest",
+    "available": true,
+    "digest": "sha256:e98b253e9237f0f841b5374763fbf09d8b9f15ca79e812bc63768f77eeef86bd",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "bokeh__bokeh-13641",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.bokeh_s_bokeh-13641:latest",
+    "available": true,
+    "digest": "sha256:ba8f18038fed8ea9b067bce7f2a83ce1771b2c88918cc6e0a9cc2246fe8f762d",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "bokeh__bokeh-13757",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.bokeh_s_bokeh-13757:latest",
+    "available": true,
+    "digest": "sha256:a83c15ba4fe3a535b1e54365bc52b80e02564e46c072d5e0b85448f7214ed9d6",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "conan-io__conan-10874",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.conan-io_s_conan-10874:latest",
+    "available": true,
+    "digest": "sha256:dc41d5aebf2ca4a8afcc966860b52b160b3fd4866e391c953816357d9aea2221",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "conan-io__conan-12762",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.conan-io_s_conan-12762:latest",
+    "available": true,
+    "digest": "sha256:56174077623b8fe4d8bd8365ffc3d7b0de83e29d07f1921db00f4b873222155d",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "conan-io__conan-13721",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.conan-io_s_conan-13721:latest",
+    "available": true,
+    "digest": "sha256:05df007b940aa6495e4ee237a820125c046c683c3b782f0ea8b39290bf6837e5",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "conan-io__conan-14378",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.conan-io_s_conan-14378:latest",
+    "available": true,
+    "digest": "sha256:25d3404e8acf65da591aa62fd23a9f9786d4b38627259ebde2ce527f0b50ac3d",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "conan-io__conan-15007",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.conan-io_s_conan-15007:latest",
+    "available": true,
+    "digest": "sha256:493ee48d4aafa0473da9fa7170ab8d9a5aa85b9701177a08cced97ea5f405d34",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "dask__dask-10734",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.dask_s_dask-10734:latest",
+    "available": true,
+    "digest": "sha256:9e14399423f50cb0bb67f028096b2630d1b9e366061d263795b335c7a5316f47",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "dask__dask-10785",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.dask_s_dask-10785:latest",
+    "available": true,
+    "digest": "sha256:cb99fe1903c452a0e9f3ca5f42b00bb3bede79ff3bf399da01880fa1d337c226",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "dask__dask-10972",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.dask_s_dask-10972:latest",
+    "available": true,
+    "digest": "sha256:fa56be0f4111661284327306889b441082bd7a4d471c3f3e57bb1497b4c24618",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "dask__dask-7418",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.dask_s_dask-7418:latest",
+    "available": true,
+    "digest": "sha256:9bf3d8ce39734238371adf80cf388a0dc85053e043d6347cb4906f8b577eb874",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "dask__dask-7973",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.dask_s_dask-7973:latest",
+    "available": true,
+    "digest": "sha256:1f70d52ef4b57e557e34ebec944a77a677ea1428198f9aca102fad9634a300d6",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "dask__dask-8785",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.dask_s_dask-8785:latest",
+    "available": true,
+    "digest": "sha256:af35dd4b9bda5aa3194d4f00d6c10678ea48dd0d1cd501646faf1116c1ab4e27",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "facebookresearch__hydra-1006",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.facebookresearch_s_hydra-1006:latest",
+    "available": true,
+    "digest": "sha256:ed27e439e67692f27afad7a152f59d27cf9ca9a67bb08cc7c22ec9d0bce9a967",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "facebookresearch__hydra-1422",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.facebookresearch_s_hydra-1422:latest",
+    "available": true,
+    "digest": "sha256:0a44c7924e15d38b2ee00b0920628f77cc0fc19144bdfb275c9cc82022be21ba",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "facebookresearch__hydra-1569",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.facebookresearch_s_hydra-1569:latest",
+    "available": true,
+    "digest": "sha256:7f534982a8f89810fbbf9a519893dba280a7e489c6ff71432c93b460b0e51a44",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "facebookresearch__hydra-1842",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.facebookresearch_s_hydra-1842:latest",
+    "available": true,
+    "digest": "sha256:0e40c8fcc8783b0766ccc020ff73616d00f18f3c8db6efe2ef4d6995a797627f",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "facebookresearch__hydra-1905",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.facebookresearch_s_hydra-1905:latest",
+    "available": true,
+    "digest": "sha256:e2d0a02315107214f06d2b328cbc4b49c6c0e0928c305b11b1078222a31b5959",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "getmoto__moto-5216",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.getmoto_s_moto-5216:latest",
+    "available": true,
+    "digest": "sha256:7eb721fb56300a20987c2d7924cffbe12f4ff6717d85a2d89947aad83bf13c62",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "getmoto__moto-5478",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.getmoto_s_moto-5478:latest",
+    "available": true,
+    "digest": "sha256:234304c11b15d8cfe92572e4031e85508cbfb32c28d0d1205bed889b40c7eaa2",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "getmoto__moto-5841",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.getmoto_s_moto-5841:latest",
+    "available": true,
+    "digest": "sha256:724c8f9dd88c40abcec6e355edb2ee2693d9afd7be2f3afc57513ca04f8373e2",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "getmoto__moto-6185",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.getmoto_s_moto-6185:latest",
+    "available": true,
+    "digest": "sha256:ade7d85a8ef82a6d87940dd9c8d486e50b27dcc33e968e55f50421adf6864eda",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "getmoto__moto-6226",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.getmoto_s_moto-6226:latest",
+    "available": true,
+    "digest": "sha256:b1851f681e72ee64eb708fd0c4cb268dd25a511220159807ef4879499f4544c8",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "getmoto__moto-6906",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.getmoto_s_moto-6906:latest",
+    "available": true,
+    "digest": "sha256:cf29784819b5eadd0213b072b35d90f9bd192903c83d2b22c8c3658622349825",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "iterative__dvc-1684",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.iterative_s_dvc-1684:latest",
+    "available": true,
+    "digest": "sha256:d3355c2b4a84593c06a1ae1e51fd466e0d17e1aee86302b33ee01e9fa92e1ee6",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "iterative__dvc-1829",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.iterative_s_dvc-1829:latest",
+    "available": true,
+    "digest": "sha256:cff4b086d2e9586a73be998934332078325ece2316a6eeb0d8602b2741bcc9c3",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "iterative__dvc-4125",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.iterative_s_dvc-4125:latest",
+    "available": true,
+    "digest": "sha256:9c6fe9c1cc11fe2d22266d5ddbd92c48cc43c9f8c35d27f40275c2910c85963b",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "iterative__dvc-6706",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.iterative_s_dvc-6706:latest",
+    "available": true,
+    "digest": "sha256:acb3ed5e39f8c81c7b439a9bdbc07c361e80d0c3e074fc48d99bf08a6def6dc8",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "iterative__dvc-9646",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.iterative_s_dvc-9646:latest",
+    "available": true,
+    "digest": "sha256:7017f68f2592e080d20b40474da4e5912de4c858a19b6622070ad3bc20aa9b76",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "modin-project__modin-6298",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.modin-project_s_modin-6298:latest",
+    "available": true,
+    "digest": "sha256:27714d1a91fc57e0bbaa474b3327beba64e31787823181c646ee1222593441a3",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "modin-project__modin-6758",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.modin-project_s_modin-6758:latest",
+    "available": true,
+    "digest": "sha256:571d68cc3c396f4b31cde0e071963cf67183b439af710f98a89215e6a1d117a9",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "modin-project__modin-6772",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.modin-project_s_modin-6772:latest",
+    "available": true,
+    "digest": "sha256:71875f9ab4b86bd31b07883f072a9f13d6ffd77a129a86e99e6c4f51dc1f3463",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "modin-project__modin-6802",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.modin-project_s_modin-6802:latest",
+    "available": true,
+    "digest": "sha256:85b8329ac46c7309d681c71b8d9e4bc474a9893c2407e51fa3e5bca4e2f679fd",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "modin-project__modin-7057",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.modin-project_s_modin-7057:latest",
+    "available": true,
+    "digest": "sha256:87b64216fc072cfefb6a4f3e697edfdd73afff04b4dceccad33ef5adca1821fb",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "modin-project__modin-7189",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.modin-project_s_modin-7189:latest",
+    "available": true,
+    "digest": "sha256:a01a47a64d452931760020c56e8e41d72b678fd6d913254b4795dfcd749417c8",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "pandas-dev__pandas-50322",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.pandas-dev_s_pandas-50322:latest",
+    "available": true,
+    "digest": "sha256:e645e4346df9200174e8b879ad8fb7a09f64f91c7375311e2569596d054ba21e",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "pandas-dev__pandas-50773",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.pandas-dev_s_pandas-50773:latest",
+    "available": true,
+    "digest": "sha256:d989bd4e4f269d98b4b1d6230ac58ee5dc75abe3e984d9b2bd49cd7beb7b8a9e",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "pandas-dev__pandas-53977",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.pandas-dev_s_pandas-53977:latest",
+    "available": true,
+    "digest": "sha256:dcfde70c70319f0cce2601500e5a757b59a3f063b3011e470e1ab29d4d032c12",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "pandas-dev__pandas-54025",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.pandas-dev_s_pandas-54025:latest",
+    "available": true,
+    "digest": "sha256:8086d110a9823890714a12a07faf8d80b02341247b9a0d1e8ce7ad4ee1ad3ccb",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "pandas-dev__pandas-58148",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.pandas-dev_s_pandas-58148:latest",
+    "available": true,
+    "digest": "sha256:0d257ed948133708174e4fa3b9caa2d1f9b145b69236863fbf446d5199adebd5",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "Project-MONAI__MONAI-3340",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.project-monai_s_monai-3340:latest",
+    "available": true,
+    "digest": "sha256:44365000365e0a91bec8a63329e1a28a9a276e50b59a141a0cf357f1f43edb4b",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "Project-MONAI__MONAI-3678",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.project-monai_s_monai-3678:latest",
+    "available": true,
+    "digest": "sha256:164c8c348ce9144243893068e95de43e35bdc9a4426d3db6076b6645caefa6d3",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "Project-MONAI__MONAI-4168",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.project-monai_s_monai-4168:latest",
+    "available": true,
+    "digest": "sha256:f36030ba563cf79c3d9e6e103335e5963645cc511a4d140ea416f5b444bd579a",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "Project-MONAI__MONAI-4695",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.project-monai_s_monai-4695:latest",
+    "available": true,
+    "digest": "sha256:bcd5a9b73b8f7f3d7e92d2fa0b64d0fc0a6ff4cec50365835d4c8d164e9b58ae",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "Project-MONAI__MONAI-5686",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.project-monai_s_monai-5686:latest",
+    "available": true,
+    "digest": "sha256:d3524dd2cbd2dcf1fb0cdc492b11cb143ed7a9b0269a711ec19425b1d4756269",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "Project-MONAI__MONAI-6736",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.project-monai_s_monai-6736:latest",
+    "available": true,
+    "digest": "sha256:95be6d2a19a9b08f27166e60dd25894ccffe16eb475bb991a1a5c79c89c53fdc",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "pydantic__pydantic-5021",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.pydantic_s_pydantic-5021:latest",
+    "available": true,
+    "digest": "sha256:1a090055a9343b9e920db2f38eab590b7bd0dc33e10efcd215f16269e7294816",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "pydantic__pydantic-5390",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.pydantic_s_pydantic-5390:latest",
+    "available": true,
+    "digest": "sha256:6033993e650f99e3d7c682379995ccb490b6eefcfdb647c03c30d69b3287f8f1",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "pydantic__pydantic-5841",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.pydantic_s_pydantic-5841:latest",
+    "available": true,
+    "digest": "sha256:4a482487157a51bee645834bec6d2bfe0ce21c7d229189afa249a5f0141dccb7",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "pydantic__pydantic-8793",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.pydantic_s_pydantic-8793:latest",
+    "available": true,
+    "digest": "sha256:bdd9a2ddbca3a265f115d7f704eff78d39282f38d5be34bb8e338b717cc41b5c",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "pydantic__pydantic-9053",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.pydantic_s_pydantic-9053:latest",
+    "available": true,
+    "digest": "sha256:f3c3e032c5248505f4ea0f08c621faf72356230802f554c7f24c7491c965cf7e",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "python__mypy-11119",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.python_s_mypy-11119:latest",
+    "available": true,
+    "digest": "sha256:acbbb6bbb345e79fe0b85cac21ef48bcb6e3120846a6e4abceb3e23688648e46",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "python__mypy-11912",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.python_s_mypy-11912:latest",
+    "available": true,
+    "digest": "sha256:0355c14e17d496f86367108113b7884ba546688e9385cbe4acbb80b45fb9a95b",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "python__mypy-15271",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.python_s_mypy-15271:latest",
+    "available": true,
+    "digest": "sha256:b5ea27e27137a5f71d2d035f50d99c258fa332df88bacd1bbd2be44950812861",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "python__mypy-15347",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.python_s_mypy-15347:latest",
+    "available": true,
+    "digest": "sha256:884ab2dfc2f454c3659a27231cc315e4cd583aacdc0c21a154d33c7382ca3323",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "python__mypy-16215",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.python_s_mypy-16215:latest",
+    "available": true,
+    "digest": "sha256:06c80f45fc0f26bc65e0b07ff732550802eadbee78f0ac5a4c8dc5799dadea42",
+    "status": 200,
+    "error": null
+  },
+  {
+    "task_id": "python__mypy-9881",
+    "image": "docker.io/xingyaoww/sweb.eval.x86_64.python_s_mypy-9881:latest",
+    "available": true,
+    "digest": "sha256:21fc5c1daeed9a17aaca0c94a28e351ee806718528c1d2702cf7a5ce8a8be49c",
+    "status": 200,
+    "error": null
+  }
+]

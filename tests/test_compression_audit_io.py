@@ -14,6 +14,18 @@ from tracegraph.benchmark.compression_audit.runtime import run_deterministic
 
 
 class RealParquetImportTests(unittest.TestCase):
+    def test_jsonl_retains_embedded_unicode_line_separator(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "source.jsonl"
+            source.write_text(
+                '{"id":1,"text":"before\\u2028after"}\n'
+                '{"id":2,"text":"ordinary"}\n',
+                encoding="utf-8",
+            )
+            imported = load_source_rows(source)
+        self.assertEqual(len(imported), 2)
+        self.assertEqual(imported[0]["text"], "before\u2028after")
+
     @unittest.skipUnless(importlib.util.find_spec("pyarrow"), "optional Parquet dependency")
     def test_parquet_retains_nested_messages_and_function_calls(self):
         import pyarrow as pa

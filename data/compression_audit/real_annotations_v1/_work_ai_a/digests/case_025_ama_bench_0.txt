@@ -1,0 +1,203 @@
+CASE index=25 candidate_id=93619f0eaeee8ab478e524e346b73c8e2d715a777ab44cd99641387d79a5fa18
+source=ama_bench repository=ama:babaisai task_id=0 split=test events=200
+====================================================================================================
+t0000:action | CALL environment_action/: left
+t0000:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 3 step up ⏎ rule `win` 2 step to the left and 3 step up ⏎ ball 2 step up ⏎ rule `door` 1 step to the left ⏎ rule `baba` 4 step to the …(+213ch)
+t0001:action | CALL environment_action/: left
+t0001:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 3 step up ⏎ rule `win` 1 step to the left and 3 step up ⏎ ball 1 step to the right and 2 step up ⏎ rule `door` 1 step to the left ⏎ r …(+215ch)
+t0002:action | CALL environment_action/: up
+t0002:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 2 step up ⏎ rule `win` 1 step to the left and 2 step up ⏎ ball 1 step to the right and 1 step up ⏎ rule `door` 1 step to the left and …(+231ch)
+t0003:action | CALL environment_action/: up
+t0003:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 1 step up ⏎ rule `win` 1 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 1 step to the left and 2 steps down  …(+218ch)
+t0004:action | CALL environment_action/: up
+t0004:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 1 step to the right and 1 step down ⏎ rule `door` 1 step to the left and 3 steps down ⏎ rule `baba …(+206ch)
+t0005:action | CALL environment_action/: left
+t0005:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 3 steps down ⏎ rule `baba` 2 step to the left a …(+185ch)
+t0006:action | CALL environment_action/: left
+t0006:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 3 steps down ⏎ rule `baba` 2 step to the left a …(+185ch)
+t0007:action | CALL environment_action/: down
+t0007:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 1 step up ⏎ rule `win` 1 step to the left and 1 step up ⏎ ball 2 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 2 step t …(+197ch)
+t0008:action | CALL environment_action/: up
+t0008:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 3 steps down ⏎ rule `baba` 2 step to the left a …(+185ch)
+t0009:action | CALL environment_action/: down
+t0009:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 1 step up ⏎ rule `win` 1 step to the left and 1 step up ⏎ ball 2 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 2 step t …(+197ch)
+t0010:action | CALL environment_action/: up
+t0010:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 3 steps down ⏎ rule `baba` 2 step to the left a …(+185ch)
+t0011:action | CALL environment_action/: down
+t0011:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 1 step up ⏎ rule `win` 1 step to the left and 1 step up ⏎ ball 2 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 2 step t …(+197ch)
+t0012:action | CALL environment_action/: right
+t0012:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 1 step up ⏎ rule `win` 2 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 1 step to the left and 2 steps down  …(+218ch)
+t0013:action | CALL environment_action/: right
+t0013:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 1 step up ⏎ rule `win` 3 step to the left and 1 step up ⏎ rule `door` 2 step to the left and 2 steps down ⏎ rule `baba` 4 step to the …(+213ch)
+t0014:action | CALL environment_action/: left
+t0014:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 1 step up ⏎ rule `win` 2 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 1 step to the left and 2 steps down  …(+218ch)
+t0015:action | CALL environment_action/: left
+t0015:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 1 step up ⏎ rule `win` 1 step to the left and 1 step up ⏎ ball 2 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 2 step t …(+197ch)
+t0016:action | CALL environment_action/: up
+t0016:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 3 steps down ⏎ rule `baba` 2 step to the left a …(+185ch)
+t0017:action | CALL environment_action/: idle
+t0017:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 3 steps down ⏎ rule `baba` 2 step to the left a …(+185ch)
+t0018:action | CALL environment_action/: down
+t0018:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 1 step up ⏎ rule `win` 1 step to the left and 1 step up ⏎ ball 2 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 2 step t …(+197ch)
+t0019:action | CALL environment_action/: right
+t0019:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 1 step up ⏎ rule `win` 2 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 1 step to the left and 2 steps down  …(+218ch)
+t0020:action | CALL environment_action/: right
+t0020:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 1 step up ⏎ rule `win` 3 step to the left and 1 step up ⏎ rule `door` 2 step to the left and 2 steps down ⏎ rule `baba` 4 step to the …(+213ch)
+t0021:action | CALL environment_action/: left
+t0021:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 1 step up ⏎ rule `win` 2 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 1 step to the left and 2 steps down  …(+218ch)
+t0022:action | CALL environment_action/: right
+t0022:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 1 step up ⏎ rule `win` 3 step to the left and 1 step up ⏎ rule `door` 2 step to the left and 2 steps down ⏎ rule `baba` 4 step to the …(+213ch)
+t0023:action | CALL environment_action/: left
+t0023:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 1 step up ⏎ rule `win` 2 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 1 step to the left and 2 steps down  …(+218ch)
+t0024:action | CALL environment_action/: down
+t0024:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 2 step up ⏎ rule `win` 2 step to the left and 2 step up ⏎ ball 1 step to the right and 1 step up ⏎ rule `door` 1 step to the left and …(+231ch)
+t0025:action | CALL environment_action/: down
+t0025:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 3 step up ⏎ rule `win` 2 step to the left and 3 step up ⏎ ball 1 step to the right and 2 step up ⏎ rule `door` 1 step to the left ⏎ r …(+215ch)
+t0026:action | CALL environment_action/: down
+t0026:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 4 step up ⏎ rule `win` 2 step to the left and 4 step up ⏎ ball 1 step to the right and 3 step up ⏎ rule `door` 1 step to the left and …(+224ch)
+t0027:action | CALL environment_action/: down
+t0027:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 5 step up ⏎ rule `win` 2 step to the left and 5 step up ⏎ ball 1 step to the right and 4 step up ⏎ rule `door` 1 step to the left and …(+141ch)
+t0028:action | CALL environment_action/: up
+t0028:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 4 step up ⏎ rule `win` 2 step to the left and 4 step up ⏎ ball 1 step to the right and 3 step up ⏎ rule `door` 1 step to the left and …(+224ch)
+t0029:action | CALL environment_action/: up
+t0029:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 3 step up ⏎ rule `win` 2 step to the left and 3 step up ⏎ ball 1 step to the right and 2 step up ⏎ rule `door` 1 step to the left ⏎ r …(+215ch)
+t0030:action | CALL environment_action/: up
+t0030:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 2 step up ⏎ rule `win` 2 step to the left and 2 step up ⏎ ball 1 step to the right and 1 step up ⏎ rule `door` 1 step to the left and …(+231ch)
+t0031:action | CALL environment_action/: up
+t0031:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 1 step up ⏎ rule `win` 2 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 1 step to the left and 2 steps down  …(+218ch)
+t0032:action | CALL environment_action/: right
+t0032:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 1 step up ⏎ rule `win` 3 step to the left and 1 step up ⏎ rule `door` 2 step to the left and 2 steps down ⏎ rule `baba` 4 step to the …(+213ch)
+t0033:action | CALL environment_action/: down
+t0033:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 2 step up ⏎ rule `win` 3 step to the left and 2 step up ⏎ ball 1 step up ⏎ rule `door` 2 step to the left and 1 step down ⏎ rule `bab …(+229ch)
+t0034:action | CALL environment_action/: down
+t0034:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 3 step up ⏎ rule `win` 3 step to the left and 3 step up ⏎ ball 2 step up ⏎ rule `door` 2 step to the left ⏎ rule `baba` 4 step to the …(+213ch)
+t0035:action | CALL environment_action/: up
+t0035:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 2 step up ⏎ rule `win` 3 step to the left and 2 step up ⏎ ball 1 step up ⏎ rule `door` 2 step to the left and 1 step down ⏎ rule `bab …(+229ch)
+t0036:action | CALL environment_action/: down
+t0036:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 3 step up ⏎ rule `win` 3 step to the left and 3 step up ⏎ ball 2 step up ⏎ rule `door` 2 step to the left ⏎ rule `baba` 4 step to the …(+213ch)
+t0037:action | CALL environment_action/: left
+t0037:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 3 step up ⏎ rule `win` 2 step to the left and 3 step up ⏎ ball 1 step to the right and 2 step up ⏎ rule `door` 1 step to the left ⏎ r …(+215ch)
+t0038:action | CALL environment_action/: left
+t0038:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 3 step up ⏎ rule `win` 1 step to the left and 3 step up ⏎ ball 2 steps to the right and 2 step up ⏎ rule `door` 1 step to the left ⏎  …(+217ch)
+t0039:action | CALL environment_action/: up
+t0039:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 2 step up ⏎ rule `win` 1 step to the left and 2 step up ⏎ ball 2 steps to the right and 1 step up ⏎ rule `door` 1 step to the left an …(+233ch)
+t0040:action | CALL environment_action/: up
+t0040:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 1 step up ⏎ rule `win` 1 step to the left and 1 step up ⏎ ball 2 steps to the right ⏎ rule `door` 1 step to the left and 2 steps down …(+220ch)
+t0041:action | CALL environment_action/: right
+t0041:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 1 step up ⏎ rule `win` 2 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 2 step to the left and 2 steps down  …(+218ch)
+t0042:action | CALL environment_action/: right
+t0042:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 1 step up ⏎ rule `win` 3 step to the left and 1 step up ⏎ rule `door` 3 step to the left and 2 steps down ⏎ rule `baba` 4 step to the …(+213ch)
+t0043:action | CALL environment_action/: down
+t0043:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 2 step up ⏎ rule `win` 3 step to the left and 2 step up ⏎ ball 1 step up ⏎ rule `door` 3 step to the left and 1 step down ⏎ rule `bab …(+229ch)
+t0044:action | CALL environment_action/: down
+t0044:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 3 step up ⏎ rule `win` 3 step to the left and 3 step up ⏎ ball 2 step up ⏎ rule `door` 3 step to the left ⏎ rule `baba` 4 step to the …(+213ch)
+t0045:action | CALL environment_action/: up
+t0045:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 2 step up ⏎ rule `win` 3 step to the left and 2 step up ⏎ ball 1 step up ⏎ rule `door` 3 step to the left and 1 step down ⏎ rule `bab …(+229ch)
+t0046:action | CALL environment_action/: down
+t0046:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 3 step up ⏎ rule `win` 3 step to the left and 3 step up ⏎ ball 2 step up ⏎ rule `door` 3 step to the left ⏎ rule `baba` 4 step to the …(+213ch)
+t0047:action | CALL environment_action/: left
+t0047:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 3 step up ⏎ rule `win` 2 step to the left and 3 step up ⏎ ball 1 step to the right and 2 step up ⏎ rule `door` 2 step to the left ⏎ r …(+215ch)
+t0048:action | CALL environment_action/: up
+t0048:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 2 step up ⏎ rule `win` 2 step to the left and 2 step up ⏎ ball 1 step to the right and 1 step up ⏎ rule `door` 2 step to the left and …(+231ch)
+t0049:action | CALL environment_action/: up
+t0049:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 1 step up ⏎ rule `win` 2 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 2 step to the left and 2 steps down  …(+218ch)
+t0050:action | CALL environment_action/: up
+t0050:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left ⏎ rule `win` 2 step to the left ⏎ ball 1 step to the right and 1 step down ⏎ rule `door` 2 step to the left and 3 steps down ⏎ rule `baba …(+206ch)
+t0051:action | CALL environment_action/: up
+t0051:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left ⏎ rule `win` 2 step to the left ⏎ ball 1 step to the right and 1 step down ⏎ rule `door` 2 step to the left and 3 steps down ⏎ rule `baba …(+206ch)
+t0052:action | CALL environment_action/: left
+t0052:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 1 step to the left and 3 steps down ⏎ rule `bab …(+208ch)
+t0053:action | CALL environment_action/: left
+t0053:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 1 step to the left and 3 steps down ⏎ rule `bab …(+208ch)
+t0054:action | CALL environment_action/: left
+t0054:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 1 step to the left and 3 steps down ⏎ rule `bab …(+208ch)
+t0055:action | CALL environment_action/: down
+t0055:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 1 step up ⏎ rule `win` 1 step to the left and 1 step up ⏎ ball 2 steps to the right ⏎ rule `door` 1 step to the left and 2 steps down …(+220ch)
+t0056:action | CALL environment_action/: left
+t0056:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 1 step to the left and 1 step up ⏎ rule `win` 1 step up ⏎ ball 3 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 1 step to the left and 4 steps  …(+176ch)
+t0057:action | CALL environment_action/: up
+t0057:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 1 step to the left and 1 step up ⏎ rule `win` 1 step up ⏎ ball 3 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 1 step to the left and 4 steps  …(+176ch)
+t0058:action | CALL environment_action/: up
+t0058:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 1 step to the left and 1 step up ⏎ rule `win` 1 step up ⏎ ball 3 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 1 step to the left and 4 steps  …(+176ch)
+t0059:action | CALL environment_action/: up
+t0059:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 1 step to the left and 1 step up ⏎ rule `win` 1 step up ⏎ ball 3 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 1 step to the left and 4 steps  …(+176ch)
+t0060:action | CALL environment_action/: right
+t0060:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 1 step up ⏎ rule `win` 1 step to the left and 1 step up ⏎ ball 2 steps to the right ⏎ rule `door` 1 step to the left and 2 steps down …(+220ch)
+t0061:action | CALL environment_action/: right
+t0061:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 1 step up ⏎ rule `win` 2 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 2 step to the left and 2 steps down  …(+218ch)
+t0062:action | CALL environment_action/: right
+t0062:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 1 step up ⏎ rule `win` 3 step to the left and 1 step up ⏎ rule `door` 3 step to the left and 2 steps down ⏎ rule `baba` 4 step to the …(+213ch)
+t0063:action | CALL environment_action/: right
+t0063:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 5 step to the left and 1 step up ⏎ rule `win` 4 step to the left and 1 step up ⏎ ball 1 step to the left ⏎ rule `door` 4 step to the left and 2 steps down ⏎ …(+215ch)
+t0064:action | CALL environment_action/: left
+t0064:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 1 step up ⏎ rule `win` 3 step to the left and 1 step up ⏎ rule `door` 3 step to the left and 2 steps down ⏎ rule `baba` 4 step to the …(+213ch)
+t0065:action | CALL environment_action/: left
+t0065:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 1 step up ⏎ rule `win` 2 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 2 step to the left and 2 steps down  …(+218ch)
+t0066:action | CALL environment_action/: down
+t0066:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 2 step up ⏎ rule `win` 2 step to the left and 2 step up ⏎ ball 1 step to the right and 1 step up ⏎ rule `door` 2 step to the left and …(+231ch)
+t0067:action | CALL environment_action/: right
+t0067:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 2 step up ⏎ rule `win` 3 step to the left and 2 step up ⏎ ball 1 step up ⏎ rule `door` 3 step to the left and 1 step down ⏎ rule `bab …(+229ch)
+t0068:action | CALL environment_action/: up
+t0068:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 1 step up ⏎ rule `win` 3 step to the left and 1 step up ⏎ rule `door` 3 step to the left and 2 steps down ⏎ rule `baba` 4 step to the …(+213ch)
+t0069:action | CALL environment_action/: down
+t0069:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 2 step up ⏎ rule `win` 3 step to the left and 2 step up ⏎ ball 1 step up ⏎ rule `door` 3 step to the left and 1 step down ⏎ rule `bab …(+229ch)
+t0070:action | CALL environment_action/: up
+t0070:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 1 step up ⏎ rule `win` 3 step to the left and 1 step up ⏎ rule `door` 3 step to the left and 2 steps down ⏎ rule `baba` 4 step to the …(+213ch)
+t0071:action | CALL environment_action/: down
+t0071:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 2 step up ⏎ rule `win` 3 step to the left and 2 step up ⏎ ball 1 step up ⏎ rule `door` 3 step to the left and 1 step down ⏎ rule `bab …(+229ch)
+t0072:action | CALL environment_action/: up
+t0072:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 1 step up ⏎ rule `win` 3 step to the left and 1 step up ⏎ rule `door` 3 step to the left and 2 steps down ⏎ rule `baba` 4 step to the …(+213ch)
+t0073:action | CALL environment_action/: down
+t0073:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 2 step up ⏎ rule `win` 3 step to the left and 2 step up ⏎ ball 1 step up ⏎ rule `door` 3 step to the left and 1 step down ⏎ rule `bab …(+229ch)
+t0074:action | CALL environment_action/: up
+t0074:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 1 step up ⏎ rule `win` 3 step to the left and 1 step up ⏎ rule `door` 3 step to the left and 2 steps down ⏎ rule `baba` 4 step to the …(+213ch)
+t0075:action | CALL environment_action/: down
+t0075:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 2 step up ⏎ rule `win` 3 step to the left and 2 step up ⏎ ball 1 step up ⏎ rule `door` 3 step to the left and 1 step down ⏎ rule `bab …(+229ch)
+t0076:action | CALL environment_action/: up
+t0076:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 1 step up ⏎ rule `win` 3 step to the left and 1 step up ⏎ rule `door` 3 step to the left and 2 steps down ⏎ rule `baba` 4 step to the …(+213ch)
+t0077:action | CALL environment_action/: left
+t0077:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 1 step up ⏎ rule `win` 2 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 2 step to the left and 2 steps down  …(+218ch)
+t0078:action | CALL environment_action/: up
+t0078:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left ⏎ rule `win` 2 step to the left ⏎ ball 1 step to the right and 1 step down ⏎ rule `door` 2 step to the left and 3 steps down ⏎ rule `baba …(+206ch)
+t0079:action | CALL environment_action/: left
+t0079:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 1 step to the left and 3 steps down ⏎ rule `bab …(+208ch)
+t0080:action | CALL environment_action/: left
+t0080:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 1 step to the left and 3 steps down ⏎ rule `bab …(+208ch)
+t0081:action | CALL environment_action/: left
+t0081:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 1 step to the left and 3 steps down ⏎ rule `bab …(+208ch)
+t0082:action | CALL environment_action/: up
+t0082:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 1 step to the left and 3 steps down ⏎ rule `bab …(+208ch)
+t0083:action | CALL environment_action/: left
+t0083:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 1 step to the left and 3 steps down ⏎ rule `bab …(+208ch)
+t0084:action | CALL environment_action/: right
+t0084:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left ⏎ rule `win` 2 step to the left ⏎ ball 1 step to the right and 1 step down ⏎ rule `door` 2 step to the left and 3 steps down ⏎ rule `baba …(+206ch)
+t0085:action | CALL environment_action/: left
+t0085:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 1 step to the left and 3 steps down ⏎ rule `bab …(+208ch)
+t0086:action | CALL environment_action/: right
+t0086:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left ⏎ rule `win` 2 step to the left ⏎ ball 1 step to the right and 1 step down ⏎ rule `door` 2 step to the left and 3 steps down ⏎ rule `baba …(+206ch)
+t0087:action | CALL environment_action/: up
+t0087:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left ⏎ rule `win` 2 step to the left ⏎ ball 1 step to the right and 1 step down ⏎ rule `door` 2 step to the left and 3 steps down ⏎ rule `baba …(+206ch)
+t0088:action | CALL environment_action/: down
+t0088:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 1 step up ⏎ rule `win` 2 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 2 step to the left and 2 steps down  …(+218ch)
+t0089:action | CALL environment_action/: up
+t0089:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left ⏎ rule `win` 2 step to the left ⏎ ball 1 step to the right and 1 step down ⏎ rule `door` 2 step to the left and 3 steps down ⏎ rule `baba …(+206ch)
+t0090:action | CALL environment_action/: left
+t0090:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left ⏎ rule `win` 1 step to the left ⏎ ball 2 steps to the right and 1 step down ⏎ rule `door` 1 step to the left and 3 steps down ⏎ rule `bab …(+208ch)
+t0091:action | CALL environment_action/: down
+t0091:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 1 step up ⏎ rule `win` 1 step to the left and 1 step up ⏎ ball 2 steps to the right ⏎ rule `door` 1 step to the left and 2 steps down …(+220ch)
+t0092:action | CALL environment_action/: left
+t0092:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 1 step to the left and 1 step up ⏎ rule `win` 1 step up ⏎ ball 3 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 1 step to the left and 4 steps  …(+176ch)
+t0093:action | CALL environment_action/: up
+t0093:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 1 step to the left and 1 step up ⏎ rule `win` 1 step up ⏎ ball 3 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 1 step to the left and 4 steps  …(+176ch)
+t0094:action | CALL environment_action/: up
+t0094:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 1 step to the left and 1 step up ⏎ rule `win` 1 step up ⏎ ball 3 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 1 step to the left and 4 steps  …(+176ch)
+t0095:action | CALL environment_action/: up
+t0095:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 1 step to the left and 1 step up ⏎ rule `win` 1 step up ⏎ ball 3 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 1 step to the left and 4 steps  …(+176ch)
+t0096:action | CALL environment_action/: up
+t0096:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 1 step to the left and 1 step up ⏎ rule `win` 1 step up ⏎ ball 3 steps to the right ⏎ rule `door` 2 steps down ⏎ rule `baba` 1 step to the left and 4 steps  …(+176ch)
+t0097:action | CALL environment_action/: right
+t0097:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 2 step to the left and 1 step up ⏎ rule `win` 1 step to the left and 1 step up ⏎ ball 2 steps to the right ⏎ rule `door` 1 step to the left and 2 steps down …(+220ch)
+t0098:action | CALL environment_action/: right
+t0098:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 3 step to the left and 1 step up ⏎ rule `win` 2 step to the left and 1 step up ⏎ ball 1 step to the right ⏎ rule `door` 2 step to the left and 2 steps down  …(+218ch)
+t0099:action | CALL environment_action/: right
+t0099:observation | OBS : Active rules: ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `is` 4 step to the left and 1 step up ⏎ rule `win` 3 step to the left and 1 step up ⏎ rule `door` 3 step to the left and 2 steps down ⏎ rule `baba` 4 step to the …(+213ch)

@@ -1,0 +1,11 @@
+{
+  "base_commit": "450d2646233c670654744d3d24330b69895bb9d2",
+  "baseline_expected_failure": true,
+  "baseline_output_tail": "F                                                                        [100%]\n=================================== FAILURES ===================================\n____________________________ test_excinfo_repr_str _____________________________\n\n    def test_excinfo_repr_str():\n        excinfo = pytest.raises(ValueError, h)\n        assert repr(excinfo) == \"<ExceptionInfo ValueError tblen=4>\"\n>       assert str(excinfo) == \"<ExceptionInfo ValueError tblen=4>\"\nE       AssertionError: assert '/testbed/tes...8: ValueError' == '<ExceptionInf...rror tblen=4>'\nE         - /testbed/testing/code/test_excinfo.py:98: ValueError\nE         + <ExceptionInfo ValueError tblen=4>\n\ntesting/code/test_excinfo.py:339: AssertionError\n=========================== short test summary info ============================\nFAILED testing/code/test_excinfo.py::test_excinfo_repr_str - AssertionError: ...\n1 failed in 0.22 seconds\n",
+  "baseline_returncode": 1,
+  "gold_expected_pass": true,
+  "gold_output_tail": ".                                                                        [100%]\n1 passed in 0.19 seconds\n",
+  "gold_returncode": 0,
+  "image_id": "sha256:8a97420ed474c427571c6f9ebffc7b6ca8b66b96d59b36c850b64cb50e8fa686",
+  "instance_id": "pytest-dev__pytest-5413"
+}

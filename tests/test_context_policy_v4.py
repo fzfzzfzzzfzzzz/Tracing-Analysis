@@ -251,6 +251,41 @@ def test_retrieval_uses_explicit_id_and_closes_causal_chain_but_ignores_unrelate
     assert plan.provenance["causal_conclusion_eligible"] is True
 
 
+def test_causal_sequence_query_closes_resident_failure_unit() -> None:
+    graph = TraceGraph("resident-causal-unit")
+    call = add(
+        graph, "failed-call", NodeType.TOOL_CALL,
+        {"tool_name": "legacy", "arguments": {"entity": "alpha"}},
+        1, ordinal=1, metadata={"call_id": "failed", "tool_name": "legacy"},
+    )
+    error = add(
+        graph, "failed-result", NodeType.ERROR, {"error": "bad syntax"},
+        2, ordinal=2, metadata={"call_id": "failed"},
+    )
+    decision = add(
+        graph, "diagnosis", NodeType.DECISION, "Use the native grammar",
+        3, ordinal=3,
+    )
+    graph.connect(call.node_id, error.node_id, EdgeType.FAILED_WITH)
+    graph.connect(error.node_id, decision.node_id, EdgeType.PROVIDES_INPUT)
+    messages = [
+        {"role": "assistant", "content": "", "tool_calls": [{
+            "id": "failed", "function": {"name": "legacy", "arguments": "{}"}
+        }]},
+        {"role": "tool", "tool_call_id": "failed", "content": "bad syntax"},
+        {"role": "assistant", "content": "Use the native grammar"},
+    ]
+    policy = GraphConstrainedPolicy()
+    snapshot = policy.snapshot(graph, {"messages": messages}, 1)
+    unrelated = policy.materialize(snapshot, "What is the weather?", {"max_input_tokens": 800})
+    assert unrelated.retrieved_span_ids == ()
+    causal = policy.materialize(
+        snapshot, "Reconstruct the causal sequence.", {"max_input_tokens": 800}
+    )
+    assert len(causal.retrieved_span_ids) == 1
+    assert causal.provenance["causal_seed_span_ids"]
+
+
 def test_hard_budget_and_incomplete_protocol_fail_closed() -> None:
     graph = TraceGraph("budget")
     add(

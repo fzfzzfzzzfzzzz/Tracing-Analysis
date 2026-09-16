@@ -1,0 +1,131 @@
+CASE index=31 candidate_id=bfb3100ab32151544e905e1cb7d79edd251b957908cc842141e92b5c2ba59d71
+source=ama_bench repository=ama:minihack task_id=15 split=test events=128
+====================================================================================================
+t0000:action | CALL environment_action/: north
+t0000:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near east ⏎ horizontal wall near south ⏎ vertical wall very near southeast, southwest, and west ⏎ horizontal wall adjacent north, northeast, and northwest ⏎ horn adjacent  …(+248ch)
+t0001:action | CALL environment_action/: east
+t0001:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near east ⏎ horizontal wall near south ⏎ southwest corner near southwest ⏎ vertical wall near west ⏎ horizontal wall adjacent north, northeast, and northwest ⏎ vertical wa …(+290ch)
+t0002:action | CALL environment_action/: south
+t0002:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ vertical wall near west ⏎ horizontal wall very near north, south, southwest, and northwest ⏎ dark area very near northeast ⏎ vertical wall adjacent east and southeast ⏎ horn adjacen …(+249ch)
+t0003:action | CALL environment_action/: west
+t0003:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ horizontal wall very near north, northeast, and south ⏎ vertical wall very near east and west ⏎ southeast corner very near southeast ⏎ southwest corner very near southwest ⏎ northwe …(+277ch)
+t0004:action | CALL environment_action/: south
+t0004:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ horizontal wall near north ⏎ dark area near northeast ⏎ vertical wall very near east, west, and northwest ⏎ horn adjacent north ⏎ horizontal wall adjacent southeast, south, and sout …(+248ch)
+t0005:action | CALL environment_action/: north
+t0005:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ horizontal wall very near north, northeast, and south ⏎ vertical wall very near east and west ⏎ southeast corner very near southeast ⏎ southwest corner very near southwest ⏎ northwe …(+277ch)
+t0006:action | CALL environment_action/: north
+t0006:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near east ⏎ horizontal wall near south ⏎ vertical wall very near southeast, southwest, and west ⏎ horizontal wall adjacent north, northeast, and northwest ⏎ horn adjacent  …(+248ch)
+t0007:action | CALL environment_action/: east
+t0007:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near east ⏎ horizontal wall near south ⏎ southwest corner near southwest ⏎ vertical wall near west ⏎ horizontal wall adjacent north, northeast, and northwest ⏎ vertical wa …(+290ch)
+t0008:action | CALL environment_action/: north
+t0008:observation | OBS : message: ⏎ It's a wall. ⏎ ⏎ language observation: ⏎ dark area near east ⏎ horizontal wall near south ⏎ southwest corner near southwest ⏎ vertical wall near west ⏎ horizontal wall adjacent north, northeast, and northwest  …(+303ch)
+t0009:action | CALL environment_action/: west
+t0009:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near east ⏎ horizontal wall near south ⏎ vertical wall very near southeast, southwest, and west ⏎ horizontal wall adjacent north, northeast, and northwest ⏎ horn adjacent  …(+248ch)
+t0010:action | CALL environment_action/: east
+t0010:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near east ⏎ horizontal wall near south ⏎ southwest corner near southwest ⏎ vertical wall near west ⏎ horizontal wall adjacent north, northeast, and northwest ⏎ vertical wa …(+290ch)
+t0011:action | CALL environment_action/: west
+t0011:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near east ⏎ horizontal wall near south ⏎ vertical wall very near southeast, southwest, and west ⏎ horizontal wall adjacent north, northeast, and northwest ⏎ horn adjacent  …(+248ch)
+t0012:action | CALL environment_action/: east
+t0012:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near east ⏎ horizontal wall near south ⏎ southwest corner near southwest ⏎ vertical wall near west ⏎ horizontal wall adjacent north, northeast, and northwest ⏎ vertical wa …(+290ch)
+t0013:action | CALL environment_action/: south
+t0013:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ vertical wall near west ⏎ horizontal wall very near north, south, southwest, and northwest ⏎ dark area very near northeast ⏎ vertical wall adjacent east and southeast ⏎ horn adjacen …(+249ch)
+t0014:action | CALL environment_action/: east
+t0014:observation | OBS : message: ⏎ It's a wall. ⏎ ⏎ language observation: ⏎ vertical wall near west ⏎ horizontal wall very near north, south, southwest, and northwest ⏎ dark area very near northeast ⏎ vertical wall adjacent east and southeast ⏎ …(+262ch)
+t0015:action | CALL environment_action/: west
+t0015:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ horizontal wall very near north, northeast, and south ⏎ vertical wall very near east and west ⏎ southeast corner very near southeast ⏎ southwest corner very near southwest ⏎ northwe …(+277ch)
+t0016:action | CALL environment_action/: west
+t0016:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ vertical wall near east ⏎ horizontal wall very near north, northeast, southeast, and south ⏎ horn adjacent east ⏎ vertical wall adjacent southwest, west, and northwest ⏎ ⏎ cursor: ⏎ …(+229ch)
+t0017:action | CALL environment_action/: north
+t0017:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area far east ⏎ southeast corner near southeast ⏎ horizontal wall near south ⏎ horizontal wall adjacent north and northeast ⏎ horn adjacent southeast ⏎ vertical wall adjacent s …(+303ch)
+t0018:action | CALL environment_action/: south
+t0018:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ vertical wall near east ⏎ horizontal wall very near north, northeast, southeast, and south ⏎ horn adjacent east ⏎ vertical wall adjacent southwest, west, and northwest ⏎ ⏎ cursor: ⏎ …(+229ch)
+t0019:action | CALL environment_action/: south
+t0019:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ horizontal wall near north and northeast ⏎ vertical wall near east ⏎ horn adjacent northeast ⏎ horizontal wall adjacent southeast and south ⏎ southwest corner adjacent southwest ⏎ v …(+283ch)
+t0020:action | CALL environment_action/: north
+t0020:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ vertical wall near east ⏎ horizontal wall very near north, northeast, southeast, and south ⏎ horn adjacent east ⏎ vertical wall adjacent southwest, west, and northwest ⏎ ⏎ cursor: ⏎ …(+229ch)
+t0021:action | CALL environment_action/: west
+t0021:observation | OBS : message: ⏎ It's a wall. ⏎ ⏎ language observation: ⏎ vertical wall near east ⏎ horizontal wall very near north, northeast, southeast, and south ⏎ horn adjacent east ⏎ vertical wall adjacent southwest, west, and northwest  …(+242ch)
+t0022:action | CALL environment_action/: north
+t0022:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area far east ⏎ southeast corner near southeast ⏎ horizontal wall near south ⏎ horizontal wall adjacent north and northeast ⏎ horn adjacent southeast ⏎ vertical wall adjacent s …(+303ch)
+t0023:action | CALL environment_action/: east
+t0023:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near east ⏎ horizontal wall near south ⏎ vertical wall very near southeast, southwest, and west ⏎ horizontal wall adjacent north, northeast, and northwest ⏎ horn adjacent  …(+248ch)
+t0024:action | CALL environment_action/: north
+t0024:observation | OBS : message: ⏎ It's a wall. ⏎ ⏎ language observation: ⏎ dark area near east ⏎ horizontal wall near south ⏎ vertical wall very near southeast, southwest, and west ⏎ horizontal wall adjacent north, northeast, and northwest ⏎ h …(+261ch)
+t0025:action | CALL environment_action/: west
+t0025:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area far east ⏎ southeast corner near southeast ⏎ horizontal wall near south ⏎ horizontal wall adjacent north and northeast ⏎ horn adjacent southeast ⏎ vertical wall adjacent s …(+303ch)
+t0026:action | CALL environment_action/: far east
+t0026:observation | OBS : message: ⏎ The giant rat misses! ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ giant rat far east ⏎ dark area near north ⏎ horn near westnorthwest ⏎ da …(+461ch)
+t0027:action | CALL environment_action/: east
+t0027:observation | OBS : message: ⏎ You kill the giant rat! ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ giant rat far east ⏎ dark area near north ⏎ horn near westnorthwest ⏎  …(+463ch)
+t0028:action | CALL environment_action/: east
+t0028:observation | OBS : message: ⏎ You kill the giant rat! ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ giant rat far east ⏎ dark area near north ⏎ horn near westnorthwest ⏎  …(+464ch)
+t0029:action | CALL environment_action/: east
+t0029:observation | OBS : message: ⏎ You hit the giant rat. The giant rat bites! ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ dark area near north ⏎ horn near westnorthwest ⏎ d …(+463ch)
+t0030:action | CALL environment_action/: east
+t0030:observation | OBS : message: ⏎ You miss the giant rat. The giant rat bites! ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ dark area near north ⏎ horn near westnorthwest ⏎  …(+464ch)
+t0031:action | CALL environment_action/: east
+t0031:observation | OBS : message: ⏎ You miss the giant rat. The giant rat bites! ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ giant rat far east ⏎ dark area near north ⏎ horn  …(+485ch)
+t0032:action | CALL environment_action/: east
+t0032:observation | OBS : message: ⏎ You kill the giant rat! ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ giant rat far east ⏎ dark area near north ⏎ horn near westnorthwest ⏎  …(+464ch)
+t0033:action | CALL environment_action/: east
+t0033:observation | OBS : message: ⏎ You miss the giant rat. The giant rat bites! ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ dark area near north ⏎ horn near westnorthwest ⏎  …(+463ch)
+t0034:action | CALL environment_action/: east
+t0034:observation | OBS : message: ⏎ You hit the giant rat. The giant rat bites! ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ dark area near north ⏎ horn near westnorthwest ⏎ d …(+462ch)
+t0035:action | CALL environment_action/: east
+t0035:observation | OBS : message: ⏎ You miss the giant rat. The giant rat misses! ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ dark area near north ⏎ horn near westnorthwest ⏎ …(+464ch)
+t0036:action | CALL environment_action/: east
+t0036:observation | OBS : message: ⏎ You kill the giant rat! ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ giant rat far east ⏎ dark area near north ⏎ horn near westnorthwest ⏎  …(+459ch)
+t0037:action | CALL environment_action/: pickup
+t0037:observation | OBS : message: ⏎ There is nothing here to pick up. ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ giant rat far east ⏎ dark area near north ⏎ horn near westno …(+469ch)
+t0038:action | CALL environment_action/: east
+t0038:observation | OBS : message: ⏎ You see here a melon. ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ giant rat far east ⏎ horn near westnorthwest ⏎ horizontal wall near nort …(+452ch)
+t0039:action | CALL environment_action/: pickup
+t0039:observation | OBS : message: ⏎ i - a melon. ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ giant rat far east ⏎ giant rat near east ⏎ horn near westnorthwest ⏎ horizontal w …(+465ch)
+t0040:action | CALL environment_action/: west
+t0040:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ giant rat far east ⏎ dark area near north and east ⏎ horn near westnorthwest ⏎ dark area adjac …(+403ch)
+t0041:action | CALL environment_action/: west
+t0041:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ giant rat far east ⏎ dark area near north and east ⏎ horn near westnorthwest …(+421ch)
+t0042:action | CALL environment_action/: south
+t0042:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ giant rat far east ⏎ dark area near north and east ⏎ horn near westnorthwest …(+421ch)
+t0043:action | CALL environment_action/: east
+t0043:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ giant rat far east ⏎ horn near westnorthwest ⏎ horizontal wall near northwest ⏎ dark area very …(+430ch)
+t0044:action | CALL environment_action/: east
+t0044:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ horn far westnorthwest ⏎ giant rat near east ⏎ dark area near west ⏎ dark area very near east  …(+429ch)
+t0045:action | CALL environment_action/: east
+t0045:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ horn far westnorthwest ⏎ giant rat near east ⏎ dark area near west ⏎ dark area very near east  …(+437ch)
+t0046:action | CALL environment_action/: east
+t0046:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ horn far westnorthwest ⏎ dark area near west ⏎ dark area adjacent north, northeast, southeast, …(+421ch)
+t0047:action | CALL environment_action/: east
+t0047:observation | OBS : message: ⏎ You kill the giant rat! ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ horn far westnorthwest ⏎ dark area near west ⏎ dark area adjacent nort …(+420ch)
+t0048:action | CALL environment_action/: east
+t0048:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ dark area far west ⏎ horn far westnorthwest ⏎ dark area adjacent north, northeast, south, sout …(+429ch)
+t0049:action | CALL environment_action/: east
+t0049:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ lava very far east ⏎ area of lava very far eastnortheast ⏎ stairs down very far east ⏎ dark area far west ⏎ horn far westnorthwest ⏎ horizontal wall near northeast ⏎ giant rat very  …(+521ch)
+t0050:action | CALL environment_action/: east
+t0050:observation | OBS : message: ⏎ The giant rat misses! ⏎ ⏎ language observation: ⏎ stairs down very far east ⏎ lava far east ⏎ area of lava far eastnortheast ⏎ dark area far west ⏎ horn far westnorthwest ⏎ horizontal wall near north and north …(+511ch)
+t0051:action | CALL environment_action/: north
+t0051:observation | OBS : message: ⏎ The giant rat bites! ⏎ ⏎ language observation: ⏎ stairs down very far eastsoutheast ⏎ lava far eastnortheast, east, and eastsoutheast ⏎ horn far west ⏎ horizontal wall very near north, northeast, southeast, an …(+491ch)
+t0052:action | CALL environment_action/: east
+t0052:observation | OBS : message: ⏎ You miss the giant rat. The giant rat misses! ⏎ ⏎ language observation: ⏎ stairs down very far eastsoutheast ⏎ lava far eastnortheast, east, and eastsoutheast ⏎ horn far west ⏎ horizontal wall very near north, …(+516ch)
+t0053:action | CALL environment_action/: east
+t0053:observation | OBS : message: ⏎ You kill the giant rat! ⏎ ⏎ language observation: ⏎ stairs down very far eastsoutheast ⏎ lava far eastnortheast, east, and eastsoutheast ⏎ horn far west ⏎ horizontal wall very near north, northeast, southeast, …(+501ch)
+t0054:action | CALL environment_action/: south
+t0054:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs down very far east ⏎ lava far east ⏎ area of lava far eastnortheast ⏎ dark area far west ⏎ horn far westnorthwest ⏎ horizontal wall near north and northeast ⏎ giant rat corps …(+496ch)
+t0055:action | CALL environment_action/: east
+t0055:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs down very far east ⏎ lava far east ⏎ area of lava far eastnortheast ⏎ dark area far west ⏎ horn far westnorthwest ⏎ horizontal wall near north and northeast ⏎ vertical wall v …(+493ch)
+t0056:action | CALL environment_action/: east
+t0056:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs down very far east ⏎ lava far east ⏎ area of lava far eastnortheast ⏎ horn far westnorthwest ⏎ horizontal wall near north and northeast ⏎ northwest room corner near northwest …(+479ch)
+t0057:action | CALL environment_action/: east
+t0057:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ lava far east ⏎ area of lava far eastnortheast ⏎ stairs down far east ⏎ horn far westnorthwest ⏎ horizontal wall near north, northeast, and northwest ⏎ giant rat corpse very near we …(+452ch)
+t0058:action | CALL environment_action/: east
+t0058:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ lava far east ⏎ area of lava far eastnortheast ⏎ stairs down far east ⏎ horn far westnorthwest ⏎ horizontal wall near north, northeast, and northwest ⏎ giant rat corpse near westnor …(+447ch)
+t0059:action | CALL environment_action/: east
+t0059:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ lava far east ⏎ area of lava far eastnortheast ⏎ stairs down far east ⏎ horn far westnorthwest ⏎ horizontal wall near north, northeast, and northwest ⏎ giant rat corpse near westnor …(+447ch)
+t0060:action | CALL environment_action/: east
+t0060:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ lava far east ⏎ area of lava far eastnortheast ⏎ stairs down far east ⏎ horn far westnorthwest ⏎ horizontal wall near north, northeast, and northwest ⏎ giant rat corpse near westnor …(+447ch)
+t0061:action | CALL environment_action/: east
+t0061:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ lava far east ⏎ area of lava far eastnortheast ⏎ stairs down far east ⏎ horn far westnorthwest ⏎ giant rat corpse far westnorthwest ⏎ horizontal wall near north, northeast, and nort …(+446ch)
+t0062:action | CALL environment_action/: far east
+t0062:observation | OBS : message: ⏎ You stop at the edge of the lava. ⏎ ⏎ language observation: ⏎ horn very far westnorthwest ⏎ giant rat corpse far westnorthwest ⏎ horizontal wall near north, northeast, and northwest ⏎ stairs down near east ⏎ v …(+530ch)
+t0063:action | CALL environment_action/: east
+t0063:observation | OBS : message: ⏎   ⏎ You made the top ten list! ⏎ No Points Name ⏎ Hp [max] ⏎ 1 48 Agent-Kni-Hum-Fem-Law died in The Dunge ⏎ eons of Doom on ⏎ level 1. Burned by molten lava. ⏎ - [16] ⏎ ⏎ ⏎ language observation: ⏎ dark area ad …(+293ch)

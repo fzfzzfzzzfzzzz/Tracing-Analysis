@@ -1,0 +1,122 @@
+{
+  "ama_code_search": {
+    "image": null,
+    "mode": "disabled"
+  },
+  "data": {
+    "calibration_exclude_prefix_ids": [
+      "controlled:shell_syntax:operations:R0:short",
+      "controlled:parameter_schema:data:R0:long",
+      "controlled:shell_syntax:data:R1:long",
+      "controlled:parameter_schema:software:R1:short",
+      "controlled:shell_syntax:data:R2:short",
+      "controlled:parameter_schema:operations:R2:long",
+      "controlled:parameter_schema:data:R3:short",
+      "controlled:shell_syntax:operations:R3:long",
+      "controlled:shell_syntax:software:R0:long",
+      "controlled:parameter_schema:data:R0:short",
+      "controlled:shell_syntax:operations:R1:short",
+      "controlled:parameter_schema:data:R1:long",
+      "controlled:parameter_schema:software:R2:short",
+      "controlled:shell_syntax:operations:R2:long",
+      "controlled:parameter_schema:data:R3:long",
+      "controlled:shell_syntax:operations:R3:short",
+      "controlled:parameter_schema:software:R0:short",
+      "controlled:parameter_schema:software:R0:long",
+      "controlled:shell_syntax:data:R0:short",
+      "controlled:shell_syntax:data:R1:short",
+      "controlled:parameter_schema:software:R1:long",
+      "controlled:shell_syntax:software:R2:short",
+      "controlled:parameter_schema:data:R2:long",
+      "controlled:parameter_schema:operations:R3:short",
+      "controlled:shell_syntax:software:R3:long"
+    ],
+    "calibration_only": true,
+    "exposure_manifest": null,
+    "prefix_ids": [],
+    "rubrics": null,
+    "split": "dev"
+  },
+  "development_only": true,
+  "embedding": null,
+  "gates": {
+    "final_format_valid": 38,
+    "first_format_valid": 36,
+    "full_pass": 20,
+    "judge_critical_false_positives": 0,
+    "judge_holdout_correct": 36,
+    "oracle_pass": 14
+  },
+  "history_budgets": [
+    16384
+  ],
+  "independent_validation": false,
+  "interactive": true,
+  "judge_model_id": "qwen3_14b",
+  "limits": {
+    "build_calls_per_prefix": 32,
+    "embedding_calls_per_prefix": 512,
+    "input_token_limit": 15000000,
+    "output_token_limit": 1000000,
+    "request_limit": 400,
+    "retrieve_calls_per_query": 6,
+    "timeout_seconds": 60,
+    "wall_seconds": 43200
+  },
+  "methods": [
+    "full_history"
+  ],
+  "models": [
+    {
+      "action_transport": "native_tool_call",
+      "api_key_env": "TRACEGRAPH_SERVER_API_KEY",
+      "base_url": "http://127.0.0.1:8000/v1",
+      "context_window": 32768,
+      "display_name": "Qwen/Qwen3-14B pytest-5221 thinking attribution b16384 s40 r1",
+      "enable_thinking": true,
+      "id": "qwen3_14b",
+      "max_output_tokens": 2048,
+      "provider": "self_hosted_openai",
+      "returned_model_allowlist": [
+        "Qwen3-14B-rev-40c0698"
+      ],
+      "runtime_receipt": {
+        "path": "artifacts/runtime/qwen3_14b_runtime_260913_r1.receipt.json",
+        "sha256": "c7c935aab48f717173a51f38f38f27ba33d95e505827d536f34f5862c90b966f"
+      },
+      "served_model": "Qwen3-14B-rev-40c0698",
+      "server_version": "0.8.5",
+      "thinking_transport": "chat_template_kwargs",
+      "tokenizer": {
+        "files": {
+          "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+          "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+          "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+          "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+        },
+        "path": "artifacts/tokenizers/Qwen3-14B-tokenizer-40c0698"
+      },
+      "weights_revision": "40c069824f4251a91eefaf281ebe4c544efd3e18"
+    }
+  ],
+  "schema_version": "server_eval_v2",
+  "seed": 20260972,
+  "sources": {
+    "mini": {
+      "files": {
+        "LICENSE.md": "0f796e58f91d1c07bb2c1b1d0f8bf3a83017c3a5dec1bdc6fae733b2cd2e875b",
+        "pyproject.toml": "c176ff37a89ee88a2ea2ce746b9b7e723ea3175e53be5336ab99f5aba0d59ddf",
+        "src/minisweagent/__init__.py": "0a708308b1b62cc020b60799c3d54f665845f795b3f0c4fdac787c96a38d12c7",
+        "src/minisweagent/agents/default.py": "e8ef8aa365942d739c2ec5cb0879f60f377d2dc2de8ec670aaedf3bafb45a4c2",
+        "src/minisweagent/environments/docker.py": "21d389122b008e7b743d1e640207fda0b08d9010cf6323ddd02f0742b33b96a6",
+        "src/minisweagent/exceptions.py": "0590393c56bee873c79a691dcb4f15cb39c85f1658598b84bfb295bfde56921d",
+        "src/minisweagent/utils/log.py": "aee0cc34a32b542f4d3ef09e1f03b7418cf98ec54d506401d9d4401003c05a9f",
+        "src/minisweagent/utils/serialize.py": "3035b27cfeffdf91117c72bc8131340bd9c5f67a3010baeb4ecd6b0c7406f462"
+      },
+      "github_repo": "SWE-agent/mini-swe-agent",
+      "path": "vendor/mini-swe-04d809c",
+      "revision": "04d809ceab9df28f9adaed044884180159172930"
+    }
+  },
+  "summary_chunk_tokens": 4096
+}

@@ -43,6 +43,12 @@ def score_run(
     *,
     bootstrap_samples: int = 10_000,
 ) -> dict[str, Any]:
+    if run_path.is_dir() and (run_path / "manifest.json").is_file():
+        manifest = json.loads((run_path / "manifest.json").read_text(encoding="utf-8"))
+        if manifest.get("schema_version") == "compression_audit_pilot_v02_1":
+            from .development_rescore import rescore_pilot
+
+            return rescore_pilot(dataset_root, run_path, output_root)
     if output_root.exists():
         raise FileExistsError(f"score output already exists: {output_root}")
     immutable_roots = (dataset_root, run_path) if run_path.is_dir() else (dataset_root,)
@@ -65,6 +71,10 @@ def score_run(
     gold = {item.prefix_id: item for item in (*controlled[2], *legacy[2])}
     episode_path = run_path / "episodes.jsonl" if run_path.is_dir() else run_path
     episodes = load_jsonl(episode_path)
+    protocols = {row.get("protocol", "v0.1-diagnostic") for row in episodes}
+    if len(protocols) > 1:
+        raise ValueError("different answer protocols require separate score reports")
+    report_protocol = next(iter(protocols), "v0.1-diagnostic")
     if len({row.get("episode_id") for row in episodes}) != len(episodes):
         raise ValueError("run contains duplicate episode IDs")
     scored = []
@@ -104,7 +114,7 @@ def score_run(
     report = {
         "schema_version": REPORT_SCHEMA_VERSION,
         "benchmark_id": BENCHMARK_ID,
-        "protocol": "v0.2-development",
+        "protocol": report_protocol,
         "development_only": True,
         "independent_validation": False,
         "interpretation": (
@@ -161,7 +171,7 @@ def score_run(
     gate_report = _v0_gates(scored, counterfactuals)
     gate_report.update(
         {
-            "protocol": "v0.2-development",
+            "protocol": report_protocol,
             "development_only": True,
             "independent_validation": False,
             "interpretation": (
@@ -179,7 +189,7 @@ def score_run(
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "benchmark_id": BENCHMARK_ID,
-        "protocol": "v0.2-development",
+        "protocol": report_protocol,
         "development_only": True,
         "independent_validation": False,
         "run_path": str(run_path),

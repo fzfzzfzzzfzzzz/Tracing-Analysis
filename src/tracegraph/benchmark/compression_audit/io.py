@@ -137,11 +137,14 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.is_file():
         raise FileNotFoundError(path)
     rows: list[dict[str, Any]] = []
-    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-        if not line.strip():
-            continue
-        value = json.loads(line)
-        if not isinstance(value, dict):
-            raise ValueError(f"{path}:{line_number} must contain a JSON object")
-        rows.append(value)
+    # Iterate physical records. ``str.splitlines()`` also splits U+2028/U+2029
+    # embedded inside valid JSON strings; AMA-Bench contains such observations.
+    with path.open("r", encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, 1):
+            if not line.strip():
+                continue
+            value = json.loads(line)
+            if not isinstance(value, dict):
+                raise ValueError(f"{path}:{line_number} must contain a JSON object")
+            rows.append(value)
     return rows

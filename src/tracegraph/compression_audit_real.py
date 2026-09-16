@@ -398,11 +398,16 @@ def _candidate_row(
     hints: Mapping[str, Any],
     metadata: Mapping[str, Any],
 ) -> dict[str, Any]:
+    source_record_sha256 = stable_digest(raw_row)
     candidate_id = stable_digest(
         {
             "source": source,
             "task_id": task_id,
             "revision": revision,
+            # SWE-Gym contains multiple sampled runs for the same task.  Event
+            # ordinals repeat across those runs, so the immutable source record
+            # identity is required to prevent candidate-ID collisions.
+            "source_record_sha256": source_record_sha256,
             "failed_event": hints["failed_call_source_event_id"],
             "replacement_event": hints["replacement_call_source_event_id"],
         }
@@ -419,7 +424,7 @@ def _candidate_row(
         "split": "",
         "trajectory_revision": revision,
         "source_file_sha256": source_file_sha256,
-        "source_record_sha256": stable_digest(raw_row),
+        "source_record_sha256": source_record_sha256,
         "prefix": {
             "events": [dict(item) for item in events],
             "messages": [dict(item) for item in messages],

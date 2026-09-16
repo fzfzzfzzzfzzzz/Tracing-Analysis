@@ -158,7 +158,26 @@ def run_deterministic(
                 response_hash=stable_digest(answer),
                 artifact=artifact.to_dict(),
             )
-            rows.append(episode.to_dict())
+            row = episode.to_dict()
+            if protocol == DEVELOPMENT_PROTOCOL:
+                from .development_scoring import (
+                    canonical_answer, make_rubric, provider_response,
+                    rule_judge_fixture, wire_answer,
+                )
+                from .development_protocol import parse_development_submission
+
+                rubric = make_rubric(query, gold)
+                enough = any(set(ids) <= set(bundle.visible_event_ids)
+                             for ids in rubric["alternative_evidence_sets"])
+                wire = canonical_answer(rubric) if enough else {
+                    "a": "Insufficient visible history.", "e": [],
+                    "t": rubric["expected_scope"], "s": False}
+                row.update(protocol=protocol,
+                    answer=wire_answer(parse_development_submission(provider_response(wire))),
+                    rubric=rubric, judge=rule_judge_fixture(wire, rubric),
+                    judge_calibrated=True, judge_source="offline_rule_fixture",
+                    evidence_event_ids=wire["e"])
+            rows.append(row)
     output_root.mkdir(parents=True, exist_ok=False)
     if config_path is not None:
         frozen_config = load_config(config_path)

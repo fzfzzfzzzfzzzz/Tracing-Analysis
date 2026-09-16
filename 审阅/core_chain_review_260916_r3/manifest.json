@@ -1,0 +1,28 @@
+{
+  "artifacts": {
+    "core_chain_reviewer_packet.zip": "68dd52d77da1038b381d36728011e45da880d77944f76ddbde8446f0acc4ab31",
+    "internal_proposals.jsonl": "ffc982b5af2dc11be7ad823156a699eb2d3ca18935b218d3a35c5ee2c1afd1e0",
+    "reviewer_packet/README.md": "d9ecdade55d26d53c6323b628aae88b88a9fe499ae0ff5552db04a609c5f8383",
+    "reviewer_packet/cases.jsonl": "446211191ca45fca9bddebcae9e8cf6dca18b734a004c167898019441cded9a6",
+    "reviewer_packet/reviews.template.jsonl": "2a2e0864dfe11b67e96b5d3b8b61e2632a1ed8192c06789fa496bc55f6831d5d",
+    "rubrics.proposed.jsonl": "5ab4c5c83fb18df8fdada5cbfbd3671248281aacdb383a2d9da44b04c041b530"
+  },
+  "case_count": 7,
+  "config_sha256": "eec5111527578bb577faabc2bdf68a10c469c3f2d373391d4e5cca2ba5d412ac",
+  "dataset_file_manifest_sha256": "40844d9698c3f45c68d12287bee92b1fe591b9c2b53efe7738bcf15cc4174391",
+  "dataset_manifest_sha256": "74ffd61a6c0760fb6fa79dd8ce960e9bfccbd24e43240a035f99ae11a7ebbac0",
+  "development_only": true,
+  "independent_validation": false,
+  "model_answers_in_reviewer_packet": false,
+  "post_hoc_sensitivity": true,
+  "prefix_ids": [
+    "real:swe_gym:36e0eb232957ac82",
+    "real:swe_gym:918561a999a4e926",
+    "real:swe_gym:1e4f99776cda5c6a",
+    "real:swe_gym:fc45587d5bac8c04",
+    "real:swe_gym:9d1c9da136fff1b6",
+    "real:swe_gym:f31d17c3c14ddd51",
+    "real:swe_gym:9b9e94e63c2c9e54"
+  ],
+  "schema_version": "compression_audit_core_chain_packet_manifest_v1"
+}

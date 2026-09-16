@@ -110,6 +110,18 @@ class CompressionAuditDataTests(unittest.TestCase):
             self.assertNotIn(gold.failed_action, query.text)
             self.assertNotIn(gold.replacement_action, query.text)
 
+    def test_applicable_failure_chain_accepts_four_core_events(self):
+        value = self.gold[0].to_dict()
+        value.pop("gold_hash")
+        value["ordered_event_ids"] = value["ordered_event_ids"][:4]
+        value["evidence_by_field"]["ordered_event_ids"] = value["ordered_event_ids"]
+        parsed = FailureChainGold.from_dict(value)
+        self.assertEqual(len(parsed.ordered_event_ids), 4)
+
+        value["ordered_event_ids"] = value["ordered_event_ids"][:3]
+        with self.assertRaisesRegex(ValueError, "at least four"):
+            FailureChainGold.from_dict(value)
+
     def test_ingest_is_query_hidden_and_causal_reactivation_is_query_aware(self):
         prefix = self.prefixes[0]
         item_queries = [item for item in self.queries if item.prefix_id == prefix.prefix_id]
@@ -275,7 +287,13 @@ class CompressionAuditRealGateTests(unittest.TestCase):
                     {
                         "source_event_id": event_id,
                         "kind": "tool_call" if offset in {0, 4} else "observation",
-                        "content": f"event {offset}",
+                        "tool_name": (
+                            "method_a" if offset == 0 else "method_b" if offset == 4 else None
+                        ),
+                        "content": (
+                            {"name": "method_a" if offset == 0 else "method_b", "arguments": {}}
+                            if offset in {0, 4} else f"event {offset}"
+                        ),
                         "causal_role": (
                             "failed_action",
                             "failure_result",
@@ -303,6 +321,10 @@ class CompressionAuditRealGateTests(unittest.TestCase):
                 "replacement_arguments": {},
                 "resolution_evidence": "success",
                 "ordered_source_event_ids": event_ids,
+                "evidence_source_event_ids_by_field": {
+                    "failed_action": [event_ids[0]],
+                    "replacement_action": [event_ids[4]],
+                },
                 "recoverability": f"R{index % 4}",
             },
             "replay": {

@@ -212,11 +212,14 @@ def load_dataset(
             prefix_rows.extend(load_jsonl(real_prefix_path))
             query_rows.extend(load_jsonl(real_query_path))
             gold_rows.extend(load_jsonl(real_gold_path))
-    return (
-        [PrefixRecord.from_dict(item) for item in prefix_rows],
-        [QueryRecord.from_dict(item) for item in query_rows],
-        [FailureChainGold.from_dict(item) for item in gold_rows],
-    )
+    prefixes = [PrefixRecord.from_dict(item) for item in prefix_rows]
+    queries = [QueryRecord.from_dict(item) for item in query_rows]
+    gold = [FailureChainGold.from_dict(item) for item in gold_rows]
+    prefix_map = {prefix.prefix_id: prefix for prefix in prefixes}
+    for item in gold:
+        if item.failure_episode is not None and item.prefix_id in prefix_map:
+            item.failure_episode.validate_against_prefix(prefix_map[item.prefix_id])
+    return prefixes, queries, gold
 
 
 # Imported after definitions so mutually-referential helpers initialize safely.

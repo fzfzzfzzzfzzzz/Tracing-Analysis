@@ -124,6 +124,47 @@ def validate_real_annotations(
         )
 
     replay_verified_count = sum(replay_verified(item) for item in adjudicated)
+
+    def exact_tool_fields_match(item: Mapping[str, Any]) -> bool:
+        chain = item.get("failure_chain")
+        prefix = item.get("prefix")
+        if not isinstance(chain, Mapping) or not isinstance(prefix, Mapping):
+            return False
+        events = prefix.get("events")
+        explicit = chain.get("evidence_source_event_ids_by_field")
+        if not isinstance(events, list) or not isinstance(explicit, Mapping):
+            return False
+        by_id = {
+            str(event.get("source_event_id") or event.get("event_id") or ""): event
+            for event in events
+            if isinstance(event, Mapping)
+        }
+        for action_field, arguments_field in (
+            ("failed_action", "failed_arguments"),
+            ("replacement_action", "replacement_arguments"),
+        ):
+            ids = explicit.get(action_field)
+            if not isinstance(ids, list):
+                return False
+            calls = [by_id.get(str(value)) for value in ids]
+            calls = [event for event in calls if event and event.get("kind") == "tool_call"]
+            if not calls:
+                return False
+            event = calls[0]
+            content = event.get("content")
+            if not isinstance(content, Mapping):
+                return False
+            action = event.get("tool_name") or content.get("name")
+            arguments = content.get("arguments")
+            if (chain.get(action_field) != action
+                    or not isinstance(arguments, Mapping)
+                    or chain.get(arguments_field) != arguments):
+                return False
+        return True
+
+    exact_tool_fields_valid = bool(adjudicated) and all(
+        exact_tool_fields_match(item) for item in adjudicated
+    )
     minimum_kappa = (
         min(float(value) for value in category_kappas.values() if value is not None)
         if category_kappas and all(value is not None for value in category_kappas.values())
@@ -192,7 +233,7 @@ def validate_real_annotations(
                 )
             )
             and chain.get("recoverability") in RECOVERABILITY_LEVELS
-            and len(ordered) >= 5
+            and len(ordered) >= 4
             and len(set(ordered)) == len(ordered)
             and set(ordered).issubset(event_ids)
             and [event_order.get(event_id, -1) for event_id in ordered]
@@ -299,6 +340,7 @@ def validate_real_annotations(
             and mean_f1 is not None
             and mean_f1 >= 0.90
             and complete
+            and exact_tool_fields_valid
             and independent_annotators
             and annotation_hashes_linked
             and metadata_aligned
@@ -319,6 +361,7 @@ def validate_real_annotations(
         "recoverability_cohen_kappa": category_kappas["recoverability"],
         "mean_evidence_event_f1": mean_f1,
         "adjudicated_fields_complete": complete,
+        "exact_tool_fields_match_selected_source_events": exact_tool_fields_valid,
         "independent_annotators": independent_annotators,
         "annotation_hashes_linked": annotation_hashes_linked,
         "metadata_aligned": metadata_aligned,

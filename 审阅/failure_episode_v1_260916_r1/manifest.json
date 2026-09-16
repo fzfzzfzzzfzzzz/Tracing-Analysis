@@ -1,0 +1,87 @@
+{
+  "annotation_schema_version": "compression_audit_failure_episode_annotation_v1",
+  "case_count": 100,
+  "exposure_audit": {
+    "development_exposed_prefix_count": 7,
+    "exposure_dataset": "E:\\科研\\Tools Tracing\\outputs\\compression_audit\\glm_ai_adjudicated_dev_260916_r1",
+    "formal_test_overlap_count": 0,
+    "overlaps": [
+      {
+        "candidate_id": "140c1e0629907a5c515bd4c121171dbe49f0cabc6d460bd0be232e2b19ef1f1d",
+        "prefix_id": "real:swe_gym:36e0eb232957ac82",
+        "source": "swe_gym",
+        "split": "dev",
+        "task_id": "modin-project__modin-6772"
+      },
+      {
+        "candidate_id": "20127978ca121cb2ba70812c1394f679ea56a6ce9310cadcf51f2a01266490d2",
+        "prefix_id": "real:swe_gym:918561a999a4e926",
+        "source": "swe_gym",
+        "split": "dev",
+        "task_id": "modin-project__modin-6298"
+      },
+      {
+        "candidate_id": "2db97e969c699dd53c80c0aa665bff66cf8936c3cc0e0f2cd67e73be4dea7abe",
+        "prefix_id": "real:swe_gym:1e4f99776cda5c6a",
+        "source": "swe_gym",
+        "split": "dev",
+        "task_id": "modin-project__modin-6802"
+      },
+      {
+        "candidate_id": "94d3bd0f52bddb3ad35368936f091270df96e69faddf5cda0977b52ddca3d506",
+        "prefix_id": "real:swe_gym:fc45587d5bac8c04",
+        "source": "swe_gym",
+        "split": "dev",
+        "task_id": "Project-MONAI__MONAI-3340"
+      },
+      {
+        "candidate_id": "ac20aae1a649cfc9f84793cf7b2d44b9e6ecf710f89221fdc38f0e1bff3b1b1d",
+        "prefix_id": "real:swe_gym:9d1c9da136fff1b6",
+        "source": "swe_gym",
+        "split": "dev",
+        "task_id": "Project-MONAI__MONAI-6736"
+      },
+      {
+        "candidate_id": "d00846f17903487becdfb950f8ccb54efd7543311e71f3b8d59bf710b5122482",
+        "prefix_id": "real:swe_gym:f31d17c3c14ddd51",
+        "source": "swe_gym",
+        "split": "dev",
+        "task_id": "Project-MONAI__MONAI-5686"
+      },
+      {
+        "candidate_id": "f9e1b1410798b28b9b451477881c005ff21b2854206afbfd3e99af600a273dbf",
+        "prefix_id": "real:swe_gym:9b9e94e63c2c9e54",
+        "source": "swe_gym",
+        "split": "dev",
+        "task_id": "Project-MONAI__MONAI-4168"
+      }
+    ],
+    "selected_population_overlap_count": 7
+  },
+  "heuristic_candidate_hints_in_packet": false,
+  "model_answers_in_packet": false,
+  "old_ai_annotations_in_packet": false,
+  "packet_files": {
+    "reviewer_a": {
+      "directory": "E:\\科研\\Tools Tracing\\审阅\\failure_episode_v1_260916_r1\\reviewer_a",
+      "zip": "E:\\科研\\Tools Tracing\\审阅\\failure_episode_v1_260916_r1\\failure_episode_v1_reviewer_a_260916.zip",
+      "zip_sha256": "ae1472dffd3ff24d0b9dffc0945888cfbe1215d21f5b8b5c58e7bdc246b01c93"
+    },
+    "reviewer_b": {
+      "directory": "E:\\科研\\Tools Tracing\\审阅\\failure_episode_v1_260916_r1\\reviewer_b",
+      "zip": "E:\\科研\\Tools Tracing\\审阅\\failure_episode_v1_260916_r1\\failure_episode_v1_reviewer_b_260916.zip",
+      "zip_sha256": "ae1472dffd3ff24d0b9dffc0945888cfbe1215d21f5b8b5c58e7bdc246b01c93"
+    }
+  },
+  "packet_identity": "62257c80d71ab32ae70ef61beca6246c9d25cb97497e814786f93353f124461c",
+  "requires_two_independent_human_annotators": true,
+  "schema_version": "compression_audit_failure_episode_packet_v1",
+  "source_candidates_sha256": "af693e8fc9ebe81986fce7aa2673c81706e71506aa1330f0f487410949504e4b",
+  "source_root": "E:\\科研\\Tools Tracing\\data\\compression_audit\\real_annotations_v1",
+  "source_selection_manifest_sha256": "12e55c7bd3ef79b40a439a6e1970e3d4963a904268b1a0d2910e69f47f6b0666",
+  "split_counts": {
+    "dev": 20,
+    "test": 60,
+    "validation": 20
+  }
+}

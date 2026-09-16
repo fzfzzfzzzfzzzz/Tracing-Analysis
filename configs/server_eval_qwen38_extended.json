@@ -1,0 +1,153 @@
+{
+  "schema_version": "server_eval_v2",
+  "development_only": true,
+  "independent_validation": false,
+  "seed": 20260912,
+  "methods": [
+    "full_history",
+    "recent_masking",
+    "flat_bm25_archive",
+    "tracegraph_0_4",
+    "rolling_summary",
+    "acon_official",
+    "ama_official_bm25",
+    "ama_official_embedding",
+    "tracegraph_no_causal_closure",
+    "tracegraph_no_failure_priority",
+    "tracegraph_no_lifecycle_priority",
+    "tracegraph_no_retrieval",
+    "tracegraph_goal_scoped_fallback"
+  ],
+  "history_budgets": [
+    768,
+    1536,
+    3072
+  ],
+  "summary_chunk_tokens": 4096,
+  "interactive": true,
+  "judge_model_id": "qwen38_14b",
+  "models": [
+    {
+      "id": "qwen38_8b",
+      "display_name": "Qwen3.8 8B (planned; exact weights pending)",
+      "provider": "self_hosted_openai",
+      "base_url": null,
+      "served_model": null,
+      "weights_revision": null,
+      "server_version": null,
+      "returned_model_allowlist": [],
+      "api_key_env": "TRACEGRAPH_SERVER_API_KEY",
+      "context_window": 65536,
+      "max_output_tokens": 2048,
+      "thinking_transport": "chat_template_kwargs",
+      "tokenizer": null,
+      "runtime_receipt": null
+    },
+    {
+      "id": "qwen38_14b",
+      "display_name": "Qwen3.8 14B (planned; exact weights pending)",
+      "provider": "self_hosted_openai",
+      "base_url": null,
+      "served_model": null,
+      "weights_revision": null,
+      "server_version": null,
+      "returned_model_allowlist": [],
+      "api_key_env": "TRACEGRAPH_SERVER_API_KEY",
+      "context_window": 65536,
+      "max_output_tokens": 2048,
+      "thinking_transport": "chat_template_kwargs",
+      "tokenizer": null,
+      "runtime_receipt": null
+    }
+  ],
+  "limits": {
+    "request_limit": 120000,
+    "input_token_limit": 7864320000,
+    "output_token_limit": 245760000,
+    "wall_seconds": 259200,
+    "build_calls_per_prefix": 32,
+    "retrieve_calls_per_query": 6,
+    "timeout_seconds": 60,
+    "embedding_calls_per_prefix": 512
+  },
+  "gates": {
+    "judge_holdout_correct": 36,
+    "judge_critical_false_positives": 0,
+    "first_format_valid": 36,
+    "final_format_valid": 38,
+    "full_pass": 20,
+    "oracle_pass": 14
+  },
+  "data": {
+    "split": "dev",
+    "prefix_ids": [],
+    "exposure_manifest": null,
+    "rubrics": null
+  },
+  "sources": {
+    "acon": {
+      "github_repo": "microsoft/acon",
+      "revision": "d63f9ae18959dc7215ff62899c94c5e8c56847ae",
+      "path": "vendor/acon-main",
+      "prompt_dir": "experiments/appworld/prompts/context_opt",
+      "files": {
+        "LICENSE": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+        "src/productive_agents/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/productive_agents/ctxopt/__init__.py": "ebcf83bbc70b7b00e9b13853903019fc7fd9d203204701622c2d9accc574ee12",
+        "src/productive_agents/ctxopt/base.py": "d6b52a26288760c18b60152be6e95ee8147b965d1293744734a706ac86de3fdb",
+        "src/productive_agents/ctxopt/obs_optimizer.py": "ed21a897c90f6ae06b2d21ce563423dea30014a8df4db4b4896c439ba4915f9e",
+        "src/productive_agents/ctxopt/history_optimizer.py": "343089f43f8235889303eea73cd323686a649f1dc3b8d374a988c9d243b44306",
+        "experiments/appworld/prompts/context_opt/system_prompt.jinja": "f9a0a5188d643d0990a422e94557e781e9e4f9c00a6506f699c4956b7096a392",
+        "experiments/appworld/prompts/context_opt/prompt_user.jinja": "f500677dfd6609aef26fe2dbb3f9c928d2bd7ea8c0e432114feeed0636c7b385",
+        "experiments/appworld/prompts/context_opt/prompt_history_v2.jinja": "0508caa837c50403be2c8545646359a0fb72009fb14df3a8acf85aedaf649834"
+      }
+    },
+    "ama": {
+      "github_repo": "AMA-Bench/AMA-Bench",
+      "revision": "ddfd319e0be33424288c13806f1eafc63e625b59",
+      "path": "vendor/ama-bench-ddfd319",
+      "files": {
+        "LICENSE": "3c8bff7214b9a3f79e2b1e76413104fff6df8b315d6598b2e8d16a9cadd2e244",
+        "requirements.txt": "b894fe56d13d4ddeb38d530f850efccf4bd1633e2a40cc6ced59abfdb147b26b",
+        "src/method/ama_agent.py": "e5527c3b1e1a6f3416aee25ac9855e419d1150f6076ed85d5e22032569e4d050",
+        "src/method/base_method.py": "2d00b8992015e5617a16a7a68cc0dffd6f3d2456760f737ae075210e39775acb",
+        "src/method/ama_agent_core/construct.py": "d8292fd4d21931b70f5bbc393668dbfa9c546625d39a3e5234a716dc3d0a42aa",
+        "src/method/ama_agent_core/prompt.py": "8fddc6d4fcde390f899d82a8d3bcaaa1a162df95897738a31141e12760eadab5",
+        "src/method/ama_agent_core/retrieve.py": "53c3f512f8ca9ae1a99a0057e5dfb71fe518f0551605e93e956eda611087ce26",
+        "src/method/ama_agent_core/tool.py": "fc92c419c83bf6dcc9ecebe005bfba49aa88bdc8222f1fbcdbebbcaa92ef301d",
+        "src/method/ama_agent_core/utils.py": "ba679ca357908c1b0f051772ab4e968b13ed1ce11120268efc9f91597e9e262f",
+        "src/method/ama_agent_core/__init__.py": "81d5cf3731d940d51fdacb751c37dbe0efbcb728358c3aa0bc886e965c2a666e"
+      }
+    },
+    "mini": {
+      "github_repo": "SWE-agent/mini-swe-agent",
+      "revision": "04d809ceab9df28f9adaed044884180159172930",
+      "path": "vendor/mini-swe-04d809c",
+      "files": {
+        "LICENSE.md": "0f796e58f91d1c07bb2c1b1d0f8bf3a83017c3a5dec1bdc6fae733b2cd2e875b",
+        "pyproject.toml": "c176ff37a89ee88a2ea2ce746b9b7e723ea3175e53be5336ab99f5aba0d59ddf",
+        "src/minisweagent/exceptions.py": "0590393c56bee873c79a691dcb4f15cb39c85f1658598b84bfb295bfde56921d",
+        "src/minisweagent/__init__.py": "0a708308b1b62cc020b60799c3d54f665845f795b3f0c4fdac787c96a38d12c7",
+        "src/minisweagent/agents/default.py": "e8ef8aa365942d739c2ec5cb0879f60f377d2dc2de8ec670aaedf3bafb45a4c2",
+        "src/minisweagent/environments/docker.py": "21d389122b008e7b743d1e640207fda0b08d9010cf6323ddd02f0742b33b96a6",
+        "src/minisweagent/utils/log.py": "aee0cc34a32b542f4d3ef09e1f03b7418cf98ec54d506401d9d4401003c05a9f",
+        "src/minisweagent/utils/serialize.py": "3035b27cfeffdf91117c72bc8131340bd9c5f67a3010baeb4ecd6b0c7406f462"
+      }
+    }
+  },
+  "ama_code_search": {
+    "mode": "disabled",
+    "image": null
+  },
+  "embedding": {
+    "id": "embedding_pending",
+    "base_url": null,
+    "served_model": null,
+    "weights_revision": null,
+    "returned_model_allowlist": [],
+    "tokenizer": null,
+    "dimension": null,
+    "context_window": 8192,
+    "api_key_env": "TRACEGRAPH_EMBEDDING_API_KEY"
+  }
+}

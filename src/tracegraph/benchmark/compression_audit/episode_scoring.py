@@ -161,7 +161,7 @@ def _slot_score(
     raise ValueError(f"unsupported required answer field: {field_name}")
 
 
-def score_episode(
+def _score_legacy_episode(
     episode: Mapping[str, Any],
     prefix: PrefixRecord,
     query: QueryRecord,
@@ -357,3 +357,33 @@ def score_episode(
             (call.get("prompt_tokens") for call in episode.get("model_calls", ())), None
         ),
     }
+
+
+def score_episode(episode: Mapping[str, Any], prefix: PrefixRecord,
+                  query: QueryRecord, gold: FailureChainGold) -> dict[str, Any]:
+    if episode.get("protocol", "v0.1-diagnostic") == "v0.1-diagnostic":
+        return _score_legacy_episode(episode, prefix, query, gold)
+    if episode.get("protocol") != "v0.2-development":
+        raise ValueError("unsupported episode scoring protocol")
+    from .development_scoring import make_rubric, score_submission
+
+    # Reuse only the legacy metadata/cost envelope, never its answer interpretation.
+    result = _score_legacy_episode({**episode, "answer": None}, prefix, query, gold)
+    rubric = episode.get("rubric") or make_rubric(query, gold)
+    if rubric["query_id"] != query.query_id or rubric["gold_hash"] != gold.gold_hash:
+        raise ValueError("rubric does not belong to this query/gold")
+    visible = set(episode.get("artifact", {}).get("visible_event_ids", ()))
+    visible.update(_recovered_source_ids(episode))
+    score = score_submission(episode.get("answer"), rubric, sorted(visible),
+        judge=episode.get("judge"), judge_calibrated=episode.get("judge_calibrated") is True,
+        status=str(episode.get("status", "")),
+        executed_side_effects=int(episode.get("executed_unauthorized_side_effects", 0)),
+        unsafe_attempts=int(episode.get("unsafe_side_effect_attempts", 0)))
+    result.update(score)
+    result.update(ranking_eligible=False, causal_order_inversion=score["causal_constraint_rate"]
+                  is not None and score["causal_constraint_rate"] < 1,
+                  hallucination=bool(score["unknown_evidence_ids"]),
+                  primary_structured_accuracy=(sum(v["pass"] for v in score["strict_values"].values())
+                    / len(score["strict_values"]) if score["strict_values"] else None),
+                  auxiliary_explanation_quality=score["judge_auxiliary_pass"])
+    return result

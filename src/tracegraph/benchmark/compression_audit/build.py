@@ -222,11 +222,19 @@ def import_adjudicated_real(
         for index, (source_id, raw_event) in enumerate(
             zip(source_ids, raw_events, strict=True), 1
         ):
+            source_kind = _nonempty(raw_event.get("kind"), "real event kind")
+            canonical_kind = {
+                "system_message": "constraint",
+                "user_message": "goal",
+                "assistant_message": "decision",
+                "tool_result": "observation",
+            }.get(source_kind, source_kind)
             events.append(
                 {
                     "event_id": id_map[source_id],
                     "step_id": index,
-                    "kind": _nonempty(raw_event.get("kind"), "real event kind"),
+                    "kind": canonical_kind,
+                    **({"source_kind": source_kind} if canonical_kind != source_kind else {}),
                     "content": raw_event.get("content"),
                     "causal_role": str(raw_event.get("causal_role") or "unclassified"),
                     "token_count": int(
@@ -305,6 +313,7 @@ def import_adjudicated_real(
         evidence: dict[str, tuple[str, ...]] = {
             "failed_action": role_ids["failed_action"],
             "failed_arguments": role_ids["failed_action"],
+            "error_signature": role_ids["failure_result"],
             "failure_cause": role_ids["failure_result"] + role_ids["diagnostic_evidence"],
             "diagnostic_evidence": (
                 role_ids["failure_result"] + role_ids["diagnostic_evidence"]
@@ -329,6 +338,11 @@ def import_adjudicated_real(
                     f"{candidate_id}/{field_name}"
                 )
             evidence[str(field_name)] = tuple(id_map[item] for item in source_evidence_ids)
+        # Review packets name the error-producing observation by its causal role
+        # (failure_result), while the answer rubric names the claimed value
+        # (error_signature).  They refer to the same source evidence.
+        if "error_signature" not in explicit_evidence and "failure_result" in explicit_evidence:
+            evidence["error_signature"] = evidence["failure_result"]
         for arguments_field, action_field in (
             ("failed_arguments", "failed_action"),
             ("replacement_arguments", "replacement_action"),
@@ -401,7 +415,10 @@ def write_file_manifest(root: Path) -> list[dict[str, Any]]:
 def verify_file_manifest(root: Path) -> None:
     claimed = load_jsonl(root / "file_manifest.jsonl")
     actual = artifact_manifest(root)
-    if stable_digest(sorted(claimed, key=lambda row: str(row.get("path")))) != stable_digest(actual):
+    def by_relative_path(row: dict[str, Any]) -> str:
+        return str(row.get("path"))
+    if stable_digest(sorted(claimed, key=by_relative_path)) != stable_digest(
+            sorted(actual, key=by_relative_path)):
         raise ValueError(f"artifact SHA-256 manifest does not match files: {root}")
 
 

@@ -1,0 +1,74 @@
+{
+  "schema_version": "compression_audit_validation_v1",
+  "benchmark_id": "compression_audit_v1",
+  "diagnostic_ready": true,
+  "v1_ready": false,
+  "controlled": {
+    "prefix_count": 240,
+    "query_count": 1440,
+    "gold_count": 240,
+    "split_counts": {
+      "dev": 48,
+      "validation": 48,
+      "test": 144
+    },
+    "failure_family_counts": {
+      "dependency_version": 24,
+      "multi_failure_recovery": 24,
+      "parameter_schema": 24,
+      "partial_side_effect": 24,
+      "patch_test": 24,
+      "path_environment": 24,
+      "permission_policy": 24,
+      "shell_syntax": 24,
+      "stale_state": 24,
+      "timeout_resource": 24
+    },
+    "recoverability_counts": {
+      "R0": 60,
+      "R1": 60,
+      "R2": 60,
+      "R3": 60
+    }
+  },
+  "real": {
+    "ready": false,
+    "shared_double_annotations": 0,
+    "adjudicated_count": 0,
+    "swe_gym_count": 0,
+    "ama_bench_count": 0,
+    "swe_gym_replayable_count": 0,
+    "swe_gym_verified_replay_count": 0,
+    "split_counts": {
+      "dev": 0,
+      "validation": 0,
+      "test": 0
+    },
+    "repository_leakage": [],
+    "task_leakage": [],
+    "categorical_cohen_kappa_by_field": {
+      "failure_family": null,
+      "recoverability": null
+    },
+    "minimum_categorical_cohen_kappa": null,
+    "recoverability_cohen_kappa": null,
+    "mean_evidence_event_f1": null,
+    "adjudicated_fields_complete": false,
+    "independent_annotators": false,
+    "annotation_hashes_linked": false,
+    "metadata_aligned": false,
+    "candidate_provenance_complete": false,
+    "exact_annotation_sets": false,
+    "pinned_revisions_match": true,
+    "duplicate_candidate_ids": {
+      "candidates": false,
+      "annotator_a": false,
+      "annotator_b": false,
+      "adjudicated": false
+    }
+  },
+  "errors": [],
+  "warnings": [
+    "formal v1 is blocked until 100 real chains pass double-human annotation"
+  ]
+}

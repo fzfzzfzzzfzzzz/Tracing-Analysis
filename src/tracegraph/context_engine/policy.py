@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections import defaultdict, deque
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from typing import Any, Protocol, runtime_checkable
 
 from ..capture import estimate_tokens
@@ -22,6 +22,7 @@ from .types import (
     MemorySnapshot,
     MemorySpan,
     stable_value_hash,
+    _thaw,
 )
 
 
@@ -32,6 +33,7 @@ _QUERY_STOPWORDS = {
     "on", "or", "that", "the", "this", "to", "was", "what", "when", "where",
     "which", "why", "with",
 }
+_CAUSAL_RECONSTRUCTION_TERMS = {"causal", "chain", "reconstruct", "sequence"}
 _CAUSAL_EDGES = {
     EdgeType.PRODUCES,
     EdgeType.FAILED_WITH,
@@ -106,6 +108,7 @@ class GraphConstrainedPolicy:
         preserve_failures: bool = True,
         preserve_constraints: bool = True,
         causal_closure: bool = True,
+        token_counter: Callable[[Any], int] | None = None,
     ) -> None:
         self.policy_id = policy_id
         self.selection_mode = selection_mode
@@ -113,6 +116,12 @@ class GraphConstrainedPolicy:
         self.preserve_failures = preserve_failures
         self.preserve_constraints = preserve_constraints
         self.causal_closure = causal_closure
+        self.token_counter = token_counter or estimate_tokens
+
+    def _count_tokens(self, value: Any) -> int:
+        # Frozen snapshots contain mapping proxies; count the provider JSON value,
+        # never their Python repr produced by a serializer's default=str fallback.
+        return self.token_counter(_thaw(tuple(value) if isinstance(value, list) else value))
 
     def snapshot(
         self, graph: TraceGraph, goal_context: Mapping[str, Any], budget: int
@@ -194,7 +203,7 @@ class GraphConstrainedPolicy:
                 node_ids=grouped_span.node_ids,
                 message_ordinals=grouped_span.message_ordinals,
                 messages=messages,
-                token_count=estimate_tokens(messages),
+                token_count=self._count_tokens(messages),
                 hard=hard,
                 live=live,
                 uncertain=uncertain,
@@ -236,6 +245,7 @@ class GraphConstrainedPolicy:
             return {span.span_id for span in spans}
         if self.selection_mode == "last_k":
             return {span.span_id for span in spans[-self.last_k :]}
+        span_map = {span.span_id: span for span in spans}
         hard = {span.span_id for span in spans if span.hard}
         if self.selection_mode in {"summary", "llm-only"}:
             candidates = list(reversed(spans))
@@ -253,12 +263,23 @@ class GraphConstrainedPolicy:
             )
         selected = set(hard)
         used = sum(span.token_count for span in spans if span.span_id in selected)
+        # A causal evidence chain is the selection unit.  Hard evidence remains
+        # retained even when its whole unit cannot fit, but we never use spare
+        # capacity to add only an arbitrary subset of its dependencies.
+        for span_id in sorted(hard):
+            additions = self._dependency_closure(span_id, span_map).difference(selected)
+            added_tokens = self._span_tokens(additions, span_map)
+            if used + added_tokens <= budget:
+                selected.update(additions)
+                used += added_tokens
         for span in candidates:
             if span.span_id in selected:
                 continue
-            if used + span.token_count <= budget:
-                selected.add(span.span_id)
-                used += span.token_count
+            additions = self._dependency_closure(span.span_id, span_map).difference(selected)
+            added_tokens = self._span_tokens(additions, span_map)
+            if used + added_tokens <= budget:
+                selected.update(additions)
+                used += added_tokens
         return selected
 
     def materialize(
@@ -292,7 +313,44 @@ class GraphConstrainedPolicy:
         error_terms = set(_terms(query_map.get("error_signature", ())))
         span_map = snapshot.span_map()
         selected = set(snapshot.selected_span_ids) | set(snapshot.hard_span_ids)
+        pruned_span_ids: set[str] = set()
+        current_only = "current" in query_terms and "unrelated" in query_terms
+        if current_only:
+            # Current-only questions must not inherit a resident historical chain.
+            # Hard obligations stay; the current fact can be retrieved below.
+            keep = set(snapshot.hard_span_ids)
+            pruned_span_ids.update(selected.difference(keep))
+            selected.intersection_update(keep)
         retrieved: set[str] = set()
+        safety: list[str] = []
+        causal_failure = False
+        retrieval_used = 0
+        read_span_ids: set[str] = set()
+        causal_seed_span_ids: set[str] = set()
+        if query_terms.intersection(_CAUSAL_RECONSTRUCTION_TERMS):
+            causal_seed_span_ids = {
+                span_id for span_id in selected if span_map[span_id].dependency_span_ids
+            }
+            closure = set().union(*(
+                self._dependency_closure(span_id, span_map)
+                for span_id in causal_seed_span_ids
+            )) if causal_seed_span_ids else set()
+            if causal_seed_span_ids:
+                keep = closure | set(snapshot.hard_span_ids)
+                pruned_span_ids.update(selected.difference(keep))
+                selected.intersection_update(keep)
+            additions = closure.difference(selected)
+            read_span_ids.update(additions)
+            closure_tokens = self._span_tokens(additions, span_map)
+            if closure_tokens > retrieval_budget:
+                safety.append("retrieval_budget_expanded_for_complete_causal_closure")
+            projected = selected | additions
+            if self._span_tokens(projected, span_map) + self._count_tokens(query_text) > maximum:
+                causal_failure = True
+                safety.append("causal_closure_exceeds_provider_limit")
+            else:
+                retrieved.update(additions)
+                retrieval_used += closure_tokens
         omitted = set(span_map).difference(selected)
         ranked: list[tuple[tuple[int, int, int, int, int, str], str]] = []
         for span_id in omitted:
@@ -306,7 +364,12 @@ class GraphConstrainedPolicy:
                 | error_terms.intersection(span.error_terms)
             )
             lexical = len(query_terms.intersection(span.lexical_terms))
-            if not (explicit or entity or action_or_error or lexical):
+            # One generic word is too weak to justify reading an entire causal
+            # component. A standalone current-fact span is the narrow exception
+            # for an explicit current-only query. Structured fields and explicit
+            # IDs remain sufficient.
+            current_fact = current_only and lexical >= 1 and not span.dependency_span_ids
+            if not (explicit or entity or action_or_error or lexical >= 2 or current_fact):
                 continue
             proximity = span.chronological_index
             key = (
@@ -314,17 +377,15 @@ class GraphConstrainedPolicy:
             )
             ranked.append((key, span_id))
         ranked.sort()
-        safety: list[str] = []
-        causal_failure = False
-        retrieval_used = 0
-        for _, span_id in ranked:
+        for _, span_id in (() if causal_failure else ranked):
             closure = self._dependency_closure(span_id, span_map)
             additions = closure.difference(selected).difference(retrieved)
+            read_span_ids.update(additions)
             closure_tokens = sum(span_map[item].token_count for item in additions)
             if retrieval_used + closure_tokens > retrieval_budget:
                 safety.append("retrieval_budget_expanded_for_complete_causal_closure")
             projected = selected | retrieved | additions
-            if self._span_tokens(projected, span_map) + estimate_tokens(query_text) > maximum:
+            if self._span_tokens(projected, span_map) + self._count_tokens(query_text) > maximum:
                 causal_failure = True
                 safety.append("causal_closure_exceeds_provider_limit")
                 break
@@ -357,8 +418,8 @@ class GraphConstrainedPolicy:
         protocol_errors = _protocol_errors(messages)
         safety.extend(protocol_errors)
         hard_tokens = self._span_tokens(set(snapshot.hard_span_ids), span_map)
-        final_tokens = estimate_tokens(messages)
-        if hard_tokens + estimate_tokens(query_text) > maximum:
+        final_tokens = self._count_tokens(messages)
+        if hard_tokens + self._count_tokens(query_text) > maximum:
             safety.append("hard_closure_exceeds_provider_limit")
         if any(span.uncertain and not span.messages for span in ordered):
             safety.append("selected_uncertain_span_has_no_recoverable_content")
@@ -403,6 +464,9 @@ class GraphConstrainedPolicy:
                 "snapshot_hash": snapshot.snapshot_hash,
                 "graph_hash": snapshot.graph_hash,
                 "retrieval_order": [span_id for _, span_id in ranked],
+                "read_span_ids": sorted(read_span_ids),
+                "causal_seed_span_ids": sorted(causal_seed_span_ids),
+                "pruned_span_ids": sorted(pruned_span_ids),
                 "objective": [
                     "zero_safety_violations",
                     "max_evidence_failure_constraint_coverage",
@@ -440,6 +504,7 @@ def clone_policy(policy: GraphConstrainedPolicy, **changes: Any) -> GraphConstra
 
     values = {
         "policy_id": policy.policy_id,
+        "token_counter": policy.token_counter,
         "selection_mode": policy.selection_mode,
         "last_k": policy.last_k,
         "preserve_failures": policy.preserve_failures,

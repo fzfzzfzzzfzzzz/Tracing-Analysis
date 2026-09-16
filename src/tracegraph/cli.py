@@ -120,11 +120,37 @@ def build_parser() -> PlainArgumentParser:
     benchmark_score.add_argument("--run", type=Path, required=True)
     benchmark_score.add_argument("--output", type=Path, required=True)
     benchmark_score.add_argument("--bootstrap-samples", type=int, default=10000)
+    pilot_prepare = subparsers.add_parser("benchmark-pilot-prepare", help="冻结 v0.2 小实验请求和费用预检")
+    pilot_prepare.add_argument("--config", type=Path, required=True)
+    pilot_prepare.add_argument("--dataset", type=Path, required=True)
+    pilot_prepare.add_argument("--output", type=Path, required=True)
+    pilot_run = subparsers.add_parser("benchmark-pilot-run", help="运行 v0.2 离线闭环或已授权试跑")
+    pilot_run.add_argument("--prepared", type=Path, required=True)
+    pilot_run.add_argument("--dataset", type=Path, required=True)
+    pilot_run.add_argument("--output", type=Path, required=True)
+    pilot_run.add_argument("--mode", choices=("offline", "live"), default="offline")
+    pilot_run.add_argument("--live-authorization-id")
+    pilot_run.add_argument("--max-new-requests", type=int)
+    pilot_run.add_argument("--resume", action="store_true")
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.command == "benchmark-pilot-prepare":
+        from .benchmark.compression_audit.development_experiment import prepare_pilot
+
+        result = prepare_pilot(args.config, args.dataset, args.output)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0
+    if args.command == "benchmark-pilot-run":
+        from .benchmark.compression_audit.development_runner import run_pilot
+
+        result = run_pilot(args.prepared, args.dataset, args.output, mode=args.mode,
+                           authorization_id=args.live_authorization_id, resume=args.resume,
+                           max_new_requests=args.max_new_requests)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 1 if result["stop_reason"] else 0
     if args.command == "validate-trace":
         graph = TraceGraph.load(args.path)
         errors = graph.validate()

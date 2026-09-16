@@ -1,0 +1,553 @@
+CASE index=35 candidate_id=d4e7c0c0c500cbd962cba7fc0dafa772645d921480a8c1cae7df67dde1419fb1
+source=ama_bench repository=ama:crafter task_id=9 split=test events=550
+====================================================================================================
+t0000:action | CALL environment_action/: Do
+t0000:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 7 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0001:action | CALL environment_action/: Move South
+t0001:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 6 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0002:action | CALL environment_action/: Move South
+t0002:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 5 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0003:action | CALL environment_action/: Move South
+t0003:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 4 steps to your south-east ⏎ - tree 4 steps to your east ⏎ - water 7 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0004:action | CALL environment_action/: Move East
+t0004:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 3 steps to your south-east ⏎ - tree 3 steps to your east ⏎ - water 6 steps to your south-east ⏎ - sand 6 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0005:action | CALL environment_action/: Move East
+t0005:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 3 steps to your south-west ⏎ - tree 2 steps to your east ⏎ - water 5 steps to your south-east ⏎ - sand 5 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0006:action | CALL environment_action/: Move East
+t0006:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 3 steps to your south-west ⏎ - tree 1 step to your east ⏎ - water 4 steps to your south-east ⏎ - sand 4 steps to your south-east ⏎ ⏎ You face tree at your front.
+t0007:action | CALL environment_action/: Do
+t0007:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 3 steps to your south-west ⏎ - water 4 steps to your south-east ⏎ - tree 2 steps to your east ⏎ - sand 4 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0008:action | CALL environment_action/: Move East
+t0008:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 4 steps to your south-west ⏎ - water 3 steps to your south ⏎ - tree 1 step to your east ⏎ - sand 3 steps to your south-east ⏎ ⏎ You face tree at your front.
+t0009:action | CALL environment_action/: Do
+t0009:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 3 steps to your west ⏎ - water 3 steps to your south ⏎ - tree 2 steps to your south-east ⏎ - sand 3 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0010:action | CALL environment_action/: Move South
+t0010:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 4 steps to your north-west ⏎ - water 2 steps to your south ⏎ - tree 1 step to your east ⏎ - sand 2 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0011:action | CALL environment_action/: Move East
+t0011:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 4 steps to your north-west ⏎ - water 2 steps to your south ⏎ - tree 1 step to your east ⏎ - sand 2 steps to your south-east ⏎ ⏎ You face tree at your front.
+t0012:action | CALL environment_action/: Do
+t0012:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 5 steps to your north-west ⏎ - water 2 steps to your south ⏎ - sand 2 steps to your south-east ⏎ - tree 5 steps to your north-east ⏎ ⏎ You face grass at your front.
+t0013:action | CALL environment_action/: Move South
+t0013:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 6 steps to your north-west ⏎ - tree 6 steps to your north-east ⏎ - water 1 step to your south ⏎ - sand 1 step to your east ⏎ ⏎ You face water at your front.
+t0014:action | CALL environment_action/: Move South
+t0014:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 6 steps to your north-west ⏎ - tree 6 steps to your north-east ⏎ - water 1 step to your south ⏎ - sand 1 step to your east ⏎ ⏎ You face water at your front.
+t0015:action | CALL environment_action/: Move East
+t0015:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - water 1 step to your south ⏎ - sand 2 steps to your north-east ⏎ - tree 5 steps to your north-east ⏎ ⏎ You face water at your front.
+t0016:action | CALL environment_action/: Do
+t0016:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - water 1 step to your south ⏎ - sand 2 steps to your north-east ⏎ - tree 5 steps to your north-east ⏎ ⏎ You face water at your front.
+t0017:action | CALL environment_action/: Move North
+t0017:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - water 2 steps to your south ⏎ - sand 1 step to your south ⏎ - tree 4 steps to your north-east ⏎ ⏎ You face grass at your front.
+t0018:action | CALL environment_action/: Move North
+t0018:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - water 2 steps to your east ⏎ - sand 2 steps to your south ⏎ - tree 3 steps to your north-east ⏎ ⏎ You face grass at your front.
+t0019:action | CALL environment_action/: Move North
+t0019:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 3 steps to your south ⏎ - water 3 steps to your south-east ⏎ - tree 2 steps to your east ⏎ ⏎ You face grass at your front.
+t0020:action | CALL environment_action/: Move East
+t0020:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 2 steps to your south ⏎ - water 2 steps to your south-east ⏎ - tree 1 step to your east ⏎ ⏎ You face tree at your front.
+t0021:action | CALL environment_action/: Do
+t0021:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 2 steps to your south ⏎ - water 2 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0022:action | CALL environment_action/: Make Wood Pickaxe
+t0022:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 2 steps to your south ⏎ - water 2 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0023:action | CALL environment_action/: Place Table
+t0023:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 2 steps to your south ⏎ - water 2 steps to your south-east ⏎ - table 1 step to your east ⏎ ⏎ You face table at your front.
+t0024:action | CALL environment_action/: Make Wood Pickaxe
+t0024:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 2 steps to your south ⏎ - water 2 steps to your south-east ⏎ - table 1 step to your east ⏎ ⏎ You face table at your front.
+t0025:action | CALL environment_action/: Move South
+t0025:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - water 1 step to your east ⏎ - sand 1 step to your south ⏎ - table 2 steps to your north-east ⏎ ⏎ You face sand at your front.
+t0026:action | CALL environment_action/: Move South
+t0026:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - water 1 step to your south ⏎ - sand 2 steps to your south-west ⏎ - table 3 steps to your north-east ⏎ ⏎ You face water at your front.
+t0027:action | CALL environment_action/: Move South
+t0027:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - water 1 step to your south ⏎ - sand 2 steps to your south-west ⏎ - table 3 steps to your north-east ⏎ ⏎ You face water at your front.
+t0028:action | CALL environment_action/: Move North
+t0028:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - water 1 step to your east ⏎ - sand 1 step to your south ⏎ - table 2 steps to your north-east ⏎ ⏎ You face grass at your front.
+t0029:action | CALL environment_action/: Move North
+t0029:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 2 steps to your south ⏎ - water 2 steps to your south-east ⏎ - table 1 step to your east ⏎ ⏎ You face grass at your front.
+t0030:action | CALL environment_action/: Move East
+t0030:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 2 steps to your south ⏎ - water 2 steps to your south-east ⏎ - table 1 step to your east ⏎ ⏎ You face table at your front.
+t0031:action | CALL environment_action/: Make Wood Sword
+t0031:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 2 steps to your south ⏎ - water 2 steps to your south-east ⏎ - table 1 step to your east ⏎ ⏎ You face table at your front.
+t0032:action | CALL environment_action/: Move West
+t0032:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 3 steps to your south ⏎ - water 3 steps to your south-east ⏎ - table 2 steps to your east ⏎ ⏎ You face grass at your front.
+t0033:action | CALL environment_action/: Move North
+t0033:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 3 steps to your east ⏎ - table 3 steps to your south-east ⏎ - water 4 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0034:action | CALL environment_action/: Move East
+t0034:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 2 steps to your east ⏎ - table 2 steps to your south-east ⏎ - water 3 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0035:action | CALL environment_action/: Move East
+t0035:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 1 step to your east ⏎ - table 1 step to your south ⏎ - water 2 steps to your south ⏎ ⏎ You face sand at your front.
+t0036:action | CALL environment_action/: Move East
+t0036:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 1 step to your north ⏎ - table 2 steps to your south-west ⏎ - water 1 step to your south ⏎ ⏎ You face water at your front.
+t0037:action | CALL environment_action/: Do
+t0037:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 1 step to your north ⏎ - table 2 steps to your south-west ⏎ - water 1 step to your south ⏎ ⏎ You face water at your front.
+t0038:action | CALL environment_action/: Move North
+t0038:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - sand 1 step to your north ⏎ - table 3 steps to your south-west ⏎ - water 1 step to your east ⏎ ⏎ You face sand at your front.
+t0039:action | CALL environment_action/: Move North
+t0039:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 5 steps to your north-west ⏎ - sand 1 step to your north ⏎ - table 4 steps to your south-west ⏎ - water 1 step to your east ⏎ ⏎ You face sand at your front.
+t0040:action | CALL environment_action/: Move North
+t0040:observation | OBS : You see: ⏎ - grass 2 steps to your west ⏎ - tree 4 steps to your north-west ⏎ - sand 1 step to your west ⏎ - water 1 step to your north ⏎ ⏎ You face water at your front.
+t0041:action | CALL environment_action/: Move West
+t0041:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west ⏎ - sand 1 step to your north ⏎ - water 2 steps to your north-east ⏎ ⏎ You face grass at your front.
+t0042:action | CALL environment_action/: Move West
+t0042:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 2 steps to your north ⏎ - sand 1 step to your east ⏎ - water 3 steps to your north-east ⏎ ⏎ You face grass at your front.
+t0043:action | CALL environment_action/: Move North
+t0043:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 6 steps to your north-west ⏎ - tree 1 step to your north ⏎ - sand 1 step to your east ⏎ - water 2 steps to your east ⏎ ⏎ You face tree at your front.
+t0044:action | CALL environment_action/: Do
+t0044:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 5 steps to your north-west ⏎ - sand 1 step to your east ⏎ - water 2 steps to your east ⏎ ⏎ You face grass at your front.
+t0045:action | CALL environment_action/: Move West
+t0045:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 4 steps to your north-west ⏎ - sand 2 steps to your east ⏎ - water 3 steps to your east ⏎ ⏎ You face grass at your front.
+t0046:action | CALL environment_action/: Move North
+t0046:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 4 steps to your north-west ⏎ - sand 2 steps to your east ⏎ - water 3 steps to your east ⏎ ⏎ You face grass at your front.
+t0047:action | CALL environment_action/: Move South
+t0047:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 4 steps to your north-west ⏎ - sand 2 steps to your east ⏎ - water 3 steps to your east ⏎ ⏎ You face grass at your front.
+t0048:action | CALL environment_action/: Move North
+t0048:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 4 steps to your north-west ⏎ - sand 2 steps to your east ⏎ - water 3 steps to your east ⏎ ⏎ You face grass at your front.
+t0049:action | CALL environment_action/: Move North
+t0049:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 4 steps to your west ⏎ - tree 4 steps to your north-west ⏎ - sand 2 steps to your east ⏎ - water 3 steps to your east ⏎ ⏎ You face grass at your front.
+t0050:action | CALL environment_action/: Move West
+t0050:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 3 steps to your west ⏎ - tree 3 steps to your north ⏎ - sand 3 steps to your east ⏎ - water 4 steps to your east ⏎ ⏎ You face grass at your front.
+t0051:action | CALL environment_action/: Move West
+t0051:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 3 steps to your west ⏎ - tree 4 steps to your north-east ⏎ - sand 4 steps to your east ⏎ ⏎ You face grass at your front.
+t0052:action | CALL environment_action/: Move West
+t0052:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 3 steps to your west ⏎ - tree 5 steps to your north-east ⏎ ⏎ You face grass at your front.
+t0053:action | CALL environment_action/: Move West
+t0053:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 3 steps to your south-west ⏎ - tree 6 steps to your north-east ⏎ ⏎ You face grass at your front.
+t0054:action | CALL environment_action/: Move West
+t0054:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - cow 2 steps to your south-west ⏎ - tree 7 steps to your north-east ⏎ ⏎ You face grass at your front.
+t0055:action | CALL environment_action/: Move West
+t0055:observation | OBS : You see: ⏎ - stone 7 steps to your north-west ⏎ - grass 1 step to your west ⏎ - cow 1 step to your south ⏎ ⏎ You face grass at your front.
+t0056:action | CALL environment_action/: Move South
+t0056:observation | OBS : You see: ⏎ - stone 7 steps to your north-west ⏎ - grass 1 step to your west ⏎ - cow 1 step to your south ⏎ ⏎ You face cow at your front.
+t0057:action | CALL environment_action/: Do
+t0057:observation | OBS : You see: ⏎ - stone 7 steps to your north-west ⏎ - grass 1 step to your west ⏎ - cow 1 step to your south ⏎ ⏎ You face cow at your front.
+t0058:action | CALL environment_action/: Do
+t0058:observation | OBS : You see: ⏎ - stone 7 steps to your north-west ⏎ - grass 1 step to your west ⏎ - cow 6 steps to your north-east ⏎ ⏎ You face grass at your front.
+t0059:action | CALL environment_action/: Move West
+t0059:observation | OBS : You see: ⏎ - path 7 steps to your north-west ⏎ - grass 1 step to your west ⏎ - stone 6 steps to your north-west ⏎ - cow 7 steps to your north-east ⏎ ⏎ You face grass at your front.
+t0060:action | CALL environment_action/: Move West
+t0060:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - path 6 steps to your south-west ⏎ - stone 5 steps to your north-west ⏎ ⏎ You face grass at your front.
+t0061:action | CALL environment_action/: Move West
+t0061:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - stone 4 steps to your north-west ⏎ - lava 7 steps to your south-west ⏎ - path 5 steps to your south-west ⏎ ⏎ You face grass at your front.
+t0062:action | CALL environment_action/: Move West
+t0062:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your west ⏎ - stone 3 steps to your north ⏎ - path 4 steps to your south-west ⏎ - lava 6 steps to your south-west ⏎ ⏎ You face grass at your front.
+t0063:action | CALL environment_action/: Move West
+t0063:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - stone 3 steps to your south-west ⏎ - path 3 steps to your south-west ⏎ - tree 3 steps to your west ⏎ - lava 5 steps to your south-west ⏎ ⏎ You face grass at your front.
+t0064:action | CALL environment_action/: Move West
+t0064:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 2 steps to your west ⏎ - stone 2 steps to your south-west ⏎ - path 2 steps to your south ⏎ - lava 4 steps to your south-west ⏎ ⏎ You face grass at your front.
+t0065:action | CALL environment_action/: Move West
+t0065:observation | OBS : You see: ⏎ - grass 1 step to your north ⏎ - stone 1 step to your south ⏎ - path 3 steps to your south-east ⏎ - tree 1 step to your west ⏎ - lava 3 steps to your south ⏎ ⏎ You face tree at your front.
+t0066:action | CALL environment_action/: Do
+t0066:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - stone 1 step to your south ⏎ - path 3 steps to your south-east ⏎ - tree 5 steps to your north-west ⏎ - lava 3 steps to your south ⏎ ⏎ You face grass at your front.
+t0067:action | CALL environment_action/: Move South
+t0067:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - stone 1 step to your south ⏎ - path 3 steps to your south-east ⏎ - tree 5 steps to your north-west ⏎ - lava 3 steps to your south ⏎ ⏎ You face stone at your front.
+t0068:action | CALL environment_action/: Do
+t0068:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - stone 2 steps to your south-west ⏎ - path 1 step to your south ⏎ - tree 5 steps to your north-west ⏎ - lava 3 steps to your south ⏎ ⏎ You face path at your front.
+t0069:action | CALL environment_action/: Move South
+t0069:observation | OBS : You see: ⏎ - grass 1 step to your north ⏎ - stone 1 step to your west ⏎ - path 2 steps to your south-east ⏎ - tree 6 steps to your north-west ⏎ - lava 2 steps to your south ⏎ ⏎ You face stone at your front.
+t0070:action | CALL environment_action/: Do
+t0070:observation | OBS : You see: ⏎ - grass 1 step to your north ⏎ - stone 1 step to your west ⏎ - path 1 step to your south ⏎ - tree 6 steps to your north-west ⏎ - lava 2 steps to your south ⏎ ⏎ You face path at your front.
+t0071:action | CALL environment_action/: Move North
+t0071:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - stone 2 steps to your south-west ⏎ - path 1 step to your south ⏎ - tree 5 steps to your north-west ⏎ - lava 3 steps to your south ⏎ ⏎ You face grass at your front.
+t0072:action | CALL environment_action/: Move North
+t0072:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - stone 3 steps to your south-west ⏎ - tree 4 steps to your north-west ⏎ - path 2 steps to your south ⏎ ⏎ You face grass at your front.
+t0073:action | CALL environment_action/: Move West
+t0073:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west ⏎ - path 3 steps to your south-east ⏎ - cow 4 steps to your south-west ⏎ - stone 2 steps to your south ⏎ ⏎ You face grass at your front.
+t0074:action | CALL environment_action/: Move West
+t0074:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 2 steps to your north-west ⏎ - path 4 steps to your south-east ⏎ - cow 2 steps to your west ⏎ - stone 3 steps to your south ⏎ ⏎ You face grass at your front.
+t0075:action | CALL environment_action/: Move West
+t0075:observation | OBS : You see: ⏎ - grass 1 step to your south ⏎ - tree 1 step to your north ⏎ - path 5 steps to your south-west ⏎ - cow 1 step to your west ⏎ - stone 3 steps to your south ⏎ ⏎ You face cow at your front.
+t0076:action | CALL environment_action/: Do
+t0076:observation | OBS : You see: ⏎ - grass 1 step to your south ⏎ - tree 1 step to your north ⏎ - path 5 steps to your south-west ⏎ - cow 1 step to your west ⏎ - stone 3 steps to your south ⏎ ⏎ You face cow at your front.
+t0077:action | CALL environment_action/: Do
+t0077:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 1 step to your north ⏎ - path 5 steps to your south-west ⏎ - stone 3 steps to your south ⏎ ⏎ You face grass at your front.
+t0078:action | CALL environment_action/: Move North
+t0078:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 1 step to your north ⏎ - path 5 steps to your south-west ⏎ - stone 3 steps to your south ⏎ ⏎ You face tree at your front.
+t0079:action | CALL environment_action/: Do
+t0079:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north ⏎ - path 5 steps to your south-west ⏎ - stone 3 steps to your south ⏎ ⏎ You face grass at your front.
+t0080:action | CALL environment_action/: Move South
+t0080:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - path 3 steps to your south ⏎ - tree 5 steps to your north-west ⏎ - stone 2 steps to your south ⏎ - lava 6 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0081:action | CALL environment_action/: Move South
+t0081:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - stone 1 step to your south ⏎ - path 2 steps to your south ⏎ - lava 5 steps to your south-east ⏎ ⏎ You face stone at your front.
+t0082:action | CALL environment_action/: Move South
+t0082:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - stone 1 step to your south ⏎ - path 2 steps to your south ⏎ - lava 5 steps to your south-east ⏎ ⏎ You face stone at your front.
+t0083:action | CALL environment_action/: Do
+t0083:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - stone 2 steps to your south-west ⏎ - path 1 step to your south ⏎ - lava 5 steps to your south-east ⏎ ⏎ You face path at your front.
+t0084:action | CALL environment_action/: Move South
+t0084:observation | OBS : You see: ⏎ - grass 1 step to your north ⏎ - stone 1 step to your west ⏎ - path 1 step to your south ⏎ - lava 4 steps to your south-east ⏎ ⏎ You face path at your front.
+t0085:action | CALL environment_action/: Move North
+t0085:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - stone 2 steps to your south-west ⏎ - path 1 step to your south ⏎ - lava 5 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0086:action | CALL environment_action/: Move North
+t0086:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - path 2 steps to your south ⏎ - tree 5 steps to your north-west ⏎ - stone 3 steps to your south-west ⏎ - lava 6 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0087:action | CALL environment_action/: Place Table
+t0087:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - path 2 steps to your south ⏎ - tree 5 steps to your north-west ⏎ - stone 3 steps to your south-west ⏎ - table 1 step to your north ⏎ - lava 6 steps to your south-east ⏎ ⏎ You fa …(+23ch)
+t0088:action | CALL environment_action/: Make Stone Pickaxe
+t0088:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - path 2 steps to your south ⏎ - tree 5 steps to your north-west ⏎ - stone 3 steps to your south-west ⏎ - table 1 step to your north ⏎ - lava 6 steps to your south-east ⏎ ⏎ You fa …(+23ch)
+t0089:action | CALL environment_action/: Move South
+t0089:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - stone 2 steps to your south-west ⏎ - path 1 step to your south ⏎ - table 2 steps to your north ⏎ - lava 5 steps to your south-east ⏎ ⏎ You face path at your front.
+t0090:action | CALL environment_action/: Move South
+t0090:observation | OBS : You see: ⏎ - grass 1 step to your north ⏎ - stone 1 step to your west ⏎ - path 1 step to your south ⏎ - table 3 steps to your north ⏎ - lava 4 steps to your south-east ⏎ ⏎ You face path at your front.
+t0091:action | CALL environment_action/: Move South
+t0091:observation | OBS : You see: ⏎ - grass 2 steps to your north ⏎ - stone 1 step to your south ⏎ - path 1 step to your west ⏎ - lava 3 steps to your south-east ⏎ ⏎ You face stone at your front.
+t0092:action | CALL environment_action/: Do
+t0092:observation | OBS : You see: ⏎ - grass 2 steps to your north ⏎ - stone 2 steps to your north-west ⏎ - path 1 step to your west ⏎ - lava 3 steps to your south-east ⏎ ⏎ You face path at your front.
+t0093:action | CALL environment_action/: Move West
+t0093:observation | OBS : You see: ⏎ - grass 2 steps to your north ⏎ - stone 1 step to your north ⏎ - path 1 step to your west ⏎ - lava 4 steps to your south-east ⏎ ⏎ You face path at your front.
+t0094:action | CALL environment_action/: Move West
+t0094:observation | OBS : You see: ⏎ - sand 6 steps to your north-west ⏎ - grass 2 steps to your west ⏎ - stone 1 step to your south ⏎ - path 1 step to your west ⏎ - lava 5 steps to your south-east ⏎ ⏎ You face path at your front.
+t0095:action | CALL environment_action/: Move West
+t0095:observation | OBS : You see: ⏎ - water 7 steps to your north-west ⏎ - sand 5 steps to your north-west ⏎ - grass 1 step to your west ⏎ - stone 1 step to your south ⏎ - path 1 step to your east ⏎ ⏎ You face grass at your front.
+t0096:action | CALL environment_action/: Move West
+t0096:observation | OBS : You see: ⏎ - water 5 steps to your north-west ⏎ - sand 4 steps to your west ⏎ - grass 1 step to your west ⏎ - stone 1 step to your south ⏎ - path 1 step to your east ⏎ ⏎ You face grass at your front.
+t0097:action | CALL environment_action/: Move West
+t0097:observation | OBS : You see: ⏎ - water 4 steps to your west ⏎ - sand 3 steps to your west ⏎ - grass 1 step to your west ⏎ - stone 2 steps to your south-east ⏎ - path 2 steps to your east ⏎ ⏎ You face grass at your front.
+t0098:action | CALL environment_action/: Move West
+t0098:observation | OBS : You see: ⏎ - water 3 steps to your west ⏎ - sand 2 steps to your west ⏎ - grass 1 step to your west ⏎ - stone 3 steps to your south-east ⏎ - path 3 steps to your east ⏎ ⏎ You face grass at your front.
+t0099:action | CALL environment_action/: Do
+t0099:observation | OBS : You see: ⏎ - water 3 steps to your west ⏎ - sand 2 steps to your west ⏎ - grass 1 step to your west ⏎ - stone 3 steps to your south-east ⏎ - path 3 steps to your east ⏎ ⏎ You face grass at your front.
+t0100:action | CALL environment_action/: Move West
+t0100:observation | OBS : You see: ⏎ - water 2 steps to your west ⏎ - sand 1 step to your west ⏎ - grass 1 step to your south ⏎ - stone 4 steps to your south-east ⏎ - path 4 steps to your east ⏎ ⏎ You face sand at your front.
+t0101:action | CALL environment_action/: Move West
+t0101:observation | OBS : You see: ⏎ - water 1 step to your west ⏎ - sand 2 steps to your south-west ⏎ - grass 1 step to your south ⏎ - stone 5 steps to your south-east ⏎ ⏎ You face water at your front.
+t0102:action | CALL environment_action/: Do
+t0102:observation | OBS : You see: ⏎ - water 1 step to your west ⏎ - sand 2 steps to your south-west ⏎ - grass 1 step to your south ⏎ - stone 5 steps to your south-east ⏎ ⏎ You face water at your front.
+t0103:action | CALL environment_action/: Move South
+t0103:observation | OBS : You see: ⏎ - water 2 steps to your west ⏎ - sand 1 step to your west ⏎ - grass 1 step to your south ⏎ - stone 4 steps to your south-east ⏎ ⏎ You face grass at your front.
+t0104:action | CALL environment_action/: Move South
+t0104:observation | OBS : You see: ⏎ - water 3 steps to your west ⏎ - sand 2 steps to your west ⏎ - stone 3 steps to your south ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your south-west ⏎ ⏎ You face grass at your front.
+t0105:action | CALL environment_action/: Do
+t0105:observation | OBS : You see: ⏎ - water 3 steps to your west ⏎ - sand 2 steps to your west ⏎ - stone 3 steps to your south ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your south-west ⏎ ⏎ You face grass at your front.
+t0106:action | CALL environment_action/: Move West
+t0106:observation | OBS : You see: ⏎ - water 2 steps to your west ⏎ - sand 1 step to your west ⏎ - stone 4 steps to your south-east ⏎ - grass 1 step to your south ⏎ - tree 3 steps to your south ⏎ ⏎ You face sand at your front.
+t0107:action | CALL environment_action/: Move South
+t0107:observation | OBS : You see: ⏎ - water 3 steps to your north-west ⏎ - sand 2 steps to your west ⏎ - stone 3 steps to your south-east ⏎ - coal 7 steps to your south-west ⏎ - grass 1 step to your west ⏎ - tree 2 steps to your south ⏎ - path 4 …(+59ch)
+t0108:action | CALL environment_action/: Move South
+t0108:observation | OBS : You see: ⏎ - water 4 steps to your north-west ⏎ - sand 3 steps to your west ⏎ - stone 2 steps to your south-east ⏎ - coal 6 steps to your south-west ⏎ - grass 1 step to your west ⏎ - tree 1 step to your south ⏎ - path 3  …(+57ch)
+t0109:action | CALL environment_action/: Do
+t0109:observation | OBS : You see: ⏎ - water 4 steps to your north-west ⏎ - sand 3 steps to your west ⏎ - stone 2 steps to your south-east ⏎ - coal 6 steps to your south-west ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your south-west ⏎ - p …(+64ch)
+t0110:action | CALL environment_action/: Move West
+t0110:observation | OBS : You see: ⏎ - water 3 steps to your north-west ⏎ - sand 2 steps to your west ⏎ - grass 1 step to your west ⏎ - stone 3 steps to your south-west ⏎ - coal 5 steps to your south-west ⏎ - tree 2 steps to your south ⏎ - path 4 …(+59ch)
+t0111:action | CALL environment_action/: Move South
+t0111:observation | OBS : You see: ⏎ - water 4 steps to your north-west ⏎ - sand 3 steps to your north-west ⏎ - grass 1 step to your west ⏎ - stone 2 steps to your west ⏎ - coal 4 steps to your south-west ⏎ - tree 1 step to your south ⏎ - path 3  …(+57ch)
+t0112:action | CALL environment_action/: Do
+t0112:observation | OBS : You see: ⏎ - water 4 steps to your north-west ⏎ - sand 3 steps to your north-west ⏎ - grass 1 step to your west ⏎ - stone 2 steps to your west ⏎ - coal 4 steps to your south-west ⏎ - path 3 steps to your south-east ⏎ ⏎ Y …(+28ch)
+t0113:action | CALL environment_action/: Move West
+t0113:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north-west ⏎ - grass 1 step to your north ⏎ - path 4 steps to your south-east ⏎ - stone 1 step to your west ⏎ - coal 3 steps to your south-west ⏎ ⏎ You fa …(+23ch)
+t0114:action | CALL environment_action/: Do
+t0114:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north-west ⏎ - grass 1 step to your north ⏎ - path 1 step to your west ⏎ - stone 2 steps to your west ⏎ - coal 3 steps to your south-west ⏎ ⏎ You face pat …(+16ch)
+t0115:action | CALL environment_action/: Move West
+t0115:observation | OBS : You see: ⏎ - water 3 steps to your north-west ⏎ - grass 1 step to your east ⏎ - stone 1 step to your west ⏎ - path 4 steps to your south-west ⏎ - sand 1 step to your north ⏎ - coal 2 steps to your south-west ⏎ ⏎ You face …(+21ch)
+t0116:action | CALL environment_action/: Do
+t0116:observation | OBS : You see: ⏎ - water 3 steps to your north-west ⏎ - grass 1 step to your east ⏎ - stone 1 step to your south ⏎ - path 1 step to your west ⏎ - sand 1 step to your north ⏎ - coal 2 steps to your south-west ⏎ ⏎ You face path  …(+14ch)
+t0117:action | CALL environment_action/: Move South
+t0117:observation | OBS : You see: ⏎ - water 3 steps to your north-west ⏎ - grass 1 step to your east ⏎ - stone 1 step to your south ⏎ - path 1 step to your west ⏎ - sand 1 step to your north ⏎ - coal 2 steps to your south-west ⏎ ⏎ You face stone …(+15ch)
+t0118:action | CALL environment_action/: Do
+t0118:observation | OBS : You see: ⏎ - water 3 steps to your north-west ⏎ - grass 1 step to your east ⏎ - stone 3 steps to your south-west ⏎ - path 1 step to your west ⏎ - sand 1 step to your north ⏎ - coal 2 steps to your south-west ⏎ ⏎ You face …(+20ch)
+t0119:action | CALL environment_action/: Move West
+t0119:observation | OBS : You see: ⏎ - water 2 steps to your north ⏎ - sand 1 step to your north ⏎ - grass 1 step to your west ⏎ - tree 5 steps to your south-west ⏎ - path 1 step to your east ⏎ - stone 2 steps to your south-west ⏎ - coal 1 step t …(+46ch)
+t0120:action | CALL environment_action/: Move South
+t0120:observation | OBS : You see: ⏎ - water 2 steps to your north ⏎ - sand 1 step to your north ⏎ - grass 1 step to your west ⏎ - tree 5 steps to your south-west ⏎ - path 1 step to your east ⏎ - stone 2 steps to your south-west ⏎ - coal 1 step t …(+45ch)
+t0121:action | CALL environment_action/: Do
+t0121:observation | OBS : You see: ⏎ - water 2 steps to your north ⏎ - sand 1 step to your north ⏎ - grass 1 step to your west ⏎ - tree 5 steps to your south-west ⏎ - path 1 step to your south ⏎ - stone 2 steps to your south-west ⏎ - coal 3 steps …(+52ch)
+t0122:action | CALL environment_action/: Move South
+t0122:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 2 steps to your north-west ⏎ - tree 4 steps to your west ⏎ - path 1 step to your north ⏎ - stone 1 step to your west ⏎ - coal 2 steps to y …(+88ch)
+t0123:action | CALL environment_action/: Do
+t0123:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 2 steps to your north-west ⏎ - tree 4 steps to your west ⏎ - path 1 step to your north ⏎ - stone 1 step to your west ⏎ - coal 2 steps to y …(+87ch)
+t0124:action | CALL environment_action/: Move North
+t0124:observation | OBS : You see: ⏎ - water 2 steps to your north ⏎ - sand 1 step to your north ⏎ - grass 1 step to your west ⏎ - tree 5 steps to your south-west ⏎ - path 1 step to your south ⏎ - stone 2 steps to your south-west ⏎ - coal 3 steps …(+52ch)
+t0125:action | CALL environment_action/: Move North
+t0125:observation | OBS : You see: ⏎ - water 1 step to your north ⏎ - sand 1 step to your west ⏎ - grass 2 steps to your south-west ⏎ - tree 6 steps to your south-west ⏎ - path 1 step to your south ⏎ - stone 3 steps to your south-west ⏎ - coal 4  …(+58ch)
+t0126:action | CALL environment_action/: Do
+t0126:observation | OBS : You see: ⏎ - water 1 step to your north ⏎ - sand 1 step to your west ⏎ - grass 2 steps to your south-west ⏎ - tree 6 steps to your south-west ⏎ - path 1 step to your south ⏎ - stone 3 steps to your south-west ⏎ - coal 4  …(+58ch)
+t0127:action | CALL environment_action/: Move South
+t0127:observation | OBS : You see: ⏎ - water 2 steps to your north ⏎ - sand 1 step to your north ⏎ - grass 1 step to your west ⏎ - tree 5 steps to your south-west ⏎ - path 1 step to your south ⏎ - stone 2 steps to your south-west ⏎ - coal 3 steps …(+52ch)
+t0128:action | CALL environment_action/: Move South
+t0128:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 2 steps to your north-west ⏎ - tree 4 steps to your west ⏎ - path 1 step to your north ⏎ - stone 1 step to your west ⏎ - coal 2 steps to y …(+87ch)
+t0129:action | CALL environment_action/: Move West
+t0129:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 2 steps to your north-west ⏎ - tree 4 steps to your west ⏎ - path 1 step to your north ⏎ - stone 1 step to your west ⏎ - coal 2 steps to y …(+88ch)
+t0130:action | CALL environment_action/: Move West
+t0130:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 2 steps to your north-west ⏎ - tree 4 steps to your west ⏎ - path 1 step to your north ⏎ - stone 1 step to your west ⏎ - coal 2 steps to y …(+88ch)
+t0131:action | CALL environment_action/: Move West
+t0131:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 2 steps to your north-west ⏎ - tree 4 steps to your west ⏎ - path 1 step to your north ⏎ - stone 1 step to your west ⏎ - coal 2 steps to y …(+88ch)
+t0132:action | CALL environment_action/: Do
+t0132:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 2 steps to your north-west ⏎ - tree 4 steps to your west ⏎ - path 1 step to your west ⏎ - stone 2 steps to your south-west ⏎ - coal 2 step …(+93ch)
+t0133:action | CALL environment_action/: Move West
+t0133:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your north ⏎ - tree 3 steps to your west ⏎ - path 1 step to your west ⏎ - stone 1 step to your south ⏎ - coal 3 steps to your so …(+81ch)
+t0134:action | CALL environment_action/: Move West
+t0134:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - tree 2 steps to your west ⏎ - grass 1 step to your north ⏎ - path 1 step to your south ⏎ - stone 1 step to your west ⏎ - coal 4 steps to your so …(+82ch)
+t0135:action | CALL environment_action/: Move West
+t0135:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - tree 2 steps to your west ⏎ - grass 1 step to your north ⏎ - path 1 step to your south ⏎ - stone 1 step to your west ⏎ - coal 4 steps to your so …(+82ch)
+t0136:action | CALL environment_action/: Do
+t0136:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - tree 2 steps to your west ⏎ - grass 1 step to your north ⏎ - path 1 step to your west ⏎ - stone 2 steps to your south-west ⏎ - coal 4 steps to y …(+87ch)
+t0137:action | CALL environment_action/: Move West
+t0137:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 3 steps to your north-west ⏎ - grass 1 step to your north ⏎ - tree 1 step to your west ⏎ - path 1 step to your east ⏎ - stone 1 step to your south ⏎ - coal 5 steps to you …(+45ch)
+t0138:action | CALL environment_action/: Do
+t0138:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 3 steps to your north-west ⏎ - grass 1 step to your west ⏎ - tree 2 steps to your west ⏎ - path 1 step to your east ⏎ - stone 1 step to your south ⏎ - coal 5 steps to you …(+46ch)
+t0139:action | CALL environment_action/: Move West
+t0139:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your north ⏎ - tree 1 step to your west ⏎ - path 1 step to your south ⏎ - stone 2 steps to your south-east ⏎ ⏎ You face tree at  …(+11ch)
+t0140:action | CALL environment_action/: Do
+t0140:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west ⏎ - path 1 step to your south ⏎ - stone 2 steps to your south-east ⏎ ⏎ You face gr …(+18ch)
+t0141:action | CALL environment_action/: Move South
+t0141:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - stone 1 step to your east ⏎ ⏎ You face path at your front.
+t0142:action | CALL environment_action/: Move South
+t0142:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 5 steps to your north-west ⏎ - path 1 step to your north ⏎ - stone 2 steps to your north-east ⏎ ⏎ You face path at your front.
+t0143:action | CALL environment_action/: Move North
+t0143:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - stone 1 step to your east ⏎ ⏎ You face grass at your front.
+t0144:action | CALL environment_action/: Place Table
+t0144:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - table 1 step to your north ⏎ - stone 1 step to your east ⏎ ⏎ You face table at y …(+10ch)
+t0145:action | CALL environment_action/: Make Stone Sword
+t0145:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - table 1 step to your north ⏎ - stone 1 step to your east ⏎ - skeleton 6 steps to …(+50ch)
+t0146:action | CALL environment_action/: Move South
+t0146:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 5 steps to your north-west ⏎ - path 1 step to your north ⏎ - table 2 steps to your north ⏎ - stone 2 steps to your north-east ⏎ - arrow 4 steps to your south-east ⏎ - skele …(+63ch)
+t0147:action | CALL environment_action/: Move North
+t0147:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - table 1 step to your north ⏎ - stone 1 step to your east ⏎ - arrow 4 steps to yo …(+87ch)
+t0148:action | CALL environment_action/: Move East
+t0148:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - table 1 step to your north ⏎ - stone 1 step to your east ⏎ - arrow 3 steps to yo …(+87ch)
+t0149:action | CALL environment_action/: Do
+t0149:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - table 1 step to your north ⏎ - arrow 2 steps to your south ⏎ - stone 3 steps to  …(+82ch)
+t0150:action | CALL environment_action/: Move South
+t0150:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 5 steps to your north-west ⏎ - arrow 2 steps to your south-west ⏎ - path 1 step to your north ⏎ - table 2 steps to your north ⏎ - stone 3 steps to your east ⏎ - skeleton 4  …(+57ch)
+t0151:action | CALL environment_action/: Move North
+t0151:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - arrow 4 steps to your south-west ⏎ - path 1 step to your south ⏎ - table 1 step to your north ⏎ - stone 3 step …(+88ch)
+t0152:action | CALL environment_action/: Move South
+t0152:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - arrow 2 steps to your south-east ⏎ - tree 5 steps to your north-west ⏎ - path 1 step to your north ⏎ - table 2 steps to your north ⏎ - skeleton 4 steps to your south-east ⏎ - st …(+57ch)
+t0153:action | CALL environment_action/: Move North
+t0153:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - arrow 2 steps to your south ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - table 1 step to your north ⏎ - stone 3 steps to  …(+83ch)
+t0154:action | CALL environment_action/: Sleep
+t0154:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - arrow 3 steps to your south- …(+170ch)
+t0155:action | CALL environment_action/: Noop
+t0155:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - arrow 2 steps to your east ⏎ …(+164ch)
+t0156:action | CALL environment_action/: Noop
+t0156:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - arrow 3 steps to your north-east ⏎ - tree 4 steps to your north- …(+170ch)
+t0157:action | CALL environment_action/: Noop
+t0157:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - arrow 4 steps to your north-east ⏎ - tree 4 steps to your north- …(+170ch)
+t0158:action | CALL environment_action/: Noop
+t0158:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎  …(+170ch)
+t0159:action | CALL environment_action/: Noop
+t0159:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎  …(+164ch)
+t0160:action | CALL environment_action/: Noop
+t0160:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎  …(+170ch)
+t0161:action | CALL environment_action/: Noop
+t0161:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎  …(+165ch)
+t0162:action | CALL environment_action/: Noop
+t0162:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - arrow 3 steps to your south- …(+170ch)
+t0163:action | CALL environment_action/: Noop
+t0163:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - arrow 3 steps to your south- …(+170ch)
+t0164:action | CALL environment_action/: Noop
+t0164:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - arrow 2 steps to your south-east ⏎ - tree 4 steps to your north- …(+170ch)
+t0165:action | CALL environment_action/: Noop
+t0165:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - arrow 1 step to your east ⏎ - tree 4 steps to your north-west ⏎  …(+163ch)
+t0166:action | CALL environment_action/: Noop
+t0166:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎  …(+170ch)
+t0167:action | CALL environment_action/: Noop
+t0167:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎  …(+165ch)
+t0168:action | CALL environment_action/: Noop
+t0168:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - arrow 2 steps to your south- …(+170ch)
+t0169:action | CALL environment_action/: Noop
+t0169:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - arrow 1 step to your east ⏎  …(+163ch)
+t0170:action | CALL environment_action/: Noop
+t0170:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - arrow 2 steps to your north-east ⏎ - tree 4 steps to your north- …(+170ch)
+t0171:action | CALL environment_action/: Noop
+t0171:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - arrow 2 steps to your south ⏎ - tree 4 steps to your north-west  …(+165ch)
+t0172:action | CALL environment_action/: Noop
+t0172:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - arrow 2 steps to your south- …(+170ch)
+t0173:action | CALL environment_action/: Noop
+t0173:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - arrow 1 step to your east ⏎  …(+163ch)
+t0174:action | CALL environment_action/: Noop
+t0174:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - arrow 2 steps to your north-east ⏎ - tree 4 steps to your north- …(+170ch)
+t0175:action | CALL environment_action/: Noop
+t0175:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - arrow 3 steps to your south ⏎ - tree 4 steps to your north-west  …(+165ch)
+t0176:action | CALL environment_action/: Noop
+t0176:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎  …(+165ch)
+t0177:action | CALL environment_action/: Noop
+t0177:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your east ⏎ - …(+163ch)
+t0178:action | CALL environment_action/: Noop
+t0178:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎  …(+170ch)
+t0179:action | CALL environment_action/: Noop
+t0179:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - table 1 step to your north ⏎ - arrow 1 step to your east ⏎ - skeleton 4 steps to …(+81ch)
+t0180:action | CALL environment_action/: Do
+t0180:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - table 1 step to your north ⏎ - arrow 2 steps to your south ⏎ - skeleton 4 steps  …(+83ch)
+t0181:action | CALL environment_action/: Make Stone Pickaxe
+t0181:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your east ⏎ - table 1 step to your north ⏎ - arrow 1 step to your south ⏎ - skeleton 3 steps to …(+76ch)
+t0182:action | CALL environment_action/: Move South
+t0182:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - table 1 step to your north ⏎ - arrow 4 steps to your north-east ⏎ - skeleton 4 s …(+87ch)
+t0183:action | CALL environment_action/: Move South
+t0183:observation | OBS : You see: ⏎ - grass 1 step to your west ⏎ - tree 5 steps to your north-west ⏎ - path 1 step to your north ⏎ - table 2 steps to your north ⏎ - skeleton 4 steps to your south-east ⏎ - stone 3 steps to your east ⏎ ⏎ You face …(+20ch)
+t0184:action | CALL environment_action/: Move North
+t0184:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - table 1 step to your north ⏎ - arrow 4 steps to your south-east ⏎ - skeleton 5 s …(+88ch)
+t0185:action | CALL environment_action/: Move North
+t0185:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - table 1 step to your north ⏎ - arrow 3 steps to your south ⏎ - skeleton 5 steps  …(+83ch)
+t0186:action | CALL environment_action/: Move North
+t0186:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your south ⏎ - table 1 step to your north ⏎ - arrow 2 steps to your south ⏎ - skeleton 5 steps  …(+83ch)
+t0187:action | CALL environment_action/: Move East
+t0187:observation | OBS : You see: ⏎ - sand 4 steps to your north-west ⏎ - grass 2 steps to your west ⏎ - tree 5 steps to your north-west ⏎ - path 1 step to your west ⏎ - table 2 steps to your north-west ⏎ - arrow 2 steps to your south-west ⏎ - s …(+128ch)
+t0188:action | CALL environment_action/: Move East
+t0188:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - tree 6 steps to your north-west ⏎ - grass 3 steps to your west ⏎ - path 1 step to your west ⏎ - table 3 steps to your north-west ⏎ - arrow 2 steps to your west ⏎ - stone 1 step …(+77ch)
+t0189:action | CALL environment_action/: Do
+t0189:observation | OBS : You see: ⏎ - sand 4 steps to your north-east ⏎ - tree 6 steps to your north-west ⏎ - grass 2 steps to your north ⏎ - path 1 step to your west ⏎ - arrow 3 steps to your north ⏎ - stone 2 steps to your south-east ⏎ - coal  …(+53ch)
+t0190:action | CALL environment_action/: Move West
+t0190:observation | OBS : You see: ⏎ - sand 4 steps to your north-west ⏎ - grass 2 steps to your west ⏎ - tree 5 steps to your north-west ⏎ - path 1 step to your west ⏎ - arrow 3 steps to your south-east ⏎ - stone 3 steps to your south-east ⏎ - c …(+57ch)
+t0191:action | CALL environment_action/: Move West
+t0191:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your north ⏎ - arrow 3 steps to your south-east ⏎ - stone 4 steps to your south-east ⏎ ⏎ You fa …(+23ch)
+t0192:action | CALL environment_action/: Move North
+t0192:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west ⏎ - path 1 step to your south ⏎ - arrow 3 steps to your south-east ⏎ - stone 5 ste …(+55ch)
+t0193:action | CALL environment_action/: Move West
+t0193:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0194:action | CALL environment_action/: Move South
+t0194:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0195:action | CALL environment_action/: Move North
+t0195:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0196:action | CALL environment_action/: Move South
+t0196:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0197:action | CALL environment_action/: Noop
+t0197:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0198:action | CALL environment_action/: Move North
+t0198:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0199:action | CALL environment_action/: Move South
+t0199:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0200:action | CALL environment_action/: Move North
+t0200:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0201:action | CALL environment_action/: Move South
+t0201:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0202:action | CALL environment_action/: Move North
+t0202:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0203:action | CALL environment_action/: Move West
+t0203:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0204:action | CALL environment_action/: Move East
+t0204:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0205:action | CALL environment_action/: Move North
+t0205:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0206:action | CALL environment_action/: Move South
+t0206:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0207:action | CALL environment_action/: Move North
+t0207:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0208:action | CALL environment_action/: Move South
+t0208:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0209:action | CALL environment_action/: Move West
+t0209:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0210:action | CALL environment_action/: Move North
+t0210:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0211:action | CALL environment_action/: Move South
+t0211:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0212:action | CALL environment_action/: Move North
+t0212:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0213:action | CALL environment_action/: Move South
+t0213:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0214:action | CALL environment_action/: Move East
+t0214:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0215:action | CALL environment_action/: Move North
+t0215:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0216:action | CALL environment_action/: Move South
+t0216:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0217:action | CALL environment_action/: Move West
+t0217:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0218:action | CALL environment_action/: Move North
+t0218:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0219:action | CALL environment_action/: Move South
+t0219:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0220:action | CALL environment_action/: Noop
+t0220:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0221:action | CALL environment_action/: Move North
+t0221:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0222:action | CALL environment_action/: Move South
+t0222:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0223:action | CALL environment_action/: Move East
+t0223:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0224:action | CALL environment_action/: Move North
+t0224:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0225:action | CALL environment_action/: Move South
+t0225:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0226:action | CALL environment_action/: Move South
+t0226:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0227:action | CALL environment_action/: Move North
+t0227:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0228:action | CALL environment_action/: Move East
+t0228:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - arrow 2 steps to your south-west ⏎ - path 1 step to your north ⏎ - skeleton 2 steps to your east ⏎ - stone 4 s …(+56ch)
+t0229:action | CALL environment_action/: Move North
+t0229:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west ⏎ - arrow 4 steps to your south-west ⏎ - path 1 step to your south ⏎ - skeleton 4  …(+95ch)
+t0230:action | CALL environment_action/: Move West
+t0230:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0231:action | CALL environment_action/: Move North
+t0231:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0232:action | CALL environment_action/: Move South
+t0232:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0233:action | CALL environment_action/: Move East
+t0233:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west ⏎ - path 1 step to your south ⏎ - skeleton 3 steps to your south ⏎ - stone 5 steps …(+52ch)
+t0234:action | CALL environment_action/: Move South
+t0234:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your north ⏎ - skeleton 3 steps to your south ⏎ - arrow 2 steps to your south-east ⏎ - stone 4  …(+57ch)
+t0235:action | CALL environment_action/: Move North
+t0235:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west ⏎ - path 1 step to your south ⏎ - arrow 2 steps to your south ⏎ - skeleton 4 steps …(+90ch)
+t0236:action | CALL environment_action/: Move West
+t0236:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0237:action | CALL environment_action/: Move East
+t0237:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west ⏎ - arrow 3 steps to your south ⏎ - path 1 step to your south ⏎ - skeleton 4 steps …(+89ch)
+t0238:action | CALL environment_action/: Move South
+t0238:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - arrow 1 step to your south ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your north ⏎ - stone 4 steps to your south-east ⏎ - skeleton 4 s …(+51ch)
+t0239:action | CALL environment_action/: Do
+t0239:observation | OBS : You see: ⏎ - sand 3 steps to your north ⏎ - grass 1 step to your west ⏎ - arrow 5 steps to your south-west ⏎ - tree 4 steps to your north-west ⏎ - path 1 step to your north ⏎ - skeleton 3 steps to your south ⏎ - stone 4  …(+57ch)
+t0240:action | CALL environment_action/: Move North
+t0240:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west ⏎ - path 1 step to your south ⏎ - skeleton 3 steps to your south ⏎ - arrow 4 steps …(+90ch)
+t0241:action | CALL environment_action/: Move West
+t0241:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0242:action | CALL environment_action/: Move South
+t0242:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0243:action | CALL environment_action/: Sleep
+t0243:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0244:action | CALL environment_action/: Noop
+t0244:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0245:action | CALL environment_action/: Noop
+t0245:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0246:action | CALL environment_action/: Move North
+t0246:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0247:action | CALL environment_action/: Move South
+t0247:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0248:action | CALL environment_action/: Move North
+t0248:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0249:action | CALL environment_action/: Move South
+t0249:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0250:action | CALL environment_action/: Move North
+t0250:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0251:action | CALL environment_action/: Sleep
+t0251:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0252:action | CALL environment_action/: Noop
+t0252:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0253:action | CALL environment_action/: Noop
+t0253:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0254:action | CALL environment_action/: Noop
+t0254:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0255:action | CALL environment_action/: Noop
+t0255:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0256:action | CALL environment_action/: Noop
+t0256:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0257:action | CALL environment_action/: Noop
+t0257:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0258:action | CALL environment_action/: Noop
+t0258:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0259:action | CALL environment_action/: Noop
+t0259:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0260:action | CALL environment_action/: Noop
+t0260:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0261:action | CALL environment_action/: Noop
+t0261:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0262:action | CALL environment_action/: Noop
+t0262:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0263:action | CALL environment_action/: Noop
+t0263:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0264:action | CALL environment_action/: Move North
+t0264:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0265:action | CALL environment_action/: Move North
+t0265:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0266:action | CALL environment_action/: Move South
+t0266:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0267:action | CALL environment_action/: Move West
+t0267:observation | OBS : You see nothing away from you. ⏎ ⏎ You face nothing at your front.
+t0268:action | CALL environment_action/: Move East
+t0268:observation | OBS : You see: ⏎ - water 2 steps to your north ⏎ - sand 1 step to your north ⏎ - grass 1 step to your west ⏎ - arrow 3 steps to your north-east ⏎ - tree 2 steps to your west ⏎ - cow 3 steps to your south-west ⏎ - path 1 step t …(+123ch)
+t0269:action | CALL environment_action/: Do
+t0269:observation | OBS : You see: ⏎ - water 2 steps to your north ⏎ - sand 1 step to your north ⏎ - grass 1 step to your west ⏎ - arrow 4 steps to your north-east ⏎ - tree 2 steps to your west ⏎ - cow 3 steps to your south-west ⏎ - path 1 step t …(+117ch)
+t0270:action | CALL environment_action/: Move South
+t0270:observation | OBS : You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west ⏎ - cow 2 steps to your south-west ⏎ - path 1 step to your south ⏎ - skeleton 4 st …(+92ch)
+t0271:action | CALL environment_action/: Sleep
+t0271:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west  …(+169ch)
+t0272:action | CALL environment_action/: Noop
+t0272:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west  …(+201ch)
+t0273:action | CALL environment_action/: Noop
+t0273:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west  …(+199ch)
+t0274:action | CALL environment_action/: Noop
+t0274:observation | OBS : You are sleeping, and will not be able take actions until energy is full. ⏎ ⏎ ⏎ ⏎ You see: ⏎ - water 3 steps to your north ⏎ - sand 2 steps to your north ⏎ - grass 1 step to your west ⏎ - tree 3 steps to your north-west  …(+168ch)

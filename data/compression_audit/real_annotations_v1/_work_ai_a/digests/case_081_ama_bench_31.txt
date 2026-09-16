@@ -1,0 +1,303 @@
+CASE index=81 candidate_id=1b1b4c4632b890960ba3018870eb744a2a0ba19686a8cfb66073cb2588c191e0
+source=ama_bench repository=ama:alfworld task_id=31 split=validation events=300
+====================================================================================================
+t0000:action | CALL environment_action/: look
+t0000:observation | OBS : You are in the middle of a room. Looking quickly around you, you see nothing. ⏎ ⏎ The current available actions are: go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4 …(+202ch)
+t0001:action | CALL environment_action/: go to shelf 1
+t0001:observation | OBS : You arrive at shelf 1. On the shelf 1, you see a alarmclock 1. ⏎ ⏎ The current available actions are: go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to drawer  …(+187ch)
+t0002:action | CALL environment_action/: go to shelf 2
+t0002:observation | OBS : You arrive at shelf 2. On the shelf 2, you see nothing. ⏎ ⏎ The current available actions are: examine shelf 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go  …(+214ch)
+t0003:action | CALL environment_action/: go to shelf 3
+t0003:observation | OBS : You arrive at shelf 3. On the shelf 3, you see a bowl 1, and a desklamp 1. ⏎ ⏎ The current available actions are: examine shelf 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3,  …(+201ch)
+t0004:action | CALL environment_action/: go to shelf 4
+t0004:observation | OBS : You arrive at shelf 4. On the shelf 4, you see nothing. ⏎ ⏎ The current available actions are: examine shelf 3, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go  …(+224ch)
+t0005:action | CALL environment_action/: go to shelf 5
+t0005:observation | OBS : You arrive at shelf 5. On the shelf 5, you see a keychain 1. ⏎ ⏎ The current available actions are: examine shelf 4, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4 …(+187ch)
+t0006:action | CALL environment_action/: go to shelf 6
+t0006:observation | OBS : You arrive at shelf 6. On the shelf 6, you see nothing. ⏎ ⏎ The current available actions are: examine shelf 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go  …(+212ch)
+t0007:action | CALL environment_action/: go to safe 1
+t0007:observation | OBS : You arrive at safe 1. The safe 1 is closed. ⏎ ⏎ The current available actions are: examine shelf 6, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to drawer 5, …(+170ch)
+t0008:action | CALL environment_action/: open safe 1
+t0008:observation | OBS : You open the safe 1. The safe 1 is open. In it, you see a cellphone 2. ⏎ ⏎ The current available actions are: examine safe 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to …(+210ch)
+t0009:action | CALL environment_action/: close safe 1
+t0009:observation | OBS : You close the safe 1. ⏎ ⏎ The current available actions are: close safe 1, examine safe 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to drawer 5, go to dr …(+192ch)
+t0010:action | CALL environment_action/: go to garbagecan 1
+t0010:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine safe 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to draw …(+205ch)
+t0011:action | CALL environment_action/: go to drawer 1
+t0011:observation | OBS : You arrive at drawer 1. The drawer 1 is closed. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to  …(+174ch)
+t0012:action | CALL environment_action/: open drawer 1
+t0012:observation | OBS : You open the drawer 1. The drawer 1 is open. In it, you see a creditcard 1. ⏎ ⏎ The current available actions are: examine drawer 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 2, go to drawer 3, go to drawer 4 …(+217ch)
+t0013:action | CALL environment_action/: close drawer 1
+t0013:observation | OBS : You close the drawer 1. ⏎ ⏎ The current available actions are: close drawer 1, examine drawer 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 2, go to drawer 3, go to drawer 4, go to drawer 5, go to drawer 6, go …(+199ch)
+t0014:action | CALL environment_action/: go to drawer 2
+t0014:observation | OBS : You arrive at drawer 2. On the drawer 2, you see a creditcard 2. ⏎ ⏎ The current available actions are: examine drawer 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 2, go to drawer 3, go to drawer 4, go to dra …(+206ch)
+t0015:action | CALL environment_action/: look
+t0015:observation | OBS : You are facing the drawer 3, and drawer 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 2, examine drawer 3, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 4,  …(+294ch)
+t0016:action | CALL environment_action/: go to desk 1
+t0016:observation | OBS : You arrive at desk 1. On the desk 1, you see a bowl 1, a desklamp 1, a mug 1, and a pen 1. ⏎ ⏎ The current available actions are: examine drawer 2, examine drawer 3, go to bed 1, go to desk 1, go to desk 2, go to drawer  …(+313ch)
+t0017:action | CALL environment_action/: go to drawer 3
+t0017:observation | OBS : You arrive at drawer 3. On the drawer 3, you see a cellphone 3, and a pencil 1. ⏎ ⏎ The current available actions are: examine desk 1, go to bed 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to draw …(+295ch)
+t0018:action | CALL environment_action/: go to drawer 4
+t0018:observation | OBS : You arrive at drawer 4. The drawer 4 is closed. ⏎ ⏎ The current available actions are: examine drawer 2, examine drawer 3, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 4, go to drawer 5, go to dr …(+270ch)
+t0019:action | CALL environment_action/: open drawer 4
+t0019:observation | OBS : You open the drawer 4. The drawer 4 is open. In it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 4, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to …(+210ch)
+t0020:action | CALL environment_action/: close drawer 4
+t0020:observation | OBS : You close the drawer 4. ⏎ ⏎ The current available actions are: close drawer 4, examine drawer 4, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 5, go to drawer 6, go …(+166ch)
+t0021:action | CALL environment_action/: go to drawer 5
+t0021:observation | OBS : You arrive at drawer 5. On the drawer 5, you see a cd 3, and a pen 2. ⏎ ⏎ The current available actions are: examine drawer 4, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go t …(+211ch)
+t0022:action | CALL environment_action/: take cd 3 from drawer 5
+t0022:observation | OBS : You pick up the cd 3 from the drawer 5. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to drawer 6, go …(+217ch)
+t0023:action | CALL environment_action/: go to safe 1
+t0023:observation | OBS : You arrive at safe 1. The safe 1 is closed. ⏎ ⏎ The current available actions are: examine cd 3, examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4,  …(+207ch)
+t0024:action | CALL environment_action/: open safe 1
+t0024:observation | OBS : You open the safe 1. The safe 1 is open. In it, you see a cellphone 2. ⏎ ⏎ The current available actions are: examine cd 3, examine safe 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to d …(+224ch)
+t0025:action | CALL environment_action/: move cd 3 to safe 1
+t0025:observation | OBS : You move the cd 3 to the safe 1. ⏎ ⏎ The current available actions are: close safe 1, examine cd 3, examine safe 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, …(+208ch)
+t0026:action | CALL environment_action/: go to drawer 5
+t0026:observation | OBS : You arrive at drawer 5. On the drawer 5, you see a pen 2. ⏎ ⏎ The current available actions are: close safe 1, examine safe 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go t …(+251ch)
+t0027:action | CALL environment_action/: look
+t0027:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4,  …(+210ch)
+t0028:action | CALL environment_action/: go to desk 1
+t0028:observation | OBS : You arrive at desk 1. On the desk 1, you see a bowl 1, a desklamp 1, a mug 1, and a pen 1. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, …(+243ch)
+t0029:action | CALL environment_action/: go to drawer 5
+t0029:observation | OBS : You arrive at drawer 5. On the drawer 5, you see a pen 2. ⏎ ⏎ The current available actions are: examine desk 1, go to bed 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to drawer 5,  …(+273ch)
+t0030:action | CALL environment_action/: look
+t0030:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4,  …(+210ch)
+t0031:action | CALL environment_action/: take pen 2 from drawer 5
+t0031:observation | OBS : You pick up the pen 2 from the drawer 5. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to drawer 6, g …(+193ch)
+t0032:action | CALL environment_action/: look
+t0032:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0033:action | CALL environment_action/: go to shelf 6
+t0033:observation | OBS : You arrive at shelf 6. On the shelf 6, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go  …(+221ch)
+t0034:action | CALL environment_action/: go to drawer 5
+t0034:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine pen 2, examine shelf 6, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go …(+222ch)
+t0035:action | CALL environment_action/: look
+t0035:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0036:action | CALL environment_action/: go to drawer 3
+t0036:observation | OBS : You arrive at drawer 3. On the drawer 3, you see a cellphone 3, and a pencil 1. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawe …(+245ch)
+t0037:action | CALL environment_action/: go to drawer 5
+t0037:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 2, examine drawer 3, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 4, …(+249ch)
+t0038:action | CALL environment_action/: look
+t0038:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0039:action | CALL environment_action/: go to garbagecan 1
+t0039:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to dra …(+231ch)
+t0040:action | CALL environment_action/: go to drawer 5
+t0040:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer  …(+227ch)
+t0041:action | CALL environment_action/: look
+t0041:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0042:action | CALL environment_action/: go to shelf 5
+t0042:observation | OBS : You arrive at shelf 5. On the shelf 5, you see a keychain 1. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3 …(+226ch)
+t0043:action | CALL environment_action/: go to drawer 5
+t0043:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine pen 2, examine shelf 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go …(+222ch)
+t0044:action | CALL environment_action/: look
+t0044:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0045:action | CALL environment_action/: examine pen 2
+t0045:observation | OBS : There's nothing special about pen 2. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to  …(+202ch)
+t0046:action | CALL environment_action/: look
+t0046:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0047:action | CALL environment_action/: help
+t0047:observation | OBS : Available commands: ⏎ look: look around your current location ⏎ inventory: check your current inventory ⏎ go to (receptacle): move to a receptacle ⏎ open (receptacle): open a receptacle ⏎ close (receptacle): close a rece …(+898ch)
+t0048:action | CALL environment_action/: look
+t0048:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0049:action | CALL environment_action/: move pen 2 to drawer 5
+t0049:observation | OBS : You move the pen 2 to the drawer 5. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to d …(+201ch)
+t0050:action | CALL environment_action/: look
+t0050:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4,  …(+210ch)
+t0051:action | CALL environment_action/: take pen 2 from drawer 5
+t0051:observation | OBS : You pick up the pen 2 from the drawer 5. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to drawer 6, g …(+193ch)
+t0052:action | CALL environment_action/: look
+t0052:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0053:action | CALL environment_action/: go to drawer 4
+t0053:observation | OBS : You arrive at drawer 4. The drawer 4 is closed. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawe …(+213ch)
+t0054:action | CALL environment_action/: go to drawer 5
+t0054:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 4, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+214ch)
+t0055:action | CALL environment_action/: look
+t0055:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0056:action | CALL environment_action/: go to shelf 1
+t0056:observation | OBS : You arrive at shelf 1. On the shelf 1, you see a alarmclock 1. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer …(+228ch)
+t0057:action | CALL environment_action/: go to drawer 5
+t0057:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine pen 2, examine shelf 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go …(+222ch)
+t0058:action | CALL environment_action/: look
+t0058:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0059:action | CALL environment_action/: go to bed 1
+t0059:observation | OBS : You arrive at bed 1. On the bed 1, you see a book 2, a book 1, a cellphone 1, a laptop 2, a laptop 1, and a pillow 1. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go  …(+283ch)
+t0060:action | CALL environment_action/: go to drawer 5
+t0060:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine bed 1, examine pen 2, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, g …(+199ch)
+t0061:action | CALL environment_action/: look
+t0061:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0062:action | CALL environment_action/: go to desk 1
+t0062:observation | OBS : You arrive at desk 1. On the desk 1, you see a bowl 1, a desklamp 1, a mug 1, and a pen 1. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1,  …(+256ch)
+t0063:action | CALL environment_action/: go to drawer 5
+t0063:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine desk 1, examine pen 2, go to bed 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, g …(+237ch)
+t0064:action | CALL environment_action/: look
+t0064:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0065:action | CALL environment_action/: go to desk 2
+t0065:observation | OBS : You arrive at desk 2. On the desk 2, you see a bowl 2, a cd 2, a cd 1, a creditcard 3, a mug 2, a pencil 3, and a pencil 2. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk  …(+289ch)
+t0066:action | CALL environment_action/: go to drawer 5
+t0066:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine desk 2, examine pen 2, go to bed 1, go to desk 1, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, g …(+221ch)
+t0067:action | CALL environment_action/: look
+t0067:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0068:action | CALL environment_action/: go to shelf 6
+t0068:observation | OBS : You arrive at shelf 6. On the shelf 6, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go  …(+221ch)
+t0069:action | CALL environment_action/: go to drawer 5
+t0069:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine pen 2, examine shelf 6, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go …(+222ch)
+t0070:action | CALL environment_action/: look
+t0070:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0071:action | CALL environment_action/: go to desk 1
+t0071:observation | OBS : You arrive at desk 1. On the desk 1, you see a bowl 1, a desklamp 1, a mug 1, and a pen 1. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1,  …(+256ch)
+t0072:action | CALL environment_action/: go to drawer 5
+t0072:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine desk 1, examine pen 2, go to bed 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, g …(+237ch)
+t0073:action | CALL environment_action/: look
+t0073:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0074:action | CALL environment_action/: go to drawer 1
+t0074:observation | OBS : You arrive at drawer 1. The drawer 1 is closed. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawe …(+213ch)
+t0075:action | CALL environment_action/: go to drawer 5
+t0075:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 1, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 2, go to drawer 3, go to drawer 4, g …(+214ch)
+t0076:action | CALL environment_action/: look
+t0076:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0077:action | CALL environment_action/: go to shelf 6
+t0077:observation | OBS : You arrive at shelf 6. On the shelf 6, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go  …(+221ch)
+t0078:action | CALL environment_action/: go to drawer 5
+t0078:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine pen 2, examine shelf 6, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go …(+222ch)
+t0079:action | CALL environment_action/: look
+t0079:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0080:action | CALL environment_action/: help
+t0080:observation | OBS : Available commands: ⏎ look: look around your current location ⏎ inventory: check your current inventory ⏎ go to (receptacle): move to a receptacle ⏎ open (receptacle): open a receptacle ⏎ close (receptacle): close a rece …(+898ch)
+t0081:action | CALL environment_action/: look
+t0081:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0082:action | CALL environment_action/: inventory
+t0082:observation | OBS : You are carrying: a pen 2. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to drawer 6,  …(+192ch)
+t0083:action | CALL environment_action/: look
+t0083:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0084:action | CALL environment_action/: go to drawer 6
+t0084:observation | OBS : You arrive at drawer 6. The drawer 6 is closed. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawe …(+213ch)
+t0085:action | CALL environment_action/: go to drawer 5
+t0085:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 6, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+214ch)
+t0086:action | CALL environment_action/: look
+t0086:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0087:action | CALL environment_action/: look
+t0087:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0088:action | CALL environment_action/: look
+t0088:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0089:action | CALL environment_action/: examine pen 2
+t0089:observation | OBS : There's nothing special about pen 2. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to  …(+202ch)
+t0090:action | CALL environment_action/: look
+t0090:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0091:action | CALL environment_action/: go to desk 1
+t0091:observation | OBS : You arrive at desk 1. On the desk 1, you see a bowl 1, a desklamp 1, a mug 1, and a pen 1. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1,  …(+256ch)
+t0092:action | CALL environment_action/: go to drawer 5
+t0092:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine desk 1, examine pen 2, go to bed 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, g …(+237ch)
+t0093:action | CALL environment_action/: look
+t0093:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0094:action | CALL environment_action/: go to shelf 6
+t0094:observation | OBS : You arrive at shelf 6. On the shelf 6, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go  …(+221ch)
+t0095:action | CALL environment_action/: go to drawer 5
+t0095:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine pen 2, examine shelf 6, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go …(+222ch)
+t0096:action | CALL environment_action/: look
+t0096:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0097:action | CALL environment_action/: help
+t0097:observation | OBS : Available commands: ⏎ look: look around your current location ⏎ inventory: check your current inventory ⏎ go to (receptacle): move to a receptacle ⏎ open (receptacle): open a receptacle ⏎ close (receptacle): close a rece …(+898ch)
+t0098:action | CALL environment_action/: look
+t0098:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0099:action | CALL environment_action/: go to shelf 3
+t0099:observation | OBS : You arrive at shelf 3. On the shelf 3, you see a bowl 1, and a desklamp 1. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2,  …(+240ch)
+t0100:action | CALL environment_action/: go to drawer 5
+t0100:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine pen 2, examine shelf 3, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go …(+238ch)
+t0101:action | CALL environment_action/: look
+t0101:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0102:action | CALL environment_action/: move pen 2 to drawer 5
+t0102:observation | OBS : You move the pen 2 to the drawer 5. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to d …(+201ch)
+t0103:action | CALL environment_action/: look
+t0103:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4,  …(+210ch)
+t0104:action | CALL environment_action/: go to shelf 4
+t0104:observation | OBS : You arrive at shelf 4. On the shelf 4, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go …(+208ch)
+t0105:action | CALL environment_action/: go to drawer 5
+t0105:observation | OBS : You arrive at drawer 5. On the drawer 5, you see a pen 2. ⏎ ⏎ The current available actions are: examine shelf 4, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, g …(+184ch)
+t0106:action | CALL environment_action/: look
+t0106:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4,  …(+210ch)
+t0107:action | CALL environment_action/: examine drawer 5
+t0107:observation | OBS : On the drawer 5, you see a pen 2. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to drawer 6, go to ga …(+186ch)
+t0108:action | CALL environment_action/: look
+t0108:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4,  …(+210ch)
+t0109:action | CALL environment_action/: go to drawer 6
+t0109:observation | OBS : You arrive at drawer 6. The drawer 6 is closed. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to draw …(+200ch)
+t0110:action | CALL environment_action/: go to drawer 5
+t0110:observation | OBS : You arrive at drawer 5. On the drawer 5, you see a pen 2. ⏎ ⏎ The current available actions are: examine drawer 6, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4,  …(+199ch)
+t0111:action | CALL environment_action/: look
+t0111:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4,  …(+210ch)
+t0112:action | CALL environment_action/: go to garbagecan 1
+t0112:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to dr …(+218ch)
+t0113:action | CALL environment_action/: go to drawer 5
+t0113:observation | OBS : You arrive at drawer 5. On the drawer 5, you see a pen 2. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer …(+184ch)
+t0114:action | CALL environment_action/: look
+t0114:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4,  …(+210ch)
+t0115:action | CALL environment_action/: take pen 2 from drawer 5
+t0115:observation | OBS : You pick up the pen 2 from the drawer 5. ⏎ ⏎ The current available actions are: examine drawer 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to drawer 6, g …(+193ch)
+t0116:action | CALL environment_action/: look
+t0116:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0117:action | CALL environment_action/: help
+t0117:observation | OBS : Available commands: ⏎ look: look around your current location ⏎ inventory: check your current inventory ⏎ go to (receptacle): move to a receptacle ⏎ open (receptacle): open a receptacle ⏎ close (receptacle): close a rece …(+898ch)
+t0118:action | CALL environment_action/: look
+t0118:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0119:action | CALL environment_action/: examine pen 2
+t0119:observation | OBS : There's nothing special about pen 2. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to  …(+202ch)
+t0120:action | CALL environment_action/: look
+t0120:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0121:action | CALL environment_action/: go to desk 1
+t0121:observation | OBS : You arrive at desk 1. On the desk 1, you see a bowl 1, a desklamp 1, a mug 1, and a pen 1. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1,  …(+256ch)
+t0122:action | CALL environment_action/: go to drawer 5
+t0122:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine desk 1, examine pen 2, go to bed 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, g …(+237ch)
+t0123:action | CALL environment_action/: look
+t0123:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0124:action | CALL environment_action/: go to safe 1
+t0124:observation | OBS : You arrive at safe 1. The safe 1 is open. In it, you see a cd 3, and a cellphone 2. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to d …(+249ch)
+t0125:action | CALL environment_action/: go to drawer 5
+t0125:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: close safe 1, examine pen 2, examine safe 1, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to …(+213ch)
+t0126:action | CALL environment_action/: look
+t0126:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0127:action | CALL environment_action/: go to drawer 3
+t0127:observation | OBS : You arrive at drawer 3. On the drawer 3, you see a cellphone 3, and a pencil 1. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawe …(+245ch)
+t0128:action | CALL environment_action/: go to drawer 5
+t0128:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 2, examine drawer 3, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 4, …(+249ch)
+t0129:action | CALL environment_action/: look
+t0129:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0130:action | CALL environment_action/: go to shelf 5
+t0130:observation | OBS : You arrive at shelf 5. On the shelf 5, you see a keychain 1. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3 …(+226ch)
+t0131:action | CALL environment_action/: go to drawer 5
+t0131:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine pen 2, examine shelf 5, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go …(+222ch)
+t0132:action | CALL environment_action/: look
+t0132:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0133:action | CALL environment_action/: go to shelf 2
+t0133:observation | OBS : You arrive at shelf 2. On the shelf 2, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go  …(+221ch)
+t0134:action | CALL environment_action/: go to drawer 5
+t0134:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine pen 2, examine shelf 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go …(+222ch)
+t0135:action | CALL environment_action/: look
+t0135:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0136:action | CALL environment_action/: go to shelf 2
+t0136:observation | OBS : You arrive at shelf 2. On the shelf 2, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go  …(+221ch)
+t0137:action | CALL environment_action/: go to drawer 5
+t0137:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine pen 2, examine shelf 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go …(+222ch)
+t0138:action | CALL environment_action/: look
+t0138:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0139:action | CALL environment_action/: look
+t0139:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0140:action | CALL environment_action/: examine pen 2
+t0140:observation | OBS : There's nothing special about pen 2. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to  …(+202ch)
+t0141:action | CALL environment_action/: look
+t0141:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0142:action | CALL environment_action/: examine pen 2
+t0142:observation | OBS : There's nothing special about pen 2. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to  …(+202ch)
+t0143:action | CALL environment_action/: look
+t0143:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0144:action | CALL environment_action/: examine pen 2
+t0144:observation | OBS : There's nothing special about pen 2. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to  …(+202ch)
+t0145:action | CALL environment_action/: look
+t0145:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0146:action | CALL environment_action/: examine drawer 5
+t0146:observation | OBS : On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawer 4, go to dra …(+199ch)
+t0147:action | CALL environment_action/: look
+t0147:observation | OBS : You are facing the drawer 5. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+223ch)
+t0148:action | CALL environment_action/: go to drawer 6
+t0148:observation | OBS : You arrive at drawer 6. The drawer 6 is closed. ⏎ ⏎ The current available actions are: examine drawer 5, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, go to drawe …(+213ch)
+t0149:action | CALL environment_action/: go to drawer 5
+t0149:observation | OBS : You arrive at drawer 5. On the drawer 5, you see nothing. ⏎ ⏎ The current available actions are: examine drawer 6, examine pen 2, go to bed 1, go to desk 1, go to desk 2, go to drawer 1, go to drawer 2, go to drawer 3, g …(+214ch)

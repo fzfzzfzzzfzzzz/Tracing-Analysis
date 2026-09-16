@@ -229,6 +229,7 @@ def convert_legacy_diagnostic(
             evidence_by_field={
                 "failed_action": evidence_ids(first_call),
                 "failed_arguments": evidence_ids(first_call),
+                "error_signature": evidence_ids(failure_node),
                 "failure_cause": evidence_ids(failure_node),
                 "diagnostic_evidence": evidence_ids(failure_node),
                 "switch_decision": evidence_ids(decision_node),

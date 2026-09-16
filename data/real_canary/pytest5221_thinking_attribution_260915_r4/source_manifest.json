@@ -1,0 +1,64 @@
+{
+  "config_sha256": "1fe232c27bf6d5043271d8ad285979a0724339a2f3aa5812548c313814d00bed",
+  "controlled_changes": {
+    "action_prompt": [
+      "thought/command JSON",
+      "one native bash tool call"
+    ],
+    "action_transport": [
+      "json_schema",
+      "native_tool_call"
+    ],
+    "agent_sampling": [
+      "temperature=0 greedy",
+      "Qwen3 README: temperature=0.6, top_p=0.95, top_k=20, min_p=0"
+    ],
+    "enable_thinking": [
+      false,
+      true
+    ],
+    "history_budget_tokens": [
+      1536,
+      16384
+    ],
+    "max_model_calls": [
+      12,
+      40
+    ],
+    "thinking_scope": [
+      "all prior non-thinking requests",
+      "mini agent requests only"
+    ]
+  },
+  "development_only": true,
+  "frozen_at": "2026-09-15",
+  "held_constant": [
+    "model weights and tokenizer revision",
+    "vLLM runtime receipt and launch arguments",
+    "SWE-bench image digest",
+    "problem statement",
+    "hidden test patch and evaluator command",
+    "memory method full_history",
+    "sampling temperature and seed"
+  ],
+  "independent_validation": false,
+  "protected_tasks_model_requests": 0,
+  "protected_unexposed_task_ids": [
+    "realcanary:swebench_lite:pytest-dev__pytest-7490",
+    "realcanary:swebench_lite:pytest-dev__pytest-5227",
+    "realcanary:swebench_lite:pytest-dev__pytest-7168",
+    "realcanary:swebench_lite:pytest-dev__pytest-5495",
+    "realcanary:swebench_lite:pytest-dev__pytest-5103"
+  ],
+  "purpose": "attribute pytest-5221 failure under stronger inference settings",
+  "schema_version": "tracegraph_qwen3_thinking_attribution_v1",
+  "selected_task_id": "realcanary:swebench_lite:pytest-dev__pytest-5221",
+  "selected_task_was_already_exposed": true,
+  "source_config": "configs\\server_eval_qwen3_14b_real_canary_260914_r1.json",
+  "source_config_sha256": "9b7a46649d8a1f7bb27f83fbd5449818faf9b4a6d5333c2e19ffe3a3c7ca70a0",
+  "source_manifest": "data\\real_canary\\swe_bench_lite_pytest_260915_r5\\source_manifest.json",
+  "source_manifest_sha256": "68b3385e374a6ab48570cef45c8785445ab3420b6383e0e16f63612b98f054e2",
+  "source_tasks": "data\\real_canary\\swe_bench_lite_pytest_260915_r5\\tasks.jsonl",
+  "source_tasks_sha256": "b1933691da9e02d909d973c342d03ad27751c860b9d0b9ba498088aa9ac7b836",
+  "tasks_jsonl_sha256": "176608b8e687de1f8a6ace8fc4928e33feaaf2c354308a07516620f56be35541"
+}

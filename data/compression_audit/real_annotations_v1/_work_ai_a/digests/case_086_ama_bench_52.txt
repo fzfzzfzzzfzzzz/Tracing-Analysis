@@ -1,0 +1,303 @@
+CASE index=86 candidate_id=93fa2f67af1e44c68d38683a97026c023d4a3a44eb7c344d690f6fa9c2d8f3dc
+source=ama_bench repository=ama:alfworld task_id=52 split=validation events=300
+====================================================================================================
+t0000:action | CALL environment_action/: look
+t0000:observation | OBS : You are in the middle of a room. Looking quickly around you, you see nothing. ⏎ ⏎ The current available actions are: go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, g …(+292ch)
+t0001:action | CALL environment_action/: go to toaster 1
+t0001:observation | OBS : You arrive at toaster 1. On the toaster 1, you see nothing. ⏎ ⏎ The current available actions are: go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go to cabinet 7, go …(+274ch)
+t0002:action | CALL environment_action/: go to stoveburner 1
+t0002:observation | OBS : You arrive at stoveburner 1. On the stoveburner 1, you see nothing. ⏎ ⏎ The current available actions are: examine toaster 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cab …(+284ch)
+t0003:action | CALL environment_action/: go to stoveburner 2
+t0003:observation | OBS : You arrive at stoveburner 2. On the stoveburner 2, you see a pan 1. ⏎ ⏎ The current available actions are: examine stoveburner 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to …(+284ch)
+t0004:action | CALL environment_action/: take pan 1 from stoveburner 2
+t0004:observation | OBS : You pick up the pan 1 from the stoveburner 2. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go to cabi …(+293ch)
+t0005:action | CALL environment_action/: go to countertop 1
+t0005:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions are: exa …(+438ch)
+t0006:action | CALL environment_action/: move pan 1 to countertop 1
+t0006:observation | OBS : You move the pan 1 to the countertop 1. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go …(+299ch)
+t0007:action | CALL environment_action/: go to stoveburner 2
+t0007:observation | OBS : You arrive at stoveburner 2. On the stoveburner 2, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to  …(+641ch)
+t0008:action | CALL environment_action/: look
+t0008:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0009:action | CALL environment_action/: inventory
+t0009:observation | OBS : You are not carrying anything. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go to cabinet 7, go to ca …(+247ch)
+t0010:action | CALL environment_action/: look
+t0010:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0011:action | CALL environment_action/: go to cabinet 3
+t0011:observation | OBS : You arrive at cabinet 3. The cabinet 3 is closed. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go to  …(+266ch)
+t0012:action | CALL environment_action/: go to stoveburner 2
+t0012:observation | OBS : You arrive at stoveburner 2. On the stoveburner 2, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 3, go to cabinet 1, go to cabinet 2, go to cabinet 4, go to cabinet 5, go to cabinet 6, go to cab …(+300ch)
+t0013:action | CALL environment_action/: look
+t0013:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0014:action | CALL environment_action/: go to microwave 1
+t0014:observation | OBS : You arrive at microwave 1. The microwave 1 is closed. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go …(+270ch)
+t0015:action | CALL environment_action/: go to stoveburner 2
+t0015:observation | OBS : You arrive at stoveburner 2. On the stoveburner 2, you see nothing. ⏎ ⏎ The current available actions are: examine microwave 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to c …(+302ch)
+t0016:action | CALL environment_action/: look
+t0016:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0017:action | CALL environment_action/: examine stoveburner 2
+t0017:observation | OBS : On the stoveburner 2, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go to cabinet 7,  …(+255ch)
+t0018:action | CALL environment_action/: look
+t0018:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0019:action | CALL environment_action/: look
+t0019:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0020:action | CALL environment_action/: go to cabinet 1
+t0020:observation | OBS : You arrive at cabinet 1. On the cabinet 1, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet …(+276ch)
+t0021:action | CALL environment_action/: go to stoveburner 2
+t0021:observation | OBS : You arrive at stoveburner 2. On the stoveburner 2, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go to cab …(+284ch)
+t0022:action | CALL environment_action/: look
+t0022:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0023:action | CALL environment_action/: help
+t0023:observation | OBS : Available commands: ⏎ look: look around your current location ⏎ inventory: check your current inventory ⏎ go to (receptacle): move to a receptacle ⏎ open (receptacle): open a receptacle ⏎ close (receptacle): close a rece …(+949ch)
+t0024:action | CALL environment_action/: look
+t0024:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0025:action | CALL environment_action/: go to cabinet 8
+t0025:observation | OBS : You arrive at cabinet 8. The cabinet 8 is closed. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go to  …(+266ch)
+t0026:action | CALL environment_action/: go to stoveburner 2
+t0026:observation | OBS : You arrive at stoveburner 2. On the stoveburner 2, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 8, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cab …(+300ch)
+t0027:action | CALL environment_action/: look
+t0027:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0028:action | CALL environment_action/: go to cabinet 8
+t0028:observation | OBS : You arrive at cabinet 8. The cabinet 8 is closed. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go to  …(+266ch)
+t0029:action | CALL environment_action/: go to stoveburner 2
+t0029:observation | OBS : You arrive at stoveburner 2. On the stoveburner 2, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 8, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cab …(+300ch)
+t0030:action | CALL environment_action/: look
+t0030:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0031:action | CALL environment_action/: go to microwave 1
+t0031:observation | OBS : You arrive at microwave 1. The microwave 1 is closed. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go …(+270ch)
+t0032:action | CALL environment_action/: go to stoveburner 2
+t0032:observation | OBS : You arrive at stoveburner 2. On the stoveburner 2, you see nothing. ⏎ ⏎ The current available actions are: examine microwave 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to c …(+302ch)
+t0033:action | CALL environment_action/: look
+t0033:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0034:action | CALL environment_action/: go to cabinet 3
+t0034:observation | OBS : You arrive at cabinet 3. The cabinet 3 is closed. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go to  …(+266ch)
+t0035:action | CALL environment_action/: go to stoveburner 2
+t0035:observation | OBS : You arrive at stoveburner 2. On the stoveburner 2, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 3, go to cabinet 1, go to cabinet 2, go to cabinet 4, go to cabinet 5, go to cabinet 6, go to cab …(+300ch)
+t0036:action | CALL environment_action/: look
+t0036:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0037:action | CALL environment_action/: go to stoveburner 3
+t0037:observation | OBS : You arrive at stoveburner 3. On the stoveburner 3, you see a pot 1. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to …(+284ch)
+t0038:action | CALL environment_action/: go to stoveburner 2
+t0038:observation | OBS : You arrive at stoveburner 2. On the stoveburner 2, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 3, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to …(+315ch)
+t0039:action | CALL environment_action/: look
+t0039:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0040:action | CALL environment_action/: go to coffeemachine 1
+t0040:observation | OBS : You arrive at coffeemachine 1. On the coffeemachine 1, you see a mug 1. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, g …(+288ch)
+t0041:action | CALL environment_action/: go to stoveburner 2
+t0041:observation | OBS : You arrive at stoveburner 2. On the stoveburner 2, you see nothing. ⏎ ⏎ The current available actions are: examine coffeemachine 1, examine countertop 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4 …(+634ch)
+t0042:action | CALL environment_action/: look
+t0042:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0043:action | CALL environment_action/: go to garbagecan 1
+t0043:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see a dishsponge 2, and a tomato 1. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, g …(+305ch)
+t0044:action | CALL environment_action/: go to stoveburner 2
+t0044:observation | OBS : You arrive at stoveburner 2. On the stoveburner 2, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to  …(+354ch)
+t0045:action | CALL environment_action/: look
+t0045:observation | OBS : You are facing the stoveburner 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabi …(+279ch)
+t0046:action | CALL environment_action/: go to stoveburner 4
+t0046:observation | OBS : You arrive at stoveburner 4. On the stoveburner 4, you see a pan 2. ⏎ ⏎ The current available actions are: examine stoveburner 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to …(+284ch)
+t0047:action | CALL environment_action/: take pan 2 from stoveburner 4
+t0047:observation | OBS : You pick up the pan 2 from the stoveburner 4. ⏎ ⏎ The current available actions are: examine stoveburner 4, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go to cabi …(+293ch)
+t0048:action | CALL environment_action/: go to countertop 1
+t0048:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+447ch)
+t0049:action | CALL environment_action/: look
+t0049:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0050:action | CALL environment_action/: help
+t0050:observation | OBS : Available commands: ⏎ look: look around your current location ⏎ inventory: check your current inventory ⏎ go to (receptacle): move to a receptacle ⏎ open (receptacle): open a receptacle ⏎ close (receptacle): close a rece …(+992ch)
+t0051:action | CALL environment_action/: look
+t0051:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0052:action | CALL environment_action/: go to cabinet 8
+t0052:observation | OBS : You arrive at cabinet 8. The cabinet 8 is closed. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cab …(+309ch)
+t0053:action | CALL environment_action/: open cabinet 8
+t0053:observation | OBS : You open the cabinet 8. The cabinet 8 is open. In it, you see a peppershaker 1. ⏎ ⏎ The current available actions are: examine cabinet 8, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, …(+327ch)
+t0054:action | CALL environment_action/: close cabinet 8
+t0054:observation | OBS : You close the cabinet 8. ⏎ ⏎ The current available actions are: close cabinet 8, examine cabinet 8, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet 6, go  …(+298ch)
+t0055:action | CALL environment_action/: go to countertop 1
+t0055:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+434ch)
+t0056:action | CALL environment_action/: look
+t0056:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0057:action | CALL environment_action/: go to stoveburner 4
+t0057:observation | OBS : You arrive at stoveburner 4. On the stoveburner 4, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to ca …(+327ch)
+t0058:action | CALL environment_action/: go to countertop 1
+t0058:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+447ch)
+t0059:action | CALL environment_action/: look
+t0059:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0060:action | CALL environment_action/: go to toaster 1
+t0060:observation | OBS : You arrive at toaster 1. On the toaster 1, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, …(+319ch)
+t0061:action | CALL environment_action/: go to countertop 1
+t0061:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+418ch)
+t0062:action | CALL environment_action/: look
+t0062:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0063:action | CALL environment_action/: go to microwave 1
+t0063:observation | OBS : You arrive at microwave 1. The microwave 1 is closed. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to …(+313ch)
+t0064:action | CALL environment_action/: open microwave 1
+t0064:observation | OBS : You open the microwave 1. The microwave 1 is open. In it, you see a cup 2, a cup 1, and a egg 1. ⏎ ⏎ The current available actions are: examine microwave 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet  …(+346ch)
+t0065:action | CALL environment_action/: close microwave 1
+t0065:observation | OBS : You close the microwave 1. ⏎ ⏎ The current available actions are: close microwave 1, examine microwave 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet  …(+277ch)
+t0066:action | CALL environment_action/: go to countertop 1
+t0066:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+436ch)
+t0067:action | CALL environment_action/: look
+t0067:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0068:action | CALL environment_action/: go to cabinet 7
+t0068:observation | OBS : You arrive at cabinet 7. On the cabinet 7, you see a soapbottle 1. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cab …(+326ch)
+t0069:action | CALL environment_action/: go to countertop 1
+t0069:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+443ch)
+t0070:action | CALL environment_action/: look
+t0070:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0071:action | CALL environment_action/: examine countertop 1
+t0071:observation | OBS : On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions are: examine countertop 1,  …(+418ch)
+t0072:action | CALL environment_action/: look
+t0072:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0073:action | CALL environment_action/: go to microwave 1
+t0073:observation | OBS : You arrive at microwave 1. The microwave 1 is closed. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to …(+313ch)
+t0074:action | CALL environment_action/: open microwave 1
+t0074:observation | OBS : You open the microwave 1. The microwave 1 is open. In it, you see a cup 2, a cup 1, and a egg 1. ⏎ ⏎ The current available actions are: examine microwave 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet  …(+346ch)
+t0075:action | CALL environment_action/: close microwave 1
+t0075:observation | OBS : You close the microwave 1. ⏎ ⏎ The current available actions are: close microwave 1, examine microwave 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet  …(+277ch)
+t0076:action | CALL environment_action/: go to countertop 1
+t0076:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+436ch)
+t0077:action | CALL environment_action/: look
+t0077:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0078:action | CALL environment_action/: examine countertop 1
+t0078:observation | OBS : On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions are: examine countertop 1,  …(+418ch)
+t0079:action | CALL environment_action/: look
+t0079:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0080:action | CALL environment_action/: go to cabinet 5
+t0080:observation | OBS : You arrive at cabinet 5. The cabinet 5 is closed. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cab …(+309ch)
+t0081:action | CALL environment_action/: open cabinet 5
+t0081:observation | OBS : You open the cabinet 5. The cabinet 5 is open. In it, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 2, examine cabinet 5, examine pan 2, go to cabinet 1, go to cabinet 3, go to cabinet 4, go to  …(+345ch)
+t0082:action | CALL environment_action/: close cabinet 5
+t0082:observation | OBS : You close the cabinet 5. ⏎ ⏎ The current available actions are: close cabinet 5, examine cabinet 2, examine cabinet 5, examine pan 2, go to cabinet 1, go to cabinet 3, go to cabinet 4, go to cabinet 6, go to cabinet 7, g …(+325ch)
+t0083:action | CALL environment_action/: go to countertop 1
+t0083:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+461ch)
+t0084:action | CALL environment_action/: look
+t0084:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0085:action | CALL environment_action/: go to countertop 2
+t0085:observation | OBS : You arrive at countertop 2. On the countertop 2, you see a bread 2, a butterknife 1, a dishsponge 1, a fork 1, a knife 1, a mug 1, a peppershaker 3, a peppershaker 2, and a saltshaker 1. ⏎ ⏎ The current available actions …(+446ch)
+t0086:action | CALL environment_action/: look
+t0086:observation | OBS : You are facing the coffeemachine 1, and countertop 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine coffeemachine 1, examine countertop 2, examine pan 2, go to cabinet 1, go to cabinet 2, go …(+344ch)
+t0087:action | CALL environment_action/: examine countertop 2
+t0087:observation | OBS : On the countertop 2, you see a bread 2, a butterknife 1, a dishsponge 1, a fork 1, a knife 1, a mug 1, a peppershaker 3, a peppershaker 2, and a saltshaker 1. ⏎ ⏎ The current available actions are: examine coffeemachine  …(+420ch)
+t0088:action | CALL environment_action/: look
+t0088:observation | OBS : You are facing the coffeemachine 1, and countertop 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine coffeemachine 1, examine countertop 2, examine pan 2, go to cabinet 1, go to cabinet 2, go …(+344ch)
+t0089:action | CALL environment_action/: go to garbagecan 1
+t0089:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see a dishsponge 2, and a tomato 1. ⏎ ⏎ The current available actions are: examine coffeemachine 1, examine countertop 2, examine pan 2, go to cabinet 1, go to cabinet …(+350ch)
+t0090:action | CALL environment_action/: go to countertop 1
+t0090:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+418ch)
+t0091:action | CALL environment_action/: look
+t0091:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0092:action | CALL environment_action/: go to microwave 1
+t0092:observation | OBS : You arrive at microwave 1. The microwave 1 is closed. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to …(+313ch)
+t0093:action | CALL environment_action/: open microwave 1
+t0093:observation | OBS : You open the microwave 1. The microwave 1 is open. In it, you see a cup 2, a cup 1, and a egg 1. ⏎ ⏎ The current available actions are: examine microwave 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet  …(+346ch)
+t0094:action | CALL environment_action/: close microwave 1
+t0094:observation | OBS : You close the microwave 1. ⏎ ⏎ The current available actions are: close microwave 1, examine microwave 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabinet  …(+277ch)
+t0095:action | CALL environment_action/: go to countertop 1
+t0095:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+436ch)
+t0096:action | CALL environment_action/: look
+t0096:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0097:action | CALL environment_action/: go to stoveburner 3
+t0097:observation | OBS : You arrive at stoveburner 3. On the stoveburner 3, you see a pot 1. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to ca …(+327ch)
+t0098:action | CALL environment_action/: go to countertop 1
+t0098:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+447ch)
+t0099:action | CALL environment_action/: look
+t0099:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0100:action | CALL environment_action/: go to coffeemachine 1
+t0100:observation | OBS : You arrive at coffeemachine 1. On the coffeemachine 1, you see a mug 1. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go t …(+331ch)
+t0101:action | CALL environment_action/: go to countertop 1
+t0101:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+448ch)
+t0102:action | CALL environment_action/: look
+t0102:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0103:action | CALL environment_action/: help
+t0103:observation | OBS : Available commands: ⏎ look: look around your current location ⏎ inventory: check your current inventory ⏎ go to (receptacle): move to a receptacle ⏎ open (receptacle): open a receptacle ⏎ close (receptacle): close a rece …(+992ch)
+t0104:action | CALL environment_action/: look
+t0104:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0105:action | CALL environment_action/: go to stoveburner 3
+t0105:observation | OBS : You arrive at stoveburner 3. On the stoveburner 3, you see a pot 1. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to ca …(+327ch)
+t0106:action | CALL environment_action/: go to countertop 1
+t0106:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+447ch)
+t0107:action | CALL environment_action/: look
+t0107:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0108:action | CALL environment_action/: go to cabinet 2
+t0108:observation | OBS : You arrive at cabinet 2. On the cabinet 2, you see a soapbottle 2. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cab …(+326ch)
+t0109:action | CALL environment_action/: go to countertop 1
+t0109:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+461ch)
+t0110:action | CALL environment_action/: look
+t0110:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0111:action | CALL environment_action/: examine countertop 1
+t0111:observation | OBS : On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions are: examine countertop 1,  …(+418ch)
+t0112:action | CALL environment_action/: look
+t0112:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0113:action | CALL environment_action/: go to cabinet 6
+t0113:observation | OBS : You arrive at cabinet 6. On the cabinet 6, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, …(+319ch)
+t0114:action | CALL environment_action/: go to countertop 1
+t0114:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+443ch)
+t0115:action | CALL environment_action/: look
+t0115:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0116:action | CALL environment_action/: go to cabinet 3
+t0116:observation | OBS : You arrive at cabinet 3. The cabinet 3 is closed. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cab …(+309ch)
+t0117:action | CALL environment_action/: open cabinet 3
+t0117:observation | OBS : You open the cabinet 3. The cabinet 3 is open. In it, you see a plate 1. ⏎ ⏎ The current available actions are: examine cabinet 3, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 4, go to cabinet 5, go to  …(+320ch)
+t0118:action | CALL environment_action/: close cabinet 3
+t0118:observation | OBS : You close the cabinet 3. ⏎ ⏎ The current available actions are: close cabinet 3, examine cabinet 3, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 4, go to cabinet 5, go to cabinet 6, go to cabinet 7, go  …(+298ch)
+t0119:action | CALL environment_action/: go to countertop 1
+t0119:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+434ch)
+t0120:action | CALL environment_action/: look
+t0120:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0121:action | CALL environment_action/: go to countertop 2
+t0121:observation | OBS : You arrive at countertop 2. On the countertop 2, you see a bread 2, a butterknife 1, a dishsponge 1, a fork 1, a knife 1, a mug 1, a peppershaker 3, a peppershaker 2, and a saltshaker 1. ⏎ ⏎ The current available actions …(+446ch)
+t0122:action | CALL environment_action/: look
+t0122:observation | OBS : You are facing the coffeemachine 1, and countertop 2. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine coffeemachine 1, examine countertop 2, examine pan 2, go to cabinet 1, go to cabinet 2, go …(+344ch)
+t0123:action | CALL environment_action/: go to sinkbasin 1
+t0123:observation | OBS : You arrive at sinkbasin 1. On the sinkbasin 1, you see nothing. ⏎ ⏎ The current available actions are: examine coffeemachine 1, examine countertop 2, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go t …(+325ch)
+t0124:action | CALL environment_action/: go to countertop 1
+t0124:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+475ch)
+t0125:action | CALL environment_action/: look
+t0125:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0126:action | CALL environment_action/: go to coffeemachine 1
+t0126:observation | OBS : You arrive at coffeemachine 1. On the coffeemachine 1, you see a mug 1. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go t …(+331ch)
+t0127:action | CALL environment_action/: go to countertop 1
+t0127:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+448ch)
+t0128:action | CALL environment_action/: look
+t0128:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0129:action | CALL environment_action/: go to fridge 1
+t0129:observation | OBS : You arrive at fridge 1. The fridge 1 is closed. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cabin …(+307ch)
+t0130:action | CALL environment_action/: open fridge 1
+t0130:observation | OBS : You open the fridge 1. The fridge 1 is open. In it, you see a apple 2, a cup 3, a mug 2, a potato 1, a tomato 3, and a tomato 2. ⏎ ⏎ The current available actions are: cool pan 2 with fridge 1, examine fridge 1, examine  …(+401ch)
+t0131:action | CALL environment_action/: close fridge 1
+t0131:observation | OBS : You close the fridge 1. ⏎ ⏎ The current available actions are: close fridge 1, cool pan 2 with fridge 1, examine fridge 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0132:action | CALL environment_action/: go to countertop 1
+t0132:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+459ch)
+t0133:action | CALL environment_action/: look
+t0133:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0134:action | CALL environment_action/: go to stoveburner 1
+t0134:observation | OBS : You arrive at stoveburner 1. On the stoveburner 1, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to ca …(+327ch)
+t0135:action | CALL environment_action/: go to countertop 1
+t0135:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+447ch)
+t0136:action | CALL environment_action/: look
+t0136:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0137:action | CALL environment_action/: go to coffeemachine 1
+t0137:observation | OBS : You arrive at coffeemachine 1. On the coffeemachine 1, you see a mug 1. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go t …(+331ch)
+t0138:action | CALL environment_action/: go to countertop 1
+t0138:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+448ch)
+t0139:action | CALL environment_action/: look
+t0139:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0140:action | CALL environment_action/: go to stoveburner 1
+t0140:observation | OBS : You arrive at stoveburner 1. On the stoveburner 1, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to ca …(+327ch)
+t0141:action | CALL environment_action/: go to countertop 1
+t0141:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+447ch)
+t0142:action | CALL environment_action/: look
+t0142:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0143:action | CALL environment_action/: go to garbagecan 1
+t0143:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see a dishsponge 2, and a tomato 1. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go t …(+348ch)
+t0144:action | CALL environment_action/: go to countertop 1
+t0144:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+418ch)
+t0145:action | CALL environment_action/: look
+t0145:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0146:action | CALL environment_action/: go to cabinet 7
+t0146:observation | OBS : You arrive at cabinet 7. On the cabinet 7, you see a soapbottle 1. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cab …(+326ch)
+t0147:action | CALL environment_action/: go to countertop 1
+t0147:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a apple 1, a bowl 2, a bowl 1, a bread 1, a knife 2, a ladle 1, a lettuce 1, a pan 1, a soapbottle 3, a spatula 1, and a spoon 1. ⏎ ⏎ The current available actions …(+443ch)
+t0148:action | CALL environment_action/: look
+t0148:observation | OBS : You are facing the countertop 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet  …(+321ch)
+t0149:action | CALL environment_action/: go to cabinet 4
+t0149:observation | OBS : You arrive at cabinet 4. The cabinet 4 is closed. ⏎ ⏎ The current available actions are: examine countertop 1, examine pan 2, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to cabinet 5, go to cab …(+309ch)

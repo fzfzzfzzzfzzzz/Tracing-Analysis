@@ -1,0 +1,200 @@
+"""Filled exemplar for case 001 (ama:swebench task 147, Django password-reset token).
+
+Run to verify: python exemplar_case001.py   (self-check must print OK)
+"""
+from pathlib import Path
+
+import anno_lib as A
+
+CID = "2180355931c9563fc692c4ae0a957bdb411cfd379a742c20ee6f6d04f187f02a"
+
+EPISODE = {
+    "scope": "task_level_failure_episode",
+    "failure_family": "token_invalidation_logic_error",
+    "recoverability": "R0",
+    "error_signature": "Token valid after email change: True",
+    "diagnostic_evidence": (
+        "t0026 复现脚本输出显示用户修改邮箱后旧 password reset token 仍然有效"
+        "（Token valid after email change: True，SECURITY ISSUE），构成任务级初始失败。"
+        "根因：PasswordResetTokenGenerator._make_hash_value 的哈希只包含 pk/password/last_login，"
+        "不含 email，邮箱变更不会改变哈希；t0030 的诊断思考与 t0054 对 /testbed/django/contrib/auth/tokens.py "
+        "的查看支持该结论。"
+    ),
+    "recovery_sequence": (
+        "1) 扩展复现脚本加入边界用例并重跑，漏洞仍在（t0027→t0029）；"
+        "2) 诊断后在 /workspace 副本的 _make_hash_value 中加入用户 email，复测变为 False（t0032→t0033）；"
+        "3) 发现官方测试运行于 /testbed/django，将同一修复应用到 /testbed，29 项 password reset 套件通过"
+        "（t0055→t0058）；"
+        "4) 清理临时脚本后最终复跑 auth_tests.test_tokens 与 PasswordResetTest，36 项全部 OK（t0064）。"
+    ),
+    "resolution_evidence": (
+        "t0064:observation 显示对 /testbed 正式环境的最终套件复跑 Ran 36 tests / OK（exit code 0），"
+        "确认修复在官方运行时生效。"
+    ),
+    "anchor_source_event_id": "t0026:action",
+    "initial_action_source_event_id": "t0026:action",
+    "initial_result_source_event_ids": ["t0026:observation"],
+    "repair_steps": [
+        {
+            "step_id": "extend-repro",
+            "decision_source_event_ids": [],
+            "action_source_event_id": "t0027:action",
+            "result_source_event_ids": ["t0027:observation", "t0029:observation"],
+            "outcome": "intermediate_failure",
+            "semantic_change": "复现脚本加入空 email/边界用例并重跑，输出仍为 Token valid after email change: True，漏洞未消除。",
+        },
+        {
+            "step_id": "fix-workspace",
+            "decision_source_event_ids": ["t0030:observation"],
+            "action_source_event_id": "t0032:action",
+            "result_source_event_ids": ["t0032:observation", "t0033:observation"],
+            "outcome": "intermediate_failure",
+            "semantic_change": "在 /workspace 副本的 _make_hash_value 哈希中加入用户 email，复测显示修改邮箱后 token 失效（False），但正式测试环境 /testbed 尚未应用修复。",
+        },
+        {
+            "step_id": "fix-testbed",
+            "decision_source_event_ids": ["t0054:observation"],
+            "action_source_event_id": "t0055:action",
+            "result_source_event_ids": ["t0055:observation", "t0058:observation"],
+            "outcome": "intermediate_failure",
+            "semantic_change": "将同样的 email 哈希修复应用到官方运行时 /testbed/django，PasswordResetTest 29 项通过，但尚未做最终全量确认。",
+        },
+        {
+            "step_id": "final-verify",
+            "decision_source_event_ids": ["t0063:observation"],
+            "action_source_event_id": "t0064:action",
+            "result_source_event_ids": ["t0064:observation"],
+            "outcome": "resolved",
+            "semantic_change": "清理临时脚本后对 /testbed 复跑 auth_tests.test_tokens 与 PasswordResetTest，36 项全部 OK，任务级修复在正式环境确认。",
+        },
+    ],
+    "resolution_source_event_ids": ["t0064:observation"],
+    "required_core_source_event_ids": [
+        "t0026:action", "t0026:observation", "t0032:action", "t0033:observation",
+        "t0055:action", "t0064:action", "t0064:observation",
+    ],
+    "optional_support_source_event_ids": [
+        "t0030:observation", "t0054:observation", "t0058:observation", "t0063:observation",
+    ],
+    "chain_policy": {
+        "alternative_evidence_sets": [
+            [
+                "t0026:action", "t0026:observation", "t0032:action", "t0033:observation",
+                "t0055:action", "t0064:action", "t0064:observation",
+            ],
+            [
+                "t0026:action", "t0026:observation", "t0032:action", "t0033:observation",
+                "t0064:observation",
+            ],
+        ],
+        "relevant_evidence_ids": [
+            "t0026:action", "t0026:observation", "t0027:action", "t0027:observation",
+            "t0029:observation", "t0030:observation", "t0032:action", "t0032:observation",
+            "t0033:observation", "t0054:observation", "t0055:action", "t0055:observation",
+            "t0058:observation", "t0063:observation", "t0064:action", "t0064:observation",
+        ],
+        "causal_paths": [
+            {
+                "evidence_ids": [
+                    "t0026:action", "t0026:observation", "t0032:action", "t0033:observation",
+                    "t0055:action", "t0064:action", "t0064:observation",
+                ],
+                "constraints": [
+                    ["t0026:action", "t0026:observation"],
+                    ["t0026:observation", "t0032:action"],
+                    ["t0032:action", "t0033:observation"],
+                    ["t0033:observation", "t0055:action"],
+                    ["t0055:action", "t0064:observation"],
+                    ["t0064:action", "t0064:observation"],
+                ],
+            },
+            {
+                "evidence_ids": [
+                    "t0026:action", "t0026:observation", "t0032:action", "t0033:observation",
+                    "t0064:observation",
+                ],
+                "constraints": [
+                    ["t0026:action", "t0026:observation"],
+                    ["t0026:observation", "t0032:action"],
+                    ["t0032:action", "t0033:observation"],
+                    ["t0033:observation", "t0064:observation"],
+                ],
+            },
+        ],
+    },
+    "query_policies": {
+        "audit_recovery": {
+            "alternative_evidence_sets": [
+                ["t0032:action", "t0033:observation", "t0055:action", "t0064:observation"],
+                ["t0032:action", "t0055:action", "t0064:action", "t0064:observation"],
+            ],
+            "relevant_evidence_ids": [
+                "t0029:observation", "t0030:observation", "t0032:action", "t0032:observation",
+                "t0033:observation", "t0054:observation", "t0055:action", "t0055:observation",
+                "t0058:observation", "t0063:observation", "t0064:action", "t0064:observation",
+            ],
+            "causal_paths": [
+                {
+                    "evidence_ids": ["t0032:action", "t0033:observation", "t0055:action", "t0064:observation"],
+                    "constraints": [
+                        ["t0032:action", "t0033:observation"],
+                        ["t0033:observation", "t0055:action"],
+                        ["t0055:action", "t0064:observation"],
+                    ],
+                },
+                {
+                    "evidence_ids": ["t0032:action", "t0055:action", "t0064:action", "t0064:observation"],
+                    "constraints": [
+                        ["t0032:action", "t0055:action"],
+                        ["t0055:action", "t0064:action"],
+                        ["t0064:action", "t0064:observation"],
+                    ],
+                },
+            ],
+        },
+        "interactive_reacquisition": {
+            "alternative_evidence_sets": [
+                ["t0054:action", "t0054:observation", "t0064:action", "t0064:observation"],
+                ["t0054:observation", "t0064:action", "t0064:observation"],
+            ],
+            "relevant_evidence_ids": [
+                "t0026:action", "t0026:observation", "t0054:action", "t0054:observation",
+                "t0064:action", "t0064:observation",
+            ],
+            "causal_paths": [
+                {
+                    "evidence_ids": ["t0054:action", "t0054:observation", "t0064:action", "t0064:observation"],
+                    "constraints": [
+                        ["t0054:action", "t0054:observation"],
+                        ["t0054:observation", "t0064:action"],
+                        ["t0064:action", "t0064:observation"],
+                    ],
+                },
+                {
+                    "evidence_ids": ["t0054:observation", "t0064:action", "t0064:observation"],
+                    "constraints": [
+                        ["t0054:observation", "t0064:action"],
+                        ["t0064:action", "t0064:observation"],
+                    ],
+                },
+            ],
+        },
+    },
+}
+
+
+def main() -> None:
+    A.check_episode(EPISODE, CID)
+    print("exemplar self-check OK")
+    A.write_row(
+        Path(__file__).parent / "pass_a" / "batch_00_exemplar.jsonl",
+        CID,
+        annotator="ai-draft:zcode:glm-5.2:pass-a",
+        status="annotated",
+        episode=EPISODE,
+    )
+    print(A.check_file(Path(__file__).parent / "pass_a" / "batch_00_exemplar.jsonl") or "file check OK")
+
+
+if __name__ == "__main__":
+    main()

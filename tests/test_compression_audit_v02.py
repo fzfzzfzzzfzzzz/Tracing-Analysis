@@ -8,9 +8,14 @@ from tracegraph.benchmark.compression_audit.development_protocol import (
     AgentTurnRecord,
     ReacquisitionCost,
     development_metadata,
+    normalize_server_submission,
     parse_development_submission,
+    server_submission_json_schema,
+    server_submission_response_format,
+    server_submission_tool_schema,
     submission_json_schema,
     submission_response_format,
+    submission_vllm_085_response_format,
     submission_tool_schema,
 )
 
@@ -61,6 +66,82 @@ def test_qwen37plus_response_format_uses_the_same_strict_schema() -> None:
     )
 
 
+def test_submission_schema_can_constrain_answer_lines_on_wire() -> None:
+    pattern = r"^diagnostic_evidence: [^\n]+$"
+    response = submission_response_format(answer_pattern=pattern)
+    tool = submission_tool_schema(answer_pattern=pattern)
+    assert response["json_schema"]["schema"]["properties"]["a"]["pattern"] == pattern
+    assert tool["function"]["parameters"]["properties"]["a"]["pattern"] == pattern
+
+
+def test_vllm_085_wire_schema_omits_only_unsupported_uniqueness_keyword() -> None:
+    canonical = submission_response_format()
+    compatible = submission_vllm_085_response_format()
+    assert "uniqueItems" in canonical["json_schema"]["schema"]["properties"]["e"]
+    assert "uniqueItems" not in compatible["json_schema"]["schema"]["properties"]["e"]
+    compatible["json_schema"]["schema"]["properties"]["e"]["uniqueItems"] = True
+    assert compatible == canonical
+
+
+def test_server_field_transport_is_typed_closed_and_lossless() -> None:
+    exact = ["error_signature", "failed_action", "failed_arguments"]
+    semantic = ["diagnostic_evidence"]
+    schema = server_submission_json_schema(exact, semantic)
+    assert schema["additionalProperties"] is False
+    assert schema["properties"]["answer_fields"]["required"] == exact + semantic
+    assert schema["properties"]["answer_fields"]["properties"][
+        "failed_arguments"] == {"type": "object"}
+    assert server_submission_response_format(exact, semantic)["json_schema"][
+        "schema"] == schema
+    assert server_submission_tool_schema(exact, semantic)["function"][
+        "parameters"] == schema
+
+    response = {"choices": [{"finish_reason": "stop", "message": {"content": json.dumps({
+        "answer_fields": {
+            "error_signature": "bad_syntax",
+            "failed_action": "shell_old",
+            "failed_arguments": {"path": "a"},
+            "diagnostic_evidence": "The old shell rejected path a.",
+        },
+        "e": ["e2", "e3"], "t": "historical", "s": False,
+    })}}]}
+    parsed = parse_development_submission(normalize_server_submission(
+        response, exact, semantic))
+    assert parsed["answer"] == (
+        'error_signature: "bad_syntax"\nfailed_action: "shell_old"\n'
+        'failed_arguments: {"path":"a"}\n'
+        "diagnostic_evidence: The old shell rejected path a.")
+    assert parsed["evidence_record_ids"] == ["e2", "e3"]
+
+    response["choices"][0]["message"]["content"] = (
+        "<think>Reason over the records first.</think>\n"
+        + response["choices"][0]["message"]["content"]
+    )
+    parsed_after_thinking = parse_development_submission(
+        normalize_server_submission(response, exact, semantic)
+    )
+    assert parsed_after_thinking == parsed
+
+    response["choices"][0]["message"]["content"] = """<think>
+Reason over the records first.
+</think>
+error_signature: "bad_syntax"
+failed_action: "shell_old"
+failed_arguments: {"path":"a"}
+diagnostic_evidence: "e2"
+diagnostic_evidence: The old shell rejected path a.
+e:
+"e2"
+"e3"
+t: "historical"
+s: false
+"""
+    parsed_labelled = parse_development_submission(
+        normalize_server_submission(response, exact, semantic)
+    )
+    assert parsed_labelled == parsed
+
+
 def test_parser_only_unwraps_complete_provider_submission() -> None:
     parsed = parse_development_submission(
         _response({"a": "Use the cached receipt", "e": ["r-2"], "t": "current", "s": False})
@@ -83,6 +164,26 @@ def test_parser_accepts_json_schema_message_content() -> None:
                         "content": json.dumps(
                             {"a": "Use receipt", "e": ["r-2"], "t": "current", "s": False}
                         )
+                    },
+                }
+            ]
+        }
+    )
+    assert parsed["answer"] == "Use receipt"
+    assert parsed["evidence_record_ids"] == ["r-2"]
+
+
+def test_parser_accepts_json_schema_content_with_empty_optional_tool_calls() -> None:
+    parsed = parse_development_submission(
+        {
+            "choices": [
+                {
+                    "finish_reason": "stop",
+                    "message": {
+                        "content": json.dumps(
+                            {"a": "Use receipt", "e": ["r-2"], "t": "current", "s": False}
+                        ),
+                        "tool_calls": [],
                     },
                 }
             ]

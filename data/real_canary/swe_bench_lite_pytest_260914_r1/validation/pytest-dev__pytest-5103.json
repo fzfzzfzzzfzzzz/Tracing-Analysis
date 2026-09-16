@@ -1,0 +1,11 @@
+{
+  "base_commit": "10ca84ffc56c2dd2d9dc4bd71b7b898e083500cd",
+  "baseline_expected_failure": true,
+  "baseline_output_tail": "F                                                                        [100%]\n=================================== FAILURES ===================================\n_________________ TestAssertionRewrite.test_unroll_expression __________________\n\nself = <test_assertrewrite.TestAssertionRewrite object at 0x7a6a727712b0>\n\n    def test_unroll_expression(self):\n        def f():\n            assert all(x == 1 for x in range(10))\n    \n>       assert \"0 == 1\" in getmsg(f)\nE       AssertionError: assert '0 == 1' in 'assert False\\n +  where False = all(<generator object f.<locals>.<genexpr> at 0x7a6a71fa3970>)'\nE        +  where 'assert False\\n +  where False = all(<generator object f.<locals>.<genexpr> at 0x7a6a71fa3970>)' = getmsg(<function TestAssertionRewrite.test_unroll_expression.<locals>.f at 0x7a6a72607d30>)\n\ntesting/test_assertrewrite.py:663: AssertionError\n=========================== short test summary info ============================\nFAILED testing/test_assertrewrite.py::TestAssertionRewrite::test_unroll_expression\n1 failed in 0.37 seconds\n",
+  "baseline_returncode": 1,
+  "gold_expected_pass": true,
+  "gold_output_tail": ".                                                                        [100%]\n1 passed in 0.33 seconds\n",
+  "gold_returncode": 0,
+  "image_id": "sha256:e4704aa1479bc1aa9e2491e59dbc1a5c3eadbdf4eb600279e50ba39abacbf610",
+  "instance_id": "pytest-dev__pytest-5103"
+}

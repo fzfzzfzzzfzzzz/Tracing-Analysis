@@ -1,0 +1,47 @@
+{
+  "schema_version": "compression_audit_pilot_v02_1",
+  "protocol": "v0.2-development",
+  "development_only": true,
+  "independent_validation": false,
+  "seed": 20260912,
+  "model": "qwen3.8-flash",
+  "judge_model": "qwen3.8-flash",
+  "region": "cn-beijing",
+  "temperature": 0,
+  "enable_thinking": false,
+  "max_output_tokens": 2048,
+  "history_budget_tokens": 1536,
+  "ingest_budget_tokens": 768,
+  "request_input_tokens_hard_max": 65536,
+  "request_count_hard_max": 1298,
+  "cost_cap_cny": 100,
+  "timeout_seconds": 60,
+  "tokenizer": {
+    "model": "qwen3.8-flash",
+    "path": "artifacts/tokenizers/qwen38_flash_next_de4b8e4/tokenizer.json",
+    "source": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/resolve/de4b8e4d43b917e7706784d8bb445c9af86a3540/tokenizer.json",
+    "sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "verification_path": "configs/qwen38_flash_tokenizer_evidence_260912.json",
+    "verification_sha256": "462d05231163c93ace922fd5c1ca6c00beaa85885edbaaf768c496d9e2037a7b"
+  },
+  "pricing_snapshot": {
+    "date": "2026-09-12",
+    "source": "https://help.aliyun.com/en/model-studio/qwen3-8-flash",
+    "input_per_million": 0.8,
+    "output_per_million": 2.7,
+    "region": "cn-beijing"
+  },
+  "authorization": {
+    "authorized_by_user": false,
+    "authorization_id": null,
+    "date": null
+  },
+  "gates": {
+    "judge_holdout_correct": 36,
+    "judge_critical_false_positives": 0,
+    "first_format_valid": 36,
+    "final_format_valid": 38,
+    "full_pass": 20,
+    "oracle_pass": 14
+  }
+}

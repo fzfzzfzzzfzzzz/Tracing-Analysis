@@ -336,6 +336,7 @@ def _controlled_prefix(
     evidence = {
         "failed_action": role_ids["failed_action"],
         "failed_arguments": role_ids["failed_action"],
+        "error_signature": role_ids["failure_result"],
         "failure_cause": role_ids["failure_result"] + role_ids["diagnostic_evidence"],
         "diagnostic_evidence": role_ids["failure_result"] + role_ids["diagnostic_evidence"],
         "switch_decision": role_ids["switch_decision"],

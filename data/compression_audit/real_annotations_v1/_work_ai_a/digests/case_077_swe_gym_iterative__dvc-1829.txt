@@ -1,0 +1,12 @@
+CASE index=77 candidate_id=dc90fe92f5abe161dbc3add7d7869b3d73ab611248b341366e58c6d6f38e56e1
+source=swe_gym repository=iterative__dvc task_id=iterative__dvc-1829 split=test events=9
+====================================================================================================
+m0000:message | SYS : You are a helpful assistant that can interact with a computer to solve tasks. ⏎  …(+210ch)
+m0001:message | USER: <uploaded_files> ⏎ /workspace/iterative__dvc__0.34 ⏎ </uploaded_files> ⏎ I've uploaded a python code repository in the directory iterative__dvc__0.34. Consider the following PR description: ⏎ ⏎ <pr_description> ⏎ dvc status regression after 0.33.1 release ⏎ I'm using OSX/Darwin. ⏎ ⏎ All the checksums in my pipelines have changed starting from version 0.33.1. ⏎ ⏎ Bug very similar to https://github.com/iterative/dvc/issues/1680 ⏎ ⏎ E.g: With a single file added with `dvc add helico_val.h5.dvc`: ⏎  …(+2036ch)
+m0002:call:call_kzciyDWclktGlO6uhIkh6I4P | CALL str_replace_editor args={"command": "view", "path": "/workspace/iterative__dvc__0.34"}
+m0003:result:call_kzciyDWclktGlO6uhIkh6I4P | OBS : OBSERVATION: ⏎ Here's the files and directories up to 2 levels deep in /workspace/iterative__dvc__0.34, excluding hidden items: ⏎ /workspace/iterative__dvc__0.34
+m0004:call:call_peNLPHkJ6XVhII4d6c0HfMhm | CALL str_replace_editor args={"command": "view", "path": "/workspace/iterative__dvc__0.34", "view_range": [0, -1]}
+m0005:result:call_peNLPHkJ6XVhII4d6c0HfMhm | OBS : OBSERVATION: ⏎ ERROR: ⏎ The `view_range` parameter is not allowed when `path` points to a directory. !!!ERR!!!
+m0006:call:call_KxKwNqbvDbM8YqitTHRa8NaC | CALL str_replace_editor args={"command": "view", "path": "/workspace/iterative__dvc__0.34"}
+m0007:result:call_KxKwNqbvDbM8YqitTHRa8NaC | OBS : OBSERVATION: ⏎ Here's the files and directories up to 2 levels deep in /workspace/iterative__dvc__0.34, excluding hidden items: ⏎ /workspace/iterative__dvc__0.34
+m0008:call:call_UpGMKI6bJ1grvTPjkp5ilgOX | CALL str_replace_editor args={"command": "view", "path": "/workspace/iterative__dvc__0.34"}

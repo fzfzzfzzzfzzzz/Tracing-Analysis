@@ -23,6 +23,35 @@ from .constants import (
 )
 
 
+FAILURE_EPISODE_SCHEMA_VERSION = "compression_audit_failure_episode_gold_v1"
+FAILURE_EPISODE_SCOPE = "task_level_failure_episode"
+FAILURE_EPISODE_OUTCOMES = ("intermediate_failure", "resolved")
+
+
+def _require_unique(values: Sequence[str], name: str) -> tuple[str, ...]:
+    result = tuple(map(str, values))
+    if not result or any(not value for value in result):
+        raise ValueError(f"{name} must contain nonempty event IDs")
+    if len(result) != len(set(result)):
+        raise ValueError(f"{name} contains duplicate event IDs")
+    return result
+
+
+def _validate_acyclic(nodes: set[str], edges: Sequence[tuple[str, str]], name: str) -> None:
+    if any(left == right or left not in nodes or right not in nodes for left, right in edges):
+        raise ValueError(f"{name} contains an edge outside its evidence path")
+    pending = set(nodes)
+    while pending:
+        roots = {
+            node
+            for node in pending
+            if not any(right == node and left in pending for left, right in edges)
+        }
+        if not roots:
+            raise ValueError(f"{name} contains a causal cycle")
+        pending -= roots
+
+
 
 @dataclass(frozen=True, slots=True)
 class PrefixRecord:
@@ -117,6 +146,293 @@ class PrefixRecord:
 
 
 @dataclass(frozen=True, slots=True)
+class FailureEpisodeEvidencePath:
+    evidence_ids: tuple[str, ...]
+    constraints: tuple[tuple[str, str], ...]
+
+    def __post_init__(self) -> None:
+        evidence = _require_unique(self.evidence_ids, "episode evidence path")
+        edges = tuple((str(left), str(right)) for left, right in self.constraints)
+        if len(edges) != len(set(edges)):
+            raise ValueError("episode evidence path contains duplicate causal edges")
+        _validate_acyclic(set(evidence), edges, "episode evidence path")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "evidence_ids": list(self.evidence_ids),
+            "constraints": [list(edge) for edge in self.constraints],
+        }
+
+    @classmethod
+    def from_dict(cls, value: Mapping[str, Any]) -> "FailureEpisodeEvidencePath":
+        raw_constraints = value.get("constraints", ())
+        constraints: list[tuple[str, str]] = []
+        for edge in raw_constraints:
+            if not isinstance(edge, (list, tuple)) or len(edge) != 2:
+                raise ValueError("episode causal constraints must contain two event IDs")
+            constraints.append((str(edge[0]), str(edge[1])))
+        return cls(
+            evidence_ids=_tuple_strings(value.get("evidence_ids", ())),
+            constraints=tuple(constraints),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class FailureEpisodeEvidencePolicy:
+    alternative_evidence_sets: tuple[tuple[str, ...], ...]
+    relevant_evidence_ids: tuple[str, ...]
+    causal_paths: tuple[FailureEpisodeEvidencePath, ...]
+
+    def __post_init__(self) -> None:
+        alternatives = tuple(
+            _require_unique(values, "episode evidence alternative")
+            for values in self.alternative_evidence_sets
+        )
+        if not alternatives:
+            raise ValueError("episode evidence policy needs at least one alternative")
+        if len({frozenset(values) for values in alternatives}) != len(alternatives):
+            raise ValueError("episode evidence alternatives must be distinct")
+        relevant = set(_require_unique(
+            self.relevant_evidence_ids, "episode relevant evidence"
+        ))
+        if any(not set(values) <= relevant for values in alternatives):
+            raise ValueError("episode evidence alternative is not relevant evidence")
+        paths = tuple(self.causal_paths)
+        if (
+            len(paths) != len(alternatives)
+            or {frozenset(path.evidence_ids) for path in paths}
+            != {frozenset(values) for values in alternatives}
+        ):
+            raise ValueError("every episode evidence alternative needs one causal path")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "alternative_evidence_sets": [
+                list(values) for values in self.alternative_evidence_sets
+            ],
+            "relevant_evidence_ids": list(self.relevant_evidence_ids),
+            "causal_paths": [path.to_dict() for path in self.causal_paths],
+        }
+
+    @classmethod
+    def from_dict(cls, value: Mapping[str, Any]) -> "FailureEpisodeEvidencePolicy":
+        return cls(
+            alternative_evidence_sets=tuple(
+                _tuple_strings(values)
+                for values in value.get("alternative_evidence_sets", ())
+            ),
+            relevant_evidence_ids=_tuple_strings(value.get("relevant_evidence_ids", ())),
+            causal_paths=tuple(
+                FailureEpisodeEvidencePath.from_dict(path)
+                for path in value.get("causal_paths", ())
+            ),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class FailureEpisodeRepairStep:
+    step_id: str
+    decision_event_ids: tuple[str, ...]
+    action_event_id: str
+    result_event_ids: tuple[str, ...]
+    outcome: str
+    semantic_change: str
+
+    def __post_init__(self) -> None:
+        _nonempty(self.step_id, "repair step_id")
+        _nonempty(self.action_event_id, "repair action_event_id")
+        _require_unique(self.result_event_ids, "repair result_event_ids")
+        if (
+            any(not item for item in self.decision_event_ids)
+            or len(self.decision_event_ids) != len(set(self.decision_event_ids))
+        ):
+            raise ValueError("repair decision_event_ids contains duplicates")
+        if self.outcome not in FAILURE_EPISODE_OUTCOMES:
+            raise ValueError(f"unsupported repair outcome: {self.outcome}")
+        _nonempty(self.semantic_change, "repair semantic_change")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "step_id": self.step_id,
+            "decision_event_ids": list(self.decision_event_ids),
+            "action_event_id": self.action_event_id,
+            "result_event_ids": list(self.result_event_ids),
+            "outcome": self.outcome,
+            "semantic_change": self.semantic_change,
+        }
+
+    @classmethod
+    def from_dict(cls, value: Mapping[str, Any]) -> "FailureEpisodeRepairStep":
+        return cls(
+            step_id=_nonempty(value.get("step_id"), "repair step_id"),
+            decision_event_ids=_tuple_strings(value.get("decision_event_ids", ())),
+            action_event_id=_nonempty(value.get("action_event_id"), "repair action_event_id"),
+            result_event_ids=_tuple_strings(value.get("result_event_ids", ())),
+            outcome=_nonempty(value.get("outcome"), "repair outcome"),
+            semantic_change=_nonempty(value.get("semantic_change"), "repair semantic_change"),
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class FailureEpisodeGold:
+    anchor_event_id: str
+    initial_action_event_id: str
+    initial_result_event_ids: tuple[str, ...]
+    repair_steps: tuple[FailureEpisodeRepairStep, ...]
+    resolution_event_ids: tuple[str, ...]
+    recovery_sequence: str
+    required_core_event_ids: tuple[str, ...]
+    optional_support_event_ids: tuple[str, ...]
+    chain_policy: FailureEpisodeEvidencePolicy
+    query_policies: Mapping[str, FailureEpisodeEvidencePolicy] = field(default_factory=dict)
+    scope: str = FAILURE_EPISODE_SCOPE
+    schema_version: str = FAILURE_EPISODE_SCHEMA_VERSION
+
+    def __post_init__(self) -> None:
+        if self.schema_version != FAILURE_EPISODE_SCHEMA_VERSION:
+            raise ValueError("unsupported failure episode schema_version")
+        if self.scope != FAILURE_EPISODE_SCOPE:
+            raise ValueError(f"unsupported failure episode scope: {self.scope}")
+        if self.anchor_event_id != self.initial_action_event_id:
+            raise ValueError("failure episode anchor must be its initial action")
+        _require_unique(self.initial_result_event_ids, "initial failure results")
+        steps = tuple(self.repair_steps)
+        if not steps or len({step.step_id for step in steps}) != len(steps):
+            raise ValueError("failure episode needs uniquely named repair steps")
+        if steps[-1].outcome != "resolved" or any(
+            step.outcome == "resolved" for step in steps[:-1]
+        ):
+            raise ValueError("only the final failure episode repair step may resolve the task")
+        resolution = set(_require_unique(
+            self.resolution_event_ids, "failure episode resolution"
+        ))
+        if not resolution <= set(steps[-1].result_event_ids):
+            raise ValueError("resolution evidence must come from the final repair result")
+        _nonempty(self.recovery_sequence, "failure episode recovery_sequence")
+        _require_unique(self.required_core_event_ids, "failure episode required core")
+        optional = tuple(map(str, self.optional_support_event_ids))
+        if len(optional) != len(set(optional)) or any(not item for item in optional):
+            raise ValueError("failure episode optional support contains invalid event IDs")
+        if set(optional) & set(self.required_core_event_ids):
+            raise ValueError("required and optional failure episode evidence must be disjoint")
+        unknown_query_types = set(self.query_policies) - {
+            "audit_recovery", "audit_chain", "interactive_reacquisition"
+        }
+        if unknown_query_types:
+            raise ValueError(f"unsupported failure episode query policies: {unknown_query_types}")
+
+    def policy_for_query(self, query_type: str) -> FailureEpisodeEvidencePolicy | None:
+        if query_type == "audit_chain":
+            return self.chain_policy
+        return self.query_policies.get(query_type)
+
+    def referenced_event_ids(self) -> set[str]:
+        result = {
+            self.anchor_event_id,
+            self.initial_action_event_id,
+            *self.initial_result_event_ids,
+            *self.resolution_event_ids,
+            *self.required_core_event_ids,
+            *self.optional_support_event_ids,
+        }
+        policies = [self.chain_policy, *self.query_policies.values()]
+        for policy in policies:
+            result.update(policy.relevant_evidence_ids)
+        for step in self.repair_steps:
+            result.add(step.action_event_id)
+            result.update(step.decision_event_ids)
+            result.update(step.result_event_ids)
+        return result
+
+    def validate_against_prefix(self, prefix: PrefixRecord) -> None:
+        events = {str(event["event_id"]): event for event in prefix.events}
+        missing = self.referenced_event_ids() - set(events)
+        if missing:
+            raise ValueError(f"failure episode references missing events: {sorted(missing)}")
+        if events[self.initial_action_event_id].get("kind") != "tool_call":
+            raise ValueError("failure episode initial action must be a tool_call")
+        for step in self.repair_steps:
+            if events[step.action_event_id].get("kind") != "tool_call":
+                raise ValueError(f"repair action must be a tool_call: {step.step_id}")
+        order = {
+            str(event["event_id"]): int(event["step_id"]) for event in prefix.events
+        }
+        if any(order[self.initial_action_event_id] >= order[event_id]
+               for event_id in self.initial_result_event_ids):
+            raise ValueError("initial failure results must follow the anchored action")
+        previous = max(order[event_id] for event_id in self.initial_result_event_ids)
+        for step in self.repair_steps:
+            if order[step.action_event_id] <= previous:
+                raise ValueError("failure episode repair actions must be chronological")
+            if any(order[event_id] <= order[step.action_event_id]
+                   for event_id in step.result_event_ids):
+                raise ValueError("repair results must follow their action")
+            previous = max(order[event_id] for event_id in step.result_event_ids)
+        for policy in [self.chain_policy, *self.query_policies.values()]:
+            for path in policy.causal_paths:
+                if any(order[left] >= order[right] for left, right in path.constraints):
+                    raise ValueError("failure episode causal edge contradicts public chronology")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "scope": self.scope,
+            "anchor_event_id": self.anchor_event_id,
+            "initial_action_event_id": self.initial_action_event_id,
+            "initial_result_event_ids": list(self.initial_result_event_ids),
+            "repair_steps": [step.to_dict() for step in self.repair_steps],
+            "resolution_event_ids": list(self.resolution_event_ids),
+            "recovery_sequence": self.recovery_sequence,
+            "required_core_event_ids": list(self.required_core_event_ids),
+            "optional_support_event_ids": list(self.optional_support_event_ids),
+            "chain_policy": self.chain_policy.to_dict(),
+            "query_policies": {
+                key: policy.to_dict() for key, policy in sorted(self.query_policies.items())
+            },
+        }
+
+    @classmethod
+    def from_dict(cls, value: Mapping[str, Any]) -> "FailureEpisodeGold":
+        if value.get("schema_version") != FAILURE_EPISODE_SCHEMA_VERSION:
+            raise ValueError("unsupported failure episode schema_version")
+        chain_policy = value.get("chain_policy")
+        if not isinstance(chain_policy, Mapping):
+            raise ValueError("failure episode chain_policy is required")
+        query_policies = value.get("query_policies") or {}
+        if not isinstance(query_policies, Mapping):
+            raise ValueError("failure episode query_policies must be an object")
+        return cls(
+            anchor_event_id=_nonempty(value.get("anchor_event_id"), "episode anchor"),
+            initial_action_event_id=_nonempty(
+                value.get("initial_action_event_id"), "episode initial action"
+            ),
+            initial_result_event_ids=_tuple_strings(
+                value.get("initial_result_event_ids", ())
+            ),
+            repair_steps=tuple(
+                FailureEpisodeRepairStep.from_dict(step)
+                for step in value.get("repair_steps", ())
+            ),
+            resolution_event_ids=_tuple_strings(value.get("resolution_event_ids", ())),
+            recovery_sequence=_nonempty(
+                value.get("recovery_sequence"), "episode recovery_sequence"
+            ),
+            required_core_event_ids=_tuple_strings(
+                value.get("required_core_event_ids", ())
+            ),
+            optional_support_event_ids=_tuple_strings(
+                value.get("optional_support_event_ids", ())
+            ),
+            chain_policy=FailureEpisodeEvidencePolicy.from_dict(chain_policy),
+            query_policies={
+                str(key): FailureEpisodeEvidencePolicy.from_dict(policy)
+                for key, policy in query_policies.items()
+            },
+            scope=str(value.get("scope") or ""),
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class FailureChainGold:
     prefix_id: str
     failed_action: str
@@ -132,6 +448,7 @@ class FailureChainGold:
     recoverability: str
     current_fact: str
     current_event_ids: tuple[str, ...]
+    failure_episode: FailureEpisodeGold | None = None
     source_event_ids: Mapping[str, str] = field(default_factory=dict)
     chain_applicable: bool = True
     annotation: Mapping[str, Any] = field(default_factory=dict)
@@ -141,8 +458,8 @@ class FailureChainGold:
         _nonempty(self.prefix_id, "prefix_id")
         if self.recoverability not in RECOVERABILITY_LEVELS:
             raise ValueError(f"unsupported recoverability: {self.recoverability}")
-        if self.chain_applicable and len(self.ordered_event_ids) < 5:
-            raise ValueError("an applicable failure chain needs at least five ordered events")
+        if self.chain_applicable and len(self.ordered_event_ids) < 4:
+            raise ValueError("an applicable failure chain needs at least four ordered events")
         if len(set(self.ordered_event_ids)) != len(self.ordered_event_ids):
             raise ValueError(f"duplicate ordered failure event in {self.prefix_id}")
 
@@ -174,6 +491,8 @@ class FailureChainGold:
             "chain_applicable": self.chain_applicable,
             "annotation": dict(self.annotation),
         }
+        if self.failure_episode is not None:
+            value["failure_episode"] = self.failure_episode.to_dict()
         if include_hash:
             value["gold_hash"] = self.gold_hash
         return value
@@ -200,6 +519,11 @@ class FailureChainGold:
             recoverability=_nonempty(value.get("recoverability"), "recoverability"),
             current_fact=str(value.get("current_fact") or ""),
             current_event_ids=_tuple_strings(value.get("current_event_ids", ())),
+            failure_episode=(
+                FailureEpisodeGold.from_dict(value["failure_episode"])
+                if isinstance(value.get("failure_episode"), Mapping)
+                else None
+            ),
             source_event_ids={
                 str(key): str(item)
                 for key, item in dict(value.get("source_event_ids") or {}).items()

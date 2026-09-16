@@ -1,0 +1,33 @@
+{
+  "artifacts": {
+    "README.md": "cf2fb995d3dad892e0f3dbf6bb7e087c1a97484b7ef30e5fb0dec94e2153ae5f",
+    "adjudication.template.jsonl": "8c8c8cf08462e9e5c20c0c592ae27931d759fd202c2d850386d8464558707eaa",
+    "cases.jsonl": "8a7d7b63bc15abc3c136c07d0c71af36052d9c980b31706022cbbfc32dcd5e00"
+  },
+  "case_count": 7,
+  "development_only": true,
+  "difference_counts": {
+    "error_signature": 6,
+    "failure_family": 1,
+    "ordered_source_event_ids": 7,
+    "recoverability": 4
+  },
+  "independent_validation": false,
+  "inputs": {
+    "accepted_receipts_sha256": "aa171d666a5eb2ba1e3696f71c032a9a3f975ee36573afd9b53816cf54c6230a",
+    "candidates_sha256": "af693e8fc9ebe81986fce7aa2673c81706e71506aa1330f0f487410949504e4b",
+    "config_sha256": "2c7cb0eae294b8805479e9b79c4a4643351701e670ea7409460461544053731f",
+    "reviewer_a_sha256": "900c1a1005f61375454731d9c3bf448e23a96ab48866f1fb1325863a3b677cb4",
+    "reviewer_b_sha256": "53489159d282b0411c736378ce0788b5e281a894d173ca1cf2fa39992c972252"
+  },
+  "prefix_ids": [
+    "real:swe_gym:36e0eb232957ac82",
+    "real:swe_gym:918561a999a4e926",
+    "real:swe_gym:1e4f99776cda5c6a",
+    "real:swe_gym:fc45587d5bac8c04",
+    "real:swe_gym:9d1c9da136fff1b6",
+    "real:swe_gym:f31d17c3c14ddd51",
+    "real:swe_gym:9b9e94e63c2c9e54"
+  ],
+  "schema_version": "compression_audit_development_adjudication_packet_v1"
+}
