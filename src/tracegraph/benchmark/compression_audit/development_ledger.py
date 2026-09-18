@@ -66,7 +66,9 @@ class ProviderLedger:
 
     def call(self, template: dict, *, job_id: str, kind: str) -> dict:
         body = json.loads(json.dumps(template))
-        body.update(model=self.config["judge_model"] if kind == "judge" else self.config["model"],
+        body.update(model=(self.config["judge_model"]
+                          if kind in ("judge", "judge_format_repair")
+                          else self.config["model"]),
                     temperature=0, enable_thinking=False, max_tokens=2048,
                     seed=self.config["seed"])
         upper = request_input_token_upper_bound(body)

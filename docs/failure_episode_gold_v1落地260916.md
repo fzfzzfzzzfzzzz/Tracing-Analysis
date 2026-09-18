@@ -69,3 +69,59 @@ python scripts/validate_failure_episode_annotations.py `
 ## 下一门禁
 
 当前程序开发阶段完成。下一步不是跑主矩阵，而是由两位独立人工分别填写新 A/B 包。两份结果通过程序校验后，才能生成盲化分歧包、进行第三方裁决、计算一致性并冻结正式 test gold。
+
+## 260917 AI 开发双审进展
+
+为加快流程，A/B 暂由同一底层 GLM-5.2 的两个 pass 生成。两份均已通过 episode 结构、事件存在性、tool-call 类型、时间顺序、error signature 来源、resolution 和 evidence-policy 校验，但明确保持 `development_only=true`、`formal_ready=false`：
+
+- A：100 条，29 annotated / 71 rejected，SHA-256 `34c48ce66567d456fdbdc697650da96c815337c48c98949172a3ef336ecdad02`；
+- B：100 条，31 annotated / 69 rejected，SHA-256 `0d71d69f62f1d921532ac6840719477d4324f340bd2377c7be801f3e954a5ab9`。
+
+一致性结果：
+
+- 状态原始一致率 0.98，状态 κ=0.9524；
+- 69 条双方均拒绝；29 条双方均接受；2 条状态冲突；
+- 双方均接受部分的 failure-family κ=0.3256，recoverability κ=0.2750；
+- required-core evidence F1 均值 0.8441；全部引用事件 F1 均值 0.8050；
+- 只有 1 条 episode 完全逐字段一致，且该条使用了共享示例，不能视为独立一致性证据。
+
+因此不能机械选择 A 或 B。已生成 30 条第三方 AI 开发裁决包：
+
+- `审阅/failure_episode_v1_260916_r1/adjudication_ai_r1/failure_episode_ai_adjudication_packet.zip`
+- 组成：28 条双方接受但 episode 不一致，2 条接受/拒绝冲突；
+- split：dev 13、validation 5、test 12；
+- 其余 69 条共识拒绝和 1 条完全一致 episode 已单独保存，但仍只具开发地位。
+
+裁决结果必须通过 `scripts/validate_failure_episode_adjudication.py` 后，才能组装开发数据集。即使通过，也不能称为双人独立人工 gold；若后续实验出现值得保留的结论，仍需对最终纳入案例进行独立人工复核和裁决。
+
+## 260917 AI 开发 canary 与 r10 归因
+
+AI 裁决已经组装为 29 条 R0 开发 episode，并在其中 3 条能装入 32K 的已暴露短 SWE
+轨迹上完成 live canary。r9 修复了 server schema 漏传 `repair_sequence`；r10 进一步移除
+任务级 episode 中与多步修复冲突的单一 replacement strict 字段，并把稳定错误签名改为
+“答案包含金标签名”的单向匹配。旧单步题保持原契约。
+
+零调用敏感性把 Oracle audit-chain 从 0/3 恢复到 2/3；fresh r10 thinking-off 复现
+Oracle 2/3，但 Full History 仍为 0/3。开启 thinking 后，Full History 变为 1/3、Oracle
+变为 1/3；6 条目标题总体 hard pass 仍为 2/6，而回答 token 和延迟分别约增至 2.03 倍
+和 1.83 倍。两种设置的语义事实均为 6/6，主要差异来自精确锚点动作和引用选择。
+
+完整过程、哈希和解释边界见
+`docs/Qwen3-14B_failure_episode_AI开发canary结果260917.md`。下一步不是扩展模型调用，而是
+对这 3 条的锚点层级和有效额外引用做独立人工复核；结论通过后再进入未暴露 validation。
+
+## 260917 定向 AI 复核完成
+
+定向 A/B 已由同一 GLM-5.2 的两个 pass 填写并通过程序验收。两份对 3 条锚点、严格
+`execute_bash`、参数、错误结果、稳定签名和相关/禁止证据划分全部一致；唯一分歧是最终
+验证命令应列为 required core 还是 optional support。确定性裁决采用较小充分核心，并把
+验证命令保留为有效 optional support。该结果仍明确标记为非独立 AI 开发复核。
+
+已从 `failure_episode_ai_dev_260917_r2` 新建子分支
+`failure_episode_ai_dev_targeted_review_260917_r3`，只改变 3 个 gold hash，不改变任何公共
+prefix 或 query。对 thinking-off/on 的已保存调用完成零调用复算：直接可解释的 Full
+History 分别仍为 0/3 和 1/3；thinking-on 的通过项由 MONAI 换成 pandas，证明聚合分数对
+证据边界和错误签名敏感，但“语义正确而锚点 provenance/引用不稳定”的结论仍成立。
+
+下一门禁收缩为两位不同人工对这 3 条做独立复核；在此之前不扩展模型调用，也不把当前
+开发分数写成正式 benchmark 结果。

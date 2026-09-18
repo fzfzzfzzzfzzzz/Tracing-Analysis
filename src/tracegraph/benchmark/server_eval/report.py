@@ -7,8 +7,17 @@ import random
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from ..compression_audit.development_experiment import write_json, write_rows
-from ..compression_audit.development_results import judge_gate, model_gate, write_results
+from ..compression_audit.development_experiment import (
+    source_referenced_records,
+    write_json,
+    write_rows,
+)
+from ..compression_audit.development_results import (
+    episode_run_validity,
+    judge_gate,
+    model_gate,
+    write_results,
+)
 from ..compression_audit.development_scoring import score_submission
 from ..compression_audit.io import load_jsonl, stable_digest
 
@@ -18,7 +27,11 @@ def paired_interval(rows, reference, metric, seed, draws=2000):
     clusters = defaultdict(list)
     for row in rows:
         base = reference.get(row["query_id"])
-        if base and row["score"].get(metric) is not None and base["score"].get(metric) is not None:
+        if (base
+                and episode_run_validity(row) != "integration_invalid"
+                and episode_run_validity(base) != "integration_invalid"
+                and row["score"].get(metric) is not None
+                and base["score"].get(metric) is not None):
             clusters[row["prefix_id"]].append(float(row["score"][metric]) - float(base["score"][metric]))
     if not clusters:
         return {"pairs": 0, "prefixes": 0, "difference": None, "ci95": None}
@@ -66,14 +79,28 @@ def write_report(output: Path, jobs: list, ledger: list, trials: list, *, config
                    "main_skipped_after_calibration": (
                        len(calibration) == 40 and not gate["pass"] and not assume_gates_passed)}
         summaries.append(summary)
-        for reference_method in ("full_history", "flat_bm25_archive", "tracegraph_0_4"):
+        reference_methods = (
+            "full_history",
+            "flat_bm25_archive",
+            "tracegraph_0_4",
+            "tracegraph_causal_retrieval",
+            "tracegraph_lifecycle_cards",
+        )
+        for reference_method in (
+            method for method in reference_methods if method in config["methods"]
+        ):
             reference = {e["query_id"]: e for e in rows if e["phase"] == "main"
                          and e["method_id"] == reference_method}
             for method in config["methods"]:
                 if method == reference_method:
                     continue
                 candidate = [e for e in rows if e["phase"] == "main" and e["method_id"] == method]
-                for metric in ("structured_output_valid", "hard_pass", "audit_pass", "safety_pass",
+                for metric in ("structured_output_valid", "retrieval_success",
+                               "substantive_pass", "strict_citation_pass",
+                               "hard_pass", "audit_pass",
+                               "graded_audit_score", "overall_failure_memory_score",
+                               "fact_retention_score", "semantic_causal_score",
+                               "provenance_score", "scope_score", "safety_score", "safety_pass",
                                "evidence_precision", "evidence_recall", "causal_constraint_rate",
                                "strict_chain_recovered"):
                     comparisons.append({"cell_id": cell, "method": method, "reference": reference_method,
@@ -94,7 +121,7 @@ def write_report(output: Path, jobs: list, ledger: list, trials: list, *, config
         stage["input_tokens"] += row.get("prompt_tokens") or 0
         stage["output_tokens"] += row.get("completion_tokens") or 0
         stage["seconds"] += row.get("latency_seconds") or 0
-        if row["kind"] != "judge" and row["job_id"] in owners:
+        if not row["kind"].startswith("judge") and row["job_id"] in owners:
             owner = owners[row["job_id"]]
             cost = method_usage[(*owner, row["kind"])]
             cost["calls"] += 1
@@ -111,7 +138,7 @@ def write_report(output: Path, jobs: list, ledger: list, trials: list, *, config
     summary = {"schema_version": "server_eval_results_v1", "mode": mode,
         "interpretation": interpretation,
         "gate_override": {"enabled": bool(assume_gates_passed),
-            "scope": "rule_judge_and_model_calibration",
+            "scope": "model_calibration_only",
             "raw_gates_remain_authoritative": True,
             "development_only": True},
         "stop_reason": stop, "judge_gate": judge_gate(examples, config["gates"]),
@@ -121,15 +148,26 @@ def write_report(output: Path, jobs: list, ledger: list, trials: list, *, config
         "deployment_usage_by_method": [{"cell_id": c, "method_id": m, "stage": s, **v}
                                         for (c, m, s), v in sorted(method_usage.items())],
         "cost_note": "Self-hosted token usage is measured; hardware/electricity cost is unknown, not zero.",
+        "run_validity_counts": dict(Counter(episode_run_validity(e) for e in episodes)),
         "independent_validation": False, "development_only": True,
         "failure_counts": dict(Counter(label for e in episodes for label in e["score"]["failure_labels"])),
         "failure_stage_counts": dict(Counter(stage for e in episodes
             for stage in e["score"].get("failure_stages", ()))),
+        "strict_failure_stage_counts": dict(Counter(stage for e in episodes
+            for stage in e["score"].get(
+                "strict_failure_stages", e["score"].get("failure_stages", ())))),
+        "soft_penalty_counts": dict(Counter(label for e in episodes
+            for label in e["score"].get("soft_penalty_labels", ()))),
         "answer_contract_revisions": sorted({e.get("answer_contract_revision", "unversioned")
                                              for e in episodes}),
         "interaction_policy_revisions": sorted({e.get(
             "interaction_policy_revision", "unversioned") for e in episodes}),
-        "single_aggregate_score": None}
+        "judge_protocol_revisions": sorted({e.get(
+            "judge_protocol_revision", "unversioned") for e in episodes}),
+        "binary_success_metric": "substantive_pass",
+        "strict_gate_metric": "hard_pass",
+        "single_aggregate_score": "overall_failure_memory_score",
+        "aggregate_score_requires_component_reporting": True}
     write_rows(output / "episodes.jsonl", episodes)
     write_rows(output / "paired_comparisons.jsonl", comparisons)
     write_json(output / "report.json", summary)
@@ -148,7 +186,7 @@ def write_report(output: Path, jobs: list, ledger: list, trials: list, *, config
              "裁判费用/调用单列。自托管硬件费用未知，不能将零 API 标价写成零部署成本。",
              "本报告只比较固定最终上下文预算；外部方法额外计算权限须结合各方法 profile 阅读。"]
     if assume_gates_passed:
-        text += ["", "警告：本次运行显式覆盖了规则裁判与模型校准门禁。原始门禁结果仍保留；",
+        text += ["", "警告：本次运行显式覆盖了模型校准门禁；规则裁判门禁未覆盖且仍须实际通过。原始模型门禁结果仍保留；",
                  "以下矩阵只能用于探索和人工复核，不能解释为门禁通过后的正式开发比较。"]
     (output / "report.md").write_text("\n".join(text) + "\n", encoding="utf-8")
     return summary
@@ -238,18 +276,21 @@ def rescore(
         rubrics = rebuilt
     examples = [r["result"] for r in jobs if r["kind"] == "judge_example"]
     assumed = bool(identity.get("assume_gates_passed", False))
-    calibrated = judge_gate(examples, config["gates"])["pass"] or assumed
+    calibrated = judge_gate(examples, config["gates"])["pass"]
     for job in jobs:
         if stable_digest(job["result"]) != job["result_hash"]:
             raise ValueError("saved job altered")
         if job["kind"] == "episode":
             row = job["result"]
             rubric = rubrics[row["query_id"]]
+            _, evidence_ref_map = source_referenced_records(row["artifact"]["records"])
             row["score"] = score_submission(row["answer"], rubric,
                 row["final_visible_ids"], judge=row["judge"], judge_calibrated=calibrated,
                 status=row["status"], executed_side_effects=sum(bool(t.get("executed_side_effect"))
                 for t in row["tool_calls"]), unsafe_attempts=sum(bool(t.get("unsafe_side_effect_attempt"))
-                for t in row["tool_calls"]))
+                for t in row["tool_calls"]), evidence_ref_map=evidence_ref_map)
+            if calibrated and row["score"].get("judge_protocol_valid") is False:
+                row["run_validity"] = "integration_invalid"
             initial_visible = set(row["artifact"]["visible_event_ids"])
             initial_support = any(set(ids) <= initial_visible
                                   for ids in rubric["alternative_evidence_sets"])
@@ -282,6 +323,7 @@ def rescore(
                         assume_gates_passed=assumed)
     code_files = [Path(__file__).resolve(),
         Path(__file__).resolve().parents[1] / "compression_audit" / "development_scoring.py",
+        Path(__file__).resolve().parents[1] / "compression_audit" / "graded_scoring.py",
         Path(__file__).resolve().parents[1] / "compression_audit" / "development_results.py"]
     code_hashes = {path.name: file_sha256(path) for path in code_files}
     rescore_identity = {"schema_version": "server_eval_rescore_identity_v3",
@@ -320,7 +362,9 @@ def rescore_gold_migration(
     """Rescore saved answers against an explicitly linked development gold migration.
 
     Changed prompts, semantic judge contracts, and oracle interventions cannot be replayed
-    without new model calls. They are retained as explicit counterfactual-mismatch flags.
+    without new model calls. Deterministic rubric changes (strict values, evidence sets, and
+    causal constraints) can be applied directly to a saved answer and do not invalidate a
+    cached semantic judge result.
     """
 
     import json
@@ -420,7 +464,7 @@ def rescore_gold_migration(
     config = load_config(prepared / "config.snapshot.json")
     examples = [row["result"] for row in jobs if row["kind"] == "judge_example"]
     assumed = bool(identity.get("assume_gates_passed", False))
-    calibrated = judge_gate(examples, config["gates"])["pass"] or assumed
+    calibrated = judge_gate(examples, config["gates"])["pass"]
     counters = Counter()
     for job in jobs:
         if stable_digest(job["result"]) != job["result_hash"]:
@@ -431,19 +475,25 @@ def rescore_gold_migration(
         old_rubric = old_rubrics[row["query_id"]]
         rubric = new_rubrics[row["query_id"]]
         query_text_changed = row["query_id"] in changed_queries
-        judge_contract_changed = any(
+        deterministic_contract_changed = any(
             old_rubric.get(key) != rubric.get(key)
             for key in (
-                "strict_values", "necessary_facts", "contradictory_facts",
-                "expected_scope",
+                "strict_values", "strict_chain", "alternative_evidence_sets",
+                "relevant_evidence_ids", "causal_mode", "causal_constraints",
+                "causal_paths",
             )
+        )
+        semantic_judge_contract_changed = any(
+            old_rubric.get(key) != rubric.get(key)
+            for key in ("necessary_facts", "contradictory_facts", "expected_scope")
         )
         oracle_context_mismatch = (
             row["prefix_id"] in migrated_prefixes
-            and (row.get("method_id") == "oracle"
+            and (row.get("method_id") in {"oracle", "oracle_evidence_only"}
                  or row.get("condition_id") == "oracle_failure_chain")
         )
-        cached_judge_reused = calibrated and not judge_contract_changed
+        cached_judge_reused = calibrated and not semantic_judge_contract_changed
+        _, evidence_ref_map = source_referenced_records(row["artifact"]["records"])
         row["score"] = score_submission(
             row["answer"], rubric, row["final_visible_ids"],
             judge=row["judge"] if cached_judge_reused else None,
@@ -455,9 +505,14 @@ def rescore_gold_migration(
             unsafe_attempts=sum(
                 bool(call.get("unsafe_side_effect_attempt")) for call in row["tool_calls"]
             ),
+            evidence_ref_map=evidence_ref_map,
         )
+        if cached_judge_reused and row["score"].get("judge_protocol_valid") is False:
+            row["run_validity"] = "integration_invalid"
         direct_eligible = not (
-            query_text_changed or oracle_context_mismatch or judge_contract_changed
+            query_text_changed
+            or oracle_context_mismatch
+            or semantic_judge_contract_changed
         )
         row["gold_migration"] = {
             "source_gold_hash": source_gold[row["prefix_id"]].gold_hash,
@@ -465,7 +520,11 @@ def rescore_gold_migration(
             "gold_changed": row["prefix_id"] in migrated_prefixes,
             "query_text_changed_after_saved_answer": query_text_changed,
             "oracle_context_uses_source_gold": oracle_context_mismatch,
-            "judge_contract_changed": judge_contract_changed,
+            "deterministic_contract_changed": deterministic_contract_changed,
+            "semantic_judge_contract_changed": semantic_judge_contract_changed,
+            # Backward-compatible name: this has always represented whether the cached
+            # semantic judge result must be invalidated, not whether local exact rules move.
+            "judge_contract_changed": semantic_judge_contract_changed,
             "cached_judge_reused": cached_judge_reused,
             "direct_evaluation_eligible": direct_eligible,
             "interpretation": (
@@ -473,13 +532,22 @@ def rescore_gold_migration(
                 else "counterfactual_rule_rescore_with_recorded_mismatch"
             ),
         }
-        row["score"]["gold_migration_semantic_judge_invalidated"] = judge_contract_changed
+        row["score"]["gold_migration_deterministic_contract_changed"] = (
+            deterministic_contract_changed
+        )
+        row["score"]["gold_migration_semantic_judge_invalidated"] = (
+            semantic_judge_contract_changed
+        )
         row["score"]["direct_task_episode_evaluation_eligible"] = direct_eligible
         row["score"]["counterfactual_rule_rescore_only"] = not direct_eligible
         counters.update({
             "query_prompt_mismatch": int(query_text_changed),
             "oracle_context_mismatch": int(oracle_context_mismatch),
-            "judge_contract_invalidated": int(judge_contract_changed),
+            "deterministic_contract_changed": int(deterministic_contract_changed),
+            "semantic_judge_contract_invalidated": int(
+                semantic_judge_contract_changed
+            ),
+            "judge_contract_invalidated": int(semantic_judge_contract_changed),
             "direct_evaluation_eligible": int(direct_eligible),
         })
         initial_visible = set(row["artifact"]["visible_event_ids"])
@@ -528,13 +596,15 @@ def rescore_gold_migration(
         stream.write(
             "\n## 金标迁移限制\n\n"
             "本报告没有发出新模型请求。改写后的问题文本未发送给原回答模型；"
-            "迁移前 Oracle 上下文仍包含源金标链；语义裁判契约改变的 episode 已禁用"
-            "缓存裁判。因此相关条目仅是带 mismatch 标记的反事实规则复算，不能作为"
-            "新问题或新 Oracle 条件的直接成绩。\n"
+            "迁移前 Oracle 上下文仍包含源金标链；只有必要事实、矛盾事实或预期范围"
+            "改变时才禁用缓存语义裁判。严格值、证据集合和因果约束属于可直接重算的"
+            "确定性规则。带提示、Oracle 上下文或语义裁判 mismatch 的条目仍只是反事实"
+            "规则复算，不能作为新问题或新 Oracle 条件的直接成绩。\n"
         )
     code_files = [
         Path(__file__).resolve(),
         Path(__file__).resolve().parents[1] / "compression_audit" / "development_scoring.py",
+        Path(__file__).resolve().parents[1] / "compression_audit" / "graded_scoring.py",
         Path(__file__).resolve().parent / "rubrics.py",
     ]
     code_hashes = {path.name: file_sha256(path) for path in code_files}

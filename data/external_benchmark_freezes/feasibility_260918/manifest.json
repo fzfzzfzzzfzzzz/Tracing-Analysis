@@ -1,0 +1,97 @@
+{
+  "benchmarks": {
+    "ama_bench": {
+      "allocation": {
+        "2048": 1,
+        "alfworld": 2,
+        "babaisai": 1,
+        "candy_crush": 1,
+        "crafter": 1,
+        "gaia_level1": 1,
+        "gaia_level2": 1,
+        "gaia_level3": 1,
+        "minihack": 1,
+        "spider2": 5,
+        "swebench": 2,
+        "webarena": 3
+      },
+      "counts": {
+        "development_feasibility": 20,
+        "remaining": 143
+      },
+      "files": {
+        "development_feasibility_ids.jsonl": "5c75c3898dc594b3d1709c9deb701166ae122be6fbcf8ee26fa4ed685afe5230",
+        "remaining_ids.jsonl": "563319255c011fb8571b35a8cc0d6dd080406f4ef4d34f2268d5334855f2d384"
+      },
+      "selection_used_task_content": false,
+      "source_file": "data/external_benchmark_freezes/ama_bench_260917/confirmatory_pool_episode_ids.jsonl",
+      "source_sha256": "cd6e43dafed273902f089932d757a2f148115bda667eea6f1bf9077af21030df"
+    },
+    "appworld": {
+      "allocation": {
+        "0d8a4ee": 1,
+        "37a8675": 1,
+        "396c5a2": 1,
+        "4ec8de5": 2,
+        "4fab96f": 1,
+        "530b157": 2,
+        "57c3486": 2,
+        "6171bbc": 1,
+        "68ee2c9": 2,
+        "6bdbc26": 1,
+        "b119b1f": 1,
+        "d4e9306": 2,
+        "df61dc5": 2,
+        "fac291d": 1
+      },
+      "counts": {
+        "development_feasibility": 20,
+        "excluded_canary_family": 10,
+        "remaining": 22
+      },
+      "excluded_canary_families": [
+        "23cf851",
+        "383cbac",
+        "3ab5b8b",
+        "50e1ac9",
+        "6c2c621"
+      ],
+      "files": {
+        "development_feasibility_ids.jsonl": "a2cd54fb447494386ef683a3c72ecc38ef216b23bfaffa6db007555f518a9c61",
+        "excluded_canary_family_ids.jsonl": "10598c46a6ea3c893000d80c9f764a51ef4548c2ae46e5465fc334a0080de923",
+        "remaining_ids.jsonl": "575d2640f9f0ff8c4f0b4b7cf2e392b113d626646b0ead14e7315eb517fe4057"
+      },
+      "selection_used_task_content": false,
+      "source_file": "data/external_benchmark_freezes/appworld_260918/dev_remaining_task_ids.jsonl",
+      "source_sha256": "e38b07f795c56d454a9dd30f43ef09483bbfac3a2cad80bf63a7d846141d20c2"
+    },
+    "tau3": {
+      "allocation": {
+        "airline": 10,
+        "retail": 10
+      },
+      "counts": {
+        "development_feasibility": 20,
+        "remaining": 119
+      },
+      "files": {
+        "development_feasibility_ids.jsonl": "acf30dad801576da8fed52a5f8fcbd511ea4f3e73fe51b02d7d4408d269a64c0",
+        "remaining_ids.jsonl": "2d817044367cec58e4fe9d40dc7fcc717225766415e722c1a441798056ed64da"
+      },
+      "selection_used_task_content": false,
+      "source_file": "data/external_benchmark_freezes/tau3_260917/confirmatory_pool_task_ids.jsonl",
+      "source_sha256": "39baf6ac7d92b9360a119c68811c4fdd3d7551ec602c2ee7689818d1a91a4520"
+    }
+  },
+  "created_on": "2026-09-18",
+  "development_only": true,
+  "rules": [
+    "selected IDs are excluded from later confirmation results",
+    "no task text, trajectory, answer, or ground truth was read for selection",
+    "AppWorld tasks sharing a family with a canary are excluded",
+    "confirmation and AppWorld test splits remain unopened"
+  ],
+  "schema_version": "external_development_feasibility_freeze_v1",
+  "selection_seed": 20260918,
+  "selection_used_task_content": false
+}

@@ -11,15 +11,17 @@ from ..compression_audit.development_experiment import (
     select_population, write_json, write_rows,
 )
 from ..compression_audit.development_protocol import (
-    ANSWER_CONTRACT_REVISION, INTERACTION_POLICY_REVISION,
+    ANSWER_CONTRACT_REVISION, INTERACTION_POLICY_REVISION, JUDGE_PROTOCOL_REVISION,
     compact_format_repair_message,
 )
 from ..compression_audit.development_scoring import (
-    assert_canonical_rubric_scores, judge_request,
+    assert_canonical_rubric_scores, judge_format_repair_request, judge_request,
 )
 from .rubrics import import_rubrics
 from ..compression_audit.io import file_sha256, load_jsonl, stable_digest
-from .config import LocalTokenizer, answer_response_format, live_blockers, load_config
+from .config import (
+    LocalTokenizer, answer_response_format, answer_transport_flags, live_blockers, load_config,
+)
 from .external import source_status
 from .candidate import NAME as CANDIDATE
 from .data_workflow import load_suite_dataset
@@ -88,6 +90,11 @@ def prepare(config_path: Path, dataset: Path, output: Path, workspace: Path) -> 
         population["diagnostic"] = ids[:8]
     trials = []
     capability_only = config.get("capability_attribution_only", False)
+    oracle_gate_only = config.get("oracle_gate_only", False)
+    oracle_context_mode = config.get("oracle_context_mode", "recent_plus_gold")
+    diagnostic_oracle = (
+        "oracle_evidence_only" if oracle_context_mode == "evidence_only" else "oracle"
+    )
     for model in config["models"]:
         for budget in config["history_budgets"]:
             cell = f"{model['id']}-b{budget}"
@@ -104,13 +111,14 @@ def prepare(config_path: Path, dataset: Path, output: Path, workspace: Path) -> 
                     )
                 available_queries = [q for q in QUERY_TYPES if (prefix, q) in queries]
                 if capability_only:
-                    specs += [("main", prefix, "audit_chain", "full_history")]
+                    if not oracle_gate_only:
+                        specs += [("main", prefix, "audit_chain", "full_history")]
                 else:
                     specs += [("main", prefix, q, m)
                               for q in available_queries for m in config["methods"]]
             for prefix in population["diagnostic"]:
                 if capability_only:
-                    specs += [("diagnostic", prefix, "audit_chain", "oracle")]
+                    specs += [("diagnostic", prefix, "audit_chain", diagnostic_oracle)]
                 else:
                     specs += [("diagnostic", prefix, "audit_chain", m)
                               for m in ("deletion", "oracle", "irrelevant")]
@@ -126,6 +134,7 @@ def prepare(config_path: Path, dataset: Path, output: Path, workspace: Path) -> 
                     "recoverability": by_id[prefix_id].recoverability,
                     "answer_contract_revision": ANSWER_CONTRACT_REVISION,
                     "interaction_policy_revision": INTERACTION_POLICY_REVISION,
+                    "judge_protocol_revision": JUDGE_PROTOCOL_REVISION,
                     "max_model_turns": 4 if phase == "interactive" else 2})
     selected_queries = {t["query_id"] for t in trials}
     rubric_spec = config["data"].get("rubrics")
@@ -143,7 +152,7 @@ def prepare(config_path: Path, dataset: Path, output: Path, workspace: Path) -> 
     build_keys = {(t["cell_id"], t["prefix_id"], t["method_id"]) for t in trials
                   if t["method_id"] in ("rolling_summary", "acon_official", "ama_official_bm25", "ama_official_embedding", CANDIDATE)}
     retrieve_count = sum(t["method_id"] in ("ama_official_bm25", "ama_official_embedding") for t in trials)
-    request_bound = (80 + sum(t["max_model_turns"] + 1 for t in trials)
+    request_bound = (80 + sum(t["max_model_turns"] + 2 for t in trials)
                      + len(build_keys) * config["limits"]["build_calls_per_prefix"]
                      + retrieve_count * config["limits"]["retrieve_calls_per_query"])
     embedding_bound = (sum(min(len(by_id[p].events), config["limits"].get("embedding_calls_per_prefix", 512))
@@ -163,17 +172,17 @@ def prepare(config_path: Path, dataset: Path, output: Path, workspace: Path) -> 
                     continue
                 prefix = by_id[trial["prefix_id"]]
                 query = query_by_id[trial["query_id"]]
+                rubric = rubric_by_query[query.query_id]
+                server_field_transport, server_tool_transport = answer_transport_flags(model)
                 body = answer_request(
                     query,
                     [event_record(event) for event in prefix.events],
                     response_format=answer_response_format(model),
-                    server_field_transport=model.get("server_version") == "0.8.5",
-                    server_tool_transport=(
-                        model.get("answer_transport") == "native_tool_call"
-                    ),
+                    server_field_transport=server_field_transport,
+                    server_tool_transport=server_tool_transport,
+                    rubric=rubric,
                 )
                 input_tokens = counter.request_count(body)
-                rubric = rubric_by_query[query.query_id]
                 repair_messages = [
                     compact_format_repair_message(
                         "missing required labelled lines",
@@ -195,12 +204,21 @@ def prepare(config_path: Path, dataset: Path, output: Path, workspace: Path) -> 
                     rubric,
                     records,
                 ))
+                judge_repair_empty_answer_input_tokens = counter.request_count(
+                    judge_format_repair_request(
+                        {"a": "", "e": [], "t": rubric["expected_scope"], "s": False},
+                        rubric,
+                        records,
+                        "judge response violates the strict output contract",
+                    )
+                )
                 # The answer may consume its full output allowance before being
                 # JSON-serialized into the judge prompt. Reserve twice that many
                 # tokens for escaping/transport expansion, plus the judge output.
                 judge_answer_serialization_reserve_tokens = 2 * model["max_output_tokens"]
                 judge_total_tokens = (
-                    judge_empty_answer_input_tokens
+                    max(judge_empty_answer_input_tokens,
+                        judge_repair_empty_answer_input_tokens)
                     + judge_answer_serialization_reserve_tokens
                     + model["max_output_tokens"]
                 )
@@ -216,6 +234,9 @@ def prepare(config_path: Path, dataset: Path, output: Path, workspace: Path) -> 
                     "max_input_tokens": max_input_tokens,
                     "answer_total_tokens": answer_total_tokens,
                     "judge_empty_answer_input_tokens": judge_empty_answer_input_tokens,
+                    "judge_repair_empty_answer_input_tokens": (
+                        judge_repair_empty_answer_input_tokens
+                    ),
                     "judge_answer_serialization_reserve_tokens": (
                         judge_answer_serialization_reserve_tokens
                     ),
@@ -249,11 +270,14 @@ def prepare(config_path: Path, dataset: Path, output: Path, workspace: Path) -> 
         "live_ready": not blockers, "blockers": blockers, "provider_requests": 0,
         "calibration_only": calibration_only,
         "capability_attribution_only": capability_only,
+        "oracle_gate_only": oracle_gate_only,
+        "oracle_context_mode": oracle_context_mode,
         "explicit_development_subset": bool(
             config["data"]["split"] == "dev" and ids and not calibration_only),
         "main_prefix_count": len(population["main"]),
         "answer_contract_revision": ANSWER_CONTRACT_REVISION,
         "interaction_policy_revision": INTERACTION_POLICY_REVISION,
+        "judge_protocol_revision": JUDGE_PROTOCOL_REVISION,
         "calibration_exclusion_count": len(exclusions),
         "development_only": True, "independent_validation": False,
         "canonical_rubric_self_checks": len(rubrics),
@@ -267,7 +291,9 @@ def prepare(config_path: Path, dataset: Path, output: Path, workspace: Path) -> 
     write_rows(output / "rubrics.jsonl", rubrics)
     write_rows(output / "rule_examples.jsonl", examples)
     write_rows(output / "request_recipes.jsonl", [
-        {"query_id": q.query_id, "empty_context_template": answer_request(q, [])}
+        {"query_id": q.query_id, "empty_context_template": answer_request(
+            q, [], rubric=rubric_by_query[q.query_id]
+        )}
         for q in query_rows if q.query_id in selected_queries])
     write_rows(output / "full_history_context_checks.jsonl", full_history_context_checks)
     write_json(output / "manifest.json", {**summary, "artifacts": write_file_manifest(output)})

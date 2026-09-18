@@ -1,0 +1,5 @@
+{"episode_id": "135", "purpose": "external_harness_canary", "selection_seed": 20260917, "task_type": "spider2"}
+{"episode_id": "172", "purpose": "external_harness_canary", "selection_seed": 20260917, "task_type": "swebench"}
+{"episode_id": "180", "purpose": "external_harness_canary", "selection_seed": 20260917, "task_type": "webarena"}
+{"episode_id": "53", "purpose": "external_harness_canary", "selection_seed": 20260917, "task_type": "alfworld"}
+{"episode_id": "83", "purpose": "external_harness_canary", "selection_seed": 20260917, "task_type": "gaia_level2"}

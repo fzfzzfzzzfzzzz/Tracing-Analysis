@@ -14,21 +14,30 @@ from test_server_eval import data, config, response, Counter  # noqa: F401
 from tracegraph.capture import estimate_tokens
 from tracegraph.benchmark.compression_audit.artifacts import load_dataset
 from tracegraph.benchmark.compression_audit.development_experiment import write_json, write_rows
+from tracegraph.benchmark.compression_audit.development_results import episode_run_validity
 from tracegraph.benchmark.compression_audit.development_scoring import make_rubric, canonical_answer, score_submission
 from tracegraph.benchmark.compression_audit.io import file_sha256, stable_digest, load_jsonl
 from tracegraph.benchmark.server_eval.ablations import ABLATIONS
 from tracegraph.benchmark.server_eval.analysis import budget_frontiers
 from tracegraph.benchmark.server_eval.candidate import NAME, scoped_prefix
-from tracegraph.benchmark.server_eval.config import load_config, live_blockers
+from tracegraph.benchmark.server_eval.config import (
+    answer_transport_flags, load_config, live_blockers,
+)
 from tracegraph.benchmark.server_eval.data_workflow import review_export, import_dataset
-from tracegraph.benchmark.server_eval.methods import MemoryMethods
+from tracegraph.benchmark.server_eval.methods import (
+    MemoryMethods, normalize_ama_state_memory_response,
+)
 from tracegraph.benchmark.server_eval.mini import (
     official_agent, CheckpointEnvironment, MiniModel, run_task, validate_restore_source,
     action_response_format, native_action_tools, parse_action_response,
     parse_native_action_response, prefix_from_messages,
 )
-from tracegraph.benchmark.server_eval.mini_runner import prepare_mini, execute_mini
-from tracegraph.benchmark.server_eval.provider import ServerLedger, StopRun
+from tracegraph.benchmark.server_eval.mini_runner import (
+    calibrate_mini_agent, execute_mini, prepare_mini, validate_mini_calibration,
+)
+from tracegraph.benchmark.server_eval.provider import (
+    ServerLedger, StopRun, normalize_construction_tool_response, text_response,
+)
 from tracegraph.benchmark.server_eval.rubrics import validate_rubric, causal_evaluation, import_rubrics
 from tracegraph.benchmark.server_eval.runtime import record_runtime, verify_runtime, validate_receipt
 from tracegraph.benchmark.server_eval.tuning import prepare_tuning, select_guidance
@@ -163,6 +172,129 @@ def test_embedding_ledger_no_fallback_or_retry(tmp_path, config, bad):
         assert ledger.rows[0]["completion_tokens"] == 0
 
 
+def test_native_construction_transport_preserves_raw_ledger_and_returns_text(
+        tmp_path, config):
+    model = config["models"][0]
+    model["construction_transport"] = "native_tool_call"
+    model["construction_max_output_tokens"] = 8192
+    model["construction_submission_max_chars"] = 4096
+    calls = []
+
+    def transport(endpoint, key, body, **kwargs):
+        calls.append(body)
+        assert body["max_tokens"] == 8192
+        assert "response_format" not in body
+        assert body["tool_choice"] == {
+            "type": "function", "function": {"name": "submit_memory_v1"},
+        }
+        assert not body["parallel_tool_calls"]
+        tool = body["tools"][0]["function"]
+        assert tool["name"] == "submit_memory_v1"
+        assert tool["parameters"]["properties"]["content"]["maxLength"] == 4096
+        return ({
+            "model": model["served_model"],
+            "usage": {"prompt_tokens": 10, "completion_tokens": 8},
+            "choices": [{"finish_reason": "tool_calls", "message": {
+                "content": None,
+                "tool_calls": [{"type": "function", "function": {
+                    "name": "submit_memory_v1",
+                    "arguments": json.dumps({"content": "memory_summary: retained"}),
+                }}],
+            }}],
+        }, .01)
+
+    ledger = ServerLedger(tmp_path, config, {model["id"]: Counter()}, set(),
+                          transport=transport)
+    result = ledger.for_model(model["id"]).call(
+        {"messages": [{"role": "user", "content": "compress"}]},
+        job_id="build", kind="construction",
+    )
+    assert text_response(result) == "memory_summary: retained"
+    raw = ledger.rows[0]["response"]["choices"][0]["message"]
+    assert raw["content"] is None and raw["tool_calls"]
+
+
+def test_native_method_transport_marks_truncation_and_types_retrieval(
+        tmp_path, config):
+    truncated = {
+        "choices": [{"finish_reason": "length", "message": {
+            "content": "unfinished", "tool_calls": None,
+        }}],
+    }
+    with pytest.raises(ValueError, match="truncated method response"):
+        normalize_construction_tool_response(truncated)
+
+    model = config["models"][0]
+    model["retrieval_transport"] = "native_tool_call"
+    model["retrieval_submission_max_chars"] = 4096
+    calls = []
+
+    def transport(endpoint, key, body, **kwargs):
+        calls.append(body)
+        assert body["tool_choice"]["function"]["name"] == "submit_retrieval_v1"
+        assert (body["tools"][0]["function"]["parameters"]["properties"]
+                ["content"]["maxLength"] == 4096)
+        return ({
+            "model": model["served_model"],
+            "usage": {"prompt_tokens": 10, "completion_tokens": 8},
+            "choices": [{"finish_reason": "tool_calls", "message": {
+                "content": None,
+                "tool_calls": [{"type": "function", "function": {
+                    "name": "submit_retrieval_v1",
+                    "arguments": json.dumps({"content": "NEED_GRAPH: turns 1 to 4"}),
+                }}],
+            }}],
+        }, .01)
+
+    ledger = ServerLedger(tmp_path, config, {model["id"]: Counter()}, set(),
+                          transport=transport)
+    result = ledger.for_model(model["id"]).call(
+        {"messages": [{"role": "user", "content": "retrieve"}]},
+        job_id="retrieve", kind="retrieval",
+    )
+    assert text_response(result) == "NEED_GRAPH: turns 1 to 4"
+    assert calls[0]["max_tokens"] == model["max_output_tokens"]
+
+
+def test_config_rejects_unknown_construction_transport(tmp_path, config):
+    config["models"][0]["construction_transport"] = "invented"
+    path = tmp_path / "bad-construction-transport.json"
+    write_json(path, config)
+    with pytest.raises(ValueError, match="construction transport"):
+        load_config(path)
+
+
+def test_config_rejects_unknown_retrieval_transport_and_output_limit(tmp_path, config):
+    config["models"][0]["retrieval_transport"] = "invented"
+    path = tmp_path / "bad-retrieval-transport.json"
+    write_json(path, config)
+    with pytest.raises(ValueError, match="retrieval transport"):
+        load_config(path)
+    config["models"][0]["retrieval_transport"] = "text"
+    config["models"][0]["construction_max_output_tokens"] = 16384
+    write_json(path, config)
+    with pytest.raises(ValueError, match="construction output limit"):
+        load_config(path)
+    config["models"][0]["construction_max_output_tokens"] = 2048
+    config["models"][0]["construction_submission_max_chars"] = 100
+    write_json(path, config)
+    with pytest.raises(ValueError, match="submission character limit"):
+        load_config(path)
+    config["models"][0]["construction_submission_max_chars"] = 4096
+    config["models"][0]["retrieval_submission_max_chars"] = 100
+    write_json(path, config)
+    with pytest.raises(ValueError, match="retrieval submission character limit"):
+        load_config(path)
+
+
+def test_ama_state_memory_bridge_only_adds_missing_protocol_header():
+    memory = "memory_summary: retained E001 and E002"
+    assert normalize_ama_state_memory_response(memory) == "**STATE_MEMORY**\n" + memory
+    complete = "**STATE_MEMORY**\n" + memory
+    assert normalize_ama_state_memory_response(complete) == complete
+    assert normalize_ama_state_memory_response("unstructured") == "unstructured"
+
+
 def test_official_ama_embedding_bridge(data, extended):
     p = data[1][0]
     query = next(q for q in data[2] if q.prefix_id == p.prefix_id)
@@ -237,6 +369,14 @@ def test_mini_action_uses_strict_structured_transport():
         parse_action_response(response("not-json"))
 
 
+def test_native_answer_transport_always_enables_typed_server_fields():
+    assert answer_transport_flags({
+        "server_version": "sglang-0.5.10",
+        "answer_transport": "native_tool_call",
+    }) == (True, True)
+    assert answer_transport_flags({"server_version": "0.8.5"}) == (True, False)
+
+
 def test_mini_action_preserves_thinking_with_native_tool_transport(tmp_path):
     wire = response("")
     wire["choices"][0].update(finish_reason="tool_calls")
@@ -264,6 +404,47 @@ def test_mini_action_preserves_thinking_with_native_tool_transport(tmp_path):
                            {"role": "user", "content": "task"}])
     assert calls[0]["tool_choice"] == "auto" and "response_format" not in calls[0]
     assert message["extra"]["actions"] == [{"command": "ls -la"}]
+
+    separate = copy.deepcopy(wire)
+    separate["choices"][0]["message"].update(content=None, reasoning_content="inspect separately")
+    assert parse_native_action_response(separate)["thought"] == "inspect separately"
+
+
+def test_mini_agent_transport_has_its_own_calibration_gate(
+        tmp_path, config, monkeypatch):
+    import tracegraph.benchmark.server_eval.mini_runner as runner
+    model = config["models"][0]
+    model.update(
+        action_transport="native_tool_call", enable_thinking=True,
+        thinking_transport="chat_template_kwargs", thinking_kinds=["mini_action"],
+        thinking_sampling={"temperature": .6, "top_p": .95, "top_k": 20, "min_p": 0},
+    )
+    config["judge_model_id"] = model["id"]
+    config_path = tmp_path / "config.json"
+    write_json(config_path, config)
+    monkeypatch.setattr(runner, "live_blockers", lambda *args: [])
+    monkeypatch.setattr(runner, "source_status", lambda *args: [])
+
+    def transport(endpoint, key, body, **kwargs):
+        return ({
+            "model": model["served_model"],
+            "usage": {"prompt_tokens": 1, "completion_tokens": 4},
+            "choices": [{"finish_reason": "tool_calls", "message": {
+                "content": None,
+                "reasoning_content": "Use the requested command.",
+                "tool_calls": [{"function": {
+                    "name": "bash", "arguments": json.dumps({"command": "printf OK"}),
+                }}],
+            }}],
+        }, .01)
+
+    output = tmp_path / "probe"
+    report = calibrate_mini_agent(
+        config_path, output, workspace(), model_id=model["id"], execute=True,
+        transport=transport, counters={model["id"]: Counter()},
+    )
+    assert report["pass"] and report["thinking_returned"]
+    validate_mini_calibration(output, config, workspace(), model["id"], 1536)
 
 
 def test_real_official_agent_loop_checkpoints_and_format_limit(tmp_path, extended, monkeypatch):
@@ -312,6 +493,101 @@ def test_checkpoint_restore_unknown_tool_guard_and_environment_contract(tmp_path
     assert prefix_from_messages([], "a", 512) is None
 
 
+def test_agent_guardrails_block_empty_untested_and_repeated_actions(tmp_path, monkeypatch):
+    monkeypatch.delenv("TRACEGRAPH_DISABLE_LIVE", raising=False)
+    guarded = {**task(), "agent_guardrails": {
+        "block_empty_diff_submission": True,
+        "require_non_test_source_change": True,
+        "require_clean_diff_check": True,
+        "require_successful_test_on_current_diff": True,
+        "block_repeated_failed_command": True,
+    }}
+    state = {"changed": False, "test_passed": False, "failed_runs": 0}
+
+    def guarded_docker(argv, **kwargs):
+        text, code = "", 0
+        if argv[1] == "inspect":
+            text = '[{"Mounts": []}]'
+        elif argv[1] == "commit":
+            text = "sha256:" + "b" * 64
+        elif argv[1] == "exec":
+            command = argv[-1]
+            if command.startswith("git status"):
+                text = " M src/_pytest/fixtures.py\n" if state["changed"] else ""
+            elif command.startswith("git diff --binary"):
+                text = "diff --git a/src/_pytest/fixtures.py b/src/_pytest/fixtures.py\n" if state["changed"] else ""
+            elif command.startswith("git diff --name-only"):
+                text = "src/_pytest/fixtures.py\0" if state["changed"] else ""
+            elif command.startswith("git diff --check"):
+                text = ""
+            elif command == "false":
+                state["failed_runs"] += 1
+                code = 1
+            elif command.startswith("printf 'edit'"):
+                state["changed"] = True
+            elif "pytest" in command:
+                state["test_passed"] = True
+            elif "COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT" in command:
+                text = "COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\nfinished\n"
+        return SimpleNamespace(returncode=code, stdout=text, stderr="")
+
+    env = CheckpointEnvironment(guarded, tmp_path, execute=True, command=guarded_docker)
+    submit = {"command": "printf 'COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\\nfinished\\n'"}
+    assert env.execute(submit)["returncode"] == 2
+    assert env.execute({"command": "false"})["returncode"] == 1
+    assert env.execute({"command": "false"})["returncode"] == 2
+    assert state["failed_runs"] == 1
+    assert env.execute({"command": "printf 'edit' > src/_pytest/fixtures.py"})["returncode"] == 0
+    assert env.execute(submit)["returncode"] == 2
+    assert env.execute({"command": "python -m pytest testing/test_fixture.py"})["returncode"] == 0
+    assert env.execute(submit)["returncode"] == 0
+    assert len(load_jsonl(tmp_path / "guardrail_events.jsonl")) == 3
+    env.close()
+
+
+def test_agent_guardrails_nudge_after_unchanged_empty_diff(tmp_path, monkeypatch):
+    monkeypatch.delenv("TRACEGRAPH_DISABLE_LIVE", raising=False)
+    guarded = {**task(), "agent_guardrails": {"stagnation_nudge_after": 2}}
+
+    def guarded_docker(argv, **kwargs):
+        text = ""
+        if argv[1] == "inspect":
+            text = '[{"Mounts": []}]'
+        elif argv[1] == "commit":
+            text = "sha256:" + "b" * 64
+        return SimpleNamespace(returncode=0, stdout=text, stderr="")
+
+    env = CheckpointEnvironment(guarded, tmp_path, execute=True, command=guarded_docker)
+    first = env.execute({"command": "pwd"})
+    second = env.execute({"command": "ls"})
+    assert "ACTION_STAGNATION" not in first["output"]
+    assert "ACTION_STAGNATION" in second["output"]
+    assert env.guard_state["unchanged_empty_diff_actions"] == 0
+    assert env.guard_state["stagnation_nudges"] == 1
+    event = load_jsonl(tmp_path / "guardrail_events.jsonl")[0]
+    assert event["event"] == "stagnation_nudge" and event["nudge_index"] == 1
+    env.close()
+
+
+def test_prepare_mini_rejects_unknown_agent_guardrails(tmp_path, extended):
+    config_path, tasks = tmp_path / "c.json", tmp_path / "tasks.jsonl"
+    write_json(config_path, extended)
+    write_rows(tasks, [{**task(), "agent_guardrails": {"invented": True}}])
+    with pytest.raises(ValueError, match="agent_guardrails"):
+        prepare_mini(config_path, tasks, tmp_path / "prepared", workspace())
+
+
+def test_prepare_mini_validates_stagnation_nudge_threshold(tmp_path, extended):
+    config_path, tasks = tmp_path / "c.json", tmp_path / "tasks.jsonl"
+    write_json(config_path, extended)
+    write_rows(tasks, [{**task(), "agent_guardrails": {"stagnation_nudge_after": True}}])
+    with pytest.raises(ValueError, match="stagnation_nudge_after"):
+        prepare_mini(config_path, tasks, tmp_path / "prepared-bool", workspace())
+    write_rows(tasks, [{**task(), "agent_guardrails": {"stagnation_nudge_after": 10}}])
+    result = prepare_mini(config_path, tasks, tmp_path / "prepared-valid", workspace())
+    assert result["real_tasks_executed"] == 0
+
+
 def test_mini_freeze_and_unconfigured_live_block(tmp_path, extended):
     config_path, tasks = tmp_path / "c.json", tmp_path / "tasks.jsonl"
     write_json(config_path, extended)
@@ -345,14 +621,35 @@ def test_data_review_import_and_no_invented_real_traces(data, tmp_path):
 
 def test_budget_frontiers_match_questions_no_extrapolation():
     episodes = [{"phase": "main", "cell_id": "model-b" + str(b), "method_id": m,
-        "query_id": "q", "score": {"audit_pass": good, "hard_pass": good}}
-        for b, m, good in [(768, "a", False), (1536, "a", True), (768, "b", True)]]
+        "query_id": "q", "score": {"audit_pass": good, "hard_pass": good,
+                                      "graded_audit_score": graded}}
+        for b, m, good, graded in [(768, "a", False, 70), (1536, "a", True, 100),
+                                   (768, "b", True, 100)]]
     costs = [{"cell_id": "model-b" + str(b), "method_id": m, "input_tokens": t,
               "output_tokens": 0} for b, m, t in [(768, "a", 10), (1536, "a", 30), (768, "b", 20)]]
     result = budget_frontiers(episodes, costs)
     assert len(result["points"]) == 3
+    low_budget_a = next(
+        point for point in result["points"]
+        if point["cell_id"] == "model-b768" and point["method_id"] == "a"
+    )
+    assert low_budget_a["graded_audit_score"] == 70
     assert result["comparisons"][0]["interpolation"] is False
-    assert all(p["total_deployment_tokens"] is None for p in budget_frontiers(episodes, [])["points"])
+    assert all(p["total_deployment_tokens"] is None
+               for p in budget_frontiers(episodes, [])["points"])
+
+
+def test_legacy_ama_truncation_is_integration_invalid_but_explicit_new_failure_wins():
+    legacy = {
+        "method_id": "ama_official_bm25",
+        "status": "context_ineligible",
+        "model_calls": [],
+        "artifact": {"retrieval_usage": {
+            "safety_reasons": ["ValueError: method_build_failed: truncated method response"]
+        }},
+    }
+    assert episode_run_validity(legacy) == "integration_invalid"
+    assert episode_run_validity({**legacy, "run_validity": "method_failure"}) == "method_failure"
 
 
 def test_guidance_frozen_candidates_require_real_evidence(data, config, tmp_path):

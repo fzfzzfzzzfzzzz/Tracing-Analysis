@@ -25,7 +25,7 @@ from tracegraph.benchmark.compression_audit.io import file_sha256, load_jsonl, s
 from tracegraph.benchmark.server_eval.config import (
     LocalTokenizer, answer_response_format, load_config,
 )
-from tracegraph.benchmark.server_eval.external import docker_search, verify_source
+from tracegraph.benchmark.server_eval.external import bwrap_search, docker_search, verify_source
 from tracegraph.benchmark.server_eval.methods import MemoryMethods, chunks, record_ids
 from tracegraph.benchmark.server_eval.judge_review import (
     export_real_answer_review, import_real_answer_reviews,
@@ -37,7 +37,7 @@ from tracegraph.benchmark.server_eval.report import (
     rescore,
     rescore_gold_migration,
 )
-from tracegraph.benchmark.server_eval.runner import run
+from tracegraph.benchmark.server_eval.runner import control, run
 from tracegraph.capture import estimate_tokens
 
 
@@ -176,6 +176,77 @@ def test_capability_attribution_freezes_only_full_and_oracle_chain(
     }
 
 
+def test_oracle_gate_only_skips_full_history_without_changing_population(
+        tmp_path, data, config):
+    selected = select_population(data[1], config["seed"])["main"][:2]
+    capability = copy.deepcopy(config)
+    capability["data"]["prefix_ids"] = selected
+    capability["methods"] = ["full_history"]
+    capability["interactive"] = False
+    capability["capability_attribution_only"] = True
+    capability["oracle_gate_only"] = True
+    prepared, summary = freeze(tmp_path, capability, data[0])
+    trials = load_jsonl(prepared / "trials.jsonl")
+    population = json.loads((prepared / "population.json").read_text())
+    assert summary["oracle_gate_only"]
+    assert summary["episode_count"] == 42
+    assert summary["phase_counts"] == {"calibration": 40, "diagnostic": 2}
+    assert summary["full_history_context_check_count"] == 0
+    assert population["main"] == selected
+    assert population["diagnostic"] == selected
+    target = [row for row in trials if row["phase"] != "calibration"]
+    assert {(row["prefix_id"], row["query_type"], row["method_id"])
+            for row in target} == {
+        (prefix_id, "audit_chain", "oracle") for prefix_id in selected
+    }
+
+    invalid = copy.deepcopy(config)
+    invalid["oracle_gate_only"] = True
+    path = tmp_path / "invalid-oracle-gate.json"
+    write_json(path, invalid)
+    with pytest.raises(ValueError, match="requires capability"):
+        load_config(path)
+
+
+def test_evidence_only_oracle_is_budget_invariant_and_has_no_recent_filler(
+        tmp_path, data, config):
+    selected = select_population(data[1], config["seed"])["main"][:2]
+    capability = copy.deepcopy(config)
+    capability["data"]["prefix_ids"] = selected
+    capability["methods"] = ["full_history"]
+    capability["interactive"] = False
+    capability["capability_attribution_only"] = True
+    capability["oracle_gate_only"] = True
+    capability["oracle_context_mode"] = "evidence_only"
+    prepared, summary = freeze(tmp_path, capability, data[0])
+    trials = load_jsonl(prepared / "trials.jsonl")
+    target = [row for row in trials if row["phase"] == "diagnostic"]
+    assert summary["oracle_context_mode"] == "evidence_only"
+    assert {row["method_id"] for row in target} == {"oracle_evidence_only"}
+
+    prefix = next(item for item in data[1] if item.prefix_id == selected[0])
+    query = next(item for item in data[2]
+                 if item.prefix_id == selected[0] and item.query_type == "audit_chain")
+    # load_dataset objects keep gold separately; resolve it from the fixture dataset.
+    _, _, gold_rows = load_dataset(data[0])
+    gold = next(item for item in gold_rows if item.prefix_id == selected[0])
+    small = control(prefix, query, gold, "oracle_evidence_only", 4096,
+                    estimate_tokens, False)
+    large = control(prefix, query, gold, "oracle_evidence_only", 8192,
+                    estimate_tokens, False)
+    assert small["records"] == large["records"]
+    assert small["visible_event_ids"] == large["visible_event_ids"]
+    assert small["token_count"] == large["token_count"]
+    assert set(gold.ordered_event_ids) <= set(small["visible_event_ids"])
+
+    invalid = copy.deepcopy(capability)
+    invalid["oracle_gate_only"] = False
+    path = tmp_path / "invalid-evidence-only.json"
+    write_json(path, invalid)
+    with pytest.raises(ValueError, match="requires oracle_gate_only"):
+        load_config(path)
+
+
 def test_explicit_calibration_population_is_frozen_and_stratified(
         tmp_path, data, config):
     selected = select_population(data[1], config["seed"])
@@ -299,6 +370,24 @@ def test_full_offline_suite_pause_resume_and_independent_rescore(tmp_path, data,
     assert migrated_report["new_provider_requests"] == 0
     assert migrated_report["formal_comparison_eligible"] is False
     assert migrated_report["gold_migration_mismatch_counts"]["query_prompt_mismatch"] > 0
+    assert (
+        migrated_report["gold_migration_mismatch_counts"]
+        ["deterministic_contract_changed"]
+        > 0
+    )
+    assert (
+        migrated_report["gold_migration_mismatch_counts"]
+        ["semantic_judge_contract_invalidated"]
+        == 0
+    )
+    migrated_episode = next(
+        row for row in load_jsonl(tmp_path / "gold-migration-rescore/episodes.jsonl")
+        if row["query_id"] == query.query_id
+    )
+    assert migrated_episode["gold_migration"]["deterministic_contract_changed"]
+    assert not migrated_episode["gold_migration"]["semantic_judge_contract_changed"]
+    assert migrated_episode["gold_migration"]["cached_judge_reused"]
+    assert not migrated_episode["gold_migration"]["direct_evaluation_eligible"]
     migration_identity = json.loads(
         (tmp_path / "gold-migration-rescore/gold_migration_rescore_identity.json").read_text()
     )
@@ -356,13 +445,15 @@ def test_role_routing_thinking_parameters_and_job_resume(tmp_path, config):
     view = ledger.for_model("answer")
     view.call({"messages": []}, job_id="x", kind="answer")
     view.call({"messages": []}, job_id="x", kind="judge")
-    assert [r["model"] for r in requests] == ["answer-model", "local-test"]
+    view.call({"messages": []}, job_id="x", kind="judge_format_repair")
+    assert [r["model"] for r in requests] == [
+        "answer-model", "local-test", "local-test"]
     assert requests[0]["chat_template_kwargs"] == {"enable_thinking": False}
     assert "enable_thinking" not in requests[0]
     assert requests[0]["temperature"] == 0
     with pytest.raises(StopRun):
         ServerLedger(tmp_path, config, counters, set(), transport=transport)
-    assert len(ServerLedger(tmp_path, config, counters, {"x"}, transport=transport).rows) == 2
+    assert len(ServerLedger(tmp_path, config, counters, {"x"}, transport=transport).rows) == 3
 
 
 def test_thinking_can_be_enabled_explicitly(tmp_path, config):
@@ -401,7 +492,8 @@ def test_thinking_can_be_scoped_to_mini_agent_requests(tmp_path, config):
         "temperature": .6, "top_p": .95, "top_k": 20, "min_p": 0}
 
 
-def test_live_is_explicit_and_judge_failure_stops_before_answers(tmp_path, data, config, monkeypatch):
+def test_live_is_explicit_and_judge_failure_does_not_block_main_score(
+        tmp_path, data, config, monkeypatch):
     prepared, _ = freeze(tmp_path, config, data[0])
     with pytest.raises(ValueError, match="execute"):
         run(prepared, data[0], tmp_path / "blocked", Path.cwd(), mode="live")
@@ -412,8 +504,9 @@ def test_live_is_explicit_and_judge_failure_stops_before_answers(tmp_path, data,
         return response("invalid judge"), .01
     report = run(prepared, data[0], tmp_path / "live", Path.cwd(), mode="live", execute=True,
                  transport=bad_judge, counters={"qwen38_14b": Counter()})
-    assert report["stop_reason"] == "rule_judge_calibration_failed"
-    assert len(calls) == 80 and report["completed_episodes"] == 0
+    assert not report["judge_gate"]["pass"]
+    assert report["stop_reason"] is None
+    assert len(calls) > 80 and report["completed_episodes"] == 40
 
 
 def test_development_gate_override_runs_full_matrix_and_is_permanently_reported(
@@ -435,11 +528,15 @@ def test_development_gate_override_runs_full_matrix_and_is_permanently_reported(
     assert report["completed_episodes"] == report["planned_episodes"] == 224
     assert not report["judge_gate"]["pass"]
     assert report["gate_override"] == {
-        "enabled": True, "scope": "rule_judge_and_model_calibration",
+        "enabled": True, "scope": "model_calibration_only",
         "raw_gates_remain_authoritative": True, "development_only": True}
     assert report["interpretation"] == "development_comparison_gate_override"
     assert all(cell["calibration_effective_pass"] for cell in report["cells"])
     assert not any(cell["main_skipped_after_calibration"] for cell in report["cells"])
+    report_text = (output / "report.md").read_text(encoding="utf-8")
+    assert "显式覆盖了模型校准门禁" in report_text
+    assert "规则裁判门禁未覆盖且仍须实际通过" in report_text
+    assert "覆盖了规则裁判与模型校准门禁" not in report_text
 
     rebuilt = rescore(prepared, output, tmp_path / "override-rescore")
     assert rebuilt["gate_override"]["enabled"] is True
@@ -478,6 +575,9 @@ def test_actual_method_bridge_uses_public_only_and_records_calls(data, config, m
     identifier = prefix.events[0]["event_id"]
     class FakeLedger:
         config = {"model": "fixture"}
+        model_id = "fixture_id"
+        ledger = SimpleNamespace(models={"fixture_id": {
+            "context_window": 32768, "max_output_tokens": 2048}})
         def call(self, body, *, job_id, kind):
             calls.append((body, kind))
             if method == "ama_official_bm25":
@@ -497,7 +597,13 @@ def test_actual_method_bridge_uses_public_only_and_records_calls(data, config, m
         assert "must fit 1536 tokens" in construction_prompt
         assert "start with exactly `memory_summary:`" in construction_prompt
         assert state["usage"]["state_memory_target_tokens"] == 1536
-        assert state["usage"]["session_size_characters"] == 12288
+        assert state["usage"]["construction_chunking"] == (
+            "single_session_when_tokenizer_verified")
+        assert state["usage"]["session_size_characters"] == (
+            state["usage"]["trajectory_characters"] + 1)
+        assert state["usage"]["single_session_prompt_tokens"] > 0
+        assert state["usage"]["causal_mode"] is False
+        assert state["payload"]["causal_graph"] is None
     assert state["usage"]["hidden_gold_observed"] is False
     bundle = engine.materialize(state, prefix, query, "retrieve")
     assert bundle["ingestion_usage"]["implementation"] == method
@@ -524,6 +630,29 @@ def test_docker_search_mounts_only_public_script(tmp_path, monkeypatch):
     assert "--pull=never" in calls[0] and "--cap-drop=ALL" in calls[0]
     assert sum("source=" in s for s in calls[0]) == 1
     assert calls[1][:3] == ["docker", "rm", "-f"]
+
+
+def test_bwrap_search_mounts_only_public_script_and_system_runtime(tmp_path, monkeypatch):
+    script = tmp_path / "script.py"
+    script.write_text("print('public')")
+    calls = []
+    monkeypatch.setattr("tracegraph.benchmark.server_eval.external.shutil.which",
+                        lambda name: "/usr/bin/bwrap")
+    monkeypatch.setattr("tracegraph.benchmark.server_eval.external.Path.is_file",
+                        lambda path: True)
+    monkeypatch.setattr("tracegraph.benchmark.server_eval.external.Path.exists",
+                        lambda path: True)
+    def fake_run(command, **kwargs):
+        calls.append((command, kwargs))
+        return SimpleNamespace(returncode=0, stdout=b"public", stderr=b"")
+    monkeypatch.setattr("tracegraph.benchmark.server_eval.external.subprocess.run", fake_run)
+    bwrap_search(script, 5)
+    command, kwargs = calls[0]
+    assert "--unshare-all" in command and "--new-session" in command
+    assert command.count("--ro-bind") >= 2
+    assert str(script.resolve()) in command and "/script.py" in command
+    assert kwargs["timeout"] == 5 and kwargs["capture_output"]
+    assert kwargs["env"] == {"LANG": "C.UTF-8", "PATH": "/usr/bin"}
 
 
 def test_prefix_cluster_interval_and_source_integrity(tmp_path):
@@ -676,7 +805,10 @@ def test_real_answer_blind_review_export_import_and_adjudication(tmp_path):
         reviews.append(path)
     report = import_real_answer_reviews(packet, reviews, tmp_path / "agreed")
     assert report["real_answer_judge_gate_pass"]
-    assert report["main_matrix_eligible"] and not report["main_matrix_authorized"]
+    assert report["semantic_auxiliary_ready"]
+    assert report["main_matrix_eligible"] is None
+    assert not report["deterministic_main_blocked_by_judge"]
+    assert not report["main_matrix_authorized"]
     assert report["metrics"]["holdout_correct"] == 20
 
     reviewer_b = load_jsonl(reviews[1])

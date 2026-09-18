@@ -471,6 +471,7 @@ class TraceGraphTauAgent(LLMAgent):
 
     def _persist_provider_usage(self, request_sha256: str, response) -> None:
         usage = getattr(response, "usage", None) or {}
+        raw_data = getattr(response, "raw_data", None) or {}
         actual_input_tokens = next(
             (
                 int(usage[key])
@@ -485,6 +486,9 @@ class TraceGraphTauAgent(LLMAgent):
             "provider_actual_input_tokens": actual_input_tokens,
             "provider_cost_usd": float(getattr(response, "cost", None) or 0.0),
             "provider_usage_present": bool(usage),
+            "empty_response_retry": raw_data.get(
+                "tracegraph_agent_empty_response_retry"
+            ),
         }
         with (self.session_root / "provider_usage.jsonl").open(
             "a", encoding="utf-8", newline="\n"

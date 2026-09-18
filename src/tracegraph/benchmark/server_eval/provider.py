@@ -25,6 +25,86 @@ class StopRun(RuntimeError):
     """An uncertain or resource-exhausted job cannot be replayed automatically."""
 
 
+CONSTRUCTION_SUBMISSION_TOOL = "submit_memory_v1"
+RETRIEVAL_SUBMISSION_TOOL = "submit_retrieval_v1"
+
+
+def text_submission_tool(name: str, description: str, *, max_chars: int | None = None) -> dict:
+    """Return a typed envelope for method stages that produce free-form text."""
+
+    content_schema = {"type": "string", "minLength": 1}
+    if max_chars is not None:
+        content_schema["maxLength"] = max_chars
+    return {"type": "function", "function": {
+        "name": name,
+        "description": description,
+        "parameters": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {"content": content_schema},
+            "required": ["content"],
+        },
+    }}
+
+
+def construction_submission_tool(*, max_chars: int | None = None) -> dict:
+    return text_submission_tool(
+        CONSTRUCTION_SUBMISSION_TOOL,
+        "Submit the complete final memory text requested by the prompt. "
+        "Do not put analysis or commentary outside this tool call.",
+        max_chars=max_chars,
+    )
+
+
+def retrieval_submission_tool(*, max_chars: int | None = None) -> dict:
+    return text_submission_tool(
+        RETRIEVAL_SUBMISSION_TOOL,
+        "Submit exactly the retrieval decision, generated code, or retrieved text "
+        "requested by the prompt. Do not put commentary outside this tool call.",
+        max_chars=max_chars,
+    )
+
+
+def normalize_text_tool_response(
+        response: dict, *, tool_name: str, stage: str,
+        max_chars: int | None = None) -> dict:
+    """Expose typed method text while retaining the unmodified provider ledger row."""
+
+    choices = response.get("choices")
+    if not isinstance(choices, list) or len(choices) != 1:
+        raise ValueError(f"{stage} response must contain exactly one choice")
+    if choices[0].get("finish_reason") == "length":
+        raise ValueError("truncated method response")
+    message = choices[0].get("message")
+    calls = message.get("tool_calls") if isinstance(message, dict) else None
+    if not isinstance(calls, list) or len(calls) != 1:
+        raise ValueError(f"{stage} model must call exactly one submission tool")
+    function = calls[0].get("function")
+    if not isinstance(function, dict) or function.get("name") != tool_name:
+        raise ValueError(f"{stage} model called an unexpected submission tool")
+    arguments = function.get("arguments")
+    if isinstance(arguments, str):
+        arguments = json.loads(arguments)
+    if not isinstance(arguments, dict) or set(arguments) != {"content"}:
+        raise ValueError(f"{stage} submission arguments are malformed")
+    content = arguments["content"]
+    if not isinstance(content, str) or not content.strip():
+        raise ValueError(f"{stage} submission is empty")
+    if max_chars is not None and len(content) > max_chars:
+        raise ValueError(f"{stage} submission exceeds configured character limit")
+    normalized = json.loads(json.dumps(response))
+    normalized["choices"][0]["message"]["content"] = content
+    return normalized
+
+
+def normalize_construction_tool_response(response: dict) -> dict:
+    """Expose typed construction text to unchanged upstream method adapters."""
+
+    return normalize_text_tool_response(
+        response, tool_name=CONSTRUCTION_SUBMISSION_TOOL, stage="construction"
+    )
+
+
 def post(endpoint, api_key, body, *, timeout):
     class NoRedirect(urllib.request.HTTPRedirectHandler):
         def redirect_request(self, *args, **kwargs):
@@ -82,9 +162,45 @@ class ServerLedger:
                 raise StopRun("configure an explicit self-hosted endpoint")
             body = json.loads(json.dumps(template))
             body.update(model=model["served_model"])
+            output_upper = 0
             if not embedding:
+                output_upper = model.get(
+                    "construction_max_output_tokens",
+                    model["max_output_tokens"],
+                ) if kind == "construction" else model.get(
+                    "retrieval_max_output_tokens",
+                    model["max_output_tokens"],
+                ) if kind == "retrieval" else model["max_output_tokens"]
                 body.update(temperature=0, seed=self.suite["seed"],
-                        max_tokens=model["max_output_tokens"], stream=False)
+                        max_tokens=output_upper, stream=False)
+            typed_tool = None
+            if (not embedding and kind == "construction"
+                    and model.get("construction_transport") == "native_tool_call"):
+                max_chars = model.get("construction_submission_max_chars")
+                typed_tool = (
+                    CONSTRUCTION_SUBMISSION_TOOL,
+                    construction_submission_tool(max_chars=max_chars),
+                    max_chars,
+                )
+            elif (not embedding and kind == "retrieval"
+                    and model.get("retrieval_transport") == "native_tool_call"):
+                max_chars = model.get("retrieval_submission_max_chars")
+                typed_tool = (
+                    RETRIEVAL_SUBMISSION_TOOL,
+                    retrieval_submission_tool(max_chars=max_chars),
+                    max_chars,
+                )
+            if typed_tool:
+                if "tools" in body or "tool_choice" in body or "response_format" in body:
+                    raise StopRun(f"{kind} request already defines an output transport")
+                tool_name, tool, _ = typed_tool
+                body.update(
+                    tools=[tool],
+                    tool_choice={"type": "function", "function": {
+                        "name": tool_name,
+                    }},
+                    parallel_tool_calls=False,
+                )
             thinking = model.get("enable_thinking", False)
             if model.get("thinking_kinds") is not None:
                 thinking = thinking and kind in model["thinking_kinds"]
@@ -96,7 +212,6 @@ class ServerLedger:
                 body["enable_thinking"] = thinking
             upper = (self.counters[model_id].count(body["input"]) + 16 if embedding
                      else self.counters[model_id].request_count(body))
-            output_upper = 0 if embedding else 2048
             limits = self.suite["limits"]
             if (time.monotonic() - self.started + self.previous_seconds > limits["wall_seconds"]
                     or len(self.rows) >= limits["request_limit"]
@@ -149,6 +264,11 @@ class ServerLedger:
             if error:
                 self.poisoned = True
                 raise StopRun("provider outcome or usage uncertain; stopped without retry")
+            if typed_tool:
+                return normalize_text_tool_response(
+                    response, tool_name=typed_tool[0], stage=kind,
+                    max_chars=typed_tool[2],
+                )
             return response
 
 
@@ -168,7 +288,8 @@ class LedgerView:
         return self.ledger.rows
 
     def call(self, template, *, job_id, kind):
-        model = self.ledger.suite["judge_model_id"] if kind == "judge" else self.model_id
+        model = (self.ledger.suite["judge_model_id"]
+                 if kind in ("judge", "judge_format_repair") else self.model_id)
         return self.ledger.call(model, template, job_id=job_id, kind=kind)
 
     def embed(self, text, *, job_id, kind):

@@ -23,6 +23,35 @@ from tracegraph.message_protocol import project_context_items_to_messages
 from tracegraph.provider_cost import canonical_request_json, provider_prompt_request, request_sha256
 from tracegraph.schema import NodeType
 
+
+def _merge_leading_system_messages(messages: list[Message]) -> tuple[list[Message], int]:
+    """Merge leading system fragments for providers that allow one system turn.
+
+    TraceGraph keeps the invariant instruction, domain policy, and compressed
+    context as separate internal fragments.  Qwen's chat template accepts a
+    system message only at index zero, so two consecutive leading system
+    messages must be serialized as one without changing their order or text.
+    """
+
+    leading_count = 0
+    for message in messages:
+        if not isinstance(message, SystemMessage):
+            break
+        leading_count += 1
+    if any(isinstance(message, SystemMessage) for message in messages[leading_count:]):
+        raise ValueError("provider context contains a non-leading system message")
+    if leading_count <= 1:
+        return list(messages), leading_count
+    merged = messages[0].model_copy(
+        update={
+            "content": "\n\n".join(
+                str(message.content) for message in messages[:leading_count]
+            )
+        }
+    )
+    return [merged, *messages[leading_count:]], leading_count
+
+
 def generate_next_message(
     self,
     message: ValidAgentInputMessage,
@@ -222,6 +251,15 @@ def generate_next_message(
                 )
             )
         context_messages.extend(selected_messages)
+    context_messages, leading_system_message_count = _merge_leading_system_messages(
+        context_messages
+    )
+    view.metadata.update(
+        {
+            "provider_leading_system_message_count": leading_system_message_count,
+            "provider_system_messages_merged": leading_system_message_count > 1,
+        }
+    )
     if gdsc_compilation is not None:
         self._persist_gdsc_compilation(gdsc_compilation)
     expected_prompt_hash = (
@@ -236,14 +274,63 @@ def generate_next_message(
         expected_prompt_hash=expected_prompt_hash,
     )
     self._persist(graph, view, acon_plan)
-    response = generate(
-        model=self.llm,
-        tools=self.tools,
-        messages=context_messages,
-        call_name=f"tracegraph_{self.manager_name}",
-        **self.llm_args,
+    responses = []
+    response = None
+    for attempt_index in range(2):
+        call_args = dict(self.llm_args or {})
+        if attempt_index:
+            original_seed = call_args.get("seed")
+            if isinstance(original_seed, int):
+                call_args["seed"] = original_seed + attempt_index
+            call_args["temperature"] = max(
+                0.2,
+                float(call_args.get("temperature") or 0.0),
+            )
+        response = generate(
+            model=self.llm,
+            tools=self.tools,
+            messages=context_messages,
+            call_name=(
+                f"tracegraph_{self.manager_name}"
+                if not attempt_index
+                else f"tracegraph_{self.manager_name}_empty_retry_{attempt_index}"
+            ),
+            **call_args,
+        )
+        responses.append(response)
+        if response.has_content() or response.is_tool_call():
+            break
+    assert response is not None
+    retry_metadata = {
+        "attempt_count": len(responses),
+        "empty_response_retries": len(responses) - 1,
+        "retry_cost_included": True,
+        "retry_usage_included": True,
+        "attempts": [
+            {
+                "content_empty": not item.has_content(),
+                "has_tool_call": item.is_tool_call(),
+                "usage": dict(item.usage or {}),
+                "cost_usd": float(item.cost or 0.0),
+            }
+            for item in responses
+        ],
+    }
+    raw_data = dict(response.raw_data or {})
+    raw_data["tracegraph_agent_empty_response_retry"] = retry_metadata
+    response = response.model_copy(
+        update={
+            "cost": sum(float(item.cost or 0.0) for item in responses),
+            "usage": {
+                key: sum(int((item.usage or {}).get(key, 0)) for item in responses)
+                for key in ("prompt_tokens", "completion_tokens")
+            },
+            "raw_data": raw_data,
+        }
     )
     self._persist_provider_usage(request_sha256, response)
+    if not (response.has_content() or response.is_tool_call()):
+        raise ValueError("agent returned an empty response after 2 attempts")
     if acon_plan is not None:
         acon_metadata = acon_plan.metadata()
         compressor_cost = float(acon_metadata["compressor_cost_usd"])

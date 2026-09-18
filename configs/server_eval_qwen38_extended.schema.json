@@ -38,7 +38,12 @@
           "full_history",
           "recent_masking",
           "flat_bm25_archive",
+          "bm25_pair_window_archive",
+          "bm25_episode_archive",
           "tracegraph_0_4",
+          "tracegraph_causal_retrieval",
+          "tracegraph_lifecycle_cards",
+          "tracegraph_lifecycle_retrieval",
           "rolling_summary",
           "acon_official",
           "ama_official_bm25",
@@ -117,7 +122,18 @@
             "type": "string"
           },
           "tokenizer": {},
-          "runtime_receipt": {}
+          "runtime_receipt": {},
+          "enable_thinking": {"type": "boolean"},
+          "thinking_kinds": {"type": "array", "items": {"type": "string"}},
+          "thinking_sampling": {"type": "object"},
+          "action_transport": {"enum": ["json_schema", "native_tool_call"]},
+          "answer_transport": {"enum": ["response_format", "native_tool_call"]},
+          "construction_transport": {"enum": ["text", "native_tool_call"]},
+          "retrieval_transport": {"enum": ["text", "native_tool_call"]},
+          "construction_max_output_tokens": {"type": "integer", "minimum": 2048, "maximum": 8192},
+          "retrieval_max_output_tokens": {"type": "integer", "minimum": 2048, "maximum": 8192},
+          "construction_submission_max_chars": {"type": "integer", "minimum": 1024, "maximum": 65536},
+          "retrieval_submission_max_chars": {"type": "integer", "minimum": 1024, "maximum": 65536}
         }
       }
     },
@@ -294,7 +310,7 @@
       "additionalProperties": false,
       "properties": {
         "mode": {
-          "type": "string"
+          "enum": ["disabled", "docker", "bwrap"]
         },
         "image": {}
       }

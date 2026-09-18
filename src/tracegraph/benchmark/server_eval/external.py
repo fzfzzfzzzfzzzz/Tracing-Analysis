@@ -5,6 +5,7 @@ from __future__ import annotations
 import importlib
 import importlib.util
 import builtins
+import shutil
 import subprocess
 import sys
 import types
@@ -76,6 +77,34 @@ def docker_search(script: Path, image: str, timeout: float):
         subprocess.run(["docker", "rm", "-f", name], capture_output=True, timeout=10, check=False)
 
 
+def bwrap_search(script: Path, timeout: float):
+    """Execute public-trajectory search code in a read-only, networkless namespace."""
+
+    binary = shutil.which("bwrap")
+    python = Path("/usr/bin/python3")
+    script = script.resolve()
+    if not binary or not python.is_file() or script.name != "script.py" or not script.is_file():
+        raise ValueError("AMA bwrap search sandbox is unavailable")
+    roots = [path for path in ("/usr", "/lib", "/lib64") if Path(path).exists()]
+    cmd = [binary, "--unshare-all", "--die-with-parent", "--new-session",
+           "--setenv", "LANG", "C.UTF-8", "--setenv", "PATH", "/usr/bin"]
+    for root in roots:
+        cmd += ["--ro-bind", root, root]
+    cmd += ["--proc", "/proc", "--dev", "/dev", "--tmpfs", "/tmp",
+            "--ro-bind", str(script), "/script.py", "--chdir", "/tmp"]
+    wrapper = ("import subprocess; p=subprocess.Popen(['/usr/bin/python3','-I','/script.py'],"
+               "stdout=subprocess.PIPE,stderr=subprocess.STDOUT); "
+               "out=p.stdout.read(1048577); "
+               "p.kill() if len(out)>1048576 else None; "
+               "print(out[:1048576].decode(errors='replace')); "
+               "raise SystemExit(1 if len(out)>1048576 else p.wait())")
+    cmd += [str(python), "-I", "-c", wrapper]
+    return subprocess.run(
+        cmd, capture_output=True, timeout=min(timeout, 60), check=False,
+        env={"LANG": "C.UTF-8", "PATH": "/usr/bin"},
+    )
+
+
 def ama_modules(spec: dict, workspace: Path, *, read_hook, sandbox_hook):
     root = verify_source(spec, workspace)
     namespace = "_tracegraph_ama_" + uuid.uuid4().hex
@@ -136,4 +165,8 @@ def source_status(config: dict, workspace: Path) -> list[str]:
         for package in ("jinja2", "requests"):
             if importlib.util.find_spec(package) is None:
                 blockers.append(f"acon_official:dependency_missing:{package}")
+    if (set(config["methods"]) & {"ama_official_bm25", "ama_official_embedding"}
+            and config["ama_code_search"]["mode"] == "bwrap"
+            and (shutil.which("bwrap") is None or not Path("/usr/bin/python3").is_file())):
+        blockers.append("ama_official_bm25:bwrap_sandbox_unavailable")
     return blockers

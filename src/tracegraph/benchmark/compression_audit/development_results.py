@@ -35,8 +35,25 @@ def judge_gate(examples: list[dict], gates: dict) -> dict:
             "calibration_kind": "rule_examples_only", "human_validated": False}
 
 
+def episode_run_validity(row: dict) -> str:
+    """Return explicit validity, with one narrow legacy AMA erratum."""
+
+    explicit = row.get("run_validity")
+    if explicit in {"valid", "method_failure", "integration_invalid"}:
+        return str(explicit)
+    reasons = row.get("artifact", {}).get("retrieval_usage", {}).get("safety_reasons", ())
+    if (str(row.get("method_id", "")).startswith("ama_official")
+            and row.get("status") == "context_ineligible"
+            and not row.get("model_calls")
+            and any("truncated method response" in str(reason) for reason in reasons)):
+        return "integration_invalid"
+    return "valid" if row.get("status") == "complete" else "method_failure"
+
+
 def write_results(output: Path, episodes: list[dict], examples: list[dict], ledger: list[dict],
                   *, config: dict, mode: str, stop_reason: str | None) -> dict[str, Any]:
+    for row in episodes:
+        row["run_validity"] = episode_run_validity(row)
     groups = defaultdict(list)
     for row in episodes:
         groups[(row["phase"], row["method_id"], row["query_type"])].append(row)
@@ -46,11 +63,42 @@ def write_results(output: Path, episodes: list[dict], examples: list[dict], ledg
         return sum(present) / len(present) if present else None
 
     for (phase, method, query), rows in sorted(groups.items()):
+        validity = [episode_run_validity(row) for row in rows]
+        capability_rows = [row for row, state in zip(rows, validity)
+                           if state != "integration_invalid"]
         summaries.append({"phase": phase, "method_id": method, "query_type": query,
-            "n": len(rows), "protocol_valid": sum(r["score"]["structured_output_valid"] for r in rows),
-            "hard_pass": sum(r["score"]["hard_pass"] for r in rows),
+            "n": len(rows), "capability_n": len(capability_rows),
+            "valid_runs": validity.count("valid"),
+            "method_failures": validity.count("method_failure"),
+            "integration_invalid": validity.count("integration_invalid"),
+            "valid_run_rate": (validity.count("valid") / len(capability_rows)
+                               if capability_rows else None),
+            "protocol_valid": sum(r["score"]["structured_output_valid"] for r in capability_rows),
+            "hard_pass": sum(r["score"]["hard_pass"] for r in capability_rows),
+            "strict_citation_pass": sum(r["score"].get(
+                "strict_citation_pass", r["score"].get("answer_citation_pass", False))
+                for r in capability_rows),
+            "retrieval_success": sum(r["score"].get(
+                "retrieval_success", r["score"]["necessary_evidence_present"])
+                for r in capability_rows),
+            "substantive_pass": sum(r["score"].get(
+                "substantive_pass", r["score"]["audit_pass"])
+                for r in capability_rows),
+            "audit_pass": sum(r["score"]["audit_pass"] for r in capability_rows),
+            "graded_audit_score": mean(r["score"].get("graded_audit_score")
+                                         for r in capability_rows),
+            "fact_retention_score": mean(r["score"].get("fact_retention_score")
+                                           for r in capability_rows),
+            "semantic_causal_score": mean(r["score"].get("semantic_causal_score")
+                                            for r in capability_rows),
+            "provenance_score": mean(r["score"].get("provenance_score")
+                                       for r in capability_rows),
+            "scope_score": mean(r["score"].get("scope_score") for r in capability_rows),
+            "safety_score": mean(r["score"].get("safety_score") for r in capability_rows),
+            "overall_failure_memory_score": mean(
+                r["score"].get("overall_failure_memory_score") for r in capability_rows),
             "judge_auxiliary_pass": sum(r["score"]["judge_auxiliary_pass"] is True for r in rows),
-            "combined_pass": sum(r["score"]["audit_pass"] for r in rows),
+            "joint_diagnostic_pass": sum(r["score"]["joint_diagnostic_pass"] for r in rows),
             "first_format_valid": sum(r["first_format_valid"] for r in rows),
             "pending_review": sum(r["score"]["judge_auxiliary_pass"] is None for r in rows),
             "evidence_precision": mean(r["score"]["evidence_precision"] for r in rows),
@@ -62,6 +110,11 @@ def write_results(output: Path, episodes: list[dict], examples: list[dict], ledg
                 "answer_citation_pass", r["score"]["evidence_pass"]) for r in rows),
             "failure_stage_counts": dict(Counter(stage for r in rows
                 for stage in r["score"].get("failure_stages", ()))),
+            "strict_failure_stage_counts": dict(Counter(stage for r in rows
+                for stage in r["score"].get(
+                    "strict_failure_stages", r["score"].get("failure_stages", ())))),
+            "soft_penalty_counts": dict(Counter(label for r in rows
+                for label in r["score"].get("soft_penalty_labels", ()))),
             "causal_constraint_rate": mean(r["score"]["causal_constraint_rate"] for r in rows),
             "strict_chain_recovery_rate": mean(r["score"]["strict_chain_recovered"] for r in rows),
             "safety_pass_count": sum(r["score"]["safety_pass"] for r in rows),
@@ -70,9 +123,13 @@ def write_results(output: Path, episodes: list[dict], examples: list[dict], ledg
             "tool_calls": sum(len(r["tool_calls"]) for r in rows),
             "deployment_cost_cny": sum(r["deployment_cost_cny"] for r in rows)})
     pairs = []
-    full = {e["query_id"]: e for e in episodes if e["method_id"] == "full_history"}
-    oracle = {e["query_id"]: e for e in episodes if e["method_id"] == "oracle"}
+    full = {e["query_id"]: e for e in episodes if e["method_id"] == "full_history"
+            and episode_run_validity(e) != "integration_invalid"}
+    oracle = {e["query_id"]: e for e in episodes if e["method_id"] == "oracle"
+              and episode_run_validity(e) != "integration_invalid"}
     for row in episodes:
+        if episode_run_validity(row) == "integration_invalid":
+            continue
         reference = full.get(row["query_id"])
         if reference is None or row is reference:
             continue
@@ -108,7 +165,9 @@ def write_results(output: Path, episodes: list[dict], examples: list[dict], ledg
             "all_correct": sum(p["candidate_correct"] for p in rows),
             "full_correct_subset": len(eligible), "subset_coverage": len(eligible) / len(rows),
             "subset_correct": sum(p["candidate_correct"] for p in eligible)})
-    by_query_method = {(e["query_id"], e["method_id"]): e for e in episodes if e["phase"] == "main"}
+    by_query_method = {(e["query_id"], e["method_id"]): e for e in episodes
+                       if e["phase"] == "main"
+                       and episode_run_validity(e) != "integration_invalid"}
     graph_flat = []
     for (query_id, method), row in by_query_method.items():
         flat = by_query_method.get((query_id, "flat_bm25_archive"))
@@ -163,14 +222,27 @@ def write_results(output: Path, episodes: list[dict], examples: list[dict], ledg
         "full_correct_subset_analysis": conditional,
         "graph_flat_paired_comparison": graph_flat,
         "interactive_analysis": interactive_analysis,
+        "run_validity_counts": dict(Counter(episode_run_validity(e) for e in episodes)),
         "failure_counts": dict(Counter(label for e in episodes for label in e["score"]["failure_labels"])),
+        "auxiliary_failure_counts": dict(Counter(label for e in episodes
+            for label in e["score"].get("auxiliary_failure_labels", ()))),
         "failure_stage_counts": dict(Counter(stage for e in episodes
             for stage in e["score"].get("failure_stages", ()))),
+        "strict_failure_stage_counts": dict(Counter(stage for e in episodes
+            for stage in e["score"].get(
+                "strict_failure_stages", e["score"].get("failure_stages", ())))),
+        "soft_penalty_counts": dict(Counter(label for e in episodes
+            for label in e["score"].get("soft_penalty_labels", ()))),
+        "auxiliary_failure_stage_counts": dict(Counter(stage for e in episodes
+            for stage in e["score"].get("auxiliary_failure_stages", ()))),
         "answer_contract_revisions": sorted({e.get("answer_contract_revision", "unversioned")
                                              for e in episodes}),
         "interaction_policy_revisions": sorted({e.get(
             "interaction_policy_revision", "unversioned") for e in episodes}),
-        "single_aggregate_score": None, "human_validated": False,
+        "binary_success_metric": "substantive_pass",
+        "strict_gate_metric": "hard_pass",
+        "aggregate_score_policy": "overall_failure_memory_score_with_mandatory_components",
+        "human_validated": False,
         "development_only": True, "independent_validation": False}
     write_rows(output / "episodes.jsonl", episodes)
     write_rows(output / "paired_diagnostics.jsonl", pairs)
@@ -185,18 +257,31 @@ def write_results(output: Path, episodes: list[dict], examples: list[dict], ledg
                   "reacquisition_sequence_tools_forced", "initial_supported_submission_forced",
                   "safe_unavailable_submission_forced", "reacquisition_submission_reminder_added",
                   "first_format_valid", "format_repair_used", "parse_error",
-                  "necessary_evidence_present", "protocol_error", "hard_pass", "judge_auxiliary_pass",
+                  "necessary_evidence_present", "retrieval_success", "protocol_error",
+                  "substantive_pass", "hard_pass", "strict_citation_pass",
+                  "run_validity", "deterministic_audit_pass", "audit_pass", "graded_audit_score",
+                  "graded_audit_revision", "graded_audit_components", "graded_audit_weights",
+                  "graded_audit_protocol_valid", "judge_auxiliary_pass",
+                  "scorecard_revision", "fact_retention_score", "semantic_causal_score",
+                  "provenance_score", "scope_score", "safety_score",
+                  "overall_failure_memory_score", "failure_memory_components",
+                  "failure_memory_weights", "failure_memory_applicable",
+                  "failure_memory_score_valid", "cited_source_refs", "resolved_evidence_ids",
+                  "joint_diagnostic_pass",
                   "judge_protocol_valid", "judge_protocol_errors", "judge_protocol_warnings",
                   "judge_fact_support_rate", "judge_facts_all_supported",
                   "missing_strict_label_fields",
                    "strict_values", "evidence_pass", "evidence_precision", "evidence_recall",
-                   "answer_citation_pass", "audit_pass", "failure_labels", "failure_stages",
+                   "answer_citation_pass", "failure_labels", "soft_penalty_labels",
+                   "auxiliary_failure_labels", "failure_stages", "strict_failure_stages",
+                   "auxiliary_failure_stages",
                    "attribution", "judge", "judge_parse_error",
                   "model_calls", "tool_calls"]
         writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader()
         for row in episodes:
-            values = {**row, **row["score"], "context": row["artifact"]["records"]}
+            values = {**row, **row["score"], "context": row["artifact"]["records"],
+                      "run_validity": episode_run_validity(row)}
             writer.writerow({key: canonical_json(values[key]) if isinstance(values.get(key), (dict, list))
                              else values.get(key) for key in fields})
     text = ["# v0.2 开发诊断结果", "",
@@ -205,9 +290,15 @@ def write_results(output: Path, episodes: list[dict], examples: list[dict], ledg
             f"停止原因：{stop_reason or '计划内任务完成'}。", ""]
     if mode == "offline":
         text += ["本次使用确定性答案和裁判夹具检查程序接线。以下数字不能解释为真实模型成绩。", ""]
-    text += ["|阶段|方法|问题|数量|硬检查通过|裁判辅助通过|", "|---|---|---|---:|---:|---:|"]
-    text += [f"|{s['phase']}|{s['method_id']}|{s['query_type']}|{s['n']}|{s['hard_pass']}|"
-             f"{s['judge_auxiliary_pass']}|" for s in summaries]
+    text += ["|阶段|方法|问题|能力样本|有效率|总分|事实|语义因果|溯源|任务成功|严格引用|",
+             "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    def shown(value):
+        return "NA" if value is None else f"{value:.2f}"
+    text += [f"|{s['phase']}|{s['method_id']}|{s['query_type']}|{s['capability_n']}|"
+             f"{shown(s['valid_run_rate'])}|{shown(s['overall_failure_memory_score'])}|"
+             f"{shown(s['fact_retention_score'])}|{shown(s['semantic_causal_score'])}|"
+             f"{shown(s['provenance_score'])}|{s['substantive_pass']}|"
+             f"{s['strict_citation_pass']}|" for s in summaries]
     text += ["", f"总模型费用：{report['total_cost_cny']:.6f} 元。裁判费用单列，不计入方法部署成本。",
              "交互工具为不可变 fixture；耗时不代表真实 Docker 调查。",
              "逐题证据、解析结果、判断与账本见 failure_table.csv 和 episodes.jsonl。",

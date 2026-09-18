@@ -160,9 +160,9 @@ def export_real_answer_review(prepared: Path, run: Path, output: Path) -> dict[s
         "--output <新目录>` 导入。\n"
         "4. 如有分歧，只把导入结果中的空白 `adjudication.template.jsonl` 和原 `cases.jsonl` "
         "交给第三位审阅者；不要给他/她看 `adjudication_workitems.jsonl`。\n"
-        "5. 使用同一导入命令并添加 `--adjudication <第三人.jsonl>`。只有 "
-        "`real_answer_judge_gate_pass=true` 才表示具备主矩阵候选资格；"
-        "`main_matrix_authorized` 仍保持 false，避免盲审导入自动触发推理。\n",
+        "5. 使用同一导入命令并添加 `--adjudication <第三人.jsonl>`。"
+        "`semantic_auxiliary_ready=true` 只表示语义辅助分项通过人工校准；它不决定"
+        "确定性主矩阵资格，也不会自动触发推理。\n",
         encoding="utf-8")
     manifest = {
         "schema_version": PACKET_SCHEMA,
@@ -309,7 +309,7 @@ def import_real_answer_reviews(packet: Path, review_files: list[Path], output: P
              and metrics["holdout_correct"] >= REAL_ANSWER_GATES["holdout_correct"]
              and metrics["critical_false_positives"] <= REAL_ANSWER_GATES["critical_false_positives"])
     report = {
-        "schema_version": "real_answer_judge_review_report_v1",
+        "schema_version": "real_answer_judge_review_report_v2",
         "reviewer_ids": [first_id, second_id],
         "case_count": len(cases),
         "consensus_count": len(consensus),
@@ -317,12 +317,14 @@ def import_real_answer_reviews(packet: Path, review_files: list[Path], output: P
         "adjudication_supplied": adjudication is not None,
         "metrics": metrics,
         "gates": REAL_ANSWER_GATES,
+        "semantic_auxiliary_ready": ready,
         "real_answer_judge_gate_pass": ready,
-        "main_matrix_eligible": ready,
+        "deterministic_main_blocked_by_judge": False,
+        "main_matrix_eligible": None,
         "main_matrix_authorized": False,
         "main_matrix_blocker": (
-            "explicit execution authorization is still required" if ready else
-            "real-answer judge review or transfer gate is incomplete/failed"),
+            "not determined by auxiliary semantic review; use deterministic data/model gates "
+            "and explicit execution authorization"),
         "provider_requests": 0,
         "human_validation_claim": not disagreements and len(consensus) == len(cases),
         "development_only": True,

@@ -101,6 +101,12 @@ def _paired_statistics(scored: Sequence[Mapping[str, Any]]) -> list[dict[str, An
     by_method_prefix: dict[str, dict[str, list[float]]] = defaultdict(
         lambda: defaultdict(list)
     )
+    graded_by_method_prefix: dict[str, dict[str, list[float]]] = defaultdict(
+        lambda: defaultdict(list)
+    )
+    overall_by_method_prefix: dict[str, dict[str, list[float]]] = defaultdict(
+        lambda: defaultdict(list)
+    )
     query_pairs: dict[str, int] = defaultdict(int)
     for row in scored:
         method = str(row["method_id"])
@@ -113,6 +119,22 @@ def _paired_statistics(scored: Sequence[Mapping[str, Any]]) -> list[dict[str, An
         by_method_prefix[method][str(row["prefix_id"])].append(
             float(row["audit_pass"]) - float(baseline["audit_pass"])
         )
+        if (
+            isinstance(row.get("graded_audit_score"), (int, float))
+            and isinstance(baseline.get("graded_audit_score"), (int, float))
+        ):
+            graded_by_method_prefix[method][str(row["prefix_id"])].append(
+                float(row["graded_audit_score"])
+                - float(baseline["graded_audit_score"])
+            )
+        if (
+            isinstance(row.get("overall_failure_memory_score"), (int, float))
+            and isinstance(baseline.get("overall_failure_memory_score"), (int, float))
+        ):
+            overall_by_method_prefix[method][str(row["prefix_id"])].append(
+                float(row["overall_failure_memory_score"])
+                - float(baseline["overall_failure_memory_score"])
+            )
         query_pairs[method] += 1
     by_method = {
         method: [sum(values) / len(values) for values in by_prefix.values() if values]
@@ -120,12 +142,24 @@ def _paired_statistics(scored: Sequence[Mapping[str, Any]]) -> list[dict[str, An
     }
     raw = {method: _sign_test_pvalue(values) for method, values in by_method.items()}
     adjusted = _holm_adjust(raw)
+    graded_by_method = {
+        method: [sum(values) / len(values) for values in by_prefix.values() if values]
+        for method, by_prefix in graded_by_method_prefix.items()
+    }
+    overall_by_method = {
+        method: [sum(values) / len(values) for values in by_prefix.values() if values]
+        for method, by_prefix in overall_by_method_prefix.items()
+    }
     return [
         {
             "method_id": method,
             "paired_source_prefixes": len(by_method_prefix[method]),
             "paired_prefix_queries": query_pairs[method],
             "mean_audit_pass_delta": _mean(values),
+            "mean_graded_audit_score_delta": _mean(graded_by_method.get(method, ())),
+            "mean_overall_failure_memory_score_delta": _mean(
+                overall_by_method.get(method, ())
+            ),
             "paired_sign_pvalue": raw[method],
             "holm_adjusted_pvalue": adjusted[method],
         }

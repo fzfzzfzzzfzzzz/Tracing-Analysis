@@ -92,6 +92,17 @@ def main():
     mini.add_argument("--budget", type=int, required=True)
     mini.add_argument("--execute", action="store_true")
     mini.add_argument("--calibration", type=Path, required=True)
+    mini.add_argument("--memory-ledger", type=Path,
+        help="内容寻址的递归记忆 ledger 快照")
+    mini.add_argument("--memory-revision", type=Path,
+        help="内容寻址的单个 revision 快照，用于候选更新的隔离回放")
+    mini.add_argument("--memory-budget", type=int, default=0,
+        help="从总历史预算中预留给失败经验记忆的 token 数")
+    mini_probe = sub.add_parser("mini-probe")
+    mini_probe.add_argument("--config", type=Path, required=True)
+    mini_probe.add_argument("--model-id", required=True)
+    mini_probe.add_argument("--output", type=Path, required=True)
+    mini_probe.add_argument("--execute", action="store_true")
     args = parser.parse_args()
     workspace = Path.cwd()
     if args.command == "export-mini-trace":
@@ -122,11 +133,19 @@ def main():
     elif args.command == "mini-prepare":
         from .mini_runner import prepare_mini
         result = prepare_mini(args.config, args.tasks, args.output, workspace)
+    elif args.command == "mini-probe":
+        from .mini_runner import calibrate_mini_agent
+        result = calibrate_mini_agent(
+            args.config, args.output, workspace,
+            model_id=args.model_id, execute=args.execute,
+        )
     elif args.command == "mini-run":
         from .mini_runner import execute_mini
         result = execute_mini(args.prepared, args.output, workspace, task_id=args.task_id,
             model_id=args.model_id, method=args.method, budget=args.budget,
-            execute=args.execute, restore=args.restore, calibration=args.calibration)
+            execute=args.execute, restore=args.restore, calibration=args.calibration,
+            memory_ledger=args.memory_ledger, memory_revision=args.memory_revision,
+            memory_budget=args.memory_budget)
     elif args.command == "prepare":
         result = prepare(args.config, args.dataset, args.output, workspace)
     elif args.command == "run":

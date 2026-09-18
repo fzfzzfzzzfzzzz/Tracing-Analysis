@@ -48,7 +48,8 @@ def test_fresh_development_benchmark_is_reproducible_and_provider_free(
     result = score_run(dataset, run, score, bootstrap_samples=10)
     assert result["report"]["development_only"] is True
     assert result["report"]["independent_validation"] is False
-    assert result["report"]["single_aggregate_score"] is None
+    assert result["report"]["single_aggregate_score"] == "overall_failure_memory_score"
+    assert result["report"]["aggregate_score_requires_component_reporting"] is True
     assert result["gates"]["development_only"] is True
     assert json.loads((run / "manifest.json").read_text(encoding="utf-8"))[
         "provider_requests"

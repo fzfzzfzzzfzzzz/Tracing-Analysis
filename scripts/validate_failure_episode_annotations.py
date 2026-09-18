@@ -197,7 +197,11 @@ def validate_annotated_episode(episode: Any, case: Mapping[str, Any]) -> None:
         raise ValueError("episode stages include events excluded from every relevance policy")
 
 
-def validate_reviews(cases_path: Path, reviews_path: Path) -> dict[str, Any]:
+def validate_reviews(
+    cases_path: Path, reviews_path: Path, *, reviewer_kind: str = "human"
+) -> dict[str, Any]:
+    if reviewer_kind not in {"human", "ai"}:
+        raise ValueError("reviewer_kind must be human or ai")
     cases = load_jsonl(cases_path)
     reviews = load_jsonl(reviews_path)
     case_map = {str(row.get("candidate_id")): row for row in cases}
@@ -219,8 +223,8 @@ def validate_reviews(cases_path: Path, reviews_path: Path) -> dict[str, Any]:
                 raise ValueError("annotation schema_version differs")
             if any(row.get(field) != case.get(field) for field in metadata):
                 raise ValueError("frozen candidate metadata changed")
-            if row.get("annotator_kind") != "human":
-                raise ValueError("formal packets require annotator_kind=human")
+            if row.get("annotator_kind") != reviewer_kind:
+                raise ValueError(f"expected annotator_kind={reviewer_kind}")
             annotator = str(row.get("annotator") or "").strip()
             if not annotator:
                 raise ValueError("annotator is required")
@@ -240,9 +244,13 @@ def validate_reviews(cases_path: Path, reviews_path: Path) -> dict[str, Any]:
             errors.append(f"{candidate_id}: {error}")
     if len(annotators) != 1:
         errors.append("one packet must be completed by exactly one human annotator identity")
+    valid = not errors
     return {
         "schema_version": "compression_audit_failure_episode_validation_v1",
-        "ready": not errors,
+        "ready": valid,
+        "formal_ready": valid and reviewer_kind == "human",
+        "development_only": reviewer_kind == "ai",
+        "reviewer_kind": reviewer_kind,
         "case_count": len(cases),
         "review_count": len(reviews),
         "status_counts": dict(status_counts),
@@ -259,8 +267,17 @@ def main() -> int:
     parser.add_argument("--cases", type=Path, required=True)
     parser.add_argument("--reviews", type=Path, required=True)
     parser.add_argument("--report", type=Path)
+    parser.add_argument(
+        "--development-ai",
+        action="store_true",
+        help="允许 annotator_kind=ai，但结果只能用于开发，不能作为正式人工标注。",
+    )
     args = parser.parse_args()
-    result = validate_reviews(args.cases, args.reviews)
+    result = validate_reviews(
+        args.cases,
+        args.reviews,
+        reviewer_kind="ai" if args.development_ai else "human",
+    )
     rendered = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
     if args.report:
         if args.report.exists():

@@ -305,7 +305,7 @@ def test_runner_failure_paths(prepared, data, tmp_path, variant):
     result = run_episode(trial, rubric, prefix, queries[(prefix.prefix_id, trial["query_type"])],
                           gold[prefix.prefix_id], ledger, judge_calibrated=True,
                           token_counter=estimate_tokens)
-    assert not result["score"]["audit_pass"]
+    assert result["score"]["audit_pass"] is (variant == "bad_judge")
     assert len(result["model_calls"]) <= 4
     if variant == "unauthorized":
         assert not result["score"]["safety_pass"]
@@ -317,8 +317,50 @@ def test_runner_failure_paths(prepared, data, tmp_path, variant):
     if variant == "bad_judge":
         assert result["score"]["judge_auxiliary_pass"] is None
         assert not result["score"]["judge_protocol_valid"]
-        assert "judge_protocol_failure" in result["score"]["failure_labels"]
+        assert "judge_protocol_failure" in result["score"]["auxiliary_failure_labels"]
+        assert result["score"]["failure_stages"] == []
+        assert result["score"]["auxiliary_failure_stages"] == ["judge_protocol"]
         assert result["judge_parse_error"]
+
+
+def test_judge_protocol_failure_gets_one_isolated_repair(prepared, data, tmp_path):
+    _, package, _ = prepared
+    _, trials, rubrics, _ = load_prepared(package)
+    trial = next(t for t in trials if t["phase"] == "main")
+    prefixes, gold, queries = data
+    prefix = next(p for p in prefixes if p.prefix_id == trial["prefix_id"])
+    rubric = rubrics[trial["query_id"]]
+    wire = canonical_answer(rubric)
+    invalid = rule_judge_fixture(wire, rubric)
+    invalid["contradictions"] = ["This reference fact is absent from answer.a."]
+    repaired = rule_judge_fixture(wire, rubric)
+    ledger = ledger_for(tmp_path, [response(wire), response(invalid), response(repaired)])
+
+    result = run_episode(
+        trial,
+        rubric,
+        prefix,
+        queries[(prefix.prefix_id, trial["query_type"])],
+        gold[prefix.prefix_id],
+        ledger,
+        judge_calibrated=True,
+        token_counter=estimate_tokens,
+        judge_protocol_repair=True,
+    )
+
+    assert result["run_validity"] == "valid"
+    assert result["judge_parse_error"] is None
+    assert "contradiction_not_exact_answer_substring" in result["judge_first_parse_error"]
+    assert result["judge_format_repair_used"]
+    assert result["judge_format_repair_succeeded"]
+    assert result["score"]["judge_protocol_valid"]
+    assert [row["kind"] for row in ledger.rows] == [
+        "answer", "judge", "judge_format_repair"]
+    first_judge = ledger.rows[-2]["request"]
+    repair_judge = ledger.rows[-1]["request"]
+    assert first_judge["messages"][-1] == repair_judge["messages"][-1]
+    assert "This reference fact" not in json.dumps(repair_judge)
+    assert "previous judge output" in repair_judge["messages"][0]["content"]
 
 
 def test_live_requires_date_price_tokenizer_and_budget(monkeypatch):
@@ -347,7 +389,7 @@ def test_live_requires_date_price_tokenizer_and_budget(monkeypatch):
         validate_live(config, {**preflight, "cost_upper_bound_cny": 101}, "unit-test", Path.cwd())
 
 
-def test_failed_judge_gate_prevents_all_answer_calls(prepared, tmp_path, monkeypatch):
+def test_failed_judge_gate_does_not_block_deterministic_main_run(prepared, tmp_path, monkeypatch):
     dataset, package, _ = prepared
     monkeypatch.setattr("tracegraph.benchmark.compression_audit.development_runner.validate_live",
                         lambda *a: None)
@@ -355,12 +397,14 @@ def test_failed_judge_gate_prevents_all_answer_calls(prepared, tmp_path, monkeyp
 
     def transport(endpoint, key, body, **kwargs):
         calls.append(body)
-        assert is_judge_request(body)
         return response({}), 0
 
     report = run_pilot(package, dataset, tmp_path / "failed", mode="live", transport=transport)
-    assert report["stop_reason"] == "judge_rule_calibration_failed"
-    assert report["episode_count"] == 0 and len(calls) == 80
+    assert not report["judge_gate"]["pass"]
+    assert report["stop_reason"] == "model_calibration_failed"
+    assert report["episode_count"] == 40
+    assert len(calls) > 80
+    assert any(not is_judge_request(body) for body in calls)
 
 
 def test_job_boundary_pause_resume_and_binding(prepared, tmp_path, monkeypatch):

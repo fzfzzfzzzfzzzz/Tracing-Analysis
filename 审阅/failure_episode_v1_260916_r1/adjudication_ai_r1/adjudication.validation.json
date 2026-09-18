@@ -1,0 +1,22 @@
+{
+  "schema_version": "compression_audit_failure_episode_adjudication_validation_v1",
+  "ready": true,
+  "formal_ready": false,
+  "development_only": true,
+  "case_count": 30,
+  "decision_count": 30,
+  "selected_source_counts": {
+    "review_a": 16,
+    "synthesized": 6,
+    "review_b": 6,
+    "reject": 2
+  },
+  "adjudicators": [
+    "codex-third-ai-260917-r1"
+  ],
+  "adjudicator_kinds": [
+    "ai"
+  ],
+  "decisions_sha256": "86c9d33d03032d1c4a3a2fc8ce5a0c38536130f71a3c145521a5f386eb836dbb",
+  "errors": []
+}

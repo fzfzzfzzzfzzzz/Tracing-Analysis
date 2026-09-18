@@ -229,10 +229,14 @@ class CompressionAuditDataTests(unittest.TestCase):
                 "artifact": memory_artifact(prefix, deleted_state, deleted_bundle).to_dict(),
             }
         )
-        self.assertTrue(score_episode(full_episode, prefix, query, gold)["audit_pass"])
-        self.assertFalse(score_episode(deleted_episode, prefix, query, gold)["audit_pass"])
+        full_score = score_episode(full_episode, prefix, query, gold)
+        deleted_score = score_episode(deleted_episode, prefix, query, gold)
+        self.assertTrue(full_score["audit_pass"])
+        self.assertEqual(full_score["graded_audit_score"], 100)
+        self.assertFalse(deleted_score["audit_pass"])
+        self.assertLess(deleted_score["graded_audit_score"], full_score["graded_audit_score"])
         self.assertTrue(
-            score_episode(deleted_episode, prefix, query, gold)["honest_abstention"]
+            deleted_score["honest_abstention"]
         )
 
     def test_v0_matrix_has_exact_request_ceiling(self):

@@ -1,0 +1,11 @@
+{
+  "development_only": true,
+  "new_provider_requests": 0,
+  "packet_sha256": {
+    "reviewer_a": "b255bdb08b106c5f22a4e6f2ea8f5680c08f372170fa463cdeafb783b59a839e",
+    "reviewer_b": "95542d5f539923c2885434862bc61ae115e1c8008e69d5a1609b0b7362ea3f63"
+  },
+  "same_blank_template": true,
+  "same_cases": true,
+  "schema_version": "failure_episode_targeted_human_packet_receipt_v1"
+}

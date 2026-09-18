@@ -15,11 +15,11 @@ from ..compression_audit.development_experiment import (
 from ..compression_audit.development_results import judge_gate, model_gate
 from ..compression_audit.development_runner import evaluate_judge_example, interrupted_episode, run_episode
 from ..compression_audit.development_protocol import (
-    ANSWER_CONTRACT_REVISION, INTERACTION_POLICY_REVISION,
+    ANSWER_CONTRACT_REVISION, INTERACTION_POLICY_REVISION, JUDGE_PROTOCOL_REVISION,
 )
 from ..compression_audit.io import file_sha256, load_jsonl, stable_digest
 from .config import (EmbeddingTokenizer, LocalTokenizer, answer_response_format,
-                     live_blockers, load_config)
+                     answer_transport_flags, live_blockers, load_config)
 from .external import source_status
 from .methods import MemoryMethods
 from .provider import ServerLedger, StopRun, append
@@ -30,9 +30,17 @@ from .data_workflow import load_suite_dataset
 def control(prefix, query, gold, method, budget, count, exact):
     adapter = make_development_adapter("recent_masking", token_counter=count)
     chain = close_pairs(prefix, set(gold.ordered_event_ids))
-    common = adapter.fit(prefix, [e["event_id"] for e in reversed(prefix.events)],
-                         budget // 3, forbidden=chain)
-    selected = common if method == "deletion" else common | chain
+    if method == "oracle_evidence_only":
+        # A capability ceiling must not change its distractors when the budget changes.
+        # Keep the historical recent+gold Oracle intact for comparability and expose a
+        # new intervention that contains only the frozen gold chain plus call/result
+        # pair closure.
+        common = set()
+        selected = chain
+    else:
+        common = adapter.fit(prefix, [e["event_id"] for e in reversed(prefix.events)],
+                             budget // 3, forbidden=chain)
+        selected = common if method == "deletion" else common | chain
     records = adapter.records(prefix, selected)
     matched = None
     if method == "irrelevant":
@@ -53,10 +61,27 @@ def control(prefix, query, gold, method, budget, count, exact):
                             "read_event_ids": [], "safety_reasons": []}}
 
 
-def failed_artifact(reason):
+def failed_artifact(reason, *, run_validity="integration_invalid"):
+    if run_validity not in {"method_failure", "integration_invalid"}:
+        raise ValueError("invalid run_validity")
     return {"records": [], "visible_event_ids": [], "token_count": 0,
+            "run_validity": run_validity, "failure_reason": reason,
             "ingestion_usage": {}, "retrieval_usage": {
                 "send_eligible": False, "safety_reasons": [reason], "read_event_ids": []}}
+
+
+def build_failure_validity(error: Exception) -> str:
+    """Separate method output failures from harness/integration failures."""
+
+    if isinstance(error, ValueError) and any(marker in str(error) for marker in (
+        "truncated method response",
+        "empty method response",
+        "returned no parseable state memory",
+        "memory method returned empty summary",
+        "ingest_budget_exceeded",
+    )):
+        return "method_failure"
+    return "integration_invalid"
 
 
 def run(prepared: Path, dataset: Path, output: Path, workspace: Path, *,
@@ -131,6 +156,8 @@ def _run(prepared, dataset, output, workspace, config, mode, counters, transport
         raise ValueError("prepared answer contract revision differs")
     if any(t.get("interaction_policy_revision") != INTERACTION_POLICY_REVISION for t in trials):
         raise ValueError("prepared interaction policy revision differs")
+    if any(t.get("judge_protocol_revision") != JUDGE_PROTOCOL_REVISION for t in trials):
+        raise ValueError("prepared judge protocol revision differs")
     rubrics = {r["query_id"]: r for r in load_jsonl(prepared / "rubrics.jsonl")}
     examples = load_jsonl(prepared / "rule_examples.jsonl")
     engines = {}
@@ -157,8 +184,7 @@ def _run(prepared, dataset, output, workspace, config, mode, counters, transport
             pause()
             finish(example["example_id"], "judge_example", evaluate_judge_example(example, judge_view))
         judged = [r["result"] for r in done.values() if r["kind"] == "judge_example"]
-        if not judge_gate(judged, config["gates"])["pass"] and not assume_gates_passed:
-            raise StopRun("rule_judge_calibration_failed")
+        judge_calibrated = judge_gate(judged, config["gates"])["pass"]
         for trial_spec in trials:
             current = dict(trial_spec)
             job_id, cell = current["episode_id"], current["cell_id"]
@@ -183,7 +209,7 @@ def _run(prepared, dataset, output, workspace, config, mode, counters, transport
             method, budget = current["method_id"], current["budget"]
             current["artifact"] = failed_artifact("materialization_incomplete")
             try:
-                if method in ("oracle", "deletion", "irrelevant"):
+                if method in ("oracle", "oracle_evidence_only", "deletion", "irrelevant"):
                     artifact = control(prefix, query, gold_map[prefix.prefix_id], method, budget, count,
                                        ledger is not None)
                 else:
@@ -192,27 +218,39 @@ def _run(prepared, dataset, output, workspace, config, mode, counters, transport
                         try:
                             state = engine.build(prefix, method, budget, build_id)
                         except (ValueError, ImportError, OSError, KeyError, TypeError, IndexError) as exc:
-                            state = {"error": type(exc).__name__ + ": " + str(exc)}
+                            state = {"error": type(exc).__name__ + ": " + str(exc),
+                                     "run_validity": build_failure_validity(exc)}
                         finish(build_id, "build", state)
                         pause()
                     state = done[build_id]["result"]
                     if "error" in state:
-                        raise ValueError("method_build_failed: " + state["error"])
-                    artifact = engine.materialize(state, prefix, query, job_id)
+                        artifact = failed_artifact(
+                            "method_build_failed: " + state["error"],
+                            run_validity=state.get("run_validity", "integration_invalid"),
+                        )
+                    else:
+                        artifact = engine.materialize(state, prefix, query, job_id)
             except (ValueError, ImportError, OSError, KeyError, TypeError, IndexError) as exc:
-                artifact = failed_artifact(type(exc).__name__ + ": " + str(exc))
-            model_spec = next(model for model in config["models"] if model["id"] == model_id)
-            server_field_transport = model_spec.get("server_version") == "0.8.5"
-            server_tool_transport = (
-                model_spec.get("answer_transport") == "native_tool_call"
+                artifact = failed_artifact(
+                    type(exc).__name__ + ": " + str(exc),
+                    run_validity=build_failure_validity(exc),
+                )
+            artifact.setdefault(
+                "run_validity",
+                "valid" if artifact["retrieval_usage"]["send_eligible"] else "method_failure",
             )
+            model_spec = next(model for model in config["models"] if model["id"] == model_id)
+            server_field_transport, server_tool_transport = answer_transport_flags(model_spec)
+            rubric = rubrics[query.query_id]
             current.update(artifact=artifact, request_template=answer_request(
                 query, artifact["records"], response_format=answer_response_format(model_spec),
                 server_field_transport=server_field_transport,
-                server_tool_transport=server_tool_transport))
-            episode = run_episode(current, rubrics[query.query_id], prefix, query,
-                gold_map[prefix.prefix_id], view, judge_calibrated=True, token_counter=count,
-                server_field_transport=server_field_transport)
+                server_tool_transport=server_tool_transport, rubric=rubric))
+            episode = run_episode(current, rubric, prefix, query,
+                gold_map[prefix.prefix_id], view, judge_calibrated=judge_calibrated,
+                token_counter=count,
+                server_field_transport=server_field_transport,
+                judge_protocol_repair=True)
             episode.update(cell_id=cell, model_id=model_id, budget=budget)
             episode["method_provider_calls"] = [r for r in ledger.rows if r["job_id"] == job_id
                 and r["kind"] == "retrieval"] if ledger else []

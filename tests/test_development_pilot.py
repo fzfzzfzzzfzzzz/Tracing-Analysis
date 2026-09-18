@@ -18,7 +18,8 @@ from tracegraph.benchmark.compression_audit.development_adapters import (
 )
 from tracegraph.benchmark.compression_audit.development_experiment import (
     answer_request, challenge_examples, evidence_role_guidance, load_pilot_config,
-    load_prepared, prepare_pilot, select_population, write_json, write_rows, load_counter,
+    load_prepared, prepare_pilot, select_population, source_referenced_records,
+    write_json, write_rows, load_counter,
 )
 from tracegraph.benchmark.compression_audit.development_results import judge_gate
 from tracegraph.benchmark.compression_audit.development_rescore import rescore_pilot
@@ -90,11 +91,22 @@ def test_four_fields_score_and_adversarial_examples(chain):
     judge = rule_judge_fixture(wire, rubric)
     good = score_submission(wire, rubric, visible, judge=judge, judge_calibrated=True)
     assert good["audit_pass"] and good["strict_chain_recovered"]
+    assert good["graded_audit_score"] == 100
+    assert good["overall_failure_memory_score"] == 100
+    assert good["fact_retention_score"] == 100
+    assert good["semantic_causal_score"] == 100
+    assert good["provenance_score"] == 100
+    assert good["graded_audit_components"] == {
+        "strict_fact_recovery": 1.0,
+        "evidence_grounding": 1.0,
+        "causal_reconstruction": 1.0,
+        "scope_consistency": 1.0,
+        "safety": 1.0,
+    }
     assert good["missing_strict_label_fields"] == []
     assert good["judge_facts_all_supported"]
     for change in (
         {"a": "A plausible but wrong explanation."},
-        {"e": wire["e"] + [prefix.events[-1]["event_id"]]},
         {"e": wire["e"] + ["unseen"]},
         {"e": wire["e"][:-1]},
         {"e": list(reversed(wire["e"]))}, {"t": "current"}, {"s": True},
@@ -102,8 +114,12 @@ def test_four_fields_score_and_adversarial_examples(chain):
     ):
         assert not score_submission({**wire, **change}, rubric, visible,
                                     judge=judge, judge_calibrated=True)["audit_pass"]
-    assert not score_submission(wire, rubric, visible, judge=judge,
-                                judge_calibrated=False)["audit_pass"]
+    uncalibrated = score_submission(wire, rubric, visible, judge=judge,
+                                    judge_calibrated=False)
+    assert uncalibrated["audit_pass"]
+    assert uncalibrated["judge_auxiliary_pass"] is None
+    assert uncalibrated["overall_failure_memory_score"] is None
+    assert not uncalibrated["joint_diagnostic_pass"]
     assert not score_submission(wire, rubric, visible, judge=judge,
                                 judge_calibrated=True, unsafe_attempts=1)["audit_pass"]
     assert not score_submission(wire, rubric, visible, judge=judge,
@@ -113,6 +129,101 @@ def test_four_fields_score_and_adversarial_examples(chain):
                                   judge=judge, judge_calibrated=True)
     assert set(unlabelled["missing_strict_label_fields"]) == set(rubric["strict_values"])
     assert "answer_strict_value_protocol_failure" in unlabelled["failure_labels"]
+
+
+def test_graded_score_distinguishes_two_binary_failures_without_using_judge(chain):
+    prefix, _, rubric = chain
+    visible = [e["event_id"] for e in prefix.events]
+    answer = canonical_answer(rubric)
+    judge = rule_judge_fixture(answer, rubric)
+
+    nearly_complete = {**answer, "e": answer["e"][:-1]}
+    near_score = score_submission(
+        nearly_complete, rubric, visible, judge=judge, judge_calibrated=True
+    )
+    empty_score = score_submission(
+        {"a": "x"}, rubric, visible, judge=judge, judge_calibrated=True
+    )
+    bad_judge = {"facts": {name: "missing" for name in rubric["necessary_facts"]},
+                 "contradictions": [], "extractions": {}}
+    without_semantic_credit = score_submission(
+        answer, rubric, visible, judge=bad_judge, judge_calibrated=True
+    )
+
+    assert not near_score["audit_pass"] and not empty_score["audit_pass"]
+    assert 0 < near_score["graded_audit_score"] < 100
+    assert empty_score["graded_audit_score"] == 0
+    assert near_score["graded_audit_score"] > empty_score["graded_audit_score"]
+    assert without_semantic_credit["graded_audit_score"] == 100
+    assert without_semantic_credit["judge_auxiliary_pass"] is False
+    assert without_semantic_credit["semantic_causal_score"] == 0
+    assert without_semantic_credit["overall_failure_memory_score"] == 70
+
+
+def test_visible_irrelevant_citation_is_soft_penalty_not_task_failure(chain):
+    prefix, _, rubric = chain
+    visible = [event["event_id"] for event in prefix.events]
+    irrelevant = next(event_id for event_id in visible
+                      if event_id not in rubric["relevant_evidence_ids"])
+    answer = canonical_answer(rubric)
+    answer["e"] = [*answer["e"], irrelevant]
+
+    score = score_submission(
+        answer, rubric, visible,
+        judge=rule_judge_fixture(answer, rubric), judge_calibrated=True,
+    )
+
+    assert score["retrieval_success"]
+    assert score["substantive_pass"] and score["audit_pass"]
+    assert not score["strict_citation_pass"] and not score["hard_pass"]
+    assert not score["evidence_pass"]
+    assert score["evidence_recall"] == 1
+    assert 0 < score["evidence_precision"] < 1
+    assert 0 < score["overall_failure_memory_score"] < 100
+    assert score["failure_stages"] == []
+    assert score["strict_failure_stages"] == ["answer_citation"]
+    assert score["soft_penalty_labels"] == ["irrelevant_citation"]
+    assert score["attribution"] == "pass"
+
+
+def test_unknown_citation_remains_substantive_failure(chain):
+    prefix, _, rubric = chain
+    visible = [event["event_id"] for event in prefix.events]
+    answer = canonical_answer(rubric)
+    answer["e"] = [*answer["e"], "invented-record"]
+
+    score = score_submission(
+        answer, rubric, visible,
+        judge=rule_judge_fixture(answer, rubric), judge_calibrated=True,
+    )
+
+    assert score["retrieval_success"]
+    assert not score["substantive_pass"] and not score["audit_pass"]
+    assert not score["hard_pass"] and not score["strict_citation_pass"]
+    assert score["unknown_evidence_ids"] == ["invented-record"]
+    assert score["failure_stages"] == ["answer_citation"]
+    assert score["soft_penalty_labels"] == []
+
+
+def test_compact_source_refs_resolve_without_becoming_semantic_facts(chain):
+    prefix, _, rubric = chain
+    records = [{"record_id": event["event_id"], "kind": event["kind"],
+                "content": event["content"]} for event in prefix.events]
+    public_records, ref_map = source_referenced_records(records)
+    id_to_ref = {record["record_id"]: record["source_ref"] for record in public_records}
+    answer = canonical_answer(rubric)
+    answer["e"] = [id_to_ref[event_id] for event_id in answer["e"]]
+    score = score_submission(
+        answer,
+        rubric,
+        [event["event_id"] for event in prefix.events],
+        judge=rule_judge_fixture(answer, rubric),
+        judge_calibrated=True,
+        evidence_ref_map=ref_map,
+    )
+    assert score["audit_pass"]
+    assert score["provenance_score"] == 100
+    assert score["resolved_evidence_ids"] == list(rubric["strict_chain"])
 
 
 def test_alternative_evidence_and_partial_order(chain):
@@ -330,13 +441,15 @@ def test_judge_is_blind_and_malformed_verdict_cannot_score(chain):
         parse_judge(provider_response(invented), rubric, answer["a"])
     score = score_submission(answer, rubric, answer["e"], judge=invented,
                              judge_calibrated=True)
-    assert score["hard_pass"] and not score["audit_pass"]
+    assert score["hard_pass"] and score["audit_pass"]
+    assert not score["joint_diagnostic_pass"]
     assert score["judge_auxiliary_pass"] is None
     assert score["judge_protocol_valid"] is False
     assert score["judge_protocol_errors"] == ["contradiction_not_exact_answer_substring"]
-    assert "judge_protocol_failure" in score["failure_labels"]
-    assert score["failure_stages"] == ["judge_protocol"]
-    assert "semantic_failure" not in score["failure_labels"]
+    assert "judge_protocol_failure" in score["auxiliary_failure_labels"]
+    assert score["failure_stages"] == []
+    assert score["auxiliary_failure_stages"] == ["judge_protocol"]
+    assert "semantic_failure" not in score["auxiliary_failure_labels"]
     response = provider_response(verdict)
     response["choices"][0]["finish_reason"] = "length"
     with pytest.raises(ValueError):
@@ -573,7 +686,10 @@ def test_challenges_cover_intended_failures(data):
         answer, rubric = example["answer"], example["rubric"]
         score = score_submission(answer, rubric, [r["record_id"] for r in example["records"]],
             judge=rule_judge_fixture(answer, rubric), judge_calibrated=True)
-        assert score["audit_pass"] == example["expected_pass"], example["case"]
+        assert score["joint_diagnostic_pass"] == example["expected_pass"], example["case"]
+        if example["case"] == "wrong_cause":
+            assert score["audit_pass"]
+            assert score["judge_auxiliary_pass"] is False
 
 
 def test_deterministically_blocked_contradiction_is_not_a_critical_false_positive(data):

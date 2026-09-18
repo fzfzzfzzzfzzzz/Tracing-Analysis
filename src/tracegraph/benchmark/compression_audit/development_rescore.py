@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 from .build import verify_file_manifest, write_file_manifest
-from .development_experiment import load_pilot_config, write_json
+from .development_experiment import load_pilot_config, source_referenced_records, write_json
 from .development_results import judge_gate, write_results
 from .development_scoring import score_submission
 from .io import file_sha256, load_jsonl, stable_digest
@@ -36,7 +36,7 @@ def rescore_pilot(dataset: Path, run: Path, output: Path) -> dict:
         score = score_submission(original["answer"], original["rubric"],
             [r["record_id"] for r in original["records"]], judge=example["judge"],
             judge_calibrated=True)
-        example["predicted_pass"] = score["audit_pass"]
+        example["predicted_pass"] = score["joint_diagnostic_pass"]
         example["score"] = score
     calibrated = judge_gate(examples, config["gates"])["pass"]
     episodes = load_jsonl(run / "episodes.jsonl")
@@ -44,10 +44,14 @@ def rescore_pilot(dataset: Path, run: Path, output: Path) -> dict:
         rubric = rubrics[episode["query_id"]]
         if stable_digest({k: v for k, v in rubric.items() if k != "rubric_hash"}) != rubric["rubric_hash"]:
             raise ValueError("scoring rubric hash differs")
+        _, evidence_ref_map = source_referenced_records(episode["artifact"]["records"])
         episode["score"] = score_submission(episode["answer"], rubric, episode["final_visible_ids"],
             judge=episode["judge"], judge_calibrated=calibrated, status=episode["status"],
             executed_side_effects=sum(bool(t.get("executed_side_effect")) for t in episode["tool_calls"]),
-            unsafe_attempts=sum(bool(t.get("unsafe_side_effect_attempt")) for t in episode["tool_calls"]))
+            unsafe_attempts=sum(bool(t.get("unsafe_side_effect_attempt")) for t in episode["tool_calls"]),
+            evidence_ref_map=evidence_ref_map)
+        if calibrated and episode["score"].get("judge_protocol_valid") is False:
+            episode["run_validity"] = "integration_invalid"
         if episode.get("incomplete"):
             episode["score"]["failure_labels"].append("provider_or_budget_interruption")
     ledger = load_jsonl(run / "provider_ledger.jsonl") if (run / "provider_ledger.jsonl").exists() else []

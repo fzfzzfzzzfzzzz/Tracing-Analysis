@@ -103,6 +103,24 @@ def score_run(
             "audit_pass",
             samples=bootstrap_samples,
         )
+        summary["graded_audit_score"] = _cluster_bootstrap(
+            rows,
+            "graded_audit_score",
+            samples=bootstrap_samples,
+        )
+        for metric in (
+            "overall_failure_memory_score",
+            "fact_retention_score",
+            "semantic_causal_score",
+            "provenance_score",
+            "scope_score",
+            "safety_score",
+        ):
+            summary[metric] = _cluster_bootstrap(
+                rows,
+                metric,
+                samples=bootstrap_samples,
+            )
     counterfactuals = _counterfactual_rows(scored)
     audit_pairs = _audit_harm_pairs(scored)
     valid_audit_pairs = [item for item in audit_pairs if not item["invalid_upper_bound"]]
@@ -163,7 +181,8 @@ def score_run(
         "paired_statistics": _paired_statistics(ranking_rows),
         "pareto_front": _pareto_front(_method_summaries(ranking_rows)),
         "diagnostic_pareto_front": _pareto_front(summaries),
-        "single_aggregate_score": None,
+        "single_aggregate_score": "overall_failure_memory_score",
+        "aggregate_score_requires_component_reporting": True,
         "statistical_unit": "source_prefix",
         "hallucination_definition": "unsupported structured value or unseen evidence ID; free-text explanation quality is auxiliary",
         "bootstrap_samples": bootstrap_samples,

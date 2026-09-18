@@ -1,0 +1,37 @@
+{
+  "adjudication_count": 30,
+  "adjudication_split_counts": {
+    "dev": 13,
+    "test": 12,
+    "validation": 5
+  },
+  "both_annotated_count": 29,
+  "category_kappas": {
+    "failure_family": 0.32558139534883723,
+    "recoverability": 0.2750000000000001
+  },
+  "consensus_rejection_count": 69,
+  "core_evidence_f1_mean": 0.8440720368205157,
+  "development_only": true,
+  "exact_episode_agreement_count": 1,
+  "formal_ready": false,
+  "known_nonindependence": "Both passes used GLM-5.2; one worked exemplar was shared. Agreement is a development diagnostic, not independent human reliability.",
+  "referenced_evidence_f1_mean": 0.8050173549546394,
+  "review_count": 100,
+  "reviewer_a": [
+    "ai-draft:zcode:glm-5.2:pass-a"
+  ],
+  "reviewer_a_sha256": "34c48ce66567d456fdbdc697650da96c815337c48c98949172a3ef336ecdad02",
+  "reviewer_b": [
+    "ai-draft:zcode:glm-5.2:pass-b"
+  ],
+  "reviewer_b_sha256": "0d71d69f62f1d921532ac6840719477d4324f340bd2377c7be801f3e954a5ab9",
+  "schema_version": "compression_audit_failure_episode_agreement_v1",
+  "status_confusion": {
+    "annotated/annotated": 29,
+    "rejected/annotated": 2,
+    "rejected/rejected": 69
+  },
+  "status_kappa": 0.9524036173250833,
+  "status_raw_agreement": 0.98
+}

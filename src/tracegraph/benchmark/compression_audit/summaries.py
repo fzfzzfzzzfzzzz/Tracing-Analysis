@@ -66,6 +66,15 @@ def _method_summaries(scored: Sequence[Mapping[str, Any]]) -> list[dict[str, Any
                 "episodes": len(rows),
                 "prefix_clusters": len({str(item["prefix_id"]) for item in rows}),
                 "audit_pass": _cluster_bootstrap(rows, "audit_pass"),
+                "graded_audit_score": _cluster_bootstrap(rows, "graded_audit_score"),
+                "overall_failure_memory_score": _cluster_bootstrap(
+                    rows, "overall_failure_memory_score"
+                ),
+                "fact_retention_score": _cluster_bootstrap(rows, "fact_retention_score"),
+                "semantic_causal_score": _cluster_bootstrap(rows, "semantic_causal_score"),
+                "provenance_score": _cluster_bootstrap(rows, "provenance_score"),
+                "scope_score": _cluster_bootstrap(rows, "scope_score"),
+                "safety_score": _cluster_bootstrap(rows, "safety_score"),
                 "mean_slot_accuracy": _mean(item["slot_accuracy"] for item in rows),
                 "mean_primary_structured_accuracy": _mean(
                     item["primary_structured_accuracy"] for item in rows
@@ -117,11 +126,13 @@ def _pareto_front(summaries: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]
         if item.get("condition_id") in {"candidate", "full"}
         and item.get("method_id") in FORMAL_METHOD_IDS
         and item.get("audit_pass", {}).get("estimate") is not None
+        and item.get("overall_failure_memory_score", {}).get("estimate") is not None
     ]
     front: list[dict[str, Any]] = []
     for item in candidates:
         compression = float(item.get("mean_compression_ratio") or 0.0)
         accuracy = float(item["audit_pass"]["estimate"])
+        overall = float(item["overall_failure_memory_score"]["estimate"])
         regret = float(item.get("mean_tool_calls") or 0.0)
         dominated = False
         for other in candidates:
@@ -130,14 +141,16 @@ def _pareto_front(summaries: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]
             other_values = (
                 float(other.get("mean_compression_ratio") or 0.0),
                 float(other["audit_pass"]["estimate"]),
+                float(other["overall_failure_memory_score"]["estimate"]),
                 float(other.get("mean_tool_calls") or 0.0),
             )
             no_worse = (
                 other_values[0] >= compression
                 and other_values[1] >= accuracy
-                and other_values[2] <= regret
+                and other_values[2] >= overall
+                and other_values[3] <= regret
             )
-            strictly_better = other_values != (compression, accuracy, regret)
+            strictly_better = other_values != (compression, accuracy, overall, regret)
             if no_worse and strictly_better:
                 dominated = True
                 break
@@ -149,6 +162,7 @@ def _pareto_front(summaries: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]
                     "track": item["track"],
                     "compression_ratio": compression,
                     "audit_pass_rate": accuracy,
+                    "overall_failure_memory_score": overall,
                     "mean_tool_calls": regret,
                 }
             )

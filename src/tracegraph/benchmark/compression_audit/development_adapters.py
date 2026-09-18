@@ -17,7 +17,14 @@ from .io import canonical_json, stable_digest
 from .models import ContextBundle, MemoryState, PrefixRecord, QueryRecord
 
 METHODS = ("full_history", "recent_masking", "flat_bm25_archive", "tracegraph_0_4")
-ARCHIVE_METHODS = {"flat_bm25_archive", "tracegraph_0_4"}
+STRUCTURAL_BASELINES = ("bm25_pair_window_archive", "bm25_episode_archive")
+SUPPORTED_METHODS = (*METHODS, *STRUCTURAL_BASELINES)
+ARCHIVE_METHODS = {
+    "flat_bm25_archive",
+    "bm25_pair_window_archive",
+    "bm25_episode_archive",
+    "tracegraph_0_4",
+}
 
 _CALL_KINDS = {"tool_call", "mcp_call"}
 _ACTION_ARGUMENT_KEYS = {
@@ -64,7 +71,7 @@ def _successful_observation(event: Mapping[str, Any]) -> bool:
     )
 
 
-def _observed_recovery_chains(
+def observed_recovery_chains(
     prefix: PrefixRecord,
 ) -> tuple[tuple[Mapping[str, Any], ...], ...]:
     """Infer only contiguous error/decision/same-target-retry/success structures.
@@ -138,7 +145,7 @@ def public_graph(prefix: PrefixRecord) -> tuple[TraceGraph, list[dict[str, Any]]
                 edge_type=EdgeType(relation["type"]),
                 confidence=float(relation.get("confidence", 1)),
                 edge_id=f"explicit:{event['event_id']}:{index}", created_at="public-prefix"))
-    for chain_index, chain in enumerate(_observed_recovery_chains(prefix)):
+    for chain_index, chain in enumerate(observed_recovery_chains(prefix)):
         failed, error, *middle, retry, _result = chain
         decisions = middle
         metadata = {"inferred": True, "basis": "contiguous_same_target_recovery"}
@@ -172,10 +179,70 @@ def close_pairs(prefix: PrefixRecord, selected: set[str]) -> set[str]:
     return result
 
 
+def _pair_units(prefix: PrefixRecord) -> tuple[tuple[str, ...], ...]:
+    """Return chronological call/result units without reading a future query or gold."""
+
+    by_call: dict[str, list[str]] = {}
+    for event in prefix.events:
+        if event.get("call_id"):
+            by_call.setdefault(str(event["call_id"]), []).append(str(event["event_id"]))
+    consumed: set[str] = set()
+    units: list[tuple[str, ...]] = []
+    for event in prefix.events:
+        event_id = str(event["event_id"])
+        if event_id in consumed:
+            continue
+        call_id = event.get("call_id")
+        unit = tuple(by_call[str(call_id)]) if call_id else (event_id,)
+        units.append(unit)
+        consumed.update(unit)
+    return tuple(units)
+
+
+def _episode_units(prefix: PrefixRecord) -> tuple[tuple[str, ...], ...]:
+    """Merge publicly inferred recovery chains into retrieval units.
+
+    This is the non-graph structural control: it uses exactly the conservative
+    recovery-chain inference available to TraceGraph, but performs no graph
+    traversal or dependency closure at retrieval time.
+    """
+
+    groups = [set(str(event["event_id"]) for event in chain)
+              for chain in observed_recovery_chains(prefix)]
+    changed = True
+    while changed:
+        changed = False
+        merged: list[set[str]] = []
+        for group in groups:
+            overlap = next((item for item in merged if item & group), None)
+            if overlap is None:
+                merged.append(set(group))
+            else:
+                overlap.update(group)
+                changed = True
+        groups = merged
+    grouped = set().union(*groups) if groups else set()
+    groups.extend(set(unit) for unit in _pair_units(prefix) if not set(unit) & grouped)
+    position = {str(event["event_id"]): index for index, event in enumerate(prefix.events)}
+    return tuple(
+        tuple(sorted(group, key=position.__getitem__))
+        for group in sorted(groups, key=lambda value: min(position[item] for item in value))
+    )
+
+
+def _expand_pair_window(prefix: PrefixRecord, selected: set[str], anchor: str) -> set[str]:
+    units = _pair_units(prefix)
+    unit_index = next(index for index, unit in enumerate(units) if anchor in unit)
+    indexes = range(max(0, unit_index - 1), min(len(units), unit_index + 2))
+    return close_pairs(prefix, selected | {
+        event_id for index in indexes for event_id in units[index]
+    })
+
+
 class DevelopmentAdapter:
     def __init__(self, method_id: str, *, token_counter: Callable[[Any], int] = estimate_tokens,
                  ingest_budget: int = 768) -> None:
-        if method_id not in METHODS:
+        if method_id not in SUPPORTED_METHODS:
             raise ValueError(f"unknown development method: {method_id}")
         self.method_id, self.count = method_id, token_counter
         self.ingest_budget = ingest_budget
@@ -228,9 +295,27 @@ class DevelopmentAdapter:
             selected = set(all_ids)
         else:
             selected = self.fit(prefix, list(reversed(all_ids)), cap)
-        if self.method_id == "flat_bm25_archive":
+        if self.method_id in {"flat_bm25_archive", "bm25_pair_window_archive"}:
             usage["index"] = {e["event_id"]: dict(Counter(re.findall(
                 r"[\w.-]+", canonical_json(e["content"]).casefold()))) for e in prefix.events}
+            usage["retrieval_unit"] = (
+                "event_pair_window" if self.method_id == "bm25_pair_window_archive"
+                else "event"
+            )
+        elif self.method_id == "bm25_episode_archive":
+            units = _episode_units(prefix)
+            event_map = {str(event["event_id"]): event for event in prefix.events}
+            usage["units"] = {f"unit-{index:04d}": list(unit)
+                              for index, unit in enumerate(units)}
+            usage["index"] = {
+                unit_id: dict(Counter(re.findall(
+                    r"[\w.-]+",
+                    canonical_json([event_map[event_id]["content"]
+                                    for event_id in unit]).casefold(),
+                )))
+                for unit_id, unit in usage["units"].items()
+            }
+            usage["retrieval_unit"] = "inferred_failure_episode"
         state = MemoryState.create(prefix_id=prefix.prefix_id, method_id=self.method_id,
             budget_tokens=budget_tokens, retained_event_ids=selected,
             archived_event_ids=set(all_ids) - selected if self.method_id in ARCHIVE_METHODS else (),
@@ -266,7 +351,9 @@ class DevelopmentAdapter:
             provenance.update(send_eligible=plan.send_eligible,
                               safety_reasons=list(plan.safety_reasons),
                               policy_plan=plan.to_dict())
-        elif self.method_id == "flat_bm25_archive":
+        elif self.method_id in {
+            "flat_bm25_archive", "bm25_pair_window_archive", "bm25_episode_archive"
+        }:
             index = state.ingestion_usage["index"]
             terms = set(re.findall(r"[\w.-]+", query.text.casefold()))
             average = sum(sum(doc.values()) for doc in index.values()) / max(1, len(index))
@@ -279,11 +366,23 @@ class DevelopmentAdapter:
                     * doc.get(t, 0) * 2.2 / (doc.get(t, 0) + 1.2 * (.25 + .75 * length
                         / max(1, average))) for t in terms)
 
-            ranked = sorted(state.archived_event_ids, key=lambda e: (-score(e), e))
-            for event_id in ranked:
-                if score(event_id) <= 0:
+            if self.method_id == "bm25_episode_archive":
+                units = state.ingestion_usage["units"]
+                candidates = [unit_id for unit_id, event_ids in units.items()
+                              if set(event_ids) & set(state.archived_event_ids)]
+            else:
+                units = None
+                candidates = list(state.archived_event_ids)
+            ranked = sorted(candidates, key=lambda item: (-score(item), item))
+            for item in ranked:
+                if score(item) <= 0:
                     continue
-                candidate = close_pairs(prefix, selected | {event_id})
+                if self.method_id == "bm25_episode_archive":
+                    candidate = close_pairs(prefix, selected | set(units[item]))
+                elif self.method_id == "bm25_pair_window_archive":
+                    candidate = _expand_pair_window(prefix, selected, item)
+                else:
+                    candidate = close_pairs(prefix, selected | {item})
                 read.update(candidate - set(state.retained_event_ids))
                 if self.count(self.records(prefix, candidate)) <= budget_tokens:
                     selected = candidate

@@ -6,10 +6,12 @@ from dataclasses import replace
 
 import pytest
 
+from tracegraph.benchmark.compression_audit.development_experiment import answer_request
 from tracegraph.benchmark.compression_audit.development_scoring import (
     canonical_answer,
     make_rubric,
     score_submission,
+    strict_value_matches,
 )
 from tracegraph.benchmark.compression_audit.models import (
     FailureChainGold,
@@ -226,6 +228,8 @@ def test_exposed_task_episode_accepts_full_chain_and_rejects_local_subfailure(ca
     assert rubric["source"] == "failure_episode_gold_v1"
     assert rubric["causal_mode"] == "partial_order"
     assert rubric["necessary_facts"]["repair_sequence"] == gold.failure_episode.recovery_sequence
+    assert "replacement_action" not in rubric["strict_values"]
+    assert "replacement_arguments" not in rubric["strict_values"]
 
     answer = canonical_answer(rubric)
     score = score_submission(
@@ -247,6 +251,48 @@ def test_exposed_task_episode_accepts_full_chain_and_rejects_local_subfailure(ca
     )
     assert not local_score["evidence_pass"]
     assert not local_score["audit_pass"]
+
+
+@pytest.mark.parametrize("case", ["f31d17c3c14ddd51", "9b9e94e63c2c9e54"])
+def test_episode_server_transport_requests_every_rubric_answer_field(case):
+    prefix, gold, _ = _fixture(case)
+    query = _query(prefix.prefix_id, "audit_chain")
+    rubric = make_rubric(query, gold)
+    request = answer_request(
+        query, [], server_field_transport=True, rubric=rubric
+    )
+    fields = request["response_format"]["json_schema"]["schema"]["properties"][
+        "answer_fields"
+    ]
+    expected = sorted(rubric["strict_values"]) + sorted(rubric["necessary_facts"])
+    assert fields["required"] == expected
+    assert "repair_sequence" in fields["properties"]
+    assert "replacement_action" not in fields["properties"]
+    assert "replacement_arguments" not in fields["properties"]
+    assert request["messages"][1]["content"].count("repair_sequence") == 1
+
+
+def test_legacy_single_replacement_contract_is_unchanged():
+    prefix, gold, _ = _fixture("f31d17c3c14ddd51")
+    legacy = replace(gold, failure_episode=None)
+    rubric = make_rubric(_query(prefix.prefix_id, "audit_chain"), legacy)
+    assert rubric["strict_values"]["replacement_action"] == legacy.replacement_action
+    assert rubric["strict_values"]["replacement_arguments"] == legacy.replacement_arguments
+
+
+@pytest.mark.parametrize(
+    ("value", "expected", "matches"),
+    [
+        ("ValueError: expected an element of ColumnData.",
+         "expected an element of ColumnData", True),
+        ("missing a required argument: 'spatial_dims'",
+         "missing a required argument: 'spatial_dims'.", True),
+        ("a different validation error", "expected an element of ColumnData", False),
+        ("element", "expected an element of ColumnData", False),
+    ],
+)
+def test_error_signature_requires_gold_substring(value, expected, matches):
+    assert strict_value_matches("error_signature", value, expected) is matches
 
 
 @pytest.mark.parametrize("query_type", ["audit_recovery", "interactive_reacquisition"])

@@ -238,7 +238,7 @@ def test_format_repair_is_a_separate_billed_turn() -> None:
         AgentTurnRecord("turn-2", "format_repair", "req-2", cost, billed=False)
 
 
-def test_development_metadata_forbids_independent_or_aggregate_claims() -> None:
+def test_development_metadata_marks_weighted_score_and_component_requirement() -> None:
     metadata = development_metadata(run_id="run-1")
     assert metadata["default_model"] == "qwen3.7-plus"
     assert metadata["structured_output"] == {
@@ -248,7 +248,8 @@ def test_development_metadata_forbids_independent_or_aggregate_claims() -> None:
     }
     assert metadata["development_only"] is True
     assert metadata["independent_validation"] is False
-    assert metadata["single_aggregate_score"] is None
+    assert metadata["single_aggregate_score"] == "overall_failure_memory_score"
+    assert metadata["aggregate_score_requires_component_reporting"] is True
     assert "Seen v0.1" in metadata["interpretation"]
 
 

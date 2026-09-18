@@ -1,0 +1,16 @@
+{
+  "case_count": 3,
+  "cases_sha256": "63936d39200ae01bb3196d93ed0b772fc393d99ae5e0d2f1a504752c212a169f",
+  "contains_ai_gold": false,
+  "contains_model_answers": false,
+  "dataset_manifest_sha256": "ac4229bf73a526e249a6a75ee4f4371b1929b3f13466d5a8a80470a88b782542",
+  "development_only": true,
+  "prefix_ids": [
+    "real:swe_gym:32a4b0e8f3c5b3c0",
+    "real:swe_gym:fc45587d5bac8c04",
+    "real:swe_gym:a81eeafd60eb5788"
+  ],
+  "reviewer_slot": "reviewer_a",
+  "schema_version": "failure_episode_targeted_human_packet_v1",
+  "template_sha256": "3970cbdf9e81017cf1205d61e341c6ebc8caeae4c854ad9d0ad0f441076ad75a"
+}

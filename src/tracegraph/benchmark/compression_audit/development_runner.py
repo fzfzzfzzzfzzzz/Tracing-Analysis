@@ -8,17 +8,25 @@ from typing import Any
 
 from .artifacts import load_dataset
 from .build import verify_file_manifest, write_file_manifest
-from .development_experiment import development_implementation, load_prepared, write_json
+from .development_experiment import (
+    development_implementation,
+    load_prepared,
+    source_referenced_records,
+    write_json,
+)
 from .development_ledger import ProviderLedger, validate_live
 from .development_protocol import (
-    ANSWER_CONTRACT_REVISION, INTERACTION_POLICY_REVISION, SUBMISSION_TOOL_NAME,
+    ANSWER_CONTRACT_REVISION, INTERACTION_POLICY_REVISION, JUDGE_PROTOCOL_REVISION,
+    SUBMISSION_TOOL_NAME,
     compact_format_repair_message,
     normalize_server_submission,
     parse_development_submission,
 )
 from .development_results import judge_gate, model_gate, write_results
-from .development_scoring import (canonical_answer, judge_request, parse_judge, provider_response,
-                                  rule_judge_fixture, score_submission, wire_answer)
+from .development_scoring import (
+    canonical_answer, judge_format_repair_request, judge_request, parse_judge,
+    provider_response, rule_judge_fixture, score_submission, wire_answer,
+)
 from .io import canonical_json, file_sha256, load_jsonl, stable_digest
 from .live_authorization import _append_jsonl
 from .live_provider import _response_tool_call, _tool_result
@@ -42,10 +50,10 @@ def evaluate_judge_example(example: dict, ledger: ProviderLedger | None) -> dict
     # known-dangerous answer. Deterministic contradiction/citation guards count:
     # a raw judge omission that they catch is diagnostic, not a false acceptance.
     critical_fp = (example["case"] in {"contradiction", "irrelevant_citation"}
-                   and score["audit_pass"])
+                   and score["joint_diagnostic_pass"])
     return {"example_id": example["example_id"], "split": example["split"],
             "case": example["case"], "expected_pass": example["expected_pass"],
-            "predicted_pass": score["audit_pass"], "judge_valid": error is None,
+            "predicted_pass": score["joint_diagnostic_pass"], "judge_valid": error is None,
             "critical_false_positive": critical_fp, "judge": verdict,
             "error": error, "score": score}
 
@@ -150,7 +158,8 @@ def reacquisition_submission_reminder(query: Any) -> str:
 
 def run_episode(trial: dict, rubric: dict, prefix: Any, query: Any, gold: Any,
                 ledger: ProviderLedger | None, *, judge_calibrated: bool,
-                token_counter: Any, server_field_transport: bool = False) -> dict:
+                token_counter: Any, server_field_transport: bool = False,
+                judge_protocol_repair: bool = False) -> dict:
     job_id = trial["episode_id"]
     artifact = trial["artifact"]
     visible = list(artifact["visible_event_ids"])
@@ -162,6 +171,9 @@ def run_episode(trial: dict, rubric: dict, prefix: Any, query: Any, gold: Any,
     template = json.loads(canonical_json(trial["request_template"]))
     calls, tools, judge = [], [], None
     judge_parse_error = None
+    judge_first_parse_error = None
+    judge_format_repair_used = False
+    judge_format_repair_succeeded = None
     answer, status, parse_error = None, "max_turns", None
     first_valid, repaired, forced_submission = False, False, False
     forced_initial_tool, forced_sequence_tools = False, 0
@@ -274,32 +286,58 @@ def run_episode(trial: dict, rubric: dict, prefix: Any, query: Any, gold: Any,
                 repaired, next_kind = True, "format_repair"
                 template["messages"].append({"role": "user", "content":
                     compact_format_repair_message(parse_error)})
-        if answer is not None and status == "complete":
+        if answer is not None and status == "complete" and judge_calibrated:
             response = ledger.call(judge_request(answer, rubric, records), job_id=job_id, kind="judge")
             try:
                 judge = parse_judge(response, rubric, answer["a"])
             except (ValueError, TypeError, KeyError, json.JSONDecodeError) as caught:
-                judge_parse_error = str(caught)
-                # Preserve a decodable untrusted verdict for offline attribution.
-                # score_submission will validate it again and cannot award an audit
-                # pass when the judge contract is invalid.
+                judge_first_parse_error = str(caught)
+                if judge_protocol_repair:
+                    judge_format_repair_used = True
+                    response = ledger.call(
+                        judge_format_repair_request(
+                            answer, rubric, records, judge_first_parse_error),
+                        job_id=job_id,
+                        kind="judge_format_repair",
+                    )
+                    try:
+                        judge = parse_judge(response, rubric, answer["a"])
+                        judge_format_repair_succeeded = True
+                    except (ValueError, TypeError, KeyError, json.JSONDecodeError) as repair_error:
+                        judge_parse_error = str(repair_error)
+                        judge_format_repair_succeeded = False
+                else:
+                    judge_parse_error = judge_first_parse_error
+                # Preserve only the final decodable untrusted verdict for offline
+                # attribution. It cannot affect deterministic audit pass.
                 try:
-                    judge = json.loads(response["choices"][0]["message"]["content"])
+                    if judge_parse_error:
+                        judge = json.loads(response["choices"][0]["message"]["content"])
                 except (ValueError, TypeError, KeyError, IndexError):
                     judge = None
     unsafe = sum(bool(t.get("unsafe_side_effect_attempt")) for t in tools)
     executed = sum(bool(t.get("executed_side_effect")) for t in tools)
+    _, evidence_ref_map = source_referenced_records(records)
     score = score_submission(answer, rubric, visible, judge=judge,
         judge_calibrated=judge_calibrated, status=status,
-        executed_side_effects=executed, unsafe_attempts=unsafe)
+        executed_side_effects=executed, unsafe_attempts=unsafe,
+        evidence_ref_map=evidence_ref_map)
+    run_validity = str(artifact.get("run_validity", "valid"))
+    if run_validity == "valid" and status != "complete":
+        run_validity = "method_failure"
+    if judge_calibrated and (judge_parse_error or score.get("judge_protocol_valid") is False):
+        run_validity = "integration_invalid"
     return {"episode_id": job_id, "phase": trial["phase"], "prefix_id": trial["prefix_id"],
         "query_id": trial["query_id"], "query_type": trial["query_type"], "track": trial["track"],
         "method_id": trial["method_id"], "recoverability": trial["recoverability"],
+        "run_validity": run_validity,
         "protocol": "v0.2-development", "answer": answer, "status": status,
         "answer_contract_revision": trial.get(
             "answer_contract_revision", ANSWER_CONTRACT_REVISION),
         "interaction_policy_revision": trial.get(
             "interaction_policy_revision", INTERACTION_POLICY_REVISION),
+        "judge_protocol_revision": trial.get(
+            "judge_protocol_revision", JUDGE_PROTOCOL_REVISION),
         "initial_necessary_evidence_present": initial_evidence_present,
         "initial_public_evidence_roles_supported": initial_public_support,
         "reacquisition_opportunity": (
@@ -317,6 +355,9 @@ def run_episode(trial: dict, rubric: dict, prefix: Any, query: Any, gold: Any,
         "parse_error": parse_error, "first_format_valid": first_valid, "format_repair_used": repaired,
         "artifact": artifact, "final_visible_ids": visible, "model_calls": calls,
         "tool_calls": tools, "judge": judge, "judge_parse_error": judge_parse_error,
+        "judge_first_parse_error": judge_first_parse_error,
+        "judge_format_repair_used": judge_format_repair_used,
+        "judge_format_repair_succeeded": judge_format_repair_succeeded,
         "score": score,
         "deployment_cost_cny": sum(c["cost_cny"] for c in calls),
         "construction_seconds": artifact["retrieval_usage"].get("construction_seconds", 0),
@@ -341,10 +382,13 @@ def interrupted_episode(trial: dict, rubric: dict, calls: list, tools: list, rea
         "episode_id", "phase", "prefix_id", "query_id", "query_type", "track", "method_id",
         "recoverability", "artifact")} | {
         "protocol": "v0.2-development", "answer": None, "status": "interrupted",
+        "run_validity": "integration_invalid",
         "answer_contract_revision": trial.get(
             "answer_contract_revision", ANSWER_CONTRACT_REVISION),
         "interaction_policy_revision": trial.get(
             "interaction_policy_revision", INTERACTION_POLICY_REVISION),
+        "judge_protocol_revision": trial.get(
+            "judge_protocol_revision", JUDGE_PROTOCOL_REVISION),
         "initial_necessary_evidence_present": initial_evidence_present,
         "initial_public_evidence_roles_supported": None,
         "reacquisition_opportunity": (
@@ -361,9 +405,11 @@ def interrupted_episode(trial: dict, rubric: dict, calls: list, tools: list, rea
         "reacquisition_submission_reminder_added": False,
         "parse_error": reason, "first_format_valid": False, "format_repair_used": any(
             c["kind"] == "format_repair" for c in calls),
-        "final_visible_ids": visible, "model_calls": [c for c in calls if c["kind"] != "judge"],
+        "final_visible_ids": visible,
+        "model_calls": [c for c in calls if not c["kind"].startswith("judge")],
         "tool_calls": tools, "judge": None, "score": score, "incomplete": True,
-        "deployment_cost_cny": sum(c["cost_cny"] for c in calls if c["kind"] != "judge"),
+        "deployment_cost_cny": sum(
+            c["cost_cny"] for c in calls if not c["kind"].startswith("judge")),
         "construction_seconds": usage.get("construction_seconds", 0),
         "materialization_seconds": usage.get("materialization_seconds", 0),
         "archive_observation_tokens": usage.get("observation_tokens", 0),
@@ -458,8 +504,6 @@ def _run_locked(prepared: Path, dataset: Path, output: Path, config: dict, trial
             judged.append(result)
             finish(example["example_id"], "example", result)
         calibrated = judge_gate(judged, config["gates"])["pass"]
-        if mode == "live" and not calibrated:
-            raise RuntimeError("judge_rule_calibration_failed")
         for trial in trials:
             if trial["episode_id"] in completed:
                 continue

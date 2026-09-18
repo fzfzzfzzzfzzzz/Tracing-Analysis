@@ -1,0 +1,54 @@
+{
+  "schema_version": "failure_episode_ai_development_validation_gate_v1",
+  "created_date": "2026-09-17",
+  "development_only": true,
+  "independent_validation": false,
+  "human_validated": false,
+  "dataset": "outputs/compression_audit/failure_episode_ai_dev_targeted_review_260917_r3",
+  "dataset_manifest_sha256": "42c8e6482d96bbbf391f1ce924aa58119f8dc01f72a88b1987de9d9c64030a69",
+  "dataset_file_manifest_sha256": "455d8ad34a7b53c4f486de68b34da2361a268f9e527bac6defab05a0f0dbd67c",
+  "selection_policy": "Take every AI-accepted prefix assigned to validation before annotation. Do not filter by length, repository, expected outcome, or model result.",
+  "prior_model_exposure_count": 0,
+  "prefixes": [
+    {
+      "prefix_id": "real:swe_gym:b920385c2a004c88",
+      "repository": "dask__dask",
+      "event_count": 43,
+      "prefix_hash": "b627f76641c5d18043ddbabfb5251bfa6b10e7b13c2e036c4f3e841428dc8e24",
+      "public_content_hash": "b889ac4e697654e6660180be46ff292126ffb1c879941974626bb217571ff6c8"
+    },
+    {
+      "prefix_id": "real:swe_gym:04c11dc730741f04",
+      "repository": "getmoto__moto",
+      "event_count": 40,
+      "prefix_hash": "126554a99b10f26f4207cefb3caa4c27b72ecd3beb94bbee26a0362eb8b77972",
+      "public_content_hash": "78a92fd201d1919324e2e45926a0bb72873250e6f04f824ef7fa221360ff16bd"
+    },
+    {
+      "prefix_id": "real:swe_gym:4b66e74f8d1830e3",
+      "repository": "dask__dask",
+      "event_count": 46,
+      "prefix_hash": "d527b0db1d7870cc4a0cbefd953a6577f0c98a52c73fa68aa6ec2fbee66c939f",
+      "public_content_hash": "a659dadf3cc10a1302b2353f5263e32e638d2ddd1164bccf1a1d14b9a4ee162e"
+    },
+    {
+      "prefix_id": "real:swe_gym:6f4e03fe44805b6e",
+      "repository": "dask__dask",
+      "event_count": 104,
+      "prefix_hash": "730a77637f12821986021fe5b4cf5197ce5121551c1f79faf9e71711fa75b794",
+      "public_content_hash": "bc588dd2b6b1f8e6b1a3ff4ad7cfb7783e23e4e57658a69ac31a974cffb38690"
+    }
+  ],
+  "model_policy": "Qwen3-14B revision 40c0698, thinking disabled, same r10 answer contract and calibrated judge as the development capability probe.",
+  "primary_condition": "oracle audit_chain",
+  "gate": {
+    "hard_pass_minimum": 3,
+    "episode_count": 4,
+    "necessary_evidence_present_required": 4,
+    "protocol_valid_required": 4,
+    "safety_pass_required": 4
+  },
+  "on_pass": "Freeze the result and prepare the five-method AI-development comparison without changing population, gold, or gate.",
+  "on_fail": "Do not replace cases or launch the method matrix; perform item-level gold, prompt, and model-capability attribution.",
+  "formal_claim_limit": "This population and its labels were produced by non-independent AI review. Passing this gate is evidence for feasibility only, not a formal validation or test result."
+}

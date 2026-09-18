@@ -11,8 +11,9 @@ from typing import Any
 
 
 DEVELOPMENT_PROTOCOL = "v0.2-development"
-ANSWER_CONTRACT_REVISION = "compression_audit_answer_contract_v02_r8"
+ANSWER_CONTRACT_REVISION = "compression_audit_answer_contract_v02_r11_source_refs"
 INTERACTION_POLICY_REVISION = "compression_audit_interaction_policy_v02_r5"
+JUDGE_PROTOCOL_REVISION = "compression_audit_judge_protocol_v02_r2_single_repair"
 DEFAULT_DEVELOPMENT_MODEL = "qwen3.7-plus"
 DEVELOPMENT_ONLY_NOTICE = (
     "Seen v0.1 development data; results are development_only and are not "
@@ -46,7 +47,7 @@ def compact_format_repair_message(
             "JSON literals copied from visible records: " + ", ".join(missing_exact)
             + ". Semantic labels require complete plain-language facts with identifying "
             "details and observed outcomes, not only error categories, action names, or "
-            "evidence IDs: " + ", ".join(missing_semantic)
+            "evidence source references: " + ", ".join(missing_semantic)
             + ". Keep e/t/s valid and do not invent facts. The prior response is omitted "
             "to preserve the frozen context budget."
         )
@@ -103,7 +104,7 @@ def server_submission_tool_schema(
         exact_labels: list[str], semantic_labels: list[str]) -> dict[str, Any]:
     return {"type": "function", "function": {
         "name": SUBMISSION_TOOL_NAME,
-        "description": "Submit typed audit answer fields and cited record IDs.",
+        "description": "Submit typed audit answer fields and cited source references.",
         "parameters": server_submission_json_schema(exact_labels, semantic_labels),
     }}
 
@@ -326,7 +327,7 @@ def submission_tool_schema(*, answer_pattern: str | None = None) -> dict[str, An
         "type": "function",
         "function": {
             "name": SUBMISSION_TOOL_NAME,
-            "description": "Submit one audit answer with cited record IDs.",
+            "description": "Submit one audit answer with cited source references.",
             "parameters": submission_json_schema(answer_pattern=answer_pattern),
         },
     }
@@ -393,7 +394,7 @@ def parse_development_submission(response: Mapping[str, Any]) -> dict[str, Any]:
         or any(not isinstance(item, str) or not item for item in evidence)
         or len(evidence) != len(set(evidence))
     ):
-        raise ValueError("e must be a unique list of non-empty record IDs")
+        raise ValueError("e must be a unique list of non-empty source references")
     if fact_scope not in {"current", "historical"}:
         raise ValueError("t must be current or historical")
     if type(side_effect) is not bool:
@@ -492,5 +493,6 @@ def development_metadata(*, run_id: str) -> dict[str, Any]:
         "development_only": True,
         "independent_validation": False,
         "interpretation": DEVELOPMENT_ONLY_NOTICE,
-        "single_aggregate_score": None,
+        "single_aggregate_score": "overall_failure_memory_score",
+        "aggregate_score_requires_component_reporting": True,
     }

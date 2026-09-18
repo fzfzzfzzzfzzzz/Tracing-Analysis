@@ -1,0 +1,152 @@
+{
+  "ama_code_search": {
+    "image": null,
+    "mode": "disabled"
+  },
+  "data": {
+    "calibration_exclude_prefix_ids": [
+      "controlled:shell_syntax:operations:R0:short",
+      "controlled:parameter_schema:data:R0:long",
+      "controlled:shell_syntax:data:R1:long",
+      "controlled:parameter_schema:software:R1:short",
+      "controlled:shell_syntax:data:R2:short",
+      "controlled:parameter_schema:operations:R2:long",
+      "controlled:parameter_schema:data:R3:short",
+      "controlled:shell_syntax:operations:R3:long",
+      "controlled:shell_syntax:software:R0:long",
+      "controlled:parameter_schema:data:R0:short",
+      "controlled:shell_syntax:operations:R1:short",
+      "controlled:parameter_schema:data:R1:long",
+      "controlled:parameter_schema:software:R2:short",
+      "controlled:shell_syntax:operations:R2:long",
+      "controlled:parameter_schema:data:R3:long",
+      "controlled:shell_syntax:operations:R3:short",
+      "controlled:parameter_schema:software:R0:short",
+      "controlled:parameter_schema:software:R0:long",
+      "controlled:shell_syntax:data:R0:short",
+      "controlled:shell_syntax:data:R1:short",
+      "controlled:parameter_schema:software:R1:long",
+      "controlled:shell_syntax:software:R2:short",
+      "controlled:parameter_schema:data:R2:long",
+      "controlled:parameter_schema:operations:R3:short",
+      "controlled:shell_syntax:software:R3:long"
+    ],
+    "exposure_manifest": null,
+    "prefix_ids": [
+      "controlled:parameter_schema:software:R0:long",
+      "controlled:shell_syntax:operations:R0:long",
+      "controlled:parameter_schema:software:R1:long",
+      "controlled:shell_syntax:operations:R1:long",
+      "controlled:parameter_schema:data:R2:long",
+      "controlled:shell_syntax:data:R2:long",
+      "controlled:parameter_schema:operations:R3:long",
+      "controlled:shell_syntax:software:R3:long"
+    ],
+    "rubrics": null,
+    "split": "dev"
+  },
+  "development_only": true,
+  "embedding": null,
+  "gates": {
+    "final_format_valid": 38,
+    "first_format_valid": 36,
+    "full_pass": 20,
+    "judge_critical_false_positives": 0,
+    "judge_holdout_correct": 36,
+    "oracle_pass": 14
+  },
+  "history_budgets": [
+    1024
+  ],
+  "independent_validation": false,
+  "interactive": false,
+  "judge_model_id": "qwen3_14b",
+  "limits": {
+    "build_calls_per_prefix": 32,
+    "embedding_calls_per_prefix": 512,
+    "input_token_limit": 100000000,
+    "output_token_limit": 6000000,
+    "request_limit": 2600,
+    "retrieve_calls_per_query": 6,
+    "timeout_seconds": 180,
+    "wall_seconds": 86400
+  },
+  "methods": [
+    "full_history",
+    "flat_bm25_archive",
+    "rolling_summary",
+    "acon_official",
+    "ama_official_bm25",
+    "tracegraph_0_4"
+  ],
+  "models": [
+    {
+      "api_key_env": "TRACEGRAPH_SERVER_API_KEY",
+      "base_url": "http://127.0.0.1:8001/v1",
+      "context_window": 32768,
+      "display_name": "Qwen/Qwen3-14B unified Track-A development matrix b1024",
+      "id": "qwen3_14b",
+      "max_output_tokens": 2048,
+      "provider": "self_hosted_openai",
+      "returned_model_allowlist": [
+        "Qwen3-14B-rev-40c0698"
+      ],
+      "runtime_receipt": {
+        "path": "/data/fangc/tracegraph/runtime/qwen3_14b_runtime_260913_r1.receipt.json",
+        "sha256": "c7c935aab48f717173a51f38f38f27ba33d95e505827d536f34f5862c90b966f"
+      },
+      "served_model": "Qwen3-14B-rev-40c0698",
+      "server_version": "0.8.5",
+      "thinking_transport": "chat_template_kwargs",
+      "tokenizer": {
+        "files": {
+          "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+          "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+          "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+          "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+        },
+        "path": "/data/fangc/models/Qwen3-14B-tokenizer-40c0698"
+      },
+      "weights_revision": "40c069824f4251a91eefaf281ebe4c544efd3e18"
+    }
+  ],
+  "schema_version": "server_eval_v2",
+  "seed": 20260972,
+  "sources": {
+    "acon": {
+      "files": {
+        "LICENSE": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+        "experiments/appworld/prompts/context_opt/prompt_history_v2.jinja": "0508caa837c50403be2c8545646359a0fb72009fb14df3a8acf85aedaf649834",
+        "experiments/appworld/prompts/context_opt/prompt_user.jinja": "f500677dfd6609aef26fe2dbb3f9c928d2bd7ea8c0e432114feeed0636c7b385",
+        "experiments/appworld/prompts/context_opt/system_prompt.jinja": "f9a0a5188d643d0990a422e94557e781e9e4f9c00a6506f699c4956b7096a392",
+        "src/productive_agents/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/productive_agents/ctxopt/__init__.py": "ebcf83bbc70b7b00e9b13853903019fc7fd9d203204701622c2d9accc574ee12",
+        "src/productive_agents/ctxopt/base.py": "d6b52a26288760c18b60152be6e95ee8147b965d1293744734a706ac86de3fdb",
+        "src/productive_agents/ctxopt/history_optimizer.py": "343089f43f8235889303eea73cd323686a649f1dc3b8d374a988c9d243b44306",
+        "src/productive_agents/ctxopt/obs_optimizer.py": "ed21a897c90f6ae06b2d21ce563423dea30014a8df4db4b4896c439ba4915f9e"
+      },
+      "github_repo": "microsoft/acon",
+      "path": "vendor/acon-main",
+      "prompt_dir": "experiments/appworld/prompts/context_opt",
+      "revision": "d63f9ae18959dc7215ff62899c94c5e8c56847ae"
+    },
+    "ama": {
+      "files": {
+        "LICENSE": "3c8bff7214b9a3f79e2b1e76413104fff6df8b315d6598b2e8d16a9cadd2e244",
+        "requirements.txt": "b894fe56d13d4ddeb38d530f850efccf4bd1633e2a40cc6ced59abfdb147b26b",
+        "src/method/ama_agent.py": "e5527c3b1e1a6f3416aee25ac9855e419d1150f6076ed85d5e22032569e4d050",
+        "src/method/ama_agent_core/__init__.py": "81d5cf3731d940d51fdacb751c37dbe0efbcb728358c3aa0bc886e965c2a666e",
+        "src/method/ama_agent_core/construct.py": "d8292fd4d21931b70f5bbc393668dbfa9c546625d39a3e5234a716dc3d0a42aa",
+        "src/method/ama_agent_core/prompt.py": "8fddc6d4fcde390f899d82a8d3bcaaa1a162df95897738a31141e12760eadab5",
+        "src/method/ama_agent_core/retrieve.py": "53c3f512f8ca9ae1a99a0057e5dfb71fe518f0551605e93e956eda611087ce26",
+        "src/method/ama_agent_core/tool.py": "fc92c419c83bf6dcc9ecebe005bfba49aa88bdc8222f1fbcdbebbcaa92ef301d",
+        "src/method/ama_agent_core/utils.py": "ba679ca357908c1b0f051772ab4e968b13ed1ce11120268efc9f91597e9e262f",
+        "src/method/base_method.py": "2d00b8992015e5617a16a7a68cc0dffd6f3d2456760f737ae075210e39775acb"
+      },
+      "github_repo": "AMA-Bench/AMA-Bench",
+      "path": "vendor/ama-bench-ddfd319",
+      "revision": "ddfd319e0be33424288c13806f1eafc63e625b59"
+    }
+  },
+  "summary_chunk_tokens": 4096
+}

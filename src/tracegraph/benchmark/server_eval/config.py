@@ -12,9 +12,23 @@ from ..compression_audit.development_protocol import (
 )
 from .ablations import ABLATIONS
 from .candidate import NAME as CANDIDATE
+from .lifecycle_retrieval import METHODS as TRACEGRAPH_MEMORY_METHODS
 
-METHODS = ("full_history", "recent_masking", "flat_bm25_archive", "tracegraph_0_4",
-           "rolling_summary", "acon_official", "ama_official_bm25", "ama_official_embedding", *ABLATIONS, CANDIDATE)
+METHODS = (
+    "full_history",
+    "recent_masking",
+    "flat_bm25_archive",
+    "bm25_pair_window_archive",
+    "bm25_episode_archive",
+    "tracegraph_0_4",
+    "rolling_summary",
+    "acon_official",
+    "ama_official_bm25",
+    "ama_official_embedding",
+    *TRACEGRAPH_MEMORY_METHODS,
+    *ABLATIONS,
+    CANDIDATE,
+)
 GATES = {"judge_holdout_correct": 36, "judge_critical_false_positives": 0,
          "first_format_valid": 36, "final_format_valid": 38, "full_pass": 20, "oracle_pass": 14}
 
@@ -25,6 +39,16 @@ def answer_response_format(model: dict) -> dict:
     if model.get("server_version") == "0.8.5":
         return submission_vllm_085_response_format()
     return submission_response_format()
+
+
+def answer_transport_flags(model: dict) -> tuple[bool, bool]:
+    """Return (typed_fields, native_tool) for the frozen answer wire protocol."""
+
+    native_tool = model.get("answer_transport") == "native_tool_call"
+    # Native tool arguments carry the typed a/e/t/s fields on every supported
+    # server.  The vLLM 0.8.5 compatibility path also uses typed fields even
+    # when its transport is guided JSON.
+    return model.get("server_version") == "0.8.5" or native_tool, native_tool
 
 
 def load_config(path: Path) -> dict:
@@ -86,6 +110,36 @@ def load_config(path: Path) -> dict:
         if model.get("action_transport", "json_schema") not in (
                 "json_schema", "native_tool_call"):
             raise ValueError("unknown mini action transport")
+        if model.get("construction_transport", "text") not in (
+                "text", "native_tool_call"):
+            raise ValueError("unknown construction transport")
+        if model.get("retrieval_transport", "text") not in (
+                "text", "native_tool_call"):
+            raise ValueError("unknown retrieval transport")
+        construction_output = model.get(
+            "construction_max_output_tokens", model["max_output_tokens"]
+        )
+        retrieval_output = model.get(
+            "retrieval_max_output_tokens", model["max_output_tokens"]
+        )
+        if (type(construction_output) is not int
+                or not model["max_output_tokens"] <= construction_output <= 8192
+                or construction_output >= model["context_window"]):
+            raise ValueError("invalid construction output limit")
+        if (type(retrieval_output) is not int
+                or not model["max_output_tokens"] <= retrieval_output <= 8192
+                or retrieval_output >= model["context_window"]):
+            raise ValueError("invalid retrieval output limit")
+        construction_chars = model.get("construction_submission_max_chars")
+        if (construction_chars is not None and (
+                type(construction_chars) is not int
+                or not 1024 <= construction_chars <= 65536)):
+            raise ValueError("invalid construction submission character limit")
+        retrieval_chars = model.get("retrieval_submission_max_chars")
+        if (retrieval_chars is not None and (
+                type(retrieval_chars) is not int
+                or not 1024 <= retrieval_chars <= 65536)):
+            raise ValueError("invalid retrieval submission character limit")
         answer_transport = model.get("answer_transport", "response_format")
         if answer_transport not in ("response_format", "native_tool_call"):
             raise ValueError("unknown audit answer transport")
@@ -98,6 +152,16 @@ def load_config(path: Path) -> dict:
             )
     if config["judge_model_id"] not in {m["id"] for m in models}:
         raise ValueError("judge must name a configured model")
+    code_search = config["ama_code_search"]
+    if code_search.get("mode") not in ("disabled", "docker", "bwrap"):
+        raise ValueError("unknown AMA code-search sandbox")
+    if code_search["mode"] == "docker":
+        image = code_search.get("image")
+        if (not isinstance(image, str) or "@sha256:" not in image
+                or len(image.rsplit("@sha256:", 1)[1]) != 64):
+            raise ValueError("AMA Docker search requires a digest-pinned image")
+    elif code_search.get("image") is not None:
+        raise ValueError("AMA non-Docker search must not configure an image")
     for key in ("request_limit", "input_token_limit", "output_token_limit", "wall_seconds",
                 "build_calls_per_prefix", "retrieve_calls_per_query", "timeout_seconds"):
         if type(config["limits"][key]) is not int or config["limits"][key] <= 0:
@@ -132,6 +196,16 @@ def load_config(path: Path) -> dict:
     capability_only = config.get("capability_attribution_only", False)
     if type(capability_only) is not bool:
         raise ValueError("capability_attribution_only must be boolean")
+    oracle_gate_only = config.get("oracle_gate_only", False)
+    if type(oracle_gate_only) is not bool:
+        raise ValueError("oracle_gate_only must be boolean")
+    if oracle_gate_only and not capability_only:
+        raise ValueError("oracle_gate_only requires capability_attribution_only")
+    oracle_context_mode = config.get("oracle_context_mode", "recent_plus_gold")
+    if oracle_context_mode not in ("recent_plus_gold", "evidence_only"):
+        raise ValueError("unknown oracle context mode")
+    if oracle_context_mode == "evidence_only" and not oracle_gate_only:
+        raise ValueError("evidence-only Oracle requires oracle_gate_only")
     if capability_only and (
         config["methods"] != ["full_history"]
         or config.get("interactive") is not False
