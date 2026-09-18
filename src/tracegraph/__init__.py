@@ -1,9 +1,20 @@
 """TraceGraph public API."""
 
+from importlib.metadata import PackageNotFoundError, version
+
+from .context_engine import (
+    ContextPlan,
+    ContextPolicy,
+    GraphConstrainedPolicy,
+    MemorySnapshot,
+    PolicyRegistry,
+)
+from .legacy import load_legacy_artifact
+
 from .archive import ArchiveStore
 from .capture import ToolExecutor
 from .compiler import CompilerConfig, compile as compile_decision_state
-from .context import (
+from .context_engine.context import (
     ContextManager,
     ContextView,
     GraphLifecycleManager,
@@ -19,7 +30,7 @@ from .decision_state import (
     StateEdgeType,
 )
 from .graph import TraceGraph
-from .interventions import (
+from .evaluation.interventions import (
     InterventionConfig,
     InterventionSpec,
     build_intervention_specs,
@@ -31,7 +42,7 @@ from .lifecycle_context import (
     ProjectionStrategy,
     project_context,
 )
-from .liveness import (
+from .context_engine.liveness import (
     DecisionLifecycleGraph,
     EventLifecycleRecord,
     EventSpan,
@@ -67,6 +78,8 @@ from .schema import (
 
 __all__ = [
     "ArchiveStore",
+    "ContextPlan",
+    "ContextPolicy",
     "ContextManagedAgent",
     "ContextManager",
     "ContextView",
@@ -79,6 +92,7 @@ __all__ = [
     "FailureClass",
     "FailureExpiryTrigger",
     "GraphLifecycleManager",
+    "GraphConstrainedPolicy",
     "InterventionConfig",
     "InterventionSpec",
     "LifecycleProfile",
@@ -92,6 +106,7 @@ __all__ = [
     "LivenessRoots",
     "LiveSubgraph",
     "ModelTurn",
+    "MemorySnapshot",
     "Node",
     "NodeType",
     "RelevanceState",
@@ -100,6 +115,7 @@ __all__ = [
     "PromptBundle",
     "PromptCost",
     "ProjectionStrategy",
+    "PolicyRegistry",
     "ProviderProtocol",
     "RepresentationCandidate",
     "RepresentationType",
@@ -125,6 +141,10 @@ __all__ = [
     "analyze_liveness",
     "project_context",
     "reduce_event_graph",
+    "load_legacy_artifact",
 ]
 
-__version__ = "0.3.0"
+try:
+    __version__ = version("tracegraph")
+except PackageNotFoundError:  # Source trees that have not been installed yet.
+    __version__ = "0+unknown"

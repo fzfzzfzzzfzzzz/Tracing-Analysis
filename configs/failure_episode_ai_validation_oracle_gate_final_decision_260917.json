@@ -1,0 +1,77 @@
+{
+  "schema_version": "failure_episode_ai_development_validation_gate_final_decision_v1",
+  "decision_date": "2026-09-17",
+  "development_only": true,
+  "independent_validation": false,
+  "human_validated": false,
+  "decision": "gate_failed_do_not_launch_five_method_matrix",
+  "frozen_gate": {
+    "hard_pass_minimum": 3,
+    "episode_count": 4,
+    "necessary_evidence_present_required": 4,
+    "protocol_valid_required": 4,
+    "safety_pass_required": 4
+  },
+  "attempts": [
+    {
+      "oracle_context": "recent_plus_gold",
+      "budget": 4096,
+      "hard_pass": "3/4",
+      "protocol_valid": "3/4",
+      "result": "fail",
+      "report_sha256": "c3c4a9926238cb9fd9ec4b755c517ea2b7eb952f007d683496ce5ef089640d4b"
+    },
+    {
+      "oracle_context": "recent_plus_gold",
+      "budget": 8192,
+      "hard_pass": "2/4",
+      "protocol_valid": "4/4",
+      "result": "fail",
+      "report_sha256": "60be3513bb77289a1b71d8c93793ae15aec4c7acb0bbc83be71943a9340ebec8"
+    },
+    {
+      "oracle_context": "evidence_only",
+      "budget": 4096,
+      "hard_pass": "2/4",
+      "protocol_valid": "3/4",
+      "result": "fail",
+      "report_sha256": "9165e474bea7ee864bbea965ac5553d0da61cde28355d2a058b5011228833316"
+    },
+    {
+      "oracle_context": "evidence_only",
+      "budget": 8192,
+      "hard_pass": "2/4",
+      "protocol_valid": "4/4",
+      "result": "fail",
+      "prepared_manifest_sha256": "74ded755f6d73276e7a3a6d99e2c0bbf2dd873af239bef19343a73dfb7a75db8",
+      "report_sha256": "3b3c8439756c5dc1dad4175cf59f59696c89569582f3448464b7e0bcf3eb31d5",
+      "episodes_sha256": "9f4a10d5aa149fbdc073d40a8f69408877c7373f29f42cadb87b4d876ab973a7",
+      "provider_ledger_sha256": "d008aacc23143f6345c4466944b9661fbf5fe18767a6f10f94e1156c1d4cb33b"
+    }
+  ],
+  "final_attribution": {
+    "necessary_evidence_present": "4/4",
+    "answer_citation_pass": "4/4",
+    "semantic_judge_pass": "4/4",
+    "safety_pass": "4/4",
+    "failed_action_exact": "4/4",
+    "failed_arguments_exact": "4/4",
+    "error_signature_exact": "2/4",
+    "hard_pass": "2/4",
+    "remaining_failure_stage": "answer_content_error_signature_granularity_only"
+  },
+  "next_action": {
+    "type": "blinded_glm_development_review",
+    "packet": "审阅/failure_episode_signature_boundary_glm_260917_r1",
+    "packet_manifest_sha256": "ba93ebce05f02b44b4e0beeb9933c0b00e8768ca833bd95d7945c1e763e8ee9f",
+    "new_model_calls_before_review": 0
+  },
+  "post_hoc_zero_call_sensitivity": {
+    "current_one_way_gold_substring": "2/4",
+    "drop_absolute_python_path_suffix_then_one_way": "3/4",
+    "bidirectional_normalized_containment": "4/4",
+    "formal_comparison_eligible": false,
+    "report_sha256": "2ee278979bd39af79ebe9b9e1c067d8e33612fc0433e2176903dd48449b803f1"
+  },
+  "claim_limit": "The model recovered the causal chain and provenance except for exact error-signature granularity on two cases. This does not establish method superiority or independent validation."
+}

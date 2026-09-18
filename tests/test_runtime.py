@@ -4,7 +4,7 @@ import tempfile
 import unittest
 
 from tracegraph import ArchiveStore, EdgeType, LifecycleState, NodeType
-from tracegraph.context import GraphLifecycleManager
+from tracegraph.context_engine.context import GraphLifecycleManager
 from tracegraph.runtime import (
     ContextManagedAgent,
     ModelTurn,

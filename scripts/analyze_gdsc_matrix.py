@@ -1,8 +1,9 @@
-"""Analyze the preregistered four-condition GDSC development matrix."""
+"""汇总第四阶段四种办法的实验结果。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import math
 import random
@@ -211,7 +212,7 @@ def analyze(rows: Sequence[Mapping[str, Any]], *, bootstrap_samples: int = 10_00
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--bootstrap-samples", type=int, default=10_000)
@@ -223,4 +224,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

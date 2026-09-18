@@ -1,0 +1,301 @@
+"""Pass-A annotations for batch_18 (cases 087-091).
+
+Run: python _annotate_batch18.py
+"""
+from pathlib import Path
+
+import anno_lib as A
+
+OUT = Path(__file__).parent / "pass_a" / "batch_18.jsonl"
+
+# ---------------- case 090 (dask__dask-7973, graphviz tooltips) -> annotated ----------------
+C090 = "46f238e937bbfd29a4bca67825041c22e99715febd5259b139cfad526623b62d"
+
+EP090 = {
+    "scope": "task_level_failure_episode",
+    "failure_family": "wrong_api_usage",
+    "recoverability": "R0",
+    "error_signature": "AttributeError: 'tuple' object has no attribute 'annotations'",
+    "diagnostic_evidence": (
+        "m0018:call 第一次在 dask/dot.py 的 to_graphviz 中实现 tooltip（把 g.node(func_name, **attrs) "
+        "替换为读取 v.annotations / v.collection_annotations 生成 tooltip 的逻辑），m0019:result 确认编辑写入，"
+        "随后 m0020:call 运行 test_tooltips.py 渲染 y.visualize 时在 m0021:result 崩溃："
+        "AttributeError: 'tuple' object has no attribute 'annotations'。根因：dsk.items() 的任务值 v 是 tuple "
+        "而非带注解的 Layer 对象，直接访问 .annotations 属于错误的对象/API 假设；m0022:message 的诊断明确指出 "
+        "v 有时是 tuple。对照 m0014:call/m0015:result 的基线运行（修改前 exit code 0），可排除测试脚本自身的问题。"
+    ),
+    "recovery_sequence": (
+        "1) 依据 m0022:message 的诊断，用 hasattr 守卫包裹属性读取并加空 tooltip 兜底"
+        "（m0022:call→m0023:result），复跑仍因替换文本缩进层级错误报 IndentationError（m0025:result）；"
+        "2) 依据 m0026:message 修正缩进（m0026:call→m0027:result），复跑 test_tooltips.py 以 exit code 0 "
+        "通过（m0029:result），带 tooltip 的 to_graphviz 恢复可用。"
+    ),
+    "resolution_evidence": (
+        "m0029:result：修正缩进后再次执行 python3 /workspace/dask__dask__2021.07/test_tooltips.py，"
+        "输出 [Command finished with exit code 0] 且无 traceback；此前两次运行（m0021:result、m0025:result）"
+        "均 exit code 1，形成修复前后对照，最终成功在当前环境被直接观察。"
+    ),
+    "anchor_source_event_id": "m0018:call:call_do7CoyjgyOTwgUuBR0MIjnJF",
+    "initial_action_source_event_id": "m0018:call:call_do7CoyjgyOTwgUuBR0MIjnJF",
+    "initial_result_source_event_ids": [
+        "m0019:result:call_do7CoyjgyOTwgUuBR0MIjnJF",
+        "m0021:result:call_B6xRniRe9qhwm17O26TcQxrL",
+    ],
+    "repair_steps": [
+        {
+            "step_id": "guard-annotations",
+            "decision_source_event_ids": ["m0022:message"],
+            "action_source_event_id": "m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD",
+            "result_source_event_ids": [
+                "m0023:result:call_jFo6vdxPtHIGZZjc5mQklbFD",
+                "m0025:result:call_jrDVavqEvgucfqwoULquVHKD",
+            ],
+            "outcome": "intermediate_failure",
+            "semantic_change": (
+                "用 hasattr(v, 'annotations') 分支守卫属性读取并对无注解任务给空 tooltip，消除了 AttributeError；"
+                "但 str_replace 的替换文本缩进层级不对，复跑 test_tooltips.py 仍以 "
+                "IndentationError: expected an indented block 失败（m0025:result）。"
+            ),
+        },
+        {
+            "step_id": "fix-indentation",
+            "decision_source_event_ids": ["m0026:message"],
+            "action_source_event_id": "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+            "result_source_event_ids": [
+                "m0027:result:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+                "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+            ],
+            "outcome": "resolved",
+            "semantic_change": (
+                "把 hasattr 分支与 tooltip 赋值整体缩进回循环体内正确层级（m0027:result 确认写入），"
+                "复跑 test_tooltips.py 以 exit code 0 通过（m0029:result），to_graphviz 的 tooltip 实现最终可用。"
+            ),
+        },
+    ],
+    "resolution_source_event_ids": ["m0029:result:call_7yFaX9csi5WazsznQNMckfbn"],
+    "required_core_source_event_ids": [
+        "m0018:call:call_do7CoyjgyOTwgUuBR0MIjnJF",
+        "m0020:call:call_B6xRniRe9qhwm17O26TcQxrL",
+        "m0021:result:call_B6xRniRe9qhwm17O26TcQxrL",
+        "m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD",
+        "m0025:result:call_jrDVavqEvgucfqwoULquVHKD",
+        "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+        "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+    ],
+    "optional_support_source_event_ids": [
+        "m0014:call:call_kwvPcNWGeKzjedv5seSn0rw3",
+        "m0015:result:call_kwvPcNWGeKzjedv5seSn0rw3",
+        "m0019:result:call_do7CoyjgyOTwgUuBR0MIjnJF",
+        "m0022:message",
+        "m0023:result:call_jFo6vdxPtHIGZZjc5mQklbFD",
+        "m0026:message",
+        "m0027:result:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+    ],
+    "chain_policy": {
+        "alternative_evidence_sets": [
+            [
+                "m0018:call:call_do7CoyjgyOTwgUuBR0MIjnJF",
+                "m0020:call:call_B6xRniRe9qhwm17O26TcQxrL",
+                "m0021:result:call_B6xRniRe9qhwm17O26TcQxrL",
+                "m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD",
+                "m0025:result:call_jrDVavqEvgucfqwoULquVHKD",
+                "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+                "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+            ],
+            [
+                "m0018:call:call_do7CoyjgyOTwgUuBR0MIjnJF",
+                "m0021:result:call_B6xRniRe9qhwm17O26TcQxrL",
+                "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+                "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+            ],
+        ],
+        "relevant_evidence_ids": [
+            "m0014:call:call_kwvPcNWGeKzjedv5seSn0rw3",
+            "m0015:result:call_kwvPcNWGeKzjedv5seSn0rw3",
+            "m0018:call:call_do7CoyjgyOTwgUuBR0MIjnJF",
+            "m0019:result:call_do7CoyjgyOTwgUuBR0MIjnJF",
+            "m0020:call:call_B6xRniRe9qhwm17O26TcQxrL",
+            "m0021:result:call_B6xRniRe9qhwm17O26TcQxrL",
+            "m0022:message",
+            "m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD",
+            "m0023:result:call_jFo6vdxPtHIGZZjc5mQklbFD",
+            "m0025:result:call_jrDVavqEvgucfqwoULquVHKD",
+            "m0026:message",
+            "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+            "m0027:result:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+            "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+        ],
+        "causal_paths": [
+            {
+                "evidence_ids": [
+                    "m0018:call:call_do7CoyjgyOTwgUuBR0MIjnJF",
+                    "m0020:call:call_B6xRniRe9qhwm17O26TcQxrL",
+                    "m0021:result:call_B6xRniRe9qhwm17O26TcQxrL",
+                    "m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD",
+                    "m0025:result:call_jrDVavqEvgucfqwoULquVHKD",
+                    "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+                    "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+                ],
+                "constraints": [
+                    ["m0018:call:call_do7CoyjgyOTwgUuBR0MIjnJF", "m0020:call:call_B6xRniRe9qhwm17O26TcQxrL"],
+                    ["m0020:call:call_B6xRniRe9qhwm17O26TcQxrL", "m0021:result:call_B6xRniRe9qhwm17O26TcQxrL"],
+                    ["m0021:result:call_B6xRniRe9qhwm17O26TcQxrL", "m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD"],
+                    ["m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD", "m0025:result:call_jrDVavqEvgucfqwoULquVHKD"],
+                    ["m0025:result:call_jrDVavqEvgucfqwoULquVHKD", "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5"],
+                    ["m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5", "m0029:result:call_7yFaX9csi5WazsznQNMckfbn"],
+                ],
+            },
+            {
+                "evidence_ids": [
+                    "m0018:call:call_do7CoyjgyOTwgUuBR0MIjnJF",
+                    "m0021:result:call_B6xRniRe9qhwm17O26TcQxrL",
+                    "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+                    "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+                ],
+                "constraints": [
+                    ["m0018:call:call_do7CoyjgyOTwgUuBR0MIjnJF", "m0021:result:call_B6xRniRe9qhwm17O26TcQxrL"],
+                    ["m0021:result:call_B6xRniRe9qhwm17O26TcQxrL", "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5"],
+                    ["m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5", "m0029:result:call_7yFaX9csi5WazsznQNMckfbn"],
+                ],
+            },
+        ],
+    },
+    "query_policies": {
+        "audit_recovery": {
+            "alternative_evidence_sets": [
+                [
+                    "m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD",
+                    "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+                    "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+                ],
+                [
+                    "m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD",
+                    "m0025:result:call_jrDVavqEvgucfqwoULquVHKD",
+                    "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+                    "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+                ],
+            ],
+            "relevant_evidence_ids": [
+                "m0021:result:call_B6xRniRe9qhwm17O26TcQxrL",
+                "m0022:message",
+                "m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD",
+                "m0023:result:call_jFo6vdxPtHIGZZjc5mQklbFD",
+                "m0025:result:call_jrDVavqEvgucfqwoULquVHKD",
+                "m0026:message",
+                "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+                "m0027:result:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+                "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+            ],
+            "causal_paths": [
+                {
+                    "evidence_ids": [
+                        "m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD",
+                        "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+                        "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+                    ],
+                    "constraints": [
+                        ["m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD", "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5"],
+                        ["m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5", "m0029:result:call_7yFaX9csi5WazsznQNMckfbn"],
+                    ],
+                },
+                {
+                    "evidence_ids": [
+                        "m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD",
+                        "m0025:result:call_jrDVavqEvgucfqwoULquVHKD",
+                        "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5",
+                        "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+                    ],
+                    "constraints": [
+                        ["m0022:call:call_jFo6vdxPtHIGZZjc5mQklbFD", "m0025:result:call_jrDVavqEvgucfqwoULquVHKD"],
+                        ["m0025:result:call_jrDVavqEvgucfqwoULquVHKD", "m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5"],
+                        ["m0026:call:call_GgjBmvjQ8ouWdQ7pEXXzrjU5", "m0029:result:call_7yFaX9csi5WazsznQNMckfbn"],
+                    ],
+                },
+            ],
+        },
+        "interactive_reacquisition": {
+            "alternative_evidence_sets": [
+                [
+                    "m0020:call:call_B6xRniRe9qhwm17O26TcQxrL",
+                    "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+                ],
+                [
+                    "m0014:call:call_kwvPcNWGeKzjedv5seSn0rw3",
+                    "m0015:result:call_kwvPcNWGeKzjedv5seSn0rw3",
+                    "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+                ],
+            ],
+            "relevant_evidence_ids": [
+                "m0014:call:call_kwvPcNWGeKzjedv5seSn0rw3",
+                "m0015:result:call_kwvPcNWGeKzjedv5seSn0rw3",
+                "m0020:call:call_B6xRniRe9qhwm17O26TcQxrL",
+                "m0021:result:call_B6xRniRe9qhwm17O26TcQxrL",
+                "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+            ],
+            "causal_paths": [
+                {
+                    "evidence_ids": [
+                        "m0020:call:call_B6xRniRe9qhwm17O26TcQxrL",
+                        "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+                    ],
+                    "constraints": [
+                        ["m0020:call:call_B6xRniRe9qhwm17O26TcQxrL", "m0029:result:call_7yFaX9csi5WazsznQNMckfbn"],
+                    ],
+                },
+                {
+                    "evidence_ids": [
+                        "m0014:call:call_kwvPcNWGeKzjedv5seSn0rw3",
+                        "m0015:result:call_kwvPcNWGeKzjedv5seSn0rw3",
+                        "m0029:result:call_7yFaX9csi5WazsznQNMckfbn",
+                    ],
+                    "constraints": [
+                        ["m0014:call:call_kwvPcNWGeKzjedv5seSn0rw3", "m0015:result:call_kwvPcNWGeKzjedv5seSn0rw3"],
+                        ["m0015:result:call_kwvPcNWGeKzjedv5seSn0rw3", "m0029:result:call_7yFaX9csi5WazsznQNMckfbn"],
+                    ],
+                },
+            ],
+        },
+    },
+}
+
+# ---------------- rejected cases ----------------
+REJECTS = {
+    "93fa2f67af1e44c68d38683a97026c023d4a3a44eb7c344d690f6fa9c2d8f3dc": (
+        "ALFWorld 轨迹（300 事件，t0000–t0149）为纯探索/徘徊：代理拾取 pan 2 后反复 look/go to 各处，"
+        "从未执行放置类任务动作，全程无任何错误输出（无 'Nothing happens'、无 done/finish 观察结果）。"
+        "prefix 在任务未完成状态下截断于 t0149:observation（cabinet 4 关闭），既无可锚定的任务级初始失败，"
+        "也无修复阶段与最终成功观察。"
+    ),
+    "a794195e09ea40b598af0eddff22fb18699fed1f8bb8a3867cb1234e021f3273": (
+        "GAIA 检索任务一次通过：t0003/t0005/t0007/t0014/t0017–t0019 的 !! 标记只是搜索结果/网页正文过长被截断，"
+        "并非失败；代理逐步检索 scikit-learn 0.19 changelog、交叉验证 Other predictors 条目后，在 t0025:action "
+        "给出 FINAL_ANSWER: BaseLabelPropagation。全程不存在任务级失败→修复→成功的 episode，没有可作为锚点的失败结果。"
+    ),
+    "17e7c88b8d7cee8abd2fd5157dcad23bc56d89641ccb2cb58e77f8905d703f8c": (
+        "唯一 !! 失败（m0011:result）是代理自建模拟脚本 test_hdfs_trigger.py 的 Python 语法错误，"
+        "属实现/验证过程中的局部子失败（修复 m0012:call 只是补注释符）；任务本身要求的 ci-additional.yml "
+        "修改从未发生，代理误判'仓库已满足 PR 要求'后直接 finish（m0018:call）。任务级失败无法定位，"
+        "也不存在最终成功的直接观察。"
+    ),
+    "5b3ee91d6208d0091d72457d1186af170132f3a14b8f7b8087bdeda72a2881ac": (
+        "轨迹仅 9 个事件即截断：代理反复 view 仓库目录（m0005:result 的 view_range 误用报错属探索期局部小失败），"
+        "最后一个 tool_call（m0008:call）连结果都未出现。修复 DynamoDB put_item SerializationException 的实现"
+        "从未开始，无任务级失败、无修复阶段、无成功观察。"
+    ),
+}
+
+
+def main() -> None:
+    A.write_row(OUT, C090, annotator="ai-draft:zcode:glm-5.2:pass-a",
+                status="annotated", episode=EP090)
+    for cid, reason in REJECTS.items():
+        A.write_row(OUT, cid, annotator="ai-draft:zcode:glm-5.2:pass-a",
+                    status="rejected", rejection_reason=reason)
+    errs = A.check_file(OUT)
+    for e in errs:
+        print("ERROR", e)
+    print("checked", OUT, "->", len(errs), "errors")
+
+
+if __name__ == "__main__":
+    main()

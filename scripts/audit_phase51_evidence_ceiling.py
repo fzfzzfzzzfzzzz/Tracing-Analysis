@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Audit deterministic lifecycle evidence on the frozen 261 Phase 5 prefixes."""
+"""检查第五阶段 261 段固定记录中的确定性证据。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import csv
 import json
 import statistics
@@ -25,8 +26,8 @@ from tracegraph.lifecycle_evidence import (
     extract_lifecycle_evidence,
     load_evidence_config,
 )
-from tracegraph.liveness import LiveSubgraph
-from tracegraph.phase5_offline import (
+from tracegraph.context_engine.liveness import LiveSubgraph
+from tracegraph.context_engine.phase5 import (
     build_strict_prefix,
     file_sha256,
     policy_text,
@@ -548,7 +549,7 @@ def _adjudicate(
 
 def main() -> int:
     _configure_utf8_streams()
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--config",
         type=Path,
@@ -816,4 +817,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

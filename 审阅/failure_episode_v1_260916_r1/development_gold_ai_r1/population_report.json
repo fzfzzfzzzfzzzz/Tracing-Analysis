@@ -1,0 +1,65 @@
+{
+  "accepted_failure_family_counts": {
+    "api_quota_exhausted": 1,
+    "codegen_argument_type_mismatch": 1,
+    "config_interpolation_unresolved": 1,
+    "edit_old_str_mismatch": 1,
+    "freq_validation_logic_error": 1,
+    "log_scale_inversion_ignored": 1,
+    "margin_bounding_box_logic_error": 1,
+    "missing_dependency": 1,
+    "missing_gradient_propagation": 1,
+    "missing_implicit_module_attr": 1,
+    "missing_import": 3,
+    "ordering_lookup_validation_logic_error": 1,
+    "parameter_schema": 2,
+    "patch_test": 1,
+    "quote_escaping_logic_error": 1,
+    "stale_reference_hash": 1,
+    "timeout_resource": 1,
+    "token_invalidation_logic_error": 1,
+    "type_alias_resolution_regression": 1,
+    "tzinfo_parameter_ignored": 1,
+    "uninformative_validation_error": 1,
+    "unnecessary_table_rebuild": 1,
+    "validation_error_message_missing_value": 1,
+    "web_access_blocked": 1,
+    "wrong_api_usage": 2
+  },
+  "accepted_recoverability_counts": {
+    "R0": 29
+  },
+  "accepted_source_counts": {
+    "ama_bench": 11,
+    "swe_gym": 18
+  },
+  "accepted_split_counts": {
+    "dev": 14,
+    "test": 11,
+    "validation": 4
+  },
+  "adjudication_sha256": "86c9d33d03032d1c4a3a2fc8ce5a0c38536130f71a3c145521a5f386eb836dbb",
+  "candidate_count": 100,
+  "cases_sha256": "d4308d481e55b8bf30734823f4ef5c9414ccf3527dcddbefbb5e25d5579d8cd5",
+  "decision_source_counts": {
+    "adjudicated:reject": 2,
+    "adjudicated:review_a": 16,
+    "adjudicated:review_b": 6,
+    "adjudicated:synthesized": 6,
+    "consensus_reject": 69,
+    "exact_consensus": 1
+  },
+  "development_only": true,
+  "formal_ready": false,
+  "independent_human_review": false,
+  "interpretation": "Fast development gold from two non-independent GLM-5.2 passes and one AI adjudication. It may be used for exploratory comparisons only. Any surviving paper claim requires independent human review on a frozen confirmatory set.",
+  "provenance_sha256": "498fb67fbb59127544da5a2e5a03ac0fe827564a0c2fe625aa1e87d8ebfa5418",
+  "review_a_sha256": "34c48ce66567d456fdbdc697650da96c815337c48c98949172a3ef336ecdad02",
+  "review_b_sha256": "0d71d69f62f1d921532ac6840719477d4324f340bd2377c7be801f3e954a5ab9",
+  "reviews_sha256": "51ff37f20b4c0adf8a731a4968f12c0f076569de71a25d9c5ff50fda97183cc0",
+  "schema_version": "compression_audit_failure_episode_development_reviews_v1",
+  "status_counts": {
+    "annotated": 29,
+    "rejected": 71
+  }
+}

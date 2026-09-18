@@ -1,0 +1,36 @@
+{
+  "schema_version": "compression_audit_development_config_v0_2",
+  "benchmark_release": "v0.1-diagnostic",
+  "protocol": "v0.2-development",
+  "development_only": true,
+  "independent_validation": false,
+  "default_provider": "dashscope",
+  "default_model": "qwen3.7-plus",
+  "structured_output": {
+    "type": "json_schema",
+    "strict": true,
+    "enable_thinking": false
+  },
+  "retrieval_budget_tokens": 1024,
+  "submission_fields": ["a", "e", "t", "s"],
+  "format_repair": {
+    "separate_agent_turn": true,
+    "provider_retry": false,
+    "billed": true
+  },
+  "reacquisition_metrics": [
+    "model_calls",
+    "tool_calls",
+    "provider_input_tokens",
+    "provider_output_tokens",
+    "tool_observation_tokens",
+    "latency_seconds",
+    "cost_cny"
+  ],
+  "statistics": {
+    "unit": "source_prefix",
+    "paired_bootstrap": true,
+    "holm_correction": true,
+    "single_aggregate_score": false
+  }
+}

@@ -1,0 +1,203 @@
+CASE index=22 candidate_id=32fcdad2940718f37b28acb62cef956890a0d014f02465ae9b508315f38fc94a
+source=ama_bench repository=ama:babaisai task_id=1 split=test events=200
+====================================================================================================
+t0000:action | CALL environment_action/: up
+t0000:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 1 step to the right and 1 step up ⏎ rule `door` 4 steps to the right and 1 step up ⏎ rule `is` 5 steps to the right and 1 step up ⏎ r …(+840ch)
+t0001:action | CALL environment_action/: left
+t0001:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 1 step up ⏎ rule `door` 5 steps to the right and 1 step up ⏎ rule `is` 6 steps to the right and 1 step up ⏎  …(+824ch)
+t0002:action | CALL environment_action/: left
+t0002:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 1 step up ⏎ rule `door` 6 steps to the right and 1 step up ⏎ rule `is` 7 steps to the right and 1 step up ⏎  …(+802ch)
+t0003:action | CALL environment_action/: up
+t0003:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right ⏎ rule `door` 6 steps to the right ⏎ rule `is` 7 steps to the right ⏎ rule `win` 8 steps to the right ⏎ rule `wa …(+795ch)
+t0004:action | CALL environment_action/: down
+t0004:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 1 step up ⏎ rule `door` 6 steps to the right and 1 step up ⏎ rule `is` 7 steps to the right and 1 step up ⏎  …(+802ch)
+t0005:action | CALL environment_action/: left
+t0005:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 1 step up ⏎ rule `door` 6 steps to the right and 1 step up ⏎ rule `is` 7 steps to the right and 1 step up ⏎  …(+802ch)
+t0006:action | CALL environment_action/: up
+t0006:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right ⏎ rule `door` 6 steps to the right ⏎ rule `is` 7 steps to the right ⏎ rule `win` 8 steps to the right ⏎ rule `wa …(+795ch)
+t0007:action | CALL environment_action/: down
+t0007:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 1 step up ⏎ rule `door` 6 steps to the right and 1 step up ⏎ rule `is` 7 steps to the right and 1 step up ⏎  …(+802ch)
+t0008:action | CALL environment_action/: left
+t0008:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 1 step up ⏎ rule `door` 6 steps to the right and 1 step up ⏎ rule `is` 7 steps to the right and 1 step up ⏎  …(+802ch)
+t0009:action | CALL environment_action/: down
+t0009:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 2 step up ⏎ rule `door` 6 steps to the right and 2 step up ⏎ rule `is` 7 steps to the right and 2 step up ⏎  …(+822ch)
+t0010:action | CALL environment_action/: right
+t0010:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 2 step up ⏎ rule `door` 5 steps to the right and 2 step up ⏎ rule `is` 6 steps to the right and 2 step up ⏎  …(+844ch)
+t0011:action | CALL environment_action/: down
+t0011:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎ rule `is` 6 steps to the right and 3 step up ⏎  …(+758ch)
+t0012:action | CALL environment_action/: left
+t0012:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 3 step up ⏎ rule `door` 6 steps to the right and 3 step up ⏎ rule `is` 7 steps to the right and 3 step up ⏎  …(+761ch)
+t0013:action | CALL environment_action/: right
+t0013:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎ rule `is` 6 steps to the right and 3 step up ⏎  …(+758ch)
+t0014:action | CALL environment_action/: right
+t0014:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 1 step to the right and 3 step up ⏎ rule `door` 4 steps to the right and 3 step up ⏎ rule `is` 5 steps to the right and 3 step up ⏎ r …(+776ch)
+t0015:action | CALL environment_action/: left
+t0015:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎ rule `is` 6 steps to the right and 3 step up ⏎  …(+758ch)
+t0016:action | CALL environment_action/: left
+t0016:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 3 step up ⏎ rule `door` 6 steps to the right and 3 step up ⏎ rule `is` 7 steps to the right and 3 step up ⏎  …(+761ch)
+t0017:action | CALL environment_action/: right
+t0017:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎ rule `is` 6 steps to the right and 3 step up ⏎  …(+758ch)
+t0018:action | CALL environment_action/: left
+t0018:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 3 step up ⏎ rule `door` 6 steps to the right and 3 step up ⏎ rule `is` 7 steps to the right and 3 step up ⏎  …(+761ch)
+t0019:action | CALL environment_action/: right
+t0019:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎ rule `is` 6 steps to the right and 3 step up ⏎  …(+758ch)
+t0020:action | CALL environment_action/: left
+t0020:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 3 step up ⏎ rule `door` 6 steps to the right and 3 step up ⏎ rule `is` 7 steps to the right and 3 step up ⏎  …(+761ch)
+t0021:action | CALL environment_action/: right
+t0021:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎ rule `is` 6 steps to the right and 3 step up ⏎  …(+758ch)
+t0022:action | CALL environment_action/: down
+t0022:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 4 step up ⏎ rule `door` 5 steps to the right and 4 step up ⏎ rule `is` 6 steps to the right and 4 step up ⏎  …(+810ch)
+t0023:action | CALL environment_action/: up
+t0023:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎ rule `is` 6 steps to the right and 3 step up ⏎  …(+758ch)
+t0024:action | CALL environment_action/: up
+t0024:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 2 step up ⏎ rule `door` 5 steps to the right and 2 step up ⏎ rule `is` 6 steps to the right and 2 step up ⏎  …(+844ch)
+t0025:action | CALL environment_action/: down
+t0025:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎ rule `is` 6 steps to the right and 3 step up ⏎  …(+758ch)
+t0026:action | CALL environment_action/: left
+t0026:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 3 step up ⏎ rule `door` 6 steps to the right and 3 step up ⏎ rule `is` 7 steps to the right and 3 step up ⏎  …(+761ch)
+t0027:action | CALL environment_action/: left
+t0027:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 4 steps to the right and 3 step up ⏎ rule `door` 7 steps to the right and 3 step up ⏎ rule `is` 8 steps to the right and 3 step up ⏎  …(+740ch)
+t0028:action | CALL environment_action/: right
+t0028:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 3 step up ⏎ rule `door` 6 steps to the right and 3 step up ⏎ rule `is` 7 steps to the right and 3 step up ⏎  …(+761ch)
+t0029:action | CALL environment_action/: right
+t0029:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎ rule `is` 6 steps to the right and 3 step up ⏎  …(+758ch)
+t0030:action | CALL environment_action/: left
+t0030:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 3 step up ⏎ rule `door` 6 steps to the right and 3 step up ⏎ rule `is` 7 steps to the right and 3 step up ⏎  …(+761ch)
+t0031:action | CALL environment_action/: right
+t0031:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎ rule `is` 6 steps to the right and 3 step up ⏎  …(+758ch)
+t0032:action | CALL environment_action/: left
+t0032:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 3 step up ⏎ rule `door` 6 steps to the right and 3 step up ⏎ rule `is` 7 steps to the right and 3 step up ⏎  …(+761ch)
+t0033:action | CALL environment_action/: right
+t0033:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎ rule `is` 6 steps to the right and 3 step up ⏎  …(+758ch)
+t0034:action | CALL environment_action/: right
+t0034:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 1 step to the right and 3 step up ⏎ rule `door` 4 steps to the right and 3 step up ⏎ rule `is` 5 steps to the right and 3 step up ⏎ r …(+776ch)
+t0035:action | CALL environment_action/: left
+t0035:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎ rule `is` 6 steps to the right and 3 step up ⏎  …(+758ch)
+t0036:action | CALL environment_action/: left
+t0036:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 3 step up ⏎ rule `door` 6 steps to the right and 3 step up ⏎ rule `is` 7 steps to the right and 3 step up ⏎  …(+761ch)
+t0037:action | CALL environment_action/: up
+t0037:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 2 step up ⏎ rule `door` 6 steps to the right and 2 step up ⏎ rule `is` 7 steps to the right and 2 step up ⏎  …(+845ch)
+t0038:action | CALL environment_action/: left
+t0038:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 4 steps to the right and 2 step up ⏎ rule `door` 7 steps to the right and 2 step up ⏎ rule `is` 8 steps to the right and 2 step up ⏎  …(+824ch)
+t0039:action | CALL environment_action/: right
+t0039:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 2 step up ⏎ rule `door` 6 steps to the right and 2 step up ⏎ rule `is` 7 steps to the right and 2 step up ⏎  …(+845ch)
+t0040:action | CALL environment_action/: left
+t0040:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 4 steps to the right and 2 step up ⏎ rule `door` 7 steps to the right and 2 step up ⏎ rule `is` 8 steps to the right and 2 step up ⏎  …(+824ch)
+t0041:action | CALL environment_action/: right
+t0041:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 2 step up ⏎ rule `door` 6 steps to the right and 2 step up ⏎ rule `is` 7 steps to the right and 2 step up ⏎  …(+845ch)
+t0042:action | CALL environment_action/: left
+t0042:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 4 steps to the right and 2 step up ⏎ rule `door` 7 steps to the right and 2 step up ⏎ rule `is` 8 steps to the right and 2 step up ⏎  …(+824ch)
+t0043:action | CALL environment_action/: right
+t0043:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 2 step up ⏎ rule `door` 6 steps to the right and 2 step up ⏎ rule `is` 7 steps to the right and 2 step up ⏎  …(+845ch)
+t0044:action | CALL environment_action/: right
+t0044:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 2 steps to the right and 2 step up ⏎ rule `door` 5 steps to the right and 2 step up ⏎ rule `is` 6 steps to the right and 2 step up ⏎  …(+844ch)
+t0045:action | CALL environment_action/: left
+t0045:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 3 steps to the right and 2 step up ⏎ rule `door` 6 steps to the right and 2 step up ⏎ rule `is` 7 steps to the right and 2 step up ⏎  …(+845ch)
+t0046:action | CALL environment_action/: left
+t0046:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ wall 4 steps to the right and 2 step up ⏎ rule `door` 7 steps to the right and 2 step up ⏎ rule `is` 8 steps to the right and 2 step up ⏎  …(+824ch)
+t0047:action | CALL environment_action/: up
+t0047:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step up ⏎ wall 4 steps to the right and 1 step up ⏎ rule `door` 7 steps to the right and 1 step up ⏎ rule `is` 8 steps to th …(+818ch)
+t0048:action | CALL environment_action/: down
+t0048:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 2 step up ⏎ wall 4 steps to the right and 2 step up ⏎ rule `door` 7 steps to the right and 2 step up ⏎ rule `is` 8 steps to th …(+824ch)
+t0049:action | CALL environment_action/: right
+t0049:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the left and 2 step up ⏎ wall 3 steps to the right and 2 step up ⏎ rule `door` 6 steps to the right and 2 step up ⏎  …(+845ch)
+t0050:action | CALL environment_action/: left
+t0050:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 2 step up ⏎ wall 4 steps to the right and 2 step up ⏎ rule `door` 7 steps to the right and 2 step up ⏎ rule `is` 8 steps to th …(+824ch)
+t0051:action | CALL environment_action/: up
+t0051:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step up ⏎ wall 4 steps to the right and 1 step up ⏎ rule `door` 7 steps to the right and 1 step up ⏎ rule `is` 8 steps to th …(+818ch)
+t0052:action | CALL environment_action/: down
+t0052:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 2 step up ⏎ wall 4 steps to the right and 2 step up ⏎ rule `door` 7 steps to the right and 2 step up ⏎ rule `is` 8 steps to th …(+824ch)
+t0053:action | CALL environment_action/: right
+t0053:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the left and 2 step up ⏎ wall 3 steps to the right and 2 step up ⏎ rule `door` 6 steps to the right and 2 step up ⏎  …(+845ch)
+t0054:action | CALL environment_action/: left
+t0054:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 2 step up ⏎ wall 4 steps to the right and 2 step up ⏎ rule `door` 7 steps to the right and 2 step up ⏎ rule `is` 8 steps to th …(+824ch)
+t0055:action | CALL environment_action/: down
+t0055:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 3 step up ⏎ wall 4 steps to the right and 3 step up ⏎ rule `door` 7 steps to the right and 3 step up ⏎ rule `is` 8 steps to th …(+740ch)
+t0056:action | CALL environment_action/: right
+t0056:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the left and 3 step up ⏎ wall 3 steps to the right and 3 step up ⏎ rule `door` 6 steps to the right and 3 step up ⏎  …(+761ch)
+t0057:action | CALL environment_action/: right
+t0057:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 2 step to the left and 3 step up ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎  …(+758ch)
+t0058:action | CALL environment_action/: up
+t0058:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 2 step to the left and 2 step up ⏎ wall 2 steps to the right and 2 step up ⏎ rule `door` 5 steps to the right and 2 step up ⏎  …(+844ch)
+t0059:action | CALL environment_action/: left
+t0059:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the left and 2 step up ⏎ wall 3 steps to the right and 2 step up ⏎ rule `door` 6 steps to the right and 2 step up ⏎  …(+845ch)
+t0060:action | CALL environment_action/: up
+t0060:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the left and 1 step up ⏎ wall 3 steps to the right and 1 step up ⏎ rule `door` 6 steps to the right and 1 step up ⏎  …(+839ch)
+t0061:action | CALL environment_action/: down
+t0061:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the left and 2 step up ⏎ wall 3 steps to the right and 2 step up ⏎ rule `door` 6 steps to the right and 2 step up ⏎  …(+845ch)
+t0062:action | CALL environment_action/: left
+t0062:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 2 step up ⏎ wall 4 steps to the right and 2 step up ⏎ rule `door` 7 steps to the right and 2 step up ⏎ rule `is` 8 steps to th …(+824ch)
+t0063:action | CALL environment_action/: right
+t0063:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the left and 2 step up ⏎ wall 3 steps to the right and 2 step up ⏎ rule `door` 6 steps to the right and 2 step up ⏎  …(+845ch)
+t0064:action | CALL environment_action/: up
+t0064:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the left and 1 step up ⏎ wall 3 steps to the right and 1 step up ⏎ rule `door` 6 steps to the right and 1 step up ⏎  …(+839ch)
+t0065:action | CALL environment_action/: down
+t0065:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the left and 2 step up ⏎ wall 3 steps to the right and 2 step up ⏎ rule `door` 6 steps to the right and 2 step up ⏎  …(+845ch)
+t0066:action | CALL environment_action/: left
+t0066:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 2 step up ⏎ wall 4 steps to the right and 2 step up ⏎ rule `door` 7 steps to the right and 2 step up ⏎ rule `is` 8 steps to th …(+824ch)
+t0067:action | CALL environment_action/: right
+t0067:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the left and 2 step up ⏎ wall 3 steps to the right and 2 step up ⏎ rule `door` 6 steps to the right and 2 step up ⏎  …(+845ch)
+t0068:action | CALL environment_action/: down
+t0068:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the left and 3 step up ⏎ wall 3 steps to the right and 3 step up ⏎ rule `door` 6 steps to the right and 3 step up ⏎  …(+761ch)
+t0069:action | CALL environment_action/: left
+t0069:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 3 step up ⏎ wall 4 steps to the right and 3 step up ⏎ rule `door` 7 steps to the right and 3 step up ⏎ rule `is` 8 steps to th …(+740ch)
+t0070:action | CALL environment_action/: left
+t0070:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 3 step up ⏎ wall 4 steps to the right and 3 step up ⏎ rule `door` 7 steps to the right and 3 step up ⏎ rule `is` 8 steps to th …(+740ch)
+t0071:action | CALL environment_action/: right
+t0071:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the left and 3 step up ⏎ wall 3 steps to the right and 3 step up ⏎ rule `door` 6 steps to the right and 3 step up ⏎  …(+761ch)
+t0072:action | CALL environment_action/: right
+t0072:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 2 step to the left and 3 step up ⏎ wall 2 steps to the right and 3 step up ⏎ rule `door` 5 steps to the right and 3 step up ⏎  …(+758ch)
+t0073:action | CALL environment_action/: left
+t0073:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the left and 3 step up ⏎ wall 3 steps to the right and 3 step up ⏎ rule `door` 6 steps to the right and 3 step up ⏎  …(+761ch)
+t0074:action | CALL environment_action/: left
+t0074:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 3 step up ⏎ wall 4 steps to the right and 3 step up ⏎ rule `door` 7 steps to the right and 3 step up ⏎ rule `is` 8 steps to th …(+740ch)
+t0075:action | CALL environment_action/: up
+t0075:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 2 step up ⏎ wall 4 steps to the right and 2 step up ⏎ rule `door` 7 steps to the right and 2 step up ⏎ rule `is` 8 steps to th …(+824ch)
+t0076:action | CALL environment_action/: left
+t0076:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `stop` 1 step to the right and 2 step up ⏎ wall 5 steps to the right and 2 step up ⏎ rule `door` 8 steps to the right and 2 step up ⏎ …(+784ch)
+t0077:action | CALL environment_action/: up
+t0077:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 1 step up ⏎ rule `stop` 1 step to the right and 1 step up ⏎ wall 5 steps to the right and 1 step up ⏎ rule `door` 8 steps to t …(+792ch)
+t0078:action | CALL environment_action/: down
+t0078:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 2 step up ⏎ rule `stop` 1 step to the right and 2 step up ⏎ wall 5 steps to the right and 2 step up ⏎ rule `door` 8 steps to t …(+784ch)
+t0079:action | CALL environment_action/: left
+t0079:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 2 step up ⏎ rule `stop` 1 step to the right and 2 step up ⏎ wall 5 steps to the right and 2 step up ⏎ rule `door` 8 steps to t …(+784ch)
+t0080:action | CALL environment_action/: right
+t0080:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 1 step to the left and 2 step up ⏎ rule `stop` 2 step up ⏎ wall 4 steps to the right and 2 step up ⏎ rule `door` 7 steps to th …(+824ch)
+t0081:action | CALL environment_action/: right
+t0081:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 2 step to the left and 2 step up ⏎ rule `stop` 1 step to the left and 2 step up ⏎ wall 3 steps to the right and 2 step up ⏎ ru …(+845ch)
+t0082:action | CALL environment_action/: left
+t0082:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 1 step to the left and 2 step up ⏎ rule `stop` 2 step up ⏎ wall 4 steps to the right and 2 step up ⏎ rule `door` 7 steps to th …(+824ch)
+t0083:action | CALL environment_action/: right
+t0083:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 2 step to the left and 2 step up ⏎ rule `stop` 1 step to the left and 2 step up ⏎ wall 3 steps to the right and 2 step up ⏎ ru …(+845ch)
+t0084:action | CALL environment_action/: up
+t0084:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 2 step to the left and 1 step up ⏎ rule `stop` 1 step to the left and 1 step up ⏎ wall 3 steps to the right and 1 step up ⏎ ru …(+853ch)
+t0085:action | CALL environment_action/: up
+t0085:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 2 step to the left ⏎ rule `stop` 1 step to the left ⏎ wall 3 steps to the right ⏎ rule `door` 6 steps to the right ⏎ rule `is` …(+786ch)
+t0086:action | CALL environment_action/: down
+t0086:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 2 step to the left and 1 step up ⏎ rule `stop` 1 step to the left and 1 step up ⏎ wall 3 steps to the right and 1 step up ⏎ ru …(+853ch)
+t0087:action | CALL environment_action/: down
+t0087:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 2 step to the left and 2 step up ⏎ rule `stop` 1 step to the left and 2 step up ⏎ wall 3 steps to the right and 2 step up ⏎ ru …(+845ch)
+t0088:action | CALL environment_action/: up
+t0088:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 2 step to the left and 1 step up ⏎ rule `stop` 1 step to the left and 1 step up ⏎ wall 3 steps to the right and 1 step up ⏎ ru …(+853ch)
+t0089:action | CALL environment_action/: down
+t0089:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 2 step to the left and 2 step up ⏎ rule `stop` 1 step to the left and 2 step up ⏎ wall 3 steps to the right and 2 step up ⏎ ru …(+845ch)
+t0090:action | CALL environment_action/: down
+t0090:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 2 step to the left and 3 step up ⏎ rule `stop` 1 step to the left and 3 step up ⏎ wall 3 steps to the right and 3 step up ⏎ ru …(+761ch)
+t0091:action | CALL environment_action/: left
+t0091:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 1 step to the left and 3 step up ⏎ rule `stop` 3 step up ⏎ wall 4 steps to the right and 3 step up ⏎ rule `door` 7 steps to th …(+740ch)
+t0092:action | CALL environment_action/: left
+t0092:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 1 step to the left and 3 step up ⏎ rule `stop` 3 step up ⏎ wall 4 steps to the right and 3 step up ⏎ rule `door` 7 steps to th …(+740ch)
+t0093:action | CALL environment_action/: left
+t0093:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 1 step to the left and 3 step up ⏎ rule `stop` 3 step up ⏎ wall 4 steps to the right and 3 step up ⏎ rule `door` 7 steps to th …(+740ch)
+t0094:action | CALL environment_action/: right
+t0094:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 2 step to the left and 3 step up ⏎ rule `stop` 1 step to the left and 3 step up ⏎ wall 3 steps to the right and 3 step up ⏎ ru …(+761ch)
+t0095:action | CALL environment_action/: right
+t0095:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 3 step to the left and 3 step up ⏎ rule `stop` 2 step to the left and 3 step up ⏎ wall 2 steps to the right and 3 step up ⏎ ru …(+758ch)
+t0096:action | CALL environment_action/: right
+t0096:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 4 step to the left and 3 step up ⏎ rule `stop` 3 step to the left and 3 step up ⏎ wall 1 step to the right and 3 step up ⏎ rul …(+776ch)
+t0097:action | CALL environment_action/: left
+t0097:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 3 step to the left and 3 step up ⏎ rule `stop` 2 step to the left and 3 step up ⏎ wall 2 steps to the right and 3 step up ⏎ ru …(+758ch)
+t0098:action | CALL environment_action/: left
+t0098:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 2 step to the left and 3 step up ⏎ rule `stop` 1 step to the left and 3 step up ⏎ wall 3 steps to the right and 3 step up ⏎ ru …(+761ch)
+t0099:action | CALL environment_action/: left
+t0099:observation | OBS : Active rules: ⏎ door is win ⏎ ball is win ⏎ baba is you ⏎ ⏎ Objects on the map: ⏎ rule `wall` 1 step to the left and 3 step up ⏎ rule `stop` 3 step up ⏎ wall 4 steps to the right and 3 step up ⏎ rule `door` 7 steps to th …(+740ch)

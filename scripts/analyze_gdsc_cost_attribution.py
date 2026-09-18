@@ -1,10 +1,12 @@
-"""Run the zero-API GDSC R2.1 cost-attribution and attainability audit."""
+"""检查第四阶段保存结果中，模型输入量为什么没有达到目标。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import csv
 import hashlib
+import importlib
 import json
 import math
 import sys
@@ -17,13 +19,10 @@ from evaluate_gdsc_offline import (
     _prefix_graph,
     _prefix_messages,
 )
-from tau2.utils.llm_utils import to_litellm_messages
-
 from tracegraph.compiler import compile as compile_decision_state
 from tracegraph.cost_attribution import summarize_cost_attribution
 from tracegraph.decision_query import build_decision_query
 from tracegraph.graph import TraceGraph
-from tracegraph.integrations.tau3_agent import TraceGraphTauAgent
 from tracegraph.policy_rules import compile_policy_rule
 from tracegraph.provider_cost import (
     ProviderProtocol,
@@ -44,6 +43,17 @@ for _stream in (sys.stdout, sys.stderr):
 
 
 POLICY_ATOM_TYPES = {"global_policy_rule", "applicable_policy_rule"}
+
+
+def _to_litellm_messages(messages: list[object]) -> list[dict[str, Any]]:
+    module = importlib.import_module("tau2.utils.llm_utils")
+    converter = module.to_litellm_messages
+    return list(converter(messages))
+
+
+def _load_tau_message(message: dict[str, Any]) -> object:
+    module = importlib.import_module("tracegraph.integrations.tau3_agent")
+    return module.TraceGraphTauAgent._load_message(message)
 
 
 def _file_sha256(path: Path) -> str:
@@ -291,8 +301,8 @@ def attribution_row(
     # proves that the compiler bundle survives Tau models and reaches LiteLLM
     # byte-for-byte within the prompt-hash scope.
     runtime_source_messages = tuple(
-        to_litellm_messages(
-            [TraceGraphTauAgent._load_message(dict(message)) for message in messages]
+        _to_litellm_messages(
+            [_load_tau_message(dict(message)) for message in messages]
         )
     )
     runtime_protocol = ProviderProtocol(
@@ -305,9 +315,9 @@ def attribution_row(
         prefix, state, query, runtime_protocol, budget
     )
     runtime_sent_messages = tuple(
-        to_litellm_messages(
+        _to_litellm_messages(
             [
-                TraceGraphTauAgent._load_message(dict(message))
+                _load_tau_message(dict(message))
                 for message in bundle.messages
             ]
         )
@@ -512,7 +522,7 @@ def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--dataset", type=Path, required=True)
     parser.add_argument("--r2-report", type=Path, required=True)
     parser.add_argument("--r2-budget-rows", type=Path, required=True)
@@ -623,4 +633,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

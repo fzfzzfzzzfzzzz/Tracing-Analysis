@@ -1,0 +1,303 @@
+CASE index=83 candidate_id=604e6a10678148bd2dc4653ae04ee2a9679e51587d1566bce9aea673f293a521
+source=ama_bench repository=ama:alfworld task_id=51 split=validation events=300
+====================================================================================================
+t0000:action | CALL environment_action/: look
+t0000:observation | OBS : You are in the middle of a room. Looking quickly around you, you see nothing. ⏎ ⏎ The current available actions are: go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to counter …(+236ch)
+t0001:action | CALL environment_action/: go to toilet 1
+t0001:observation | OBS : You arrive at toilet 1. On the toilet 1, you see a cloth 3. ⏎ ⏎ The current available actions are: go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, go to garba …(+218ch)
+t0002:action | CALL environment_action/: go to shelf 1
+t0002:observation | OBS : You arrive at shelf 1. On the shelf 1, you see a cloth 1, a soapbottle 1, a tissuebox 1, and a toiletpaper 1. ⏎ ⏎ The current available actions are: examine toilet 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet  …(+298ch)
+t0003:action | CALL environment_action/: go to garbagecan 1
+t0003:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see a spraybottle 1. ⏎ ⏎ The current available actions are: examine shelf 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4,  …(+357ch)
+t0004:action | CALL environment_action/: take spraybottle 1 from garbagecan 1
+t0004:observation | OBS : You pick up the spraybottle 1 from the garbagecan 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop …(+251ch)
+t0005:action | CALL environment_action/: go to toilet 1
+t0005:observation | OBS : You arrive at toilet 1. On the toilet 1, you see a cloth 3. ⏎ ⏎ The current available actions are: examine garbagecan 1, examine spraybottle 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go  …(+279ch)
+t0006:action | CALL environment_action/: move spraybottle 1 to toilet 1
+t0006:observation | OBS : You move the spraybottle 1 to the toilet 1. ⏎ ⏎ The current available actions are: examine spraybottle 1, examine toilet 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to  …(+259ch)
+t0007:action | CALL environment_action/: go to garbagecan 1
+t0007:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine toilet 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+288ch)
+t0008:action | CALL environment_action/: look
+t0008:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0009:action | CALL environment_action/: go to shelf 1
+t0009:observation | OBS : You arrive at shelf 1. On the shelf 1, you see a cloth 1, a soapbottle 1, a tissuebox 1, and a toiletpaper 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabi …(+270ch)
+t0010:action | CALL environment_action/: go to garbagecan 1
+t0010:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine shelf 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to co …(+349ch)
+t0011:action | CALL environment_action/: look
+t0011:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0012:action | CALL environment_action/: inventory
+t0012:observation | OBS : You are not carrying anything. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, go to handtowelhol …(+191ch)
+t0013:action | CALL environment_action/: look
+t0013:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0014:action | CALL environment_action/: go to shelf 1
+t0014:observation | OBS : You arrive at shelf 1. On the shelf 1, you see a cloth 1, a soapbottle 1, a tissuebox 1, and a toiletpaper 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabi …(+270ch)
+t0015:action | CALL environment_action/: go to garbagecan 1
+t0015:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine shelf 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to co …(+349ch)
+t0016:action | CALL environment_action/: look
+t0016:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0017:action | CALL environment_action/: examine garbagecan 1
+t0017:observation | OBS : On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, go to handt …(+198ch)
+t0018:action | CALL environment_action/: look
+t0018:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0019:action | CALL environment_action/: examine garbagecan 1
+t0019:observation | OBS : On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, go to handt …(+198ch)
+t0020:action | CALL environment_action/: look
+t0020:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0021:action | CALL environment_action/: go to bathtubbasin 1
+t0021:observation | OBS : You arrive at bathtubbasin 1. On the bathtubbasin 1, you see a cloth 2. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet  …(+232ch)
+t0022:action | CALL environment_action/: go to garbagecan 1
+t0022:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, go  …(+260ch)
+t0023:action | CALL environment_action/: look
+t0023:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0024:action | CALL environment_action/: go to sinkbasin 1
+t0024:observation | OBS : You arrive at sinkbasin 1. On the sinkbasin 1, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to …(+224ch)
+t0025:action | CALL environment_action/: go to garbagecan 1
+t0025:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine sinkbasin 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go t …(+226ch)
+t0026:action | CALL environment_action/: look
+t0026:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0027:action | CALL environment_action/: go to cabinet 3
+t0027:observation | OBS : You arrive at cabinet 3. The cabinet 3 is closed. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, …(+210ch)
+t0028:action | CALL environment_action/: go to garbagecan 1
+t0028:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 1, examine cabinet 3, go to bathtubbasin 1, go to cabinet 2, go to cabinet 4, go to countertop 1, g …(+260ch)
+t0029:action | CALL environment_action/: look
+t0029:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0030:action | CALL environment_action/: go to countertop 1
+t0030:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a candle 3, a candle 1, and a soapbottle 2. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go …(+261ch)
+t0031:action | CALL environment_action/: go to garbagecan 1
+t0031:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go  …(+329ch)
+t0032:action | CALL environment_action/: look
+t0032:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0033:action | CALL environment_action/: go to countertop 1
+t0033:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a candle 3, a candle 1, and a soapbottle 2. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go …(+261ch)
+t0034:action | CALL environment_action/: go to garbagecan 1
+t0034:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go  …(+329ch)
+t0035:action | CALL environment_action/: look
+t0035:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0036:action | CALL environment_action/: help
+t0036:observation | OBS : Available commands: ⏎ look: look around your current location ⏎ inventory: check your current inventory ⏎ go to (receptacle): move to a receptacle ⏎ open (receptacle): open a receptacle ⏎ close (receptacle): close a rece …(+893ch)
+t0037:action | CALL environment_action/: look
+t0037:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0038:action | CALL environment_action/: go to cabinet 4
+t0038:observation | OBS : You arrive at cabinet 4. The cabinet 4 is closed. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, …(+210ch)
+t0039:action | CALL environment_action/: go to garbagecan 1
+t0039:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 4, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to countertop 1, go  …(+242ch)
+t0040:action | CALL environment_action/: look
+t0040:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0041:action | CALL environment_action/: go to sinkbasin 2
+t0041:observation | OBS : You arrive at sinkbasin 2. On the sinkbasin 2, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to …(+224ch)
+t0042:action | CALL environment_action/: go to garbagecan 1
+t0042:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine sinkbasin 2, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go t …(+226ch)
+t0043:action | CALL environment_action/: look
+t0043:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0044:action | CALL environment_action/: go to towelholder 2
+t0044:observation | OBS : You arrive at towelholder 2. On the towelholder 2, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, g …(+228ch)
+t0045:action | CALL environment_action/: go to garbagecan 1
+t0045:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine towelholder 2, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go …(+226ch)
+t0046:action | CALL environment_action/: look
+t0046:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0047:action | CALL environment_action/: go to sinkbasin 2
+t0047:observation | OBS : You arrive at sinkbasin 2. On the sinkbasin 2, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to …(+224ch)
+t0048:action | CALL environment_action/: go to garbagecan 1
+t0048:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine sinkbasin 2, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go t …(+226ch)
+t0049:action | CALL environment_action/: look
+t0049:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0050:action | CALL environment_action/: go to bathtubbasin 1
+t0050:observation | OBS : You arrive at bathtubbasin 1. On the bathtubbasin 1, you see a cloth 2. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet  …(+232ch)
+t0051:action | CALL environment_action/: go to garbagecan 1
+t0051:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, go  …(+260ch)
+t0052:action | CALL environment_action/: look
+t0052:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0053:action | CALL environment_action/: look
+t0053:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0054:action | CALL environment_action/: go to shelf 1
+t0054:observation | OBS : You arrive at shelf 1. On the shelf 1, you see a cloth 1, a soapbottle 1, a tissuebox 1, and a toiletpaper 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabi …(+270ch)
+t0055:action | CALL environment_action/: go to garbagecan 1
+t0055:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine shelf 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to co …(+349ch)
+t0056:action | CALL environment_action/: look
+t0056:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0057:action | CALL environment_action/: go to countertop 1
+t0057:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a candle 3, a candle 1, and a soapbottle 2. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go …(+261ch)
+t0058:action | CALL environment_action/: go to garbagecan 1
+t0058:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go  …(+329ch)
+t0059:action | CALL environment_action/: look
+t0059:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0060:action | CALL environment_action/: inventory
+t0060:observation | OBS : You are not carrying anything. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, go to handtowelhol …(+191ch)
+t0061:action | CALL environment_action/: look
+t0061:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0062:action | CALL environment_action/: go to cabinet 2
+t0062:observation | OBS : You arrive at cabinet 2. The cabinet 2 is closed. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, …(+210ch)
+t0063:action | CALL environment_action/: go to garbagecan 1
+t0063:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 2, go to bathtubbasin 1, go to cabinet 1, go to cabinet 3, go to cabinet 4, go to countertop 1, go  …(+242ch)
+t0064:action | CALL environment_action/: look
+t0064:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0065:action | CALL environment_action/: go to sinkbasin 2
+t0065:observation | OBS : You arrive at sinkbasin 2. On the sinkbasin 2, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to …(+224ch)
+t0066:action | CALL environment_action/: go to garbagecan 1
+t0066:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine sinkbasin 2, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go t …(+226ch)
+t0067:action | CALL environment_action/: look
+t0067:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0068:action | CALL environment_action/: go to sinkbasin 2
+t0068:observation | OBS : You arrive at sinkbasin 2. On the sinkbasin 2, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to …(+224ch)
+t0069:action | CALL environment_action/: go to garbagecan 1
+t0069:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine sinkbasin 2, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go t …(+226ch)
+t0070:action | CALL environment_action/: look
+t0070:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0071:action | CALL environment_action/: go to towelholder 1
+t0071:observation | OBS : You arrive at towelholder 1. On the towelholder 1, you see a towel 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, …(+230ch)
+t0072:action | CALL environment_action/: go to garbagecan 1
+t0072:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine towelholder 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go …(+259ch)
+t0073:action | CALL environment_action/: look
+t0073:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0074:action | CALL environment_action/: examine garbagecan 1
+t0074:observation | OBS : On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, go to handt …(+198ch)
+t0075:action | CALL environment_action/: look
+t0075:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0076:action | CALL environment_action/: go to shelf 1
+t0076:observation | OBS : You arrive at shelf 1. On the shelf 1, you see a cloth 1, a soapbottle 1, a tissuebox 1, and a toiletpaper 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabi …(+270ch)
+t0077:action | CALL environment_action/: go to garbagecan 1
+t0077:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine shelf 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to co …(+349ch)
+t0078:action | CALL environment_action/: look
+t0078:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0079:action | CALL environment_action/: go to shelf 1
+t0079:observation | OBS : You arrive at shelf 1. On the shelf 1, you see a cloth 1, a soapbottle 1, a tissuebox 1, and a toiletpaper 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabi …(+270ch)
+t0080:action | CALL environment_action/: go to garbagecan 1
+t0080:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine shelf 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to co …(+349ch)
+t0081:action | CALL environment_action/: look
+t0081:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0082:action | CALL environment_action/: go to towelholder 1
+t0082:observation | OBS : You arrive at towelholder 1. On the towelholder 1, you see a towel 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, …(+230ch)
+t0083:action | CALL environment_action/: go to garbagecan 1
+t0083:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine towelholder 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go …(+259ch)
+t0084:action | CALL environment_action/: look
+t0084:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0085:action | CALL environment_action/: go to cabinet 1
+t0085:observation | OBS : You arrive at cabinet 1. The cabinet 1 is closed. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, …(+210ch)
+t0086:action | CALL environment_action/: go to garbagecan 1
+t0086:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 1, examine cabinet 3, go to bathtubbasin 1, go to cabinet 2, go to cabinet 4, go to countertop 1, g …(+260ch)
+t0087:action | CALL environment_action/: look
+t0087:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0088:action | CALL environment_action/: go to cabinet 2
+t0088:observation | OBS : You arrive at cabinet 2. The cabinet 2 is closed. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, …(+210ch)
+t0089:action | CALL environment_action/: go to garbagecan 1
+t0089:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 2, go to bathtubbasin 1, go to cabinet 1, go to cabinet 3, go to cabinet 4, go to countertop 1, go  …(+242ch)
+t0090:action | CALL environment_action/: look
+t0090:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0091:action | CALL environment_action/: help
+t0091:observation | OBS : Available commands: ⏎ look: look around your current location ⏎ inventory: check your current inventory ⏎ go to (receptacle): move to a receptacle ⏎ open (receptacle): open a receptacle ⏎ close (receptacle): close a rece …(+893ch)
+t0092:action | CALL environment_action/: look
+t0092:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0093:action | CALL environment_action/: go to handtowelholder 2
+t0093:observation | OBS : You arrive at handtowelholder 2. On the handtowelholder 2, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabi …(+236ch)
+t0094:action | CALL environment_action/: go to garbagecan 1
+t0094:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine handtowelholder 2, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4 …(+226ch)
+t0095:action | CALL environment_action/: look
+t0095:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0096:action | CALL environment_action/: go to handtowelholder 2
+t0096:observation | OBS : You arrive at handtowelholder 2. On the handtowelholder 2, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabi …(+236ch)
+t0097:action | CALL environment_action/: go to garbagecan 1
+t0097:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine handtowelholder 2, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4 …(+226ch)
+t0098:action | CALL environment_action/: look
+t0098:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0099:action | CALL environment_action/: go to shelf 1
+t0099:observation | OBS : You arrive at shelf 1. On the shelf 1, you see a cloth 1, a soapbottle 1, a tissuebox 1, and a toiletpaper 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabi …(+270ch)
+t0100:action | CALL environment_action/: go to garbagecan 1
+t0100:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine shelf 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to co …(+349ch)
+t0101:action | CALL environment_action/: look
+t0101:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0102:action | CALL environment_action/: go to cabinet 2
+t0102:observation | OBS : You arrive at cabinet 2. The cabinet 2 is closed. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, …(+210ch)
+t0103:action | CALL environment_action/: go to garbagecan 1
+t0103:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 2, go to bathtubbasin 1, go to cabinet 1, go to cabinet 3, go to cabinet 4, go to countertop 1, go  …(+242ch)
+t0104:action | CALL environment_action/: look
+t0104:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0105:action | CALL environment_action/: go to cabinet 4
+t0105:observation | OBS : You arrive at cabinet 4. The cabinet 4 is closed. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, …(+210ch)
+t0106:action | CALL environment_action/: go to garbagecan 1
+t0106:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 4, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to countertop 1, go  …(+242ch)
+t0107:action | CALL environment_action/: look
+t0107:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0108:action | CALL environment_action/: go to handtowelholder 2
+t0108:observation | OBS : You arrive at handtowelholder 2. On the handtowelholder 2, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabi …(+236ch)
+t0109:action | CALL environment_action/: go to garbagecan 1
+t0109:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine handtowelholder 2, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4 …(+226ch)
+t0110:action | CALL environment_action/: look
+t0110:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0111:action | CALL environment_action/: go to towelholder 2
+t0111:observation | OBS : You arrive at towelholder 2. On the towelholder 2, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, g …(+228ch)
+t0112:action | CALL environment_action/: go to garbagecan 1
+t0112:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine towelholder 2, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go …(+226ch)
+t0113:action | CALL environment_action/: look
+t0113:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0114:action | CALL environment_action/: go to bathtubbasin 1
+t0114:observation | OBS : You arrive at bathtubbasin 1. On the bathtubbasin 1, you see a cloth 2. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet  …(+232ch)
+t0115:action | CALL environment_action/: go to garbagecan 1
+t0115:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, go  …(+260ch)
+t0116:action | CALL environment_action/: look
+t0116:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0117:action | CALL environment_action/: go to towelholder 1
+t0117:observation | OBS : You arrive at towelholder 1. On the towelholder 1, you see a towel 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, …(+230ch)
+t0118:action | CALL environment_action/: go to garbagecan 1
+t0118:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine towelholder 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go …(+259ch)
+t0119:action | CALL environment_action/: look
+t0119:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0120:action | CALL environment_action/: go to countertop 1
+t0120:observation | OBS : You arrive at countertop 1. On the countertop 1, you see a candle 3, a candle 1, and a soapbottle 2. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go …(+261ch)
+t0121:action | CALL environment_action/: go to garbagecan 1
+t0121:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine countertop 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go  …(+329ch)
+t0122:action | CALL environment_action/: look
+t0122:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0123:action | CALL environment_action/: go to handtowelholder 2
+t0123:observation | OBS : You arrive at handtowelholder 2. On the handtowelholder 2, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabi …(+236ch)
+t0124:action | CALL environment_action/: go to garbagecan 1
+t0124:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine handtowelholder 2, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4 …(+226ch)
+t0125:action | CALL environment_action/: look
+t0125:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0126:action | CALL environment_action/: go to towelholder 1
+t0126:observation | OBS : You arrive at towelholder 1. On the towelholder 1, you see a towel 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, …(+230ch)
+t0127:action | CALL environment_action/: go to garbagecan 1
+t0127:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine towelholder 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go …(+259ch)
+t0128:action | CALL environment_action/: look
+t0128:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0129:action | CALL environment_action/: go to toilet 1
+t0129:observation | OBS : You arrive at toilet 1. On the toilet 1, you see a cloth 3, and a spraybottle 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to …(+241ch)
+t0130:action | CALL environment_action/: go to garbagecan 1
+t0130:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine toilet 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+288ch)
+t0131:action | CALL environment_action/: look
+t0131:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0132:action | CALL environment_action/: go to toiletpaperhanger 1
+t0132:observation | OBS : You arrive at toiletpaperhanger 1. On the toiletpaperhanger 1, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to  …(+240ch)
+t0133:action | CALL environment_action/: go to garbagecan 1
+t0133:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine toiletpaperhanger 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet …(+226ch)
+t0134:action | CALL environment_action/: look
+t0134:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0135:action | CALL environment_action/: go to towelholder 1
+t0135:observation | OBS : You arrive at towelholder 1. On the towelholder 1, you see a towel 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, …(+230ch)
+t0136:action | CALL environment_action/: go to garbagecan 1
+t0136:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine towelholder 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go …(+259ch)
+t0137:action | CALL environment_action/: look
+t0137:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0138:action | CALL environment_action/: go to bathtubbasin 1
+t0138:observation | OBS : You arrive at bathtubbasin 1. On the bathtubbasin 1, you see a cloth 2. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet  …(+232ch)
+t0139:action | CALL environment_action/: go to garbagecan 1
+t0139:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, go  …(+260ch)
+t0140:action | CALL environment_action/: look
+t0140:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0141:action | CALL environment_action/: go to handtowelholder 1
+t0141:observation | OBS : You arrive at handtowelholder 1. On the handtowelholder 1, you see a handtowel 1. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go t …(+242ch)
+t0142:action | CALL environment_action/: go to garbagecan 1
+t0142:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine handtowelholder 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4 …(+267ch)
+t0143:action | CALL environment_action/: look
+t0143:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0144:action | CALL environment_action/: go to cabinet 1
+t0144:observation | OBS : You arrive at cabinet 1. The cabinet 1 is closed. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, …(+210ch)
+t0145:action | CALL environment_action/: go to garbagecan 1
+t0145:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine cabinet 1, examine cabinet 3, go to bathtubbasin 1, go to cabinet 2, go to cabinet 4, go to countertop 1, g …(+260ch)
+t0146:action | CALL environment_action/: look
+t0146:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)
+t0147:action | CALL environment_action/: go to bathtubbasin 1
+t0147:observation | OBS : You arrive at bathtubbasin 1. On the bathtubbasin 1, you see a cloth 2. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet  …(+232ch)
+t0148:action | CALL environment_action/: go to garbagecan 1
+t0148:observation | OBS : You arrive at garbagecan 1. On the garbagecan 1, you see nothing. ⏎ ⏎ The current available actions are: examine bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to countertop 1, go  …(+260ch)
+t0149:action | CALL environment_action/: look
+t0149:observation | OBS : You are facing the garbagecan 1. Next to it, you see nothing. ⏎ ⏎ The current available actions are: examine garbagecan 1, go to bathtubbasin 1, go to cabinet 1, go to cabinet 2, go to cabinet 3, go to cabinet 4, go to c …(+222ch)

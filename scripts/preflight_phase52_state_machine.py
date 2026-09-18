@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Run corpus-wide Phase 5.2 state-machine integrity checks without labels."""
+"""在使用标签前检查第五阶段第二次补充的全部数据。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import statistics
 import sys
@@ -20,13 +21,13 @@ if str(SRC_ROOT) not in sys.path:
 from tracegraph.archive import ArchiveStore  # noqa: E402
 from tracegraph.decision_state import stable_digest  # noqa: E402
 from tracegraph.graph import TraceGraph  # noqa: E402
-from tracegraph.lifecycle_annotation import file_sha256, load_phase52_config  # noqa: E402
+from tracegraph.context_engine.annotation import file_sha256, load_phase52_config  # noqa: E402
 from tracegraph.lifecycle_state_machine import (  # noqa: E402
     build_forbidden_offline_projection,
     load_tool_effect_registry,
     replay_lifecycle_state_machine,
 )
-from tracegraph.phase5_offline import build_strict_prefix  # noqa: E402
+from tracegraph.context_engine.phase5 import build_strict_prefix  # noqa: E402
 from tracegraph.provider_cost import close_protocol_messages  # noqa: E402
 from tracegraph.schema import EdgeType, NodeType  # noqa: E402
 from tracegraph.trajectory_artifacts import sha256_json  # noqa: E402
@@ -66,7 +67,7 @@ def _protocol_valid(messages: list[dict[str, Any]]) -> bool:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--config",
         type=Path,
@@ -164,4 +165,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

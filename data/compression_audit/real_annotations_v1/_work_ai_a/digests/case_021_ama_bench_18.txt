@@ -1,0 +1,369 @@
+CASE index=21 candidate_id=31166c94fcfb1954cd23959e7ebabd6650978ee61a495e409184f91f11adcd70
+source=ama_bench repository=ama:2048 task_id=18 split=test events=366
+====================================================================================================
+t0000:action | CALL environment_action/: right
+t0000:observation | OBS : {'board': [[0, 2, 0, 0], [0, 0, 0, 0], [0, 0, 0, 4], [0, 0, 0, 2]], 'highest_tile': 4, 'analysis': 'Board has 13 empty spaces'}
+t0001:action | CALL environment_action/: down
+t0001:observation | OBS : {'board': [[2, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 4], [0, 2, 0, 2]], 'highest_tile': 4, 'analysis': 'Board has 12 empty spaces'}
+t0002:action | CALL environment_action/: down
+t0002:observation | OBS : {'board': [[0, 0, 0, 0], [0, 0, 2, 0], [0, 0, 0, 4], [2, 2, 0, 2]], 'highest_tile': 4, 'analysis': 'Board has 11 empty spaces'}
+t0003:action | CALL environment_action/: left
+t0003:observation | OBS : {'board': [[0, 0, 0, 0], [2, 0, 0, 0], [4, 2, 0, 0], [4, 2, 0, 0]], 'highest_tile': 4, 'analysis': 'Board has 11 empty spaces'}
+t0004:action | CALL environment_action/: down
+t0004:observation | OBS : {'board': [[0, 0, 0, 0], [0, 0, 0, 2], [2, 0, 0, 0], [8, 4, 0, 0]], 'highest_tile': 8, 'analysis': 'Board has 12 empty spaces'}
+t0005:action | CALL environment_action/: right
+t0005:observation | OBS : {'board': [[0, 0, 0, 0], [0, 0, 0, 2], [0, 0, 0, 2], [0, 4, 8, 4]], 'highest_tile': 8, 'analysis': 'Board has 11 empty spaces'}
+t0006:action | CALL environment_action/: down
+t0006:observation | OBS : {'board': [[0, 0, 0, 0], [4, 0, 0, 0], [0, 0, 0, 4], [0, 4, 8, 4]], 'highest_tile': 8, 'analysis': 'Board has 11 empty spaces'}
+t0007:action | CALL environment_action/: down
+t0007:observation | OBS : {'board': [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 2, 0], [4, 4, 8, 8]], 'highest_tile': 8, 'analysis': 'Board has 11 empty spaces'}
+t0008:action | CALL environment_action/: right
+t0008:observation | OBS : {'board': [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 2], [2, 0, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 12 empty spaces'}
+t0009:action | CALL environment_action/: right
+t0009:observation | OBS : {'board': [[0, 0, 2, 0], [0, 0, 0, 0], [0, 0, 0, 2], [0, 2, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 11 empty spaces'}
+t0010:action | CALL environment_action/: down
+t0010:observation | OBS : {'board': [[2, 0, 0, 0], [0, 0, 0, 0], [0, 0, 2, 2], [0, 2, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 10 empty spaces'}
+t0011:action | CALL environment_action/: right
+t0011:observation | OBS : {'board': [[0, 0, 0, 2], [4, 0, 0, 0], [0, 0, 0, 4], [0, 2, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 10 empty spaces'}
+t0012:action | CALL environment_action/: right
+t0012:observation | OBS : {'board': [[2, 0, 0, 2], [0, 0, 0, 4], [0, 0, 0, 4], [0, 2, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 9 empty spaces'}
+t0013:action | CALL environment_action/: down
+t0013:observation | OBS : {'board': [[0, 2, 0, 0], [0, 0, 0, 2], [0, 0, 0, 8], [2, 2, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 9 empty spaces'}
+t0014:action | CALL environment_action/: right
+t0014:observation | OBS : {'board': [[0, 0, 2, 2], [0, 0, 0, 2], [0, 0, 0, 8], [0, 4, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 9 empty spaces'}
+t0015:action | CALL environment_action/: right
+t0015:observation | OBS : {'board': [[0, 0, 0, 4], [0, 0, 0, 2], [2, 0, 0, 8], [0, 4, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 9 empty spaces'}
+t0016:action | CALL environment_action/: down
+t0016:observation | OBS : {'board': [[0, 0, 0, 4], [0, 0, 0, 2], [0, 2, 0, 8], [2, 4, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 8 empty spaces'}
+t0017:action | CALL environment_action/: right
+t0017:observation | OBS : {'board': [[0, 0, 0, 4], [0, 0, 0, 2], [0, 2, 2, 8], [2, 4, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 7 empty spaces'}
+t0018:action | CALL environment_action/: right
+t0018:observation | OBS : {'board': [[0, 0, 0, 4], [0, 0, 0, 2], [2, 0, 4, 8], [2, 4, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 7 empty spaces'}
+t0019:action | CALL environment_action/: right
+t0019:observation | OBS : {'board': [[0, 0, 0, 4], [0, 2, 0, 2], [0, 2, 4, 8], [2, 4, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 6 empty spaces'}
+t0020:action | CALL environment_action/: right
+t0020:observation | OBS : {'board': [[0, 0, 0, 4], [0, 2, 0, 4], [0, 2, 4, 8], [2, 4, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 6 empty spaces'}
+t0021:action | CALL environment_action/: down
+t0021:observation | OBS : {'board': [[0, 0, 0, 0], [0, 2, 0, 8], [0, 4, 4, 8], [2, 4, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 7 empty spaces'}
+t0022:action | CALL environment_action/: down
+t0022:observation | OBS : {'board': [[0, 0, 0, 2], [0, 0, 0, 0], [0, 2, 4, 16], [2, 8, 8, 16]], 'highest_tile': 16, 'analysis': 'Board has 8 empty spaces'}
+t0023:action | CALL environment_action/: down
+t0023:observation | OBS : {'board': [[0, 0, 0, 0], [2, 0, 0, 0], [0, 2, 4, 2], [2, 8, 8, 32]], 'highest_tile': 32, 'analysis': 'Board has 8 empty spaces'}
+t0024:action | CALL environment_action/: down
+t0024:observation | OBS : {'board': [[0, 0, 0, 0], [2, 0, 0, 0], [0, 2, 4, 2], [4, 8, 8, 32]], 'highest_tile': 32, 'analysis': 'Board has 8 empty spaces'}
+t0025:action | CALL environment_action/: down
+t0025:observation | OBS : {'board': [[0, 0, 2, 0], [0, 0, 0, 0], [2, 2, 4, 2], [4, 8, 8, 32]], 'highest_tile': 32, 'analysis': 'Board has 7 empty spaces'}
+t0026:action | CALL environment_action/: down
+t0026:observation | OBS : {'board': [[0, 0, 0, 0], [0, 2, 2, 0], [2, 2, 4, 2], [4, 8, 8, 32]], 'highest_tile': 32, 'analysis': 'Board has 6 empty spaces'}
+t0027:action | CALL environment_action/: down
+t0027:observation | OBS : {'board': [[0, 0, 0, 0], [2, 0, 2, 0], [2, 4, 4, 2], [4, 8, 8, 32]], 'highest_tile': 32, 'analysis': 'Board has 6 empty spaces'}
+t0028:action | CALL environment_action/: right
+t0028:observation | OBS : {'board': [[0, 0, 2, 0], [0, 0, 0, 4], [0, 2, 8, 2], [0, 4, 16, 32]], 'highest_tile': 32, 'analysis': 'Board has 8 empty spaces'}
+t0029:action | CALL environment_action/: down
+t0029:observation | OBS : {'board': [[0, 0, 0, 0], [0, 0, 2, 4], [0, 2, 8, 2], [2, 4, 16, 32]], 'highest_tile': 32, 'analysis': 'Board has 7 empty spaces'}
+t0030:action | CALL environment_action/: right
+t0030:observation | OBS : {'board': [[0, 0, 0, 0], [0, 0, 2, 4], [0, 2, 8, 2], [2, 4, 16, 32]], 'highest_tile': 32, 'analysis': 'Board has 7 empty spaces'}
+t0031:action | CALL environment_action/: left
+t0031:observation | OBS : {'board': [[2, 0, 0, 0], [2, 4, 0, 0], [2, 8, 2, 0], [2, 4, 16, 32]], 'highest_tile': 32, 'analysis': 'Board has 6 empty spaces'}
+t0032:action | CALL environment_action/: down
+t0032:observation | OBS : {'board': [[2, 0, 0, 0], [0, 4, 0, 0], [4, 8, 2, 0], [4, 4, 16, 32]], 'highest_tile': 32, 'analysis': 'Board has 7 empty spaces'}
+t0033:action | CALL environment_action/: right
+t0033:observation | OBS : {'board': [[0, 0, 2, 2], [0, 0, 0, 4], [0, 4, 8, 2], [0, 8, 16, 32]], 'highest_tile': 32, 'analysis': 'Board has 7 empty spaces'}
+t0034:action | CALL environment_action/: down
+t0034:observation | OBS : {'board': [[0, 4, 0, 2], [0, 0, 2, 4], [0, 4, 8, 2], [0, 8, 16, 32]], 'highest_tile': 32, 'analysis': 'Board has 6 empty spaces'}
+t0035:action | CALL environment_action/: up
+t0035:observation | OBS : {'board': [[0, 8, 2, 2], [0, 8, 8, 4], [0, 0, 16, 2], [2, 0, 0, 32]], 'highest_tile': 32, 'analysis': 'Board has 6 empty spaces'}
+t0036:action | CALL environment_action/: right
+t0036:observation | OBS : {'board': [[0, 0, 8, 4], [2, 0, 16, 4], [0, 0, 16, 2], [0, 0, 2, 32]], 'highest_tile': 32, 'analysis': 'Board has 7 empty spaces'}
+t0037:action | CALL environment_action/: down
+t0037:observation | OBS : {'board': [[0, 0, 0, 0], [0, 0, 8, 8], [0, 0, 32, 2], [2, 2, 2, 32]], 'highest_tile': 32, 'analysis': 'Board has 8 empty spaces'}
+t0038:action | CALL environment_action/: right
+t0038:observation | OBS : {'board': [[0, 0, 0, 0], [0, 0, 0, 16], [4, 0, 32, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 9 empty spaces'}
+t0039:action | CALL environment_action/: down
+t0039:observation | OBS : {'board': [[0, 0, 0, 0], [0, 2, 0, 16], [0, 0, 32, 2], [4, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 8 empty spaces'}
+t0040:action | CALL environment_action/: right
+t0040:observation | OBS : {'board': [[0, 0, 0, 4], [0, 0, 2, 16], [0, 0, 32, 2], [4, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 7 empty spaces'}
+t0041:action | CALL environment_action/: right
+t0041:observation | OBS : {'board': [[0, 0, 0, 4], [0, 0, 2, 16], [0, 0, 32, 2], [4, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 7 empty spaces'}
+t0042:action | CALL environment_action/: up
+t0042:observation | OBS : {'board': [[4, 2, 2, 4], [0, 0, 32, 16], [0, 0, 4, 2], [2, 0, 0, 32]], 'highest_tile': 32, 'analysis': 'Board has 6 empty spaces'}
+t0043:action | CALL environment_action/: down
+t0043:observation | OBS : {'board': [[0, 0, 0, 4], [2, 0, 2, 16], [4, 0, 32, 2], [2, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 5 empty spaces'}
+t0044:action | CALL environment_action/: up
+t0044:observation | OBS : {'board': [[2, 2, 2, 4], [4, 0, 32, 16], [2, 0, 4, 2], [0, 0, 2, 32]], 'highest_tile': 32, 'analysis': 'Board has 4 empty spaces'}
+t0045:action | CALL environment_action/: down
+t0045:observation | OBS : {'board': [[2, 0, 2, 4], [2, 0, 32, 16], [4, 0, 4, 2], [2, 2, 2, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0046:action | CALL environment_action/: right
+t0046:observation | OBS : {'board': [[0, 0, 4, 4], [0, 2, 32, 16], [2, 0, 8, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 5 empty spaces'}
+t0047:action | CALL environment_action/: right
+t0047:observation | OBS : {'board': [[2, 0, 0, 8], [0, 2, 32, 16], [0, 2, 8, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 5 empty spaces'}
+t0048:action | CALL environment_action/: right
+t0048:observation | OBS : {'board': [[0, 0, 2, 8], [2, 2, 32, 16], [0, 2, 8, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 4 empty spaces'}
+t0049:action | CALL environment_action/: right
+t0049:observation | OBS : {'board': [[0, 0, 2, 8], [2, 4, 32, 16], [0, 2, 8, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 4 empty spaces'}
+t0050:action | CALL environment_action/: up
+t0050:observation | OBS : {'board': [[2, 4, 2, 8], [2, 4, 32, 16], [0, 0, 8, 2], [0, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 4 empty spaces'}
+t0051:action | CALL environment_action/: up
+t0051:observation | OBS : {'board': [[4, 8, 2, 8], [0, 0, 32, 16], [2, 0, 8, 2], [0, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 5 empty spaces'}
+t0052:action | CALL environment_action/: right
+t0052:observation | OBS : {'board': [[4, 8, 2, 8], [0, 0, 32, 16], [0, 2, 8, 2], [2, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 4 empty spaces'}
+t0053:action | CALL environment_action/: up
+t0053:observation | OBS : {'board': [[4, 8, 2, 8], [2, 2, 32, 16], [0, 0, 8, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0054:action | CALL environment_action/: right
+t0054:observation | OBS : {'board': [[4, 8, 2, 8], [0, 4, 32, 16], [2, 0, 8, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0055:action | CALL environment_action/: up
+t0055:observation | OBS : {'board': [[4, 8, 2, 8], [2, 4, 32, 16], [0, 2, 8, 2], [2, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0056:action | CALL environment_action/: up
+t0056:observation | OBS : {'board': [[4, 8, 2, 8], [4, 4, 32, 16], [2, 2, 8, 2], [0, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0057:action | CALL environment_action/: right
+t0057:observation | OBS : {'board': [[4, 8, 2, 8], [0, 8, 32, 16], [2, 4, 8, 2], [0, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0058:action | CALL environment_action/: up
+t0058:observation | OBS : {'board': [[4, 16, 2, 8], [2, 4, 32, 16], [0, 0, 8, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0059:action | CALL environment_action/: up
+t0059:observation | OBS : {'board': [[4, 16, 2, 8], [2, 4, 32, 16], [0, 2, 8, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0060:action | CALL environment_action/: up
+t0060:observation | OBS : {'board': [[4, 16, 2, 8], [2, 4, 32, 16], [0, 4, 8, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0061:action | CALL environment_action/: up
+t0061:observation | OBS : {'board': [[4, 16, 2, 8], [2, 8, 32, 16], [0, 2, 8, 2], [0, 4, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0062:action | CALL environment_action/: right
+t0062:observation | OBS : {'board': [[4, 16, 2, 8], [2, 8, 32, 16], [2, 2, 8, 2], [0, 0, 8, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0063:action | CALL environment_action/: up
+t0063:observation | OBS : {'board': [[4, 16, 2, 8], [4, 8, 32, 16], [0, 2, 16, 2], [0, 0, 2, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0064:action | CALL environment_action/: up
+t0064:observation | OBS : {'board': [[8, 16, 2, 8], [0, 8, 32, 16], [2, 2, 16, 2], [0, 0, 2, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0065:action | CALL environment_action/: right
+t0065:observation | OBS : {'board': [[8, 16, 2, 8], [2, 8, 32, 16], [0, 4, 16, 2], [0, 0, 2, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0066:action | CALL environment_action/: down
+t0066:observation | OBS : {'board': [[0, 2, 2, 8], [0, 16, 32, 16], [8, 8, 16, 2], [2, 4, 2, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0067:action | CALL environment_action/: right
+t0067:observation | OBS : {'board': [[0, 0, 4, 8], [0, 16, 32, 16], [2, 16, 16, 2], [2, 4, 2, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0068:action | CALL environment_action/: up
+t0068:observation | OBS : {'board': [[4, 32, 4, 8], [0, 4, 32, 16], [0, 0, 16, 2], [0, 2, 2, 32]], 'highest_tile': 32, 'analysis': 'Board has 4 empty spaces'}
+t0069:action | CALL environment_action/: up
+t0069:observation | OBS : {'board': [[4, 32, 4, 8], [0, 4, 32, 16], [0, 2, 16, 2], [0, 2, 2, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0070:action | CALL environment_action/: right
+t0070:observation | OBS : {'board': [[4, 32, 4, 8], [0, 4, 32, 16], [2, 2, 16, 2], [0, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0071:action | CALL environment_action/: right
+t0071:observation | OBS : {'board': [[4, 32, 4, 8], [0, 4, 32, 16], [0, 4, 16, 2], [2, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0072:action | CALL environment_action/: up
+t0072:observation | OBS : {'board': [[4, 32, 4, 8], [2, 8, 32, 16], [0, 0, 16, 2], [2, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0073:action | CALL environment_action/: up
+t0073:observation | OBS : {'board': [[4, 32, 4, 8], [4, 8, 32, 16], [2, 0, 16, 2], [0, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0074:action | CALL environment_action/: up
+t0074:observation | OBS : {'board': [[8, 32, 4, 8], [2, 8, 32, 16], [0, 0, 16, 2], [2, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0075:action | CALL environment_action/: up
+t0075:observation | OBS : {'board': [[8, 32, 4, 8], [4, 8, 32, 16], [4, 0, 16, 2], [0, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0076:action | CALL environment_action/: up
+t0076:observation | OBS : {'board': [[8, 32, 4, 8], [8, 8, 32, 16], [2, 0, 16, 2], [0, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0077:action | CALL environment_action/: up
+t0077:observation | OBS : {'board': [[16, 32, 4, 8], [2, 8, 32, 16], [0, 0, 16, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 3 empty spaces'}
+t0078:action | CALL environment_action/: up
+t0078:observation | OBS : {'board': [[16, 32, 4, 8], [2, 8, 32, 16], [2, 2, 16, 2], [0, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0079:action | CALL environment_action/: up
+t0079:observation | OBS : {'board': [[16, 32, 4, 8], [4, 8, 32, 16], [4, 2, 16, 2], [0, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0080:action | CALL environment_action/: up
+t0080:observation | OBS : {'board': [[16, 32, 4, 8], [8, 8, 32, 16], [0, 2, 16, 2], [2, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0081:action | CALL environment_action/: up
+t0081:observation | OBS : {'board': [[16, 32, 4, 8], [8, 8, 32, 16], [2, 2, 16, 2], [2, 0, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 1 empty spaces'}
+t0082:action | CALL environment_action/: right
+t0082:observation | OBS : {'board': [[16, 32, 4, 8], [2, 16, 32, 16], [0, 4, 16, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0083:action | CALL environment_action/: right
+t0083:observation | OBS : {'board': [[16, 32, 4, 8], [2, 16, 32, 16], [0, 4, 16, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0084:action | CALL environment_action/: right
+t0084:observation | OBS : {'board': [[16, 32, 4, 8], [2, 16, 32, 16], [0, 4, 16, 2], [0, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0085:action | CALL environment_action/: down
+t0085:observation | OBS : {'board': [[0, 32, 4, 8], [2, 16, 32, 16], [16, 4, 16, 2], [2, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 1 empty spaces'}
+t0086:action | CALL environment_action/: up
+t0086:observation | OBS : {'board': [[2, 32, 4, 8], [16, 16, 32, 16], [2, 4, 16, 2], [2, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 0 empty spaces'}
+t0087:action | CALL environment_action/: up
+t0087:observation | OBS : {'board': [[2, 32, 4, 8], [16, 16, 32, 16], [4, 4, 16, 2], [2, 2, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 0 empty spaces'}
+t0088:action | CALL environment_action/: right
+t0088:observation | OBS : {'board': [[2, 32, 4, 8], [2, 32, 32, 16], [0, 8, 16, 2], [0, 4, 4, 32]], 'highest_tile': 32, 'analysis': 'Board has 2 empty spaces'}
+t0089:action | CALL environment_action/: up
+t0089:observation | OBS : {'board': [[4, 64, 4, 8], [2, 8, 32, 16], [0, 4, 16, 2], [0, 0, 4, 32]], 'highest_tile': 64, 'analysis': 'Board has 3 empty spaces'}
+t0090:action | CALL environment_action/: down
+t0090:observation | OBS : {'board': [[0, 0, 4, 8], [2, 64, 32, 16], [4, 8, 16, 2], [2, 4, 4, 32]], 'highest_tile': 64, 'analysis': 'Board has 2 empty spaces'}
+t0091:action | CALL environment_action/: up
+t0091:observation | OBS : {'board': [[2, 64, 4, 8], [4, 8, 32, 16], [2, 4, 16, 2], [0, 2, 4, 32]], 'highest_tile': 64, 'analysis': 'Board has 1 empty spaces'}
+t0092:action | CALL environment_action/: left
+t0092:observation | OBS : {'board': [[2, 64, 4, 8], [4, 8, 32, 16], [2, 4, 16, 2], [2, 4, 32, 2]], 'highest_tile': 64, 'analysis': 'Board has 0 empty spaces'}
+t0093:action | CALL environment_action/: up
+t0093:observation | OBS : {'board': [[2, 64, 4, 8], [4, 8, 32, 16], [4, 8, 16, 4], [0, 2, 32, 0]], 'highest_tile': 64, 'analysis': 'Board has 2 empty spaces'}
+t0094:action | CALL environment_action/: up
+t0094:observation | OBS : {'board': [[2, 64, 4, 8], [8, 16, 32, 16], [0, 2, 16, 4], [2, 0, 32, 0]], 'highest_tile': 64, 'analysis': 'Board has 3 empty spaces'}
+t0095:action | CALL environment_action/: right
+t0095:observation | OBS : {'board': [[2, 64, 4, 8], [8, 16, 32, 16], [0, 2, 16, 4], [0, 2, 2, 32]], 'highest_tile': 64, 'analysis': 'Board has 2 empty spaces'}
+t0096:action | CALL environment_action/: up
+t0096:observation | OBS : {'board': [[2, 64, 4, 8], [8, 16, 32, 16], [0, 4, 16, 4], [0, 2, 2, 32]], 'highest_tile': 64, 'analysis': 'Board has 2 empty spaces'}
+t0097:action | CALL environment_action/: right
+t0097:observation | OBS : {'board': [[2, 64, 4, 8], [8, 16, 32, 16], [2, 4, 16, 4], [0, 0, 4, 32]], 'highest_tile': 64, 'analysis': 'Board has 2 empty spaces'}
+t0098:action | CALL environment_action/: down
+t0098:observation | OBS : {'board': [[0, 2, 4, 8], [2, 64, 32, 16], [8, 16, 16, 4], [2, 4, 4, 32]], 'highest_tile': 64, 'analysis': 'Board has 1 empty spaces'}
+t0099:action | CALL environment_action/: left
+t0099:observation | OBS : {'board': [[2, 4, 8, 0], [2, 64, 32, 16], [8, 32, 4, 0], [2, 8, 32, 2]], 'highest_tile': 64, 'analysis': 'Board has 2 empty spaces'}
+t0100:action | CALL environment_action/: up
+t0100:observation | OBS : {'board': [[4, 4, 8, 16], [8, 64, 32, 2], [2, 32, 4, 0], [4, 8, 32, 0]], 'highest_tile': 64, 'analysis': 'Board has 2 empty spaces'}
+t0101:action | CALL environment_action/: left
+t0101:observation | OBS : {'board': [[8, 8, 16, 0], [8, 64, 32, 2], [2, 32, 4, 2], [4, 8, 32, 0]], 'highest_tile': 64, 'analysis': 'Board has 2 empty spaces'}
+t0102:action | CALL environment_action/: up
+t0102:observation | OBS : {'board': [[16, 8, 16, 4], [2, 64, 32, 0], [4, 32, 4, 0], [0, 8, 32, 2]], 'highest_tile': 64, 'analysis': 'Board has 3 empty spaces'}
+t0103:action | CALL environment_action/: right
+t0103:observation | OBS : {'board': [[16, 8, 16, 4], [2, 2, 64, 32], [0, 4, 32, 4], [0, 8, 32, 2]], 'highest_tile': 64, 'analysis': 'Board has 2 empty spaces'}
+t0104:action | CALL environment_action/: left
+t0104:observation | OBS : {'board': [[16, 8, 16, 4], [4, 64, 32, 4], [4, 32, 4, 0], [8, 32, 2, 0]], 'highest_tile': 64, 'analysis': 'Board has 2 empty spaces'}
+t0105:action | CALL environment_action/: up
+t0105:observation | OBS : {'board': [[16, 8, 16, 8], [8, 64, 32, 0], [8, 64, 4, 2], [0, 0, 2, 0]], 'highest_tile': 64, 'analysis': 'Board has 4 empty spaces'}
+t0106:action | CALL environment_action/: up
+t0106:observation | OBS : {'board': [[16, 8, 16, 8], [16, 128, 32, 2], [0, 0, 4, 0], [2, 0, 2, 0]], 'highest_tile': 128, 'analysis': 'Board has 5 empty spaces'}
+t0107:action | CALL environment_action/: up
+t0107:observation | OBS : {'board': [[32, 8, 16, 8], [2, 128, 32, 2], [0, 0, 4, 0], [2, 0, 2, 0]], 'highest_tile': 128, 'analysis': 'Board has 5 empty spaces'}
+t0108:action | CALL environment_action/: up
+t0108:observation | OBS : {'board': [[32, 8, 16, 8], [4, 128, 32, 2], [0, 0, 4, 0], [0, 0, 2, 2]], 'highest_tile': 128, 'analysis': 'Board has 5 empty spaces'}
+t0109:action | CALL environment_action/: up
+t0109:observation | OBS : {'board': [[32, 8, 16, 8], [4, 128, 32, 4], [0, 0, 4, 2], [0, 0, 2, 0]], 'highest_tile': 128, 'analysis': 'Board has 5 empty spaces'}
+t0110:action | CALL environment_action/: right
+t0110:observation | OBS : {'board': [[32, 8, 16, 8], [4, 128, 32, 4], [2, 0, 4, 2], [0, 0, 0, 2]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0111:action | CALL environment_action/: up
+t0111:observation | OBS : {'board': [[32, 8, 16, 8], [4, 128, 32, 4], [2, 0, 4, 4], [2, 0, 0, 0]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0112:action | CALL environment_action/: up
+t0112:observation | OBS : {'board': [[32, 8, 16, 8], [4, 128, 32, 8], [4, 0, 4, 0], [2, 0, 0, 0]], 'highest_tile': 128, 'analysis': 'Board has 5 empty spaces'}
+t0113:action | CALL environment_action/: up
+t0113:observation | OBS : {'board': [[32, 8, 16, 16], [8, 128, 32, 2], [2, 0, 4, 0], [0, 0, 0, 0]], 'highest_tile': 128, 'analysis': 'Board has 6 empty spaces'}
+t0114:action | CALL environment_action/: left
+t0114:observation | OBS : {'board': [[32, 8, 32, 0], [8, 128, 32, 2], [2, 4, 0, 2], [0, 0, 0, 0]], 'highest_tile': 128, 'analysis': 'Board has 6 empty spaces'}
+t0115:action | CALL environment_action/: up
+t0115:observation | OBS : {'board': [[32, 8, 64, 4], [8, 128, 0, 0], [2, 4, 0, 0], [0, 2, 0, 0]], 'highest_tile': 128, 'analysis': 'Board has 7 empty spaces'}
+t0116:action | CALL environment_action/: right
+t0116:observation | OBS : {'board': [[32, 8, 64, 4], [0, 0, 8, 128], [0, 0, 2, 4], [0, 0, 2, 2]], 'highest_tile': 128, 'analysis': 'Board has 6 empty spaces'}
+t0117:action | CALL environment_action/: up
+t0117:observation | OBS : {'board': [[32, 8, 64, 4], [0, 0, 8, 128], [0, 0, 4, 4], [2, 0, 0, 2]], 'highest_tile': 128, 'analysis': 'Board has 6 empty spaces'}
+t0118:action | CALL environment_action/: right
+t0118:observation | OBS : {'board': [[32, 8, 64, 4], [0, 0, 8, 128], [0, 0, 0, 8], [0, 0, 2, 4]], 'highest_tile': 128, 'analysis': 'Board has 7 empty spaces'}
+t0119:action | CALL environment_action/: up
+t0119:observation | OBS : {'board': [[32, 8, 64, 4], [0, 2, 8, 128], [0, 0, 2, 8], [0, 0, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 6 empty spaces'}
+t0120:action | CALL environment_action/: down
+t0120:observation | OBS : {'board': [[0, 0, 0, 4], [0, 0, 64, 128], [2, 8, 8, 8], [32, 2, 2, 4]], 'highest_tile': 128, 'analysis': 'Board has 5 empty spaces'}
+t0121:action | CALL environment_action/: right
+t0121:observation | OBS : {'board': [[0, 0, 0, 4], [2, 0, 64, 128], [0, 2, 8, 16], [0, 32, 4, 4]], 'highest_tile': 128, 'analysis': 'Board has 6 empty spaces'}
+t0122:action | CALL environment_action/: right
+t0122:observation | OBS : {'board': [[0, 0, 0, 4], [0, 2, 64, 128], [0, 2, 8, 16], [0, 2, 32, 8]], 'highest_tile': 128, 'analysis': 'Board has 6 empty spaces'}
+t0123:action | CALL environment_action/: up
+t0123:observation | OBS : {'board': [[0, 4, 64, 4], [0, 2, 8, 128], [0, 0, 32, 16], [2, 0, 0, 8]], 'highest_tile': 128, 'analysis': 'Board has 6 empty spaces'}
+t0124:action | CALL environment_action/: right
+t0124:observation | OBS : {'board': [[0, 4, 64, 4], [0, 2, 8, 128], [0, 0, 32, 16], [0, 2, 2, 8]], 'highest_tile': 128, 'analysis': 'Board has 5 empty spaces'}
+t0125:action | CALL environment_action/: right
+t0125:observation | OBS : {'board': [[2, 4, 64, 4], [0, 2, 8, 128], [0, 0, 32, 16], [0, 0, 4, 8]], 'highest_tile': 128, 'analysis': 'Board has 5 empty spaces'}
+t0126:action | CALL environment_action/: down
+t0126:observation | OBS : {'board': [[0, 0, 64, 4], [0, 2, 8, 128], [0, 4, 32, 16], [2, 2, 4, 8]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0127:action | CALL environment_action/: right
+t0127:observation | OBS : {'board': [[0, 0, 64, 4], [0, 2, 8, 128], [2, 4, 32, 16], [0, 4, 4, 8]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0128:action | CALL environment_action/: right
+t0128:observation | OBS : {'board': [[0, 2, 64, 4], [0, 2, 8, 128], [2, 4, 32, 16], [0, 0, 8, 8]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0129:action | CALL environment_action/: right
+t0129:observation | OBS : {'board': [[0, 2, 64, 4], [0, 2, 8, 128], [2, 4, 32, 16], [0, 2, 0, 16]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0130:action | CALL environment_action/: up
+t0130:observation | OBS : {'board': [[2, 4, 64, 4], [0, 4, 8, 128], [0, 2, 32, 32], [0, 2, 0, 0]], 'highest_tile': 128, 'analysis': 'Board has 5 empty spaces'}
+t0131:action | CALL environment_action/: up
+t0131:observation | OBS : {'board': [[2, 8, 64, 4], [0, 4, 8, 128], [0, 0, 32, 32], [0, 0, 4, 0]], 'highest_tile': 128, 'analysis': 'Board has 6 empty spaces'}
+t0132:action | CALL environment_action/: right
+t0132:observation | OBS : {'board': [[2, 8, 64, 4], [0, 4, 8, 128], [0, 0, 2, 64], [0, 0, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 6 empty spaces'}
+t0133:action | CALL environment_action/: right
+t0133:observation | OBS : {'board': [[2, 8, 64, 4], [0, 4, 8, 128], [0, 0, 2, 64], [0, 0, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 6 empty spaces'}
+t0134:action | CALL environment_action/: down
+t0134:observation | OBS : {'board': [[4, 0, 0, 4], [0, 0, 64, 128], [0, 8, 8, 64], [2, 4, 2, 4]], 'highest_tile': 128, 'analysis': 'Board has 5 empty spaces'}
+t0135:action | CALL environment_action/: up
+t0135:observation | OBS : {'board': [[4, 8, 64, 4], [2, 4, 8, 128], [0, 0, 2, 64], [2, 0, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0136:action | CALL environment_action/: up
+t0136:observation | OBS : {'board': [[4, 8, 64, 4], [4, 4, 8, 128], [0, 0, 2, 64], [0, 2, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0137:action | CALL environment_action/: up
+t0137:observation | OBS : {'board': [[8, 8, 64, 4], [0, 4, 8, 128], [0, 2, 2, 64], [0, 0, 2, 4]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0138:action | CALL environment_action/: up
+t0138:observation | OBS : {'board': [[8, 8, 64, 4], [0, 4, 8, 128], [0, 2, 4, 64], [0, 2, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0139:action | CALL environment_action/: up
+t0139:observation | OBS : {'board': [[8, 8, 64, 4], [2, 4, 8, 128], [0, 4, 4, 64], [0, 0, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0140:action | CALL environment_action/: up
+t0140:observation | OBS : {'board': [[8, 8, 64, 4], [2, 8, 8, 128], [0, 0, 4, 64], [0, 2, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0141:action | CALL environment_action/: up
+t0141:observation | OBS : {'board': [[8, 16, 64, 4], [2, 2, 8, 128], [0, 0, 4, 64], [2, 0, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0142:action | CALL environment_action/: up
+t0142:observation | OBS : {'board': [[8, 16, 64, 4], [4, 2, 8, 128], [2, 0, 4, 64], [0, 0, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0143:action | CALL environment_action/: right
+t0143:observation | OBS : {'board': [[8, 16, 64, 4], [4, 2, 8, 128], [2, 2, 4, 64], [0, 0, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0144:action | CALL environment_action/: up
+t0144:observation | OBS : {'board': [[8, 16, 64, 4], [4, 4, 8, 128], [2, 0, 4, 64], [2, 0, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0145:action | CALL environment_action/: up
+t0145:observation | OBS : {'board': [[8, 16, 64, 4], [4, 4, 8, 128], [4, 4, 4, 64], [0, 0, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0146:action | CALL environment_action/: up
+t0146:observation | OBS : {'board': [[8, 16, 64, 4], [8, 8, 8, 128], [0, 0, 4, 64], [0, 4, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0147:action | CALL environment_action/: right
+t0147:observation | OBS : {'board': [[8, 16, 64, 4], [0, 8, 16, 128], [0, 0, 4, 64], [0, 2, 0, 8]], 'highest_tile': 128, 'analysis': 'Board has 5 empty spaces'}
+t0148:action | CALL environment_action/: up
+t0148:observation | OBS : {'board': [[8, 16, 64, 4], [0, 8, 16, 128], [0, 2, 4, 64], [0, 0, 2, 8]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0149:action | CALL environment_action/: down
+t0149:observation | OBS : {'board': [[0, 0, 64, 4], [0, 16, 16, 128], [2, 8, 4, 64], [8, 2, 2, 8]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0150:action | CALL environment_action/: up
+t0150:observation | OBS : {'board': [[2, 16, 64, 4], [8, 8, 16, 128], [2, 2, 4, 64], [0, 0, 2, 8]], 'highest_tile': 128, 'analysis': 'Board has 2 empty spaces'}
+t0151:action | CALL environment_action/: right
+t0151:observation | OBS : {'board': [[2, 16, 64, 4], [0, 16, 16, 128], [0, 4, 4, 64], [0, 2, 2, 8]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0152:action | CALL environment_action/: up
+t0152:observation | OBS : {'board': [[2, 32, 64, 4], [0, 4, 16, 128], [0, 2, 4, 64], [4, 0, 2, 8]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0153:action | CALL environment_action/: up
+t0153:observation | OBS : {'board': [[2, 32, 64, 4], [4, 4, 16, 128], [2, 2, 4, 64], [0, 0, 2, 8]], 'highest_tile': 128, 'analysis': 'Board has 2 empty spaces'}
+t0154:action | CALL environment_action/: right
+t0154:observation | OBS : {'board': [[2, 32, 64, 4], [0, 8, 16, 128], [0, 4, 4, 64], [2, 0, 2, 8]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0155:action | CALL environment_action/: up
+t0155:observation | OBS : {'board': [[4, 32, 64, 4], [0, 8, 16, 128], [0, 4, 4, 64], [2, 0, 2, 8]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0156:action | CALL environment_action/: right
+t0156:observation | OBS : {'board': [[4, 32, 64, 4], [0, 8, 16, 128], [2, 0, 8, 64], [0, 0, 4, 8]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0157:action | CALL environment_action/: up
+t0157:observation | OBS : {'board': [[4, 32, 64, 4], [2, 8, 16, 128], [0, 0, 8, 64], [2, 0, 4, 8]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0158:action | CALL environment_action/: up
+t0158:observation | OBS : {'board': [[4, 32, 64, 4], [4, 8, 16, 128], [2, 0, 8, 64], [0, 0, 4, 8]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0159:action | CALL environment_action/: up
+t0159:observation | OBS : {'board': [[8, 32, 64, 4], [2, 8, 16, 128], [0, 2, 8, 64], [0, 0, 4, 8]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0160:action | CALL environment_action/: left
+t0160:observation | OBS : {'board': [[8, 32, 64, 4], [2, 8, 16, 128], [2, 8, 64, 2], [4, 8, 0, 0]], 'highest_tile': 128, 'analysis': 'Board has 2 empty spaces'}
+t0161:action | CALL environment_action/: up
+t0161:observation | OBS : {'board': [[8, 32, 64, 4], [4, 16, 16, 128], [4, 8, 64, 2], [2, 0, 0, 0]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0162:action | CALL environment_action/: up
+t0162:observation | OBS : {'board': [[8, 32, 64, 4], [8, 16, 16, 128], [2, 8, 64, 2], [0, 0, 2, 0]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0163:action | CALL environment_action/: up
+t0163:observation | OBS : {'board': [[16, 32, 64, 4], [2, 16, 16, 128], [0, 8, 64, 2], [0, 0, 2, 2]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0164:action | CALL environment_action/: up
+t0164:observation | OBS : {'board': [[16, 32, 64, 4], [2, 16, 16, 128], [0, 8, 64, 4], [0, 2, 2, 0]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0165:action | CALL environment_action/: right
+t0165:observation | OBS : {'board': [[16, 32, 64, 4], [2, 2, 32, 128], [0, 8, 64, 4], [0, 0, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0166:action | CALL environment_action/: right
+t0166:observation | OBS : {'board': [[16, 32, 64, 4], [0, 4, 32, 128], [0, 8, 64, 4], [0, 2, 0, 4]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0167:action | CALL environment_action/: down
+t0167:observation | OBS : {'board': [[0, 32, 0, 2], [0, 4, 64, 4], [0, 8, 32, 128], [16, 2, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 4 empty spaces'}
+t0168:action | CALL environment_action/: right
+t0168:observation | OBS : {'board': [[0, 0, 32, 2], [0, 4, 64, 4], [2, 8, 32, 128], [16, 2, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 3 empty spaces'}
+t0169:action | CALL environment_action/: up
+t0169:observation | OBS : {'board': [[2, 4, 32, 2], [16, 8, 64, 4], [0, 2, 32, 128], [4, 0, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 2 empty spaces'}
+t0170:action | CALL environment_action/: up
+t0170:observation | OBS : {'board': [[2, 4, 32, 2], [16, 8, 64, 4], [4, 2, 32, 128], [0, 2, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 1 empty spaces'}
+t0171:action | CALL environment_action/: up
+t0171:observation | OBS : {'board': [[2, 4, 32, 2], [16, 8, 64, 4], [4, 4, 32, 128], [0, 2, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 1 empty spaces'}
+t0172:action | CALL environment_action/: right
+t0172:observation | OBS : {'board': [[2, 4, 32, 2], [16, 8, 64, 4], [0, 8, 32, 128], [2, 2, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 1 empty spaces'}
+t0173:action | CALL environment_action/: right
+t0173:observation | OBS : {'board': [[2, 4, 32, 2], [16, 8, 64, 4], [0, 8, 32, 128], [2, 4, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 1 empty spaces'}
+t0174:action | CALL environment_action/: up
+t0174:observation | OBS : {'board': [[2, 4, 32, 2], [16, 16, 64, 4], [2, 4, 32, 128], [2, 0, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 1 empty spaces'}
+t0175:action | CALL environment_action/: up
+t0175:observation | OBS : {'board': [[2, 4, 32, 2], [16, 16, 64, 4], [4, 4, 32, 128], [4, 0, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 1 empty spaces'}
+t0176:action | CALL environment_action/: up
+t0176:observation | OBS : {'board': [[2, 4, 32, 2], [16, 16, 64, 4], [8, 4, 32, 128], [0, 2, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 1 empty spaces'}
+t0177:action | CALL environment_action/: right
+t0177:observation | OBS : {'board': [[2, 4, 32, 2], [0, 32, 64, 4], [8, 4, 32, 128], [2, 2, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 1 empty spaces'}
+t0178:action | CALL environment_action/: right
+t0178:observation | OBS : {'board': [[2, 4, 32, 2], [0, 32, 64, 4], [8, 4, 32, 128], [2, 4, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 1 empty spaces'}
+t0179:action | CALL environment_action/: up
+t0179:observation | OBS : {'board': [[2, 4, 32, 2], [8, 32, 64, 4], [2, 8, 32, 128], [2, 0, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 1 empty spaces'}
+t0180:action | CALL environment_action/: up
+t0180:observation | OBS : {'board': [[2, 4, 32, 2], [8, 32, 64, 4], [4, 8, 32, 128], [2, 0, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 1 empty spaces'}
+t0181:action | CALL environment_action/: right
+t0181:observation | OBS : {'board': [[2, 4, 32, 2], [8, 32, 64, 4], [4, 8, 32, 128], [2, 2, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 0 empty spaces'}
+t0182:action | CALL environment_action/: right
+t0182:observation | OBS : {'board': [[2, 4, 32, 2], [8, 32, 64, 4], [4, 8, 32, 128], [2, 4, 64, 8]], 'highest_tile': 128, 'analysis': 'Board has 0 empty spaces'}

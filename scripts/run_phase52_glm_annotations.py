@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Run or resume a capped two-pass Phase 5.2 pseudo-label collection."""
+"""在固定费用和次数上限内运行或恢复两遍模型分类。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import os
 import subprocess
@@ -21,7 +22,7 @@ SRC_ROOT = REPO_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
-from tracegraph.lifecycle_annotation import (  # noqa: E402
+from tracegraph.context_engine.annotation import (  # noqa: E402
     AnnotationBudget,
     cohen_kappa_binary,
     consensus_labels,
@@ -436,7 +437,7 @@ def _finalize(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--config",
         type=Path,
@@ -450,7 +451,7 @@ def main() -> int:
         "--prioritize-request-id",
         action="append",
         default=[],
-        help="Run these frozen request IDs first; may be repeated.",
+        help="优先运行这些已经固定的请求编号；这个参数可以重复使用。",
     )
     args = parser.parse_args()
     config = load_phase52_config(args.config)
@@ -664,4 +665,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

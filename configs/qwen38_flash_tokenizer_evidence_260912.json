@@ -1,0 +1,17 @@
+{
+  "model": "qwen3.8-flash",
+  "published_model": "Qwen/Qwen3.8-Flash-Next",
+  "revision": "de4b8e4d43b917e7706784d8bb445c9af86a3540",
+  "official_source": "https://qwen.ai/blog?id=qwen3.8-flash-next",
+  "model_card": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/de4b8e4d43b917e7706784d8bb445c9af86a3540/README.md",
+  "retrieved_on": "2026-09-12",
+  "equivalence_verified": true,
+  "equivalence_scope": "official_model_mapping_and_canonical_context_tokenizer",
+  "basis": "Qwen official documentation identifies qwen3.8-flash as the managed production version of Qwen3.8-Flash-Next and documents the Beijing endpoint. This pins the published model tokenizer for context serialization; it does not claim equality to provider billing or chat-template overhead.",
+  "provider_prompt_token_equivalence": false,
+  "tokenizer_sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+  "auxiliary_artifacts": {
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  }
+}

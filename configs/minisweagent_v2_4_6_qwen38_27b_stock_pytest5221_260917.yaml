@@ -1,0 +1,49 @@
+agent:
+  step_limit: 250
+  cost_limit: 3.0
+  max_consecutive_format_errors: 3
+
+environment:
+  cwd: /testbed
+  timeout: 60
+  interpreter: [bash, -c]
+  env:
+    PAGER: cat
+    MANPAGER: cat
+    LESS: -R
+    PIP_PROGRESS_BAR: "off"
+    TQDM_DISABLE: "1"
+    BASH_ENV: /root/.bashrc
+  environment_class: docker
+  run_args:
+    - --rm
+    - --pull=never
+    - --network=none
+    - --cap-drop=ALL
+    - --security-opt=no-new-privileges
+    - --pids-limit=128
+    - --memory=4g
+    - --cpus=2
+    - --user=0:0
+
+model:
+  model_class: litellm
+  model_name: hosted_vllm/Qwen3.8-27B-rev-1d4bf0f
+  cost_tracking: ignore_errors
+  model_kwargs:
+    api_base: http://127.0.0.1:8000/v1
+    api_key: EMPTY
+    # The paired SGLang launch fixes the server context at 64K. Keep the
+    # recommended 8K per-turn completion allowance without compressing history.
+    max_tokens: 8192
+    num_retries: 0
+    temperature: 1.0
+    top_p: 0.95
+    timeout: 600
+    drop_params: true
+    parallel_tool_calls: true
+    extra_body:
+      top_k: 20
+      min_p: 0
+      chat_template_kwargs:
+        enable_thinking: true

@@ -10,8 +10,8 @@ from typing import Any
 
 from .decision_state import stable_digest
 from .graph import TraceGraph
-from .lifecycle_annotation import complete_tool_spans
-from .liveness import EventSpan, _group_spans
+from .context_engine.annotation import complete_tool_spans
+from .context_engine.liveness import EventSpan, _group_spans
 from .schema import EdgeType, Node, NodeType, SemanticOutcome
 
 

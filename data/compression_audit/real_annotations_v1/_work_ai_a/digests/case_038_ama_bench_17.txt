@@ -1,0 +1,57 @@
+CASE index=38 candidate_id=e36ad70894daabd81b20075590f6bc24c03a26ef974c6b98086d957ef3c1a75d
+source=ama_bench repository=ama:minihack task_id=17 split=test events=54
+====================================================================================================
+t0000:action | CALL environment_action/: south
+t0000:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near south ⏎ dark area very near north and northeast ⏎ stairs up adjacent north ⏎ dark area adjacent east, southeast, southwest, west, and northwest ⏎ ⏎ cursor: ⏎ Yourself …(+200ch)
+t0001:action | CALL environment_action/: south
+t0001:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near north and south ⏎ stairs up very near north ⏎ dark area adjacent northeast, east, southeast, southwest, west, and northwest ⏎ ⏎ cursor: ⏎ Yourself a monk ⏎ (x=40, y=8 …(+180ch)
+t0002:action | CALL environment_action/: south
+t0002:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up near north ⏎ dark area near north ⏎ dark area very near south and southwest ⏎ dark area adjacent northeast, east, southeast, west, and northwest ⏎ ⏎ cursor: ⏎ Yourself a m …(+198ch)
+t0003:action | CALL environment_action/: south
+t0003:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up near north ⏎ dark area near north and west ⏎ dark area adjacent northeast, east, southeast, south, southwest, and northwest ⏎ ⏎ cursor: ⏎ Yourself a monk ⏎ (x=40, y=10) ⏎  …(+178ch)
+t0004:action | CALL environment_action/: south
+t0004:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up near north ⏎ dark area near north and west ⏎ dark area adjacent northeast, east, southeast, south, southwest, and northwest ⏎ ⏎ cursor: ⏎ Yourself a monk …(+196ch)
+t0005:action | CALL environment_action/: west
+t0005:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up near northnortheast ⏎ dark area very near northeast, east, and west ⏎ dark area adjacent north, southeast, south, southwest, and northwest ⏎ ⏎ cursor: ⏎ Yourself a monk ⏎  …(+193ch)
+t0006:action | CALL environment_action/: west
+t0006:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up near northnortheast ⏎ dark area near east ⏎ dark area adjacent north, northeast, southeast, south, southwest, west, and northwest ⏎ ⏎ cursor: ⏎ Yourself a monk ⏎ (x=38, y= …(+184ch)
+t0007:action | CALL environment_action/: west
+t0007:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up near northnortheast ⏎ dark area near east ⏎ dark area adjacent north, northeast, southeast, south, southwest, west, and northwest ⏎ ⏎ cursor: ⏎ Yourself  …(+202ch)
+t0008:action | CALL environment_action/: north
+t0008:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up near northnortheast ⏎ dark area near east ⏎ dark area adjacent north, northeast, southeast, south, southwest, west, and northwest ⏎ ⏎ cursor: ⏎ Yourself  …(+202ch)
+t0009:action | CALL environment_action/: east
+t0009:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up near northnortheast ⏎ dark area very near northeast, east, and west ⏎ dark area adjacent north, southeast, south, southwest, and northwest ⏎ ⏎ cursor: ⏎ Yourself a monk ⏎  …(+193ch)
+t0010:action | CALL environment_action/: east
+t0010:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up near north ⏎ dark area near north and west ⏎ dark area adjacent northeast, east, southeast, south, southwest, and northwest ⏎ ⏎ cursor: ⏎ Yourself a monk ⏎ (x=40, y=10) ⏎  …(+178ch)
+t0011:action | CALL environment_action/: northwest
+t0011:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up near north ⏎ dark area near north and west ⏎ dark area adjacent northeast, east, southeast, south, southwest, and northwest ⏎ ⏎ cursor: ⏎ Yourself a monk …(+196ch)
+t0012:action | CALL environment_action/: north
+t0012:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up near north ⏎ dark area near north ⏎ dark area very near south and southwest ⏎ dark area adjacent northeast, east, southeast, west, and northwest ⏎ ⏎ cursor: ⏎ Yourself a m …(+198ch)
+t0013:action | CALL environment_action/: north
+t0013:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near north and south ⏎ stairs up very near north ⏎ dark area adjacent northeast, east, southeast, southwest, west, and northwest ⏎ ⏎ cursor: ⏎ Yourself a monk ⏎ (x=40, y=8 …(+182ch)
+t0014:action | CALL environment_action/: north
+t0014:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near south ⏎ dark area very near north and northeast ⏎ stairs up adjacent north ⏎ dark area adjacent east, southeast, southwest, west, and northwest ⏎ ⏎ cursor: ⏎ Yourself …(+202ch)
+t0015:action | CALL environment_action/: south
+t0015:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near north and south ⏎ stairs up very near north ⏎ dark area adjacent northeast, east, southeast, southwest, west, and northwest ⏎ ⏎ cursor: ⏎ Yourself a monk ⏎ (x=40, y=8 …(+182ch)
+t0016:action | CALL environment_action/: north
+t0016:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near south ⏎ dark area very near north and northeast ⏎ stairs up adjacent north ⏎ dark area adjacent east, southeast, southwest, west, and northwest ⏎ ⏎ cursor: ⏎ Yourself …(+202ch)
+t0017:action | CALL environment_action/: north
+t0017:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near east and south ⏎ dark area adjacent north, northeast, southeast, southwest, west, and northwest ⏎ ⏎ cursor: ⏎ Yourself a monk ⏎ (x=40, y=6) ⏎ ⏎ map: ⏎ ⏎ ⏎ ⏎ ⏎ ⏎ @.... …(+154ch)
+t0018:action | CALL environment_action/: east
+t0018:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near east ⏎ dark area very near southeast, southwest, and west ⏎ dark area adjacent north, northeast, south, and northwest ⏎ stairs up adjacent west ⏎ ⏎ cursor: ⏎ Yourself …(+206ch)
+t0019:action | CALL environment_action/: east
+t0019:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs down far south ⏎ dark area far south ⏎ dark area near east and west ⏎ stairs up very near west ⏎ dark area adjacent north, northeast, southeast, southwest, and northwest ⏎ ⏎  …(+236ch)
+t0020:action | CALL environment_action/: south
+t0020:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs down far south ⏎ dark area far south ⏎ dark area very near north, northeast, and northwest ⏎ stairs up very near westnorthwest ⏎ dark area adjacent east, southeast, southwest …(+251ch)
+t0021:action | CALL environment_action/: south
+t0021:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area far south ⏎ dark area near north ⏎ stairs down near south ⏎ stairs up very near northwest ⏎ dark area adjacent northeast, east, southeast, southwest, west, and northwest ⏎ …(+239ch)
+t0022:action | CALL environment_action/: south
+t0022:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area far south ⏎ dark area near north ⏎ stairs down near south ⏎ stairs up near northnorthwest ⏎ dark area adjacent northeast, east, southeast, southwest, west, and northwest ⏎ …(+239ch)
+t0023:action | CALL environment_action/: south
+t0023:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area near north and south ⏎ stairs down near south ⏎ stairs up near northnorthwest ⏎ dark area adjacent northeast, east, southeast, southwest, west, and northwest ⏎ ⏎ cursor: ⏎ …(+228ch)
+t0024:action | CALL environment_action/: south
+t0024:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area far north ⏎ dark area near south ⏎ stairs up near northnorthwest ⏎ stairs down very near south ⏎ dark area adjacent northeast, east, southeast, southwest, west, and northw …(+245ch)
+t0025:action | CALL environment_action/: south
+t0025:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area far north ⏎ stairs up far northnorthwest ⏎ dark area near south ⏎ dark area adjacent northeast, east, southeast, southwest, west, and northwest ⏎ stairs down adjacent sout …(+243ch)
+t0026:action | CALL environment_action/: south
+t0026:observation | OBS : message: ⏎   ⏎ No Points Name Hp [max] ⏎ 0 Agent-Mon-Hum-Fem-Law quit in The Dungeons of Doom on ⏎ level 1. 14 [14] ⏎ ⏎ ⏎ language observation: ⏎ dark area adjacent east, southeast, and south ⏎ ⏎ cursor: ⏎ very far easts …(+178ch)

@@ -1,8 +1,9 @@
-"""Render deterministic R2.1 component summaries from frozen attribution rows."""
+"""把第四阶段模型输入量来源生成表格和图。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import csv
 import html
 import statistics
@@ -121,7 +122,7 @@ def _write_svg(path: Path, summaries: Sequence[Mapping[str, Any]]) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--rows", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -136,4 +137,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

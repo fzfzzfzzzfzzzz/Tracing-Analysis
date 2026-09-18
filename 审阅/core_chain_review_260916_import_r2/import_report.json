@@ -1,0 +1,28 @@
+{
+  "artifacts": {
+    "CHAIN_SCOPE_READJUDICATION.md": "55e1d1973e4da10ef9c04e05bec58ceb4f955ea8d70a039e9122a17150c8865d",
+    "chain_scope_readjudication.cases.jsonl": "bba574d1fe6c42ca9ac54830a40f843db038c26c06e54665a81f656c8bb9a4fe",
+    "chain_scope_readjudication.template.jsonl": "2ca5018bb15308fd6b52ed7a1833752f849a8899e966c500e29dc14ae462a4a7",
+    "gold_drift.jsonl": "8d09f32439668ef4dde8793c2bc067ad3beb823dfca30dd9164225a91b458b26",
+    "reviews.validated.jsonl": "e3ea2ad83221480ceed41de5325b2c2d52f5ad505bacea5fe5a814cf439aa7c5",
+    "rubrics.all_reviewed.jsonl": "fb5f69bb5f42a9ff5e114bca7d32bf760d2a432dbbf877c36d7033060f8e3ab0",
+    "rubrics.frozen_gold_compatible.jsonl": "86ccff96df10058933ee79b94b7692b05ec4afc96e7710b6d86f0a789f18c9c4"
+  },
+  "dataset_manifest_sha256": "74ffd61a6c0760fb6fa79dd8ce960e9bfccbd24e43240a035f99ae11a7ebbac0",
+  "development_only": true,
+  "frozen_gold_compatible_count": 5,
+  "human_validated": false,
+  "independent_validation": false,
+  "packet_manifest_sha256": "bb02c610c603e5175e4a97e65c33bceef02b34267155b595bfbe53455a7adcd3",
+  "question_unambiguous_count": 7,
+  "review_count": 7,
+  "reviewer_kinds": [
+    "ai"
+  ],
+  "reviewers": [
+    "ZCode"
+  ],
+  "reviews_sha256": "c76177a50846fa3db13a02758a946b2818e7b159b74fea44e4f92bd566077793",
+  "schema_version": "compression_audit_core_chain_review_import_v1",
+  "semantic_gold_readjudication_count": 2
+}

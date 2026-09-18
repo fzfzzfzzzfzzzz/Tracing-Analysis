@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/tracegraph/compression_audit_v1.schema.json",
+  "title": "Compression Audit Benchmark Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "benchmark_id",
+    "release",
+    "legacy",
+    "controlled",
+    "real",
+    "v0_live",
+    "statistics",
+    "gates"
+  ],
+  "properties": {
+    "schema_version": {"const": "compression_audit_config_v1"},
+    "benchmark_id": {"const": "compression_audit_v1"},
+    "release": {"type": "string", "minLength": 1},
+    "legacy": {
+      "type": "object",
+      "required": ["input_root", "ranked", "expected_prefix_count", "expected_fork_count"],
+      "properties": {
+        "input_root": {"type": "string", "minLength": 1},
+        "ranked": {"const": false},
+        "expected_prefix_count": {"const": 24},
+        "expected_fork_count": {"const": 72},
+        "expected_hashes": {"type": "object"}
+      }
+    },
+    "controlled": {
+      "type": "object",
+      "required": ["base_seed", "prefix_count", "queries_per_prefix", "episode_count"],
+      "properties": {
+        "base_seed": {"type": "integer"},
+        "prefix_count": {"const": 240},
+        "queries_per_prefix": {"const": 6},
+        "episode_count": {"const": 1440},
+        "dimensions": {"type": "object"},
+        "split_prefix_counts": {"type": "object"}
+      }
+    },
+    "real": {
+      "type": "object",
+      "required": ["swe_gym_quota", "ama_bench_quota", "total_quota", "sources"],
+      "properties": {
+        "normalized_annotation_root": {"type": "string", "minLength": 1},
+        "swe_gym_quota": {"const": 60},
+        "ama_bench_quota": {"const": 40},
+        "total_quota": {"const": 100},
+        "double_human_annotation_required": {"const": true},
+        "adjudication_required": {"const": true},
+        "minimum_cohen_kappa": {"type": "number", "minimum": 0.8},
+        "minimum_evidence_event_f1": {"type": "number", "minimum": 0.9},
+        "sources": {"type": "array", "minItems": 2}
+      }
+    },
+    "v0_live": {
+      "type": "object",
+      "required": ["seed", "model", "context_tokenizer", "pricing_snapshot", "limits", "authorization"],
+      "properties": {
+        "seed": {"type": "integer"},
+        "audit_prefix_count": {"const": 24},
+        "audit_query_types": {"type": "array", "minItems": 2},
+        "audit_methods": {"type": "array", "minItems": 3, "maxItems": 3},
+        "audit_counterfactual_conditions": {"type": "array", "minItems": 2, "maxItems": 2},
+        "interactive_prefixes_per_recoverability": {"const": 2},
+        "interactive_conditions": {"type": "array", "minItems": 4},
+        "model": {"type": "object"},
+        "context_tokenizer": {
+          "type": "object",
+          "required": ["model", "path", "sha256", "source", "download_url"],
+          "properties": {
+            "model": {"const": "qwen3.8-27b"},
+            "path": {"type": "string", "minLength": 1},
+            "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "source": {"type": "string"},
+            "download_url": {"type": "string"}
+          }
+        },
+        "pricing_snapshot": {"type": "object"},
+        "limits": {
+          "type": "object",
+          "required": ["maximum_cost_cny", "request_count_hard_max", "retry_per_request_max"],
+          "properties": {
+            "maximum_cost_cny": {"const": 100.0},
+            "request_count_hard_max": {"const": 368},
+            "retry_per_request_max": {"const": 0}
+          }
+        },
+        "authorization": {"type": "object"}
+      }
+    },
+    "statistics": {"type": "object"},
+    "gates": {"type": "object"}
+  }
+}

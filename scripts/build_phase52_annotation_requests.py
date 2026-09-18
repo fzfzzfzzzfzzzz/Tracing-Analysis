@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Freeze all blind Phase 5.2 annotation requests without calling a provider."""
+"""生成第五阶段第二次补充的盲化分类请求，不调用模型。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import sys
 from collections import Counter
@@ -17,14 +18,14 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from tracegraph.graph import TraceGraph  # noqa: E402
-from tracegraph.lifecycle_annotation import (  # noqa: E402
+from tracegraph.context_engine.annotation import (  # noqa: E402
     annotation_response_function_schema,
     config_sha256,
     file_sha256,
     load_phase52_config,
     prepare_annotation_request,
 )
-from tracegraph.phase5_offline import build_strict_prefix  # noqa: E402
+from tracegraph.context_engine.phase5 import build_strict_prefix  # noqa: E402
 from tracegraph.trajectory_artifacts import sha256_json  # noqa: E402
 
 
@@ -58,7 +59,7 @@ def _file_record(root: Path, path: Path) -> dict[str, Any]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--config",
         type=Path,
@@ -254,4 +255,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

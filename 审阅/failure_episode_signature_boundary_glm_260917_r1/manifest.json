@@ -1,0 +1,16 @@
+{
+  "case_count": 2,
+  "case_digest": "03209b273c30e299f06f8224f07323e057636f022d0330627145ac81ca4fad6a",
+  "dataset_manifest_sha256": "42c8e6482d96bbbf391f1ce924aa58119f8dc01f72a88b1987de9d9c64030a69",
+  "development_only": true,
+  "files": {
+    "README.md": "f4b973e095449c4f11cb91b7f2e675ff4d3d3030515e9a481d893fdd2711ae18",
+    "blind_mapping.private.jsonl": "4d2333202eb618cd416de6a09d70a483c6a71e4421f4737c6e25cd929ce1414b",
+    "cases.jsonl": "af576b822f32afbbe1d2fe82687db9875120b58daccc81427bf39660caca5978",
+    "reviews.template.jsonl": "7325cd667f81af21b7bc518948f81c63dffe88027f6fb692ad84d94bf399e596"
+  },
+  "human_validated": false,
+  "independent_validation": false,
+  "run_report_sha256": "3b3c8439756c5dc1dad4175cf59f59696c89569582f3448464b7e0bcf3eb31d5",
+  "schema_version": "failure_episode_signature_boundary_packet_v1"
+}

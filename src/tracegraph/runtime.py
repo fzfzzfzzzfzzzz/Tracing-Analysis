@@ -12,7 +12,7 @@ from typing import Any, Protocol
 
 from .archive import ArchiveStore
 from .capture import ToolExecutor, estimate_tokens
-from .context import ContextManager, ContextView
+from .context_engine.context import ContextManager, ContextView
 from .graph import TraceGraph
 from .lifecycle import LifecycleEngine
 from .schema import EdgeType, LifecycleState, NodeType, ToolStatus

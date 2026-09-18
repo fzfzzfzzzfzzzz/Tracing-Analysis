@@ -1,0 +1,37 @@
+{
+  "benchmark": "tau3",
+  "counts_by_domain": {
+    "airline": {
+      "canary": 2,
+      "confirmatory_pool": 38,
+      "exposed": 10,
+      "source_total": 50
+    },
+    "retail": {
+      "canary": 3,
+      "confirmatory_pool": 101,
+      "exposed": 10,
+      "source_total": 114
+    }
+  },
+  "created_on": "2026-09-17",
+  "files": {
+    "canary_task_ids.jsonl": "914bc655d23bf5ff94d54ddb7414a6ff285a1a5348afc128aa79a52f83c37937",
+    "confirmatory_pool_task_ids.jsonl": "39baf6ac7d92b9360a119c68811c4fdd3d7551ec602c2ee7689818d1a91a4520",
+    "exposed_task_ids.jsonl": "aab8e834ffcdb11f2d57f5e46789b91ffc2f66b85f14b4e5529d89d006981fc5"
+  },
+  "historical_result_file_count": 276,
+  "rules": [
+    "historically executed tasks are excluded from the new confirmatory pool",
+    "canary tasks are development-only after the first model request",
+    "task content was not used for canary selection",
+    "confirmatory_pool must remain untouched until method configuration is frozen"
+  ],
+  "schema_version": "tau3_external_freeze_v1",
+  "selection_seed": 20260917,
+  "source_commit": "e10cffa7512157c157a29f71e5de4286cef5acb7",
+  "task_file_sha256": {
+    "airline": "34dfcf0622792d0d0fa32aa491d21582e1b5d3ec1948e7743bae881885f878ea",
+    "retail": "f44563d8f36362e2dc58282bb02cfb85010d22f27d9439808758d3e9b2bc16d2"
+  }
+}

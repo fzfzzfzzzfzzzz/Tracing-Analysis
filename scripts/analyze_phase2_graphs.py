@@ -1,14 +1,15 @@
-"""Summarize schema-v2 lifecycle signals in reimported experiment graphs."""
+"""汇总第二阶段重新导入记录中的状态变化。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
-from tracegraph.context import GraphLifecycleManager, NoFailureRetentionManager
+from tracegraph.context_engine.context import GraphLifecycleManager, NoFailureRetentionManager
 from tracegraph.graph import TraceGraph
 from tracegraph.schema import (
     EdgeType,
@@ -275,7 +276,7 @@ def analyze(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--matrix-report", type=Path)
     parser.add_argument("--budget", type=int, default=4096)
@@ -296,4 +297,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

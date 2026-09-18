@@ -1,81 +1,110 @@
-# Tools Tracing 项目 Agent 交接文档
+# 项目交接说明
 
-> **2026-08-01 Phase 5.2 执行中（外部限流暂停）：** P52-WP0 checkpoint 已冻结，SHA-256
+> **2026-09-12 扩展实现：** 新增十三方法服务器配置、偏序评分标准导入、AMA embedding、机制消融、实验候选、部署 receipt、ACON 开发指导词扫描和固定 mini-swe-agent 检查点轨道。真实推理/Docker 尚未运行，不能据此声称方法有效。见 [服务器扩展实施与边界](docs/服务器评测扩展实施260912.md)。
+
+> **2026-09-12 服务器评测准备：** 已新增独立 `python -m tracegraph.benchmark.server_eval` 入口，支持 Qwen3.8 8B/14B 配置位、七方法、三预算、按单元校准、断点恢复和配对报告。当前只做离线验收，真实模型请求为 0；服务器地址、权重和 tokenizer 待部署时绑定。见 [服务器部署与评测说明](docs/服务器评测准备260912.md)。
+
+> **2026-09-12 v0.2 pilot 实施：** 新入口为 `benchmark-pilot-prepare` /
+> `benchmark-pilot-run`，使用 `configs/compression_audit_v0_2_pilot_qwen38_flash.json`，答题与
+> 裁判均为 `qwen3.8-flash`。384 个 episode 的开发人口、四种实际方法、四字段评分、
+> 规则样例裁判校准、付费保护及离线重评分已接入。不得将离线夹具结果作为真实
+> 校准通过；已固定官方对应模型的 tokenizer，但本轮仍无付费授权。先读
+> [本轮实施记录](docs/v0.2开发闭环_实施和离线验收260912.md)，不要复用历史授权。
+
+<!-- 大白话说明 -->
+这份文档说明项目已经做到哪里，以及下一位接手者必须遵守什么。当前最新结果是第六阶段本地测试通过，随后完成真实模型小规模试跑并因继续条件未全部达到而停止，外部公开任务没有运行。本文记录的单次授权已经用完，不能据此继续发送模型请求，也不能用后来的文字改写覆盖旧实验事实。
+
+> **2026-09-08 TraceGraph 0.4.0 本地候选版：** 当前开发分支为
+> `codex/tracegraph-0.4-hardening`。已建立 `ContextPolicy.snapshot()` /
+> `materialize()` 两阶段接口、四维生命周期、安全优先选择、因果闭包找回、
+> 旧 schema 只读加载和 `v0.2-development` 协议。Python 包版本为
+> `0.4.0`；Benchmark 仍是 `v0.1-diagnostic`，新协议是
+> `v0.2-development`。v0.1 已直接用于调试，所有新输出必须保持
+> `development_only=true` 和 `independent_validation=false`，不得宣称为独立验证。
+> v0.1 冻结结果位于 `outputs/compression_audit/v0_1_*`，由
+> `scripts/verify_project.py --profile release` 只读核对哈希。旧授权已结束；
+> 任何 live 运行仍需当日有效配置和显式 `--live-authorization-id`。
+
+> **2026-08-30 自动判分修正与公开任务准备：** 旧结果保持不变；新版自动判分只读复核把 `M0` 从 32/36 修正识别为 36/36，把 `M5` 从 27/36 修正识别为 31/36。下一批结构化返回只允许引用可见编号，答案最多 600 字符。剩余 12 段未发送记录可以生成 216 个不含标准答案的请求模板。MemGym 和 SWE-Gym 官方代码已固定到配置提交；MemGym-CodeQA 正式数据仍未发布，SWE-Gym 数据因 Hugging Face 当前无法连接而尚未下载。真实编程任务必须按多轮请求计费；20 题 × 5 办法 × 每次任务最多 55 次请求的保守试算为 1095.336 元，超过 100 元上限，因此公开任务准备结果为停止，模型请求为 0。全仓 239 项测试通过。详见 [`docs/第六阶段_自动判分怎样修正.md`](docs/第六阶段_自动判分怎样修正.md)和 [`docs/第六阶段_公开测试任务准备说明.md`](docs/第六阶段_公开测试任务准备说明.md)。该试算不是外部调用授权。
+
+> **2026-08-30 第六阶段真实模型小规模试跑停止：** 阿里云百炼 `qwen3.8-27b` 完成 216/216 次正式试验，另有一次最小检查，正式结果目录为 `outputs/phase6/e3_qwen38_27b_pilot_v2/`。服务商记录 248,770 输入、43,827 输出，费用 1.272234 元；连同修正前两次最小检查，总费用 1.2745368 元。六种办法的正式正确率依次为 88.89%、69.44%、63.89%、66.67%、75.00%、88.89%。所有旧记录一直保留的办法低于事先要求的 95%；按前因后果找回的办法另有 3 次返回无法解析，安全条件按拿不准就停止处理，因此结论为停止，不进入外部公开任务。人工复核发现前者 4 条失败实际回答正确，是关键词检查过严；正式文件和决定不在看到结果后修改。完整说明见 [`docs/第六阶段_真实模型小规模试跑结果.md`](docs/第六阶段_真实模型小规模试跑结果.md)。未经新的价格确认、费用上限和用户授权，不得继续外部调用。
+
+> **2026-08-01 第五阶段第二次补充 执行中（外部限流暂停）：** P52-WP0 开始前检查 已冻结，SHA-256
 > 为 `0827bc97ffe661156ab6120a0bebe8e56a5957f1104a63a8c98989cabd54f0d0`。方案 A 的
-> GLM 双遍盲化协议、15-tool `ToolEffectSpec` 注册表、实体/字段状态机、可恢复 runner、
-> 共识/门禁和 held-out evaluator 已实现。冻结集为 261 prefixes，其中 185 个调用
+> GLM 双遍盲化协议、15-tool `ToolEffectSpec` 注册表、实体/字段按固定规则逐步更新状态的程序、可恢复 runner、
+> 共识/继续或停止条件和 held-out evaluator 已实现。冻结集为 261 截至当时已有的记录，其中 185 个调用
 > `glm-4.7-flash` 两遍、76 个结构化为无机会；每遍 1,092 个 call/result 单元，共 370
 > 请求，估算输入 3,528,760 token，低于 3,600,000 硬上限。全语料无标签预演覆盖
-> 1,092 个预测，determinism、future-suffix independence、EventGraph unchanged、archive、
-> protocol、projection-send-forbidden 均为 100%。首个真实请求成功；随后同一 Pass B 单元
+> 1,092 个预测，determinism、future-suffix independence、工具使用记录之间的关系 unchanged、单独保存的旧记录、
+> protocol、整理后交给模型的内容-send-forbidden 均为 100%。首个真实请求成功；随后同一 Pass B 单元
 > 四次收到 Z.AI HTTP 429/code 1305。2026-08-01 再探测时 Pass B 成功，但下一条请求立即
 > 再次 429，说明限流只短暂解除；当前 7/400 HTTP attempts、2/370 valid，累计 usage 为
 > 16,085 input / 1,016 output，已保存脱敏响应和 `pause_0002`，收集是“可恢复暂停”，不是质量
-> No-Go。恢复时只能先用 `scripts/record_phase52_pricing_snapshot.py` 记录追加式官方免费价格
-> 复核，再把新快照路径和哈希交给原 runner；禁止付费、第二模型、fallback、
+> 停止。恢复时只能先用 `scripts/record_phase52_pricing_snapshot.py` 记录追加式官方免费价格
+> 复核，再把新快照路径和文件指纹交给原 runner；禁止付费、第二模型、fallback、
 > Scheme B 或行为实验。最新全量验证为 `190 passed`，Ruff/compileall/diff-check、配置 schema、
-> 370-request regeneration 和 partial-artifact hash audit 均通过。完整说明见
-> [`docs/PHASE52_IMPLEMENTATION.md`](docs/PHASE52_IMPLEMENTATION.md)。
+> 370-request regeneration 和 partial-artifact 文件指纹 audit 均通过。完整说明见
+> [`docs/第五阶段第二次补充_两次判断和规则检查怎样实现.md`](docs/第五阶段第二次补充_两次判断和规则检查怎样实现.md)。
 
-> **2026-08-01 Phase 5.1 P51-G0 Stop：** 已按独立增量计划完成纯本地生命周期证据
-> ceiling audit。全部 261 个冻结 prefixes 均纳入，185 个 cost-eligible；Grade A
-> `complete_scalar_consumption` 将有缩减的 eligible prefixes 从 F5 的 4 个提高到 10 个，
+> **2026-08-01 第五阶段第一次补充 P51-G0 Stop：** 已按独立增量计划完成纯本地判断记录是否还需要的证据
+> ceiling audit。全部 261 个冻结 截至当时已有的记录 均纳入，185 个 cost-eligible；Grade A
+> `complete_scalar_consumption` 将有缩减的 eligible 截至当时已有的记录 从 F5 的 4 个提高到 10 个，
 > Grade B 乐观上限也只有 36 个，低于改变配对中位数所需的预冻结 93 个，且中位数仍为
 > `0`。P51-G0 判定 `stop_old_corpus_path`。这不推翻结构化运行时证据的方向，而是说明旧
 > traces 不含足够的 effect scope/version/receipt/consumption 事实；不得继续在旧语料调规则，
 > 也不得自动进入新遥测采集。结果见
-> [`docs/PHASE51_LIFECYCLE_EVIDENCE_RESULTS.md`](docs/PHASE51_LIFECYCLE_EVIDENCE_RESULTS.md)。
-> F5-G1 仍为 No-Go，Structured/外部试验仍未授权，provider generations 仍为 0；最新全量
+> [`docs/第五阶段补充试验_判断旧记录是否有用.md`](docs/第五阶段补充试验_判断旧记录是否有用.md)。
+> F5-G1 仍为 停止，Structured/外部试验仍未授权，模型服务商 generations 仍为 0；最新全量
 > 验证为 `177 passed`、ruff/compileall/diff-check 通过。
 
-> **2026-07-28 Phase 5 F5-G1 No-Go：** outcome-blind development manifest 已冻结全部
-> 261 个旧 decision prefixes（30 sessions；185 个 cost-eligible）。离线 replay-v2 的
-> determinism、future-suffix、protocol、root/critical recall、archive reactivation 和
-> request hash 均为 100%，policy/confirmation/receipt false-dead 为 0；但仅 4/185 个
-> eligible prefixes 降低完整 serialized input，paired median Prune−Raw token delta 为
-> `0`，未达到预冻结的 `<0` 门槛。因此停止在 F5-G2、GDSC-Structured 与所有外部 pilot
-> 之前；不得筛选有利 prefix、放宽阈值或覆盖 replay-v1/v2。权威结果见
-> [`docs/PHASE5_RESULTS.md`](docs/PHASE5_RESULTS.md)；外部 sessions 仍为 0。
+> **2026-07-28 第五阶段 F5-G1 停止：** outcome-blind development 文件清单 已冻结全部
+> 261 个旧 decision 截至当时已有的记录（30 sessions；185 个 cost-eligible）。离线 replay-v2 的
+> determinism、future-suffix、protocol、root/critical recall、单独保存的旧记录 找回旧记录 和
+> request 文件指纹 均为 100%，policy/confirmation/receipt false-dead 为 0；但仅 4/185 个
+> eligible 截至当时已有的记录 降低完整 真正拼成完整请求后的 input，同题比较 median Prune−Raw token delta 为
+> `0`，未达到预冻结的 `<0` 门槛。因此停止在 F5-G2、第四阶段的记录整理办法-Structured 与所有外部 小规模试跑
+> 之前；不得筛选有利 截至当时已有的记录、放宽阈值或覆盖 replay-v1/v2。权威结果见
+> [`docs/第五阶段做了什么和得到什么.md`](docs/第五阶段做了什么和得到什么.md)；外部 sessions 仍为 0。
 
-> **2026-07-28 Phase 5 规划通知：** 项目级下一阶段已经明确为 [`第五阶段修改计划.md`](第五阶段修改计划.md)。新主线把 GDSC 收敛为 agent 内的生命周期图上下文模块：先以 `GDSC-Prune` 验证 dead tool trace 的安全回收，再独立检验 `GDSC-Structured` 的 Live Subgraph 结构化投影。本文下述 Phase 4 R2/E0 No-Go、数值、artifact 和停止事实保持历史有效；Phase 5 是新预注册版本，不追溯降低或改写旧30%门槛。该规划文档本身不授权新的外部模型会话。
+> **2026-07-28 第五阶段 规划通知：** 项目级下一阶段已经明确为 [`第五阶段准备怎么改.md`](第五阶段准备怎么改.md)。新主线把 第四阶段的记录整理办法 收敛为 agent 内的记录现在是否还需要图交给模型的内容模块：先以 `GDSC-Prune` 验证 dead tool trace 的安全回收，再独立检验 `GDSC-Structured` 的 当前仍需要的一小段相关记录 结构化整理后交给模型的内容。本文下述 第四阶段 R2/E0 停止、数值、artifact 和停止事实保持历史有效；第五阶段 是新实验开始前定下的规则版本，不追溯降低或改写旧30%门槛。该规划文档本身不授权新的外部模型会话。
 
-> **2026-07-21 研究重置通知：** 本文件主体记录的是 Phase 4/P3b-A 完成时的历史快照。关于“下一步只能做 Failure Card common-prefix fork”、Card-only P3b-B、禁止扩展一般决策状态表示/benchmark/baseline，以及以 Card negative-results 收口的指令，均已被 [`第四阶段修改计划.md`](第四阶段修改计划.md) v2.0 取代。客观结果、代码位置、provenance 和外部 API gate 仍然有效；新的主线是 Graph-Constrained Decision-State Compiler（GDSC）。
+> **2026-07-21 研究重置通知：** 本文件主体记录的是 第四阶段/P3b-A 完成时的历史快照。关于“下一步只能做 失败原因和避免办法的简短记录 从同一段已有记录开始的不同后续”、Card-only P3b-B、禁止扩展一般决策状态表示/benchmark/用来比较的办法，以及以 Card negative-results 收口的指令，均已被 [`第四阶段准备怎么改.md`](第四阶段准备怎么改.md) v2.0 取代。客观结果、代码位置、来源记录 和外部 API 继续或停止条件 仍然有效；新的主线是 只保留下一步所需信息的办法（第四阶段的记录整理办法）。
 
-> 快照日期：2026-07-20（Phase 4 P3b-A 更新）
+> 快照日期：2026-07-20（第四阶段 P3b-A 更新）
 > 仓库：`E:\科研\Tools Tracing`
-> 当前测试状态：GDSC 改造前基线 `117 passed`；R2 完成时 `144 passed`；R2.1 后最新全量 `147 passed`，ruff 全仓通过
-> 当前研究判定：GDSC R0 development gate 通过，R1 工程完成；R2 因 median serialized reduction `14.956% <30%` 为 No-Go。R2.1 的真实发送口径为 `15.723%`，而完整 policy + native schemas 固定成本下界的最大 median 降幅仅 `28.451% <30%`，故裁决为不可达、分支 B，不实现 v1.1。E0 也因每域仅 5 tasks、median actions 7/6 及证据缺失为 No-Go。继续停止在 R3 前，外部会话 0/340。
+> 当前测试状态：第四阶段的记录整理办法 改造前用来比较的办法 `117 passed`；R2 完成时 `144 passed`；R2.1 后最新全量 `147 passed`，ruff 全仓通过
+> 当前研究判定：第四阶段的记录整理办法 R0 development 继续或停止条件 通过，R1 工程完成；R2 因 median 真正拼成完整请求后的 reduction `14.956% <30%` 为 停止。R2.1 的真实发送口径为 `15.723%`，而完整 policy + native schemas 固定成本下界的最大 median 降幅仅 `28.451% <30%`，故裁决为不可达、分支 B，不实现 v1.1。E0 也因每域仅 5 tasks、median actions 7/6 及证据缺失为 停止。继续停止在 R3 前，外部会话 0/340。
 
 ## 0. 接手后的第一条原则
 
 不要原样扩大现有 P3 Card 矩阵，也不要把 Codex A/B 改名为人工标注。旧 P3b-B 仍不得直接运行。
 
-P3 的**机制可识别性基础设施**已经在 Phase 4/P3b-A 修复：状态/原因已拆分，trajectory/evaluator 已解耦，next-3-action 指标已在冻结矩阵回放。这些成果保留为 FailureGuard 机制切片与新 common-prefix 框架的基础。GDSC 的 PromptBundle、DecisionStateGraph、benchmark eligibility 与多表示编译器现已实现；由于 R2/E0 双门禁失败，外部 representation fork 与 R4 matrix 不得执行。
+P3 的**机制能否分清各部分作用基础设施**已经在 第四阶段/P3b-A 修复：状态/原因已拆分，trajectory/evaluator 已解耦，next-3-action 指标已在冻结矩阵回放。这些成果保留为 防止重复犯错的提醒 机制切片与新 同一段已有记录 框架的基础。第四阶段记录整理办法的 PromptBundle、DecisionStateGraph、benchmark eligibility 与多表示编译器现已实现；由于 R2/E0 两个继续条件都没有达到，外部 representation 不同后续与 R4 组合实验 不得执行。
 
-### 0.A GDSC 执行与交接规则
+### 0.A 第四阶段的记录整理办法 执行与交接规则
 
-- `117 passed` 是 GDSC 改造前冻结基线；新增实现后的验证结果为 `144 passed` 与全仓 ruff 通过。
-- `TraceGraph`/EventGraph 和旧 `full_ours` 行为是兼容边界，不追溯改写；GDSC 使用新 manager `decision_state_compiler`、版本 `gdsc_core_v1`。
-- 五层成本、R0–R4 门禁、样本冻结和停止规则以 [`docs/GDSC_PREREGISTRATION.md`](docs/GDSC_PREREGISTRATION.md) 为准；任何主张先查 [`docs/CLAIM_EVIDENCE_MATRIX.md`](docs/CLAIM_EVIDENCE_MATRIX.md)。
-- GDSC 的实际运行状态只写入 [`docs/PHASE4_GDSC_RESULTS.md`](docs/PHASE4_GDSC_RESULTS.md)。没有产物 hash、运行 manifest 和 gate 报告的项目必须保持“未运行/未判定”，不得从计划或单元测试推断为正向结果。
-- 本轮经验范围固定为 τ³ retail/airline development evidence。没有第二 primary benchmark 和两位独立人工 gold 时，即使 R4 全部通过，也不得写成最终 AAAI 双 benchmark 或正式 construct-validity 结论。
-- 外部运行固定 fail closed：仅 `zai/glm-4.7-flash` 免费额度，无付费或模型 fallback；启动前重核价格并把证据写入 manifest。E0、R2 或 R3 任一门禁失败即停止后续矩阵。
+- `117 passed` 是 第四阶段的记录整理办法 改造前冻结用来比较的办法；新增实现后的验证结果为 `144 passed` 与全仓 ruff 通过。
+- `TraceGraph`/工具使用记录之间的关系 和旧 `full_ours` 行为是兼容边界，不追溯改写；第四阶段的记录整理办法 使用新 记录整理办法 `decision_state_compiler`、版本 `gdsc_core_v1`。
+- 五层成本、R0–R4 继续或停止条件、样本冻结和停止规则以 [`docs/第四阶段_实验开始前定下的规则.md`](docs/第四阶段_实验开始前定下的规则.md) 为准；任何主张先查 [`docs/第四和第五阶段_每个结论有什么证据.md`](docs/第四和第五阶段_每个结论有什么证据.md)。
+- 第四阶段记录整理办法的实际运行状态只写入 [`docs/第四阶段新方案做了什么和得到什么.md`](docs/第四阶段新方案做了什么和得到什么.md)。没有产物 文件指纹、运行 文件清单 和 继续或停止条件 报告的项目必须保持“未运行/未判定”，不得从计划或单元测试推断为正向结果。
+- 本轮经验范围固定为 τ³ retail/airline development evidence。没有第二 primary benchmark 和两位独立人工 事先规定的标准答案 时，即使 R4 全部通过，也不得写成最终 AAAI 双 benchmark 或正式 construct-validity 结论。
+- 外部运行固定 拿不准时宁可保留或停止：仅 `zai/glm-4.7-flash` 免费额度，无付费或模型 fallback；启动前重核价格并把证据写入 文件清单。E0、R2 或 R3 任一继续或停止条件失败即停止后续矩阵。
 
-### 0.1 Phase 4/P3b-A 最新状态
+### 0.1 第四阶段/P3b-A 最新状态
 
 实施计划与结果：
 
-- `第四阶段修改计划.md`
-- `docs/PHASE4_RESULTS.md`
+- `第四阶段准备怎么改.md`
+- `docs/第四阶段早期试验做了什么和得到什么.md`
 - `outputs/phase4/phase4_gate_report.json`
 
 已完成：
 
 - failure-chain v2：60/60 非破坏迁移，2 个 lossy expiry 显式审计，两份干净人工盲表；
-- provisional v2 诊断：retention precision `0.176`、recall `1.000`、expiry-cause accuracy `0.744`；仍不是人工 gold；
-- immutable generation artifact、append-only evaluator attempts、raw response 保存和 simulation/hash reward merge；
+- provisional v2 诊断：retention precision `0.176`、recall `1.000`、expiry-cause accuracy `0.744`；仍不是人工 事先规定的标准答案；
+- immutable generation artifact、append-only evaluator attempts、raw response 保存和 simulation/文件指纹 reward merge；
 - 零 API 故障注入 10/10 checks 通过；
-- Phase 3 冻结矩阵 next-3-action 回放：60 sessions、49 eligible events、45 有 action、98/98 action-view 对齐；
+- 第三阶段 冻结矩阵 next-3-action 回放：60 sessions、49 eligible events、45 有 action、98/98 action-view 对齐；
 - Card 条件：7 events、6 有 action、目标 Card 可见 12 次、repeat/repair/resolve 为 `0/1/1`；仅为 post-hoc，不是因果结果；
 - `phase4.engineering_gate_passed=true`；
 - `phase4.empirical_claim_gate_passed=false`；
@@ -129,34 +158,34 @@ git -c "safe.directory=E:/科研/Tools Tracing" diff --check
 - `outputs/tau3_live/`
 - `vendor/tau3-bench/data/simulations/p3_card_retail_codex_*`
 
-失败批次是 provenance 和问题复盘的一部分，不应删除或混回正式分析。
+失败批次是 来源记录 和问题复盘的一部分，不应删除或混回正式分析。
 
 ### 1.3 文档和结果的可信优先级
 
 发生描述冲突时按以下顺序判断：
 
-1. JSON gate/report 和冻结 plan；
-2. `docs/PHASE3_RESULTS.md`；
-3. `第三阶段修改计划.md`；
+1. JSON 继续或停止条件/report 和冻结 plan；
+2. `docs/第三阶段做了什么和得到什么.md`；
+3. `第三阶段准备怎么改.md`；
 4. README 和其他概览文档；
 5. 历史聊天结论。
 
 当前主要入口：
 
-- `工具调用建图_生命周期压缩调研报告.md`
-- `第二阶段修改计划.md`
-- `第二阶段实验结论.md`
-- `第三阶段修改计划.md`
-- `docs/PHASE3_RESULTS.md`
+- `怎样缩短工具使用记录_资料调查.md`
+- `第二阶段准备怎么改.md`
+- `第二阶段做了什么和得到什么.md`
+- `第三阶段准备怎么改.md`
+- `docs/第三阶段做了什么和得到什么.md`
 
 ## 2. 当前算法是什么
 
 第三阶段的主方法是 `full_ours` / `GraphLifecycleManager`。它不再把所有未解决失败原始消息作为无预算 mandatory context，而是：
 
-1. 原始 call/result 始终写入 archive；
+1. 原始 call/result 始终写入 单独保存的旧记录；
 2. 用 operation scope 聚合可行动失败；
 3. 生成受置信度、TTL 和显式 expiry 控制的 compact `FailureCard`；
-4. Failure Card 只使用总预算的 12.5%；
+4. 失败原因和避免办法的简短记录 只使用总预算的 12.5%；
 5. 原始失败工具消息默认不回注模型 prompt；
 6. 修复、替代完成、语法纠正、supersession 或 TTL 可使 Card 失效；
 7. Raw Hard 旧行为只作为对照保留。
@@ -194,11 +223,11 @@ ON_TURN(history):
 
 ### 已解决的原始问题
 
-“失败工具调用被强制保存并反复进入后续上下文”已经修复：
+“失败工具调用被强制保存并反复进入后续交给模型的内容”已经修复：
 
 - raw tool call/result 仍可审计和恢复；
 - active context 默认只接收 compact Card；
-- Card 不触发历史 tool-call/result protocol closure；
+- Card 不触发历史 tool-call/result 把工具调用和返回结果成对补齐；
 - P3 Card 条件中 `raw_failure_messages_selected = 0`；
 - P3 Card 条件中 `budget_infeasible_sessions = 0`。
 
@@ -215,12 +244,12 @@ ON_TURN(history):
 - `FailureCard` schema；
 - operation scope 聚合；
 - actionable、terminal、policy-denied、malformed、stale 等失败分类；
-- resolved、superseded、alternative-completed、corrected-syntax、TTL 等 expiry；
+- resolved、已被新信息替代、alternative-completed、corrected-syntax、TTL 等 expiry；
 - 12.5% 独立 Card 子预算；
-- archive/audit 与 active context 分离；
+- 单独保存的旧记录/audit 与 active context 分离；
 - `raw_hard_failure_retention` 旧行为对照；
 - 缺失/空参数被成功补齐时的 `argument_completion` retry 与即时 resolution；
-- Failure Card 不恢复历史原始工具协议交换。
+- 失败原因和避免办法的简短记录 不恢复历史原始工具协议交换。
 
 P0 的意义是消除第二阶段“必须可恢复 = 必须每轮可见”的错误等价，不是证明在线收益。
 
@@ -239,9 +268,9 @@ P0 的意义是消除第二阶段“必须可恢复 = 必须每轮可见”的�
 
 结果：
 
-- 128/128 TraceGraph 有效；
-- controlled card precision = `1.0`；
-- controlled expiry correctness = `1.0`；
+- 128/128 工具使用记录关系图 有效；
+- 条件固定的测试 card precision = `1.0`；
+- 条件固定的测试 expiry correctness = `1.0`；
 - Card 相对 Remove：repeated invalid action `-1.0`、recovery steps `-1.0`、success delta `0`；
 - Card 相对 Raw Hard：selected representation tokens `-206.75`、protocol-closed tokens `-350.5`、本地 controller 输入 `-277.75`、success delta `0`；
 - 四类干预方向一致。
@@ -250,7 +279,7 @@ P0 的意义是消除第二阶段“必须可恢复 = 必须每轮可见”的�
 
 ## 3.3 P2：failure-chain 构念验证
 
-状态：**Codex 临时版完成，正式人工 gate 未通过**。
+状态：**Codex 临时版完成，正式人工 继续或停止条件 未通过**。
 
 产物：`outputs/phase3/p2_failure_chain_v1/`。
 
@@ -262,7 +291,7 @@ P0 的意义是消除第二阶段“必须可恢复 = 必须每轮可见”的�
 - 7 条 chain、11 个字段出现 A/B 分歧；
 - Codex 临时裁决后 unresolved adjudication = `0`。
 
-provenance 必须保留：
+来源记录 必须保留：
 
 ```text
 annotation_provenance = codex_provisional
@@ -271,7 +300,7 @@ B identity = codex_gpt5_pass_b
 independence_warning = same_model_same_thread_not_independent_human_gold
 ```
 
-不要把这两次 pass 描述为“两位独立标注者”。正式 gate 会拒绝 `codex_provisional`。
+不要把这两次 pass 描述为“两位独立标注者”。正式 继续或停止条件 会拒绝 `codex_provisional`。
 
 临时评分：
 
@@ -298,7 +327,7 @@ coverage κ 为 0 是近单类别造成的 prevalence degeneration，不等同�
 
 进一步诊断：
 
-- 22/55 个 scope mismatch 全部是算法预测 `not_applicable`；Codex gold 为 `yes` 20 个、`no` 2 个；
+- 22/55 个 scope mismatch 全部是算法预测 `not_applicable`；Codex 事先规定的标准答案 为 `yes` 20 个、`no` 2 个；
 - 没有出现“算法预测 same scope、Codex 判 different scope”的危险过度聚合；
 - 当前主要是保守欠聚合，可能造成重复 Card 或压缩不足；
 - 11/43 个 expiry mismatch 中，10 个是 `resolved` vs `superseded`，1 个是 `resolved` vs `corrected_syntax`；
@@ -317,7 +346,7 @@ coverage κ 为 0 是近单类别造成的 prevalence degeneration，不等同�
 
 ## 3.4 P3：单环境四条件实验
 
-状态：**临时数据完整，正式效果 gate 未通过**。
+状态：**临时数据完整，正式效果 继续或停止条件 未通过**。
 
 ### 原始 60-session 矩阵的问题
 
@@ -371,7 +400,7 @@ TRACEGRAPH_TAU_NL_EVALUATOR_JSON_MODE = strict_then_extract
 - 24/24 sessions；
 - 0 infrastructure errors；
 - 0 graph validation errors；
-- provider usage coverage = 100%。
+- 模型服务商 usage coverage = 100%。
 
 ### 修复后复合数据集
 
@@ -382,9 +411,9 @@ TRACEGRAPH_TAU_NL_EVALUATOR_JSON_MODE = strict_then_extract
 - task 27/33/34：原始矩阵中未受 evaluator 配额影响的结果；
 - task 76/36：平衡补跑中四个条件的结果；
 - 每个 task 内 evaluator 对所有条件一致；
-- task strata 之间 evaluator provenance 可以不同。
+- task strata 之间 evaluator 来源记录 可以不同。
 
-因此当前 P3 是 **task-stratified evaluator 复合数据**：只能汇总 task 内 paired delta，不能描述为“一次连续、不间断的 60-session 正式运行”。
+因此当前 P3 是 **task-stratified evaluator 复合数据**：只能汇总 task 内 同题比较 delta，不能描述为“一次连续、不间断的 60-session 正式运行”。
 
 完整性：
 
@@ -395,20 +424,20 @@ TRACEGRAPH_TAU_NL_EVALUATOR_JSON_MODE = strict_then_extract
 - 0 graph errors；
 - 0 zero-token traces；
 - 0 malformed sessions；
-- provider usage coverage = 100%。
+- 模型服务商 usage coverage = 100%。
 
 条件汇总：
 
-| 条件 | success | normal stop | 平均 provider input | 平均 protocol tokens | repeated invalid |
+| 条件 | success | normal stop | 平均 模型服务商 input | 平均 protocol tokens | repeated invalid |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Full | 2/15 | 93.3% | 93,494 | 94,864 | 0.067 |
 | Remove | 4/15 | 86.7% | 94,000 | 75,744 | 0.133 |
 | Raw Hard | 2/15 | 86.7% | 95,649 | 90,821 | 0.000 |
 | Compact Card | 4/15 | 93.3% | 86,123 | 74,593 | 0.000 |
 
-Card paired delta：
+Card 同题比较 delta：
 
-| 参考 | success Δ [95% CI] | provider Δ [95% CI] | protocol Δ [95% CI] | repeated Δ [95% CI] |
+| 参考 | success Δ [95% CI] | 模型服务商 Δ [95% CI] | protocol Δ [95% CI] | repeated Δ [95% CI] |
 | --- | ---: | ---: | ---: | ---: |
 | Full | +0.133 [-0.133, 0.400] | -7,371 [-37,254, 18,157] | -20,272 [-77,770, 29,068] | -0.067 [-0.200, 0.000] |
 | Remove | 0.000 [-0.200, 0.200] | -7,877 [-46,901, 24,514] | -1,152 [-41,512, 40,012] | -0.133 [-0.400, 0.000] |
@@ -422,19 +451,19 @@ Card paired delta：
 
 ## 3.5 P4：强 compressor 与扩展
 
-状态：**工程完成，扩展实验 No-Go**。
+状态：**工程完成，扩展实验 停止**。
 
-已实现 `acon_official_with_failure_cards`：保持官方 ACON selected-message plan 不变，再叠加受独立预算约束的 native Failure Card。源码 hash、runtime eligibility、provider usage、fallback 均 fail closed。
+已实现 `acon_official_with_failure_cards`：保持官方 ACON selected-message plan 不变，再叠加受独立预算约束的 native 失败原因和避免办法的简短记录。源码 文件指纹、runtime eligibility、模型服务商 usage、fallback 均 拿不准时宁可保留或停止。
 
-最新 gate：
+最新 继续或停止条件：
 
 `outputs/phase3/gates/p3_card_retail_codex_repaired_composite_v1_gate_report.json`
 
 已通过：
 
-- P1 engineering gate；
-- P3 matrix completeness；
-- provider usage completeness；
+- P1 engineering 继续或停止条件；
+- P3 组合实验 completeness；
+- 模型服务商 usage completeness；
 - bounded Card 且 raw replay 为 0；
 - failure-type consistency；
 - Card 不增加 Raw repeated invalid。
@@ -448,26 +477,26 @@ Card paired delta：
 
 `p4.go_gate_passed = false`。
 
-这是计划中 No-Go 分支的正确执行，不是遗漏实现。P4 runner 会在任何外部 API 会话开始前拒绝执行。不要伪造正向 gate，不要绕过 runner，不要继续 ACON live、第二模型家族或第二环境。
+这是计划中 停止 分支的正确执行，不是遗漏实现。P4 runner 会在任何外部 API 会话开始前拒绝执行。不要伪造正向 继续或停止条件，不要绕过 runner，不要继续 ACON live、第二模型家族或第二环境。
 
 ## 4. 当前真正遇到的问题
 
 ### 4.1 H4 在当前 τ³ 设置中仍不可识别
 
-Card 条件只有 7/15 个 session 实际激活 Failure Card，共约 27 个 card-visible turns；只有 1 个 session 出现 resolved failure。
+Card 条件只有 7/15 个 session 实际激活 失败原因和避免办法的简短记录，共约 27 个 card-visible turns；只有 1 个 session 出现 resolved failure。
 
 更关键的是，Card 相对 Remove 的 repeated-invalid 改善出现在没有激活 Card 的分层中：
 
-- Card-active 事后分层：7 对，success delta `-0.143`，provider delta约 `-29k`，repeat delta `0`；
-- no-Card 事后分层：8 对，success delta `+0.125`，provider delta约 `+10.6k`，repeat delta `-0.25`。
+- Card-active 事后分层：7 对，success delta `-0.143`，模型服务商 delta约 `-29k`，repeat delta `0`；
+- no-Card 事后分层：8 对，success delta `+0.125`，模型服务商 delta约 `+10.6k`，repeat delta `-0.25`。
 
 该分层是 post-hoc diagnostic，不可作因果结论，但它明确说明当前 repeated-invalid 点估计不能归因于 Card。
 
-task 33 的 Card 分支没有任何 Card，却比 Remove 少 2 次 repeated-invalid。这更像轨迹随机分叉，而不是 Failure Card 机制作用。
+task 33 的 Card 分支没有任何 Card，却比 Remove 少 2 次 repeated-invalid。这更像工具使用记录随机分叉，而不是 失败原因和避免办法的简短记录 机制作用。
 
-### 4.2 总 token 被轨迹长度混杂
+### 4.2 总 token 被工具使用记录长度混杂
 
-Card vs Remove 的 provider delta 在任务间方向相反：
+Card vs Remove 的 模型服务商 delta 在任务间方向相反：
 
 - task 36：约 `-55.9k`；
 - task 76：约 `+53.7k`。
@@ -479,9 +508,9 @@ Card vs Remove 的 provider delta 在任务间方向相反：
 - user simulator 后续响应；
 - 模型 API 的非完全确定性；
 - 是否进入长错误循环；
-- context manager 本身。
+- 记录整理办法 本身。
 
-temperature=0 不等于 API 轨迹完全可重复。当前 `--seed` 主要进入 τ³ harness，agent/user LLM args 没有冻结模型采样 seed。
+temperature=0 不等于 API 工具使用记录完全可重复。当前 `--seed` 主要进入 τ³ harness，agent/user LLM args 没有冻结模型采样 seed。
 
 下一轮不能只比较全会话 token，必须报告失败发生后的固定动作窗口和 action-normalized token。
 
@@ -489,13 +518,13 @@ temperature=0 不等于 API 轨迹完全可重复。当前 `--seed` 主要进入
 
 现有 `expiry_trigger` 同时承担状态和原因；`same_operation_scope` 又把 alternative completion、syntax correction 和 tool signature 混在一起。
 
-如果直接让人工填写旧表，最可能得到更昂贵但仍无法解释的 gold。
+如果直接让人工填写旧表，最可能得到更昂贵但仍无法解释的 事先规定的标准答案。
 
 正式人工标注必须等 v2 schema 稳定后再做，并从不含 Codex 标签泄漏的干净副本开始。
 
 ### 4.4 trajectory generation 与 evaluator 耦合
 
-当前上游 evaluator exception 会让结果包装丢失已完成的对话。TraceGraph trace 虽保留部分结构，但不足以重建完整官方 `SimulationRun` reward 输入。
+当前上游 evaluator exception 会让结果包装丢失已完成的对话。工具使用记录关系图 trace 虽保留部分结构，但不足以重建完整官方 `SimulationRun` reward 输入。
 
 下一轮必须先持久化完整 conversation、环境状态摘要和 usage，再离线评分。evaluator 失败只能产生 `evaluation_error`，不能把已生成 trajectory 变成空结果。
 
@@ -505,9 +534,9 @@ temperature=0 不等于 API 轨迹完全可重复。当前 `--seed` 主要进入
 
 但是现在不应立即增加第二模型或第二环境；主机制在单环境内尚不可识别，扩展只会增加成本和解释混乱。
 
-## 5. 历史下一步：P3b 可识别性修复（已完成 A；B 不再是当前主线）
+## 5. 历史下一步：P3b 能否分清各部分作用修复（已完成 A；B 不再是当前主线）
 
-以下内容保留用于解释旧 Phase 4/P3b-A 的来源和复用旧 Card fork 基础设施，不再作为当前行动顺序。当前顺序以《第四阶段修改计划》v2.0 为准。
+以下内容保留用于解释旧 第四阶段/P3b-A 的来源和复用旧 Card 不同后续 基础设施，不再作为当前行动顺序。当前顺序以《第四阶段修改计划》v2.0 为准。
 
 ## 5.1 P3b-A：零 API 成本
 
@@ -538,8 +567,8 @@ card_covers_next_step:
 
 - retention safety：`should_card_remain_active` precision/recall；
 - expiry cause accuracy：只在双方都判 inactive 时计算；
-- unsafe overmerge：算法判 same、gold 判 different；
-- conservative undermerge：算法判 different/N/A、gold 判 same；
+- unsafe overmerge：算法判 same、事先规定的标准答案 判 different；
+- conservative undermerge：算法判 different/N/A、事先规定的标准答案 判 same；
 - coverage：报告 confusion counts 和 accuracy；近单类别时不再用最小 κ 一票否决；
 - κ/AC1 等一致性指标必须同时报告类别分布，禁止只报一个退化值。
 
@@ -560,7 +589,7 @@ generate trajectory
 要求：
 
 - evaluator 开始前 trajectory 已落盘；
-- evaluator model/args/JSON mode 写入 manifest；
+- evaluator model/args/JSON mode 写入 文件清单；
 - raw evaluator response 永久保留；
 - evaluator failure 不覆盖 conversation；
 - retry evaluator 不重新运行 agent/user；
@@ -574,12 +603,12 @@ generate trajectory
 - 是否产生 admissible correction；
 - 是否在窗口内 resolve；
 - recovery steps；
-- post-failure provider input/output tokens；
-- provider tokens per agent action；
+- post-failure 模型服务商 input/output tokens；
+- 模型服务商 tokens per agent action；
 - Card 实际可见次数和 token；
 - raw failure message 是否误回注。
 
-## 5.2 P3b-B：common-prefix fork pilot
+## 5.2 P3b-B：从同一段已有记录开始的不同后续 小规模试跑
 
 P3b-A 的单元测试和离线回放通过后，才申请/使用外部 API。
 
@@ -592,14 +621,14 @@ P3b-A 的单元测试和离线回放通过后，才申请/使用外部 API。
 = 40 short branches
 ```
 
-只观察失败后的 3 个 agent actions。Full 和 Raw Hard 不进入 primary pilot；Raw 可在不影响成本时作为诊断，不能替代 Remove 主对照。
+只观察失败后的 3 个 agent actions。Full 和 Raw Hard 不进入 primary 小规模试跑；Raw 可在不影响成本时作为诊断，不能替代 Remove 主对照。
 
-### prefix 必须保存
+### 截至当时已有的记录 必须保存
 
 每个 `prefix_id` 至少记录：
 
 - domain/task/seed；
-- conversation prefix；
+- conversation 截至当时已有的记录；
 - environment/DB state 或可验证快照；
 - conversation SHA-256；
 - environment state SHA-256；
@@ -610,22 +639,22 @@ P3b-A 的单元测试和离线回放通过后，才申请/使用外部 API。
 - branch horizon；
 - agent/user/evaluator model config。
 
-Card 和 Remove 分支开始前必须验证 conversation hash 与 environment hash 完全一致。
+Card 和 Remove 分支开始前必须验证 conversation 文件指纹 与 environment 文件指纹 完全一致。
 
 ### treatment invariant
 
-- Card 分支：下一决策输入中必须出现目标 Failure Card；
+- Card 分支：下一决策输入中必须出现目标 失败原因和避免办法的简短记录；
 - Remove 分支：同一 Card 必须缺失；
 - 其他 hard/optional 选择规则保持一致；
 - 两个分支都不得出现原始失败 tool-call/result 回注；
-- 如果 Card 没有真正进入 treatment prompt，该 prefix 不算有效 fork，必须替换而不是按 0 效果计入。
+- 如果 Card 没有真正进入 treatment prompt，该 截至当时已有的记录 不算有效 不同后续，必须替换而不是按 0 效果计入。
 
 ### primary metrics
 
 - next-3-action repeated-invalid rate；
 - next-3-action repair rate；
 - recovery steps；
-- post-failure provider tokens。
+- post-failure 模型服务商 tokens。
 
 secondary：
 
@@ -634,35 +663,35 @@ secondary：
 - normal stop；
 - action count。
 
-### pilot 结束后的决策
+### 小规模试跑 结束后的决策
 
-pilot 只估计事件率和 discordant-pair rate，不作论文显著性结论。
+小规模试跑 只估计事件率和 discordant-pair rate，不作论文显著性结论。
 
-- 如果无法获得 10 个有效、hash 匹配且 Card 实际可见的 prefixes：停止扩大，当前 benchmark/model 对 H4 不可识别；
-- 如果有效 prefixes 足够，但 repeated/repair 完全没有 discordance：停止扩大，转向 negative-results；
+- 如果无法获得 10 个有效、文件指纹 匹配且 Card 实际可见的 截至当时已有的记录：停止扩大，当前 benchmark/model 对 H4 不可识别；
+- 如果有效 截至当时已有的记录 足够，但 repeated/repair 完全没有 discordance：停止扩大，转向 negative-results；
 - 如果出现方向稳定的 discordant pairs，且 success/policy 没有明显安全回退：根据 discordant rate 计算正式样本量，暂停并向用户报告，不自动启动正式矩阵；
-- 人工 gold 只在 v2 schema 稳定且正式研究仍值得继续时安排。
+- 人工 事先规定的标准答案 只在 v2 schema 稳定且正式研究仍值得继续时安排。
 
 ## 5.3 后续 Go/Stop
 
 只有新的 P3b 正式结果同时支持以下条件，才重新讨论 P4：
 
-1. Card vs Remove 在相同 failure prefix 下改善 repeated-invalid 或 repair；
+1. Card vs Remove 在相同 failure 截至当时已有的记录 下改善 repeated-invalid 或 repair；
 2. post-failure token 不增加，或收益/成本边界明确；
 3. task success/policy 不劣；
-4. v2 retention safety 通过人工 gold；
+4. v2 retention safety 通过人工 事先规定的标准答案；
 5. 结果不由单一 failure type 驱动。
 
 否则应收口为 measurement/negative-results：
 
 - raw unresolved failure 为什么导致 token 膨胀；
-- archive 与 active context 为什么必须分离；
+- 单独保存的旧记录 与 active context 为什么必须分离；
 - 哪些负证据具有可行动性；
-- compact Card 为什么在当前自然 τ³ 轨迹中事件率不足。
+- compact Card 为什么在当前自然 τ³ 工具使用记录中事件率不足。
 
 ## 6. 历史禁止事项与当前有效边界
 
-以下 provenance、数据完整性和授权边界继续有效；第 8 项只禁止绕过旧 gate 续跑旧矩阵，不再禁止按 GDSC v2.0 在新 eligibility、预注册和授权后引入必要的 benchmark、模型或 baseline。
+以下 来源记录、数据完整性和授权边界继续有效；第 8 项只禁止绕过旧 继续或停止条件 续跑旧矩阵，不再禁止按 第四阶段的记录整理办法 v2.0 在新 eligibility、实验开始前定下的规则和授权后引入必要的 benchmark、模型或 用来比较的办法。
 
 1. 把 `codex_provisional` 改成 `human_independent`；
 2. 把同模型同会话 A/B 写成两位人工标注；
@@ -681,11 +710,11 @@ pilot 只估计事件率和 discordant-pair rate，不作论文显著性结论�
 
 ### 研究和计划
 
-- `工具调用建图_生命周期压缩调研报告.md`
-- `第二阶段修改计划.md`
-- `第二阶段实验结论.md`
-- `第三阶段修改计划.md`
-- `docs/PHASE3_RESULTS.md`
+- `怎样缩短工具使用记录_资料调查.md`
+- `第二阶段准备怎么改.md`
+- `第二阶段做了什么和得到什么.md`
+- `第三阶段准备怎么改.md`
+- `docs/第三阶段做了什么和得到什么.md`
 
 ### P1/P2
 
@@ -705,7 +734,7 @@ pilot 只估计事件率和 discordant-pair rate，不作论文显著性结论�
 - `scripts/build_phase3_repaired_composite.py`
 - `scripts/analyze_live_matrix.py`
 
-### P4/gate
+### P4/继续或停止条件
 
 - `configs/phase3_p4_acon_card_smoke_v1.json`
 - `src/tracegraph/phase3_gates.py`
@@ -769,9 +798,9 @@ python scripts/analyze_live_matrix.py `
   --output outputs/phase3/p3_card_retail_codex_repaired_composite_v1_analysis/raw_reference
 ```
 
-预期每份报告：60/60 sessions、0 infra、0 graph error、provider usage 100%。
+预期每份报告：60/60 sessions、0 infra、0 graph error、模型服务商 usage 100%。
 
-### 8.4 重算 gate
+### 8.4 重算 继续或停止条件
 
 ```powershell
 python scripts/evaluate_phase3_gates.py `
@@ -795,22 +824,22 @@ p4.go_gate_passed = false
 
 开始任何实现前：
 
-- [ ] 阅读本文件和 `docs/PHASE3_RESULTS.md`；
+- [ ] 阅读本文件和 `docs/第三阶段做了什么和得到什么.md`；
 - [ ] 运行 `git ... status --short`，确认不覆盖现有修改；
-- [ ] 确认 P1/P2/P3/gate JSON 存在；
-- [ ] 运行测试并至少复现 GDSC 改造后的 `144 passed`；
+- [ ] 确认 P1/P2/P3/继续或停止条件 JSON 存在；
+- [ ] 运行测试并至少复现 第四阶段的记录整理办法 改造后的 `144 passed`；
 - [ ] 确认没有外部实验进程仍在运行；
-- [ ] 读取 `docs/PHASE4_GDSC_RESULTS.md`：当前 R2/E0 均为 No-Go，不得启动 representation fork 或 benchmark matrix；
-- [ ] 保留所有 provenance、失败批次和 evaluator raw response；
+- [ ] 读取 `docs/第四阶段新方案做了什么和得到什么.md`：当前 R2/E0 均为 停止，不得启动 representation 不同后续 或 benchmark 组合实验；
+- [ ] 保留所有 来源记录、失败批次和 evaluator raw response；
 - [ ] 每次准备启动 API 前先向用户报告 session 数、模型、预计成本和停止条件。
 
-## 10. 一句话交接结论（2026-07-21 GDSC 执行后）
+## 10. 一句话交接结论（2026-07-21 第四阶段的记录整理办法 执行后）
 
-GDSC 工程与最终请求成本核算已经实现，R0 证实 192-view 成本错位和足够 oracle headroom；但 R2 的 serialized reduction 只有 `14.956%`，E0 数据也不具备进入 common-prefix pilot 的资格。下一位 agent 应把这次结果作为诚实的 No-Go 诊断，优先分析完整 policy/tool-schema 固定成本和 benchmark eligibility 缺口；不得绕过门禁启动 R3/R4，也不得通过调阈值或补样本改写本轮结论。
+第四阶段的记录整理办法 工程与最终请求成本核算已经实现，R0 证实 192-view 成本错位和足够 oracle headroom；但 R2 的 真正拼成完整请求后的 reduction 只有 `14.956%`，E0 数据也不具备进入 同一段已有记录 小规模试跑 的资格。下一位 agent 应把这次结果作为诚实的 停止 诊断，优先分析完整 policy/tool-schema 固定成本和 benchmark eligibility 缺口；不得绕过继续或停止条件启动 R3/R4，也不得通过调阈值或补样本改写本轮结论。
 
-## 11. 2026-08-01 Phase 5.2 GLM-5.2 e1 试跑交接
+## 11. 2026-08-01 第五阶段第二次补充 GLM-5.2 e1 试跑交接
 
-用户已明确授权将 Phase 5.2 伪标注输入发送到 Z.AI `open.bigmodel.cn` 的 `GLM-5.2`，先跑 10 个请求，无报错再全量。为保持原 `glm-4.7-flash` e0 条件不可污染，已新增独立条件：
+用户已明确授权将 第五阶段第二次补充 由模型暂时给出的分类输入发送到 Z.AI `open.bigmodel.cn` 的 `GLM-5.2`，先跑 10 个请求，无报错再全量。为保持原 `glm-4.7-flash` e0 条件不可污染，已新增独立条件：
 
 - config：`configs/phase52_lifecycle_modeling_glm52.json`
 - output：`outputs/phase5_2/e1_glm52_pseudolabel_v1`
@@ -826,7 +855,7 @@ GDSC 工程与最终请求成本核算已经实现，R0 证实 192-view 成本�
 - `python -m pytest tests\test_phase52_lifecycle_modeling.py`：13 passed
 - Ruff target files：passed
 - e1 request build：370 requests, provider_requests=0
-- e1 state-machine preflight：261 prefixes / 1,092 predictions，所有 integrity rates 100%
+- e1 state-machine preflight：261 截至当时已有的记录 / 1,092 predictions，所有 integrity rates 100%
 - e1 verifier：valid, regenerated_requests=370
 
 真实 GLM-5.2 smoke 第一条请求 `pass_a_08654b21b5f4685c8b12` 返回 HTTP 429，因此按计划停止，没有继续跑剩余 9 条或全量。当前 e1 状态：
@@ -836,13 +865,13 @@ GDSC 工程与最终请求成本核算已经实现，R0 证实 192-view 成本�
 - attempts：1
 - valid labels：0
 - usage：0 input / 0 output token
-- failure is quality No-Go：false
+- failure is quality 停止：false
 
 恢复 e1 时先重新核价，继续同一 frozen request set；不得把 e1 与 e0 标签混合作为同一条件，不得训练 Scheme B，不得启动外部行为实验。
 
-## 12. 2026-08-10 Phase 5.2 Qwen3.7-Plus e2 结果
+## 12. 2026-08-10 第五阶段第二次补充 Qwen3.7-Plus e2 结果
 
-用户授权开始阿里云百炼 `qwen3.7-plus` 的 Phase 5.2 伪标注实验。已建立独立条件，未覆盖 e0/e1：
+用户授权开始阿里云百炼 `qwen3.7-plus` 的 第五阶段第二次补充 由模型暂时给出的分类实验。已建立独立条件，未覆盖 e0/e1：
 
 - config：`configs/phase52_lifecycle_modeling_qwen37plus.json`
 - output：`outputs/phase5_2/e2_qwen37plus_pseudolabel_v1`
@@ -855,27 +884,68 @@ GDSC 工程与最终请求成本核算已经实现，R0 证实 192-view 成本�
 
 停止状态：
 
-- provider attempts：75，全部 HTTP 200
-- valid labels：72/370；完整双遍 prefix：36/185
+- 模型服务商 attempts：75，全部 HTTP 200
+- valid labels：72/370；完整双遍 截至当时已有的记录：36/185
 - invalid response attempts：3
 - usage：816,109 input / 37,047 output / 853,156 total token
 - 未折扣估算费用：0.266035 USD
 - pause report：`outputs/phase5_2/e2_qwen37plus_pseudolabel_v1/pause_reports/pause_0001.json`
 - report SHA-256：`308307a3e61706185edaa18c6dda2093c374bd0afb05d8b01e6a2990c0d9d04e`
-- failure is quality No-Go：true
+- failure is quality 停止：true
 
-本条件未形成完整伪标注人口，因此不得计算/报告总体 opportunity prevalence、双遍 κ 或 held-out 状态机质量；`pseudolabel_gate.json`、`pseudolabel_summary.json` 和最终 manifest 均不应存在。详细报告见 `docs/PHASE52_QWEN37PLUS_PILOT_RESULTS.md`。如继续，必须新建独立条件并预注册协议修改；不得覆盖 e2 或拼接 e0/e1/e2 标签。
+本条件未形成完整由模型暂时给出的分类人口，因此不得计算/报告总体 opportunity prevalence、双遍 κ 或 held-out 按固定规则逐步更新状态的程序质量；`pseudolabel_gate.json`、`pseudolabel_summary.json` 和最终 文件清单 均不应存在。详细报告见 `docs/第五阶段第二次补充_真实模型试跑结果.md`。如继续，必须新建独立条件并实验开始前定下的规则协议修改；不得覆盖 e2 或拼接 e0/e1/e2 标签。
 
 ## 13. 2026-08-10 relation-first e3 调试交接
 
 用户批准按 relation-first 建议继续调试。所有版本均独立保存：
 
 - v1：`outputs/phase5_2/e3_qwen37plus_relation_first_v1`，请求准备预计 3,605,838 token，超过 3,600,000 上限后在 provider_requests=0 时中止；目录保留。
-- v2：`outputs/phase5_2/e3_qwen37plus_relation_first_v2`，四值 `current_target_need` 在定向失败 prefix 上连续两次被错误填为 `superseded`；0 valid / 2 attempts，停止报告 SHA `b6deff7253e3e02ca1597676018f7ec6ad178ad454c973dd5908c22cbf2fb551`。
-- v3：`outputs/phase5_2/e3_qwen37plus_relation_first_v3`，将当前目标需要性改为两个布尔字段，模型不再输出 disposition；程序 fail-closed 推导 disposition。
+- v2：`outputs/phase5_2/e3_qwen37plus_relation_first_v2`，四值 `current_target_need` 在定向失败 截至当时已有的记录 上连续两次被错误填为 `superseded`；0 valid / 2 attempts，停止报告 SHA `b6deff7253e3e02ca1597676018f7ec6ad178ad454c973dd5908c22cbf2fb551`。
+- v3：`outputs/phase5_2/e3_qwen37plus_relation_first_v3`，将当前目标需要性改为两个布尔字段，模型不再输出 disposition；程序 拿不准时宁可保留或停止 推导 disposition。
 
-v3 定向复现和补充调试共 10/10 请求一次合法，覆盖 5 个完整双遍 prefix、55 个 span。格式问题已修复，但 safe 二元一致率为 0.80、κ=0.4954、全字段一致 12/55、consensus safe 8、consensus uncertain 43。逐字段一致率最低的是 relation_target_ids（0.418），其次 obligations（0.800）和 required_for_current_target（0.855）。原 20-span 困难 prefix 的 safe 一致率仅 0.60、全字段一致 1/20。
+v3 定向复现和补充调试共 10/10 请求一次合法，覆盖 5 个完整双遍 截至当时已有的记录、55 个 span。格式问题已修复，但 safe 二元一致率为 0.80、κ=0.4954、全字段一致 12/55、consensus safe 8、consensus 拿不准，先保留 43。逐字段一致率最低的是 relation_target_ids（0.418），其次 obligations（0.800）和 required_for_current_target（0.855）。原 20-span 困难 截至当时已有的记录 的 safe 一致率仅 0.60、全字段一致 1/20。
 
-debug report：`outputs/phase5_2/e3_qwen37plus_relation_first_v3/debug_reports/relation_first_debug_0001.json`，SHA `2a0b9317a81bede9dfcb84a39475fc8850771d4a2f3a4684b57041a00a13fb4e`。详细说明见 `docs/PHASE52_RELATION_FIRST_DEBUG_RESULTS.md`。
+debug report：`outputs/phase5_2/e3_qwen37plus_relation_first_v3/debug_reports/relation_first_debug_0001.json`，SHA `2a0b9317a81bede9dfcb84a39475fc8850771d4a2f3a4684b57041a00a13fb4e`。详细说明见 `docs/第五阶段第二次补充_先看记录关系的调试结果.md`。
 
-当前判断是“结构接口已改善，但语义稳定性不足”，不是生命周期方向 No-Go。不得把 5-prefix 定向样本当正式门禁或继续全量。下一步若获批准，应新建 chunked-labeling 调试条件，保留完整 prefix 上下文而缩小每次输出的 span 数；必须重新冻结请求人口、成本和门禁，不得覆盖或拼接 e2/e3 标签。
+当前判断是“结构接口已改善，但语义稳定性不足”，不是判断旧记录是否还有用这一方向 停止。不得把 5-截至当时已有的记录 定向样本当正式继续或停止条件或继续全量。下一步若获批准，应新建 chunked-labeling 调试条件，保留完整 截至当时已有的记录 交给模型的内容而缩小每次输出的 span 数；必须重新冻结请求人口、成本和继续或停止条件，不得覆盖或拼接 e2/e3 标签。
+
+## 14. 2026-08-30 第六阶段交接
+
+第六阶段已经在 `phase6-active-dormant-reactivation-v1` 分支完成本地实现和固定测试。起点版本是 `d5c664c1b3569cef7978ce3448279dd3a1bb3135`，结果位于 `outputs/phase6/e1_controlled_v1`。
+
+- 24 段已有记录、72 种不同后续和 936 条办法输出全部生成。
+- G0、G1、G2 全部通过；这次本地运行的外部模型请求为 0。
+- `M5` 没有误删当前任务需要的记录，找回必需内容完整度为 1.0，无关问题乱找旧记录为 0。
+- `M5` 在追问旧事时完成率为 1.0；不允许找回的 `M3` 为 0。
+- `M5` 相对 `M0` 的 72 条完整输入量全部更少，中位数少 1116.5。
+- 后续真实模型小规模试跑已经另行授权并完成，结果为停止；外部公开任务没有运行。当前不得复用已经结束的授权继续发送请求。
+- “错误再次发生”这条专门找回规则与历史追问规则重叠，不能单独判断作用。
+
+先读[第六阶段自己设计的测试结果](docs/第六阶段_自己设计的测试结果.md)、[真实模型小规模试跑结果](docs/第六阶段_真实模型小规模试跑结果.md)、[每个结论有什么证据](docs/第六阶段_每个结论有什么证据.md)和现有结果文件清单。生成脚本拒绝覆盖已有目录；如果修改测试题，必须使用新的版本和运行编号，不能改写现有结果。
+
+## 15. 2026-09-08 TraceGraph 0.4 工程化交接
+
+`compression_audit_v1` 的 v0.1 诊断实现已在分支
+`codex/tracegraph-0.4-hardening` 上先按原样保存为两个基线提交。基线离线复现生成
+240 个前缀、1,440 个问题和 10,080 个确定性 episode；静态数据检查通过，
+`v1_ready=false`，外部模型请求为 0。
+
+0.4 工作明确直接使用已见的 v0.1 数据做开发，因此后续结果只能写成
+`development_only`，不能当作独立复验。Python 包先统一为 `0.3.0` 兼容基线，
+破坏性模块重构和新策略使用 `0.4.0`。Benchmark 的 `v0.1-diagnostic` 与包版本互不替代。
+
+冻结结果仍位于 `outputs/compression_audit/`，不得覆盖。关键保护性哈希为：
+
+- `v0_1_handoff/manifest.json`：`d33c12ce2b2c5dacefa6ce353fb46df80d2a766510aa398ae1a07961d38a249b`
+- `v0_1_qwen_live_reconciled/run_summary.json`：`dbdae96e99d54fede54452778522dd317bdd192276707ca19769f4c0ff6fdca4`
+- `v0_1_qwen_live_score_reconciled/gate_report.json`：`4eb0bd86f94e891a692cae8a4d76befb49380e3c5da35d36bfeff294ddd1d7d9`
+- `v0_1_qwen_live_score_reconciled/report.json`：`109efc483d285726a882514bab52cf2e1eb2ebe2d280a0964fcc84a36d4a654f`
+
+2026-08-31 的外部模型授权已经结束。0.4 实施、验证和复现均只允许本地确定性
+路径；任何 live 请求必须重新核对当日价格并取得新的明确授权。
+
+2026-09-08 后续开发默认模型改为 DashScope `qwen3.7-plus`。新默认写入
+`configs/compression_audit_v0_2_development.json` 和
+`configs/phase6_benchmark_prepare_v3.json`，使用关闭 thinking 的严格 JSON Schema
+结构化输出。冻结 v0.1 的 `qwen3.8-27b` 配置、白名单与结果不得追溯修改；当前版本
+仍不开放 v0.2 live，启用前需补齐模型 tokenizer、当日价格快照和新授权。

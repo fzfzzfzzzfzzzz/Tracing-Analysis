@@ -1,19 +1,20 @@
-"""Score factorized phase-four failure-chain v2 annotations."""
+"""评分第四阶段第二版失败前因后果人工判断。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 from pathlib import Path
 
-from tracegraph.failure_chain_annotation_v2 import (
+from tracegraph.context_engine.annotation_v2 import (
     score_failure_chain_annotations_v2,
     write_failure_chain_score_v2,
 )
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--annotator-a", type=Path, required=True)
     parser.add_argument("--annotator-b", type=Path, required=True)
     parser.add_argument("--annotation-key", type=Path, required=True)
@@ -33,4 +34,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

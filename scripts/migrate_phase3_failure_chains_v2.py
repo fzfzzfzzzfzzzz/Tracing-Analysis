@@ -1,16 +1,17 @@
-"""Migrate the frozen phase-three failure-chain package to factorized v2 labels."""
+"""把第三阶段失败记录检查包转换为第二版格式。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 from pathlib import Path
 
-from tracegraph.failure_chain_annotation_v2 import migrate_v1_package_to_v2
+from tracegraph.context_engine.annotation_v2 import migrate_v1_package_to_v2
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--v1-package", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -19,4 +20,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

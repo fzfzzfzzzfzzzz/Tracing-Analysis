@@ -1,0 +1,31 @@
+{
+  "benchmark": "AMA-Bench",
+  "canary_task_types": [
+    "alfworld",
+    "gaia_level2",
+    "spider2",
+    "webarena",
+    "swebench"
+  ],
+  "counts": {
+    "canary": 5,
+    "confirmatory_pool": 163,
+    "exposed": 40,
+    "source_total": 208
+  },
+  "created_on": "2026-09-17",
+  "files": {
+    "canary_episode_ids.jsonl": "e6888a0f863146f6743a504b06b2919fa812e60be791a6202acd0b411c50d655",
+    "confirmatory_pool_episode_ids.jsonl": "cd6e43dafed273902f089932d757a2f148115bda667eea6f1bf9077af21030df",
+    "exposed_episode_ids.jsonl": "b9e55dfecf8ef6b1b11c73445e93211a472ce065f2d5f0a319b2148405d098e4"
+  },
+  "rules": [
+    "exposed episodes are excluded from external confirmatory results",
+    "canary episodes are development-only after the first model request",
+    "confirmatory_pool must remain untouched until method configuration is frozen"
+  ],
+  "schema_version": "ama_bench_external_freeze_v1",
+  "selection_seed": 20260917,
+  "source_revision": "a5777378066f53229a94557a7b192435cd027909",
+  "source_sha256": "45c36052e1520d87ad9de4114f71c9df42d4aac9cf158c0c353e800b653d65ff"
+}

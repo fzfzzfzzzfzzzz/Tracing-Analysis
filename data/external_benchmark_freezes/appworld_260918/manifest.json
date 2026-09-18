@@ -1,0 +1,28 @@
+{
+  "schema_version": "appworld_external_freeze_v1",
+  "benchmark": "AppWorld",
+  "source_commit": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+  "created_on": "2026-09-18",
+  "selection_seed": 20260918,
+  "selection_used_task_content": false,
+  "counts": {
+    "dev_total": 57,
+    "canary": 5,
+    "dev_remaining": 52
+  },
+  "files": {
+    "dev_source_ids.txt": "9fa976589300ea8905708257144d801d1604b06d85fb0181e381df8a3ba85001",
+    "canary_task_ids.jsonl": "c0bebf96e387ecfb4ac35c7229054367fe863c6209ea8bd40b5e3b7770ddfc8a",
+    "dev_remaining_task_ids.jsonl": "e38b07f795c56d454a9dd30f43ef09483bbfac3a2cad80bf63a7d846141d20c2"
+  },
+  "unread_test_split_hashes": {
+    "train.txt": "93d9fe71e7a2e3b7529803d4a20b604f4ebf5ae806f321081140238068189d37",
+    "test_normal.txt": "c3af41497b6f2f0860a2ff8c09b335dca527e2cf48e59b4aabdb301b6b68db8f",
+    "test_challenge.txt": "3c32b481042ac97f7d3477d53f5d196245c885c438d652944edc8a9a28e0f028"
+  },
+  "rules": [
+    "canary tasks are development-only after the first model request",
+    "task content and ground truth were not used for selection",
+    "test_normal and test_challenge IDs/content remain unopened locally"
+  ]
+}

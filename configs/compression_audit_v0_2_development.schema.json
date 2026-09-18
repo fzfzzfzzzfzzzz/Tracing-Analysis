@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/tracegraph/compression_audit_v0_2_development.schema.json",
+  "title": "Compression Audit v0.2 Development Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "benchmark_release",
+    "protocol",
+    "development_only",
+    "independent_validation",
+    "default_provider",
+    "default_model",
+    "structured_output",
+    "retrieval_budget_tokens",
+    "submission_fields",
+    "format_repair",
+    "reacquisition_metrics",
+    "statistics"
+  ],
+  "properties": {
+    "schema_version": {"const": "compression_audit_development_config_v0_2"},
+    "benchmark_release": {"const": "v0.1-diagnostic"},
+    "protocol": {"const": "v0.2-development"},
+    "development_only": {"const": true},
+    "independent_validation": {"const": false},
+    "default_provider": {"const": "dashscope"},
+    "default_model": {"const": "qwen3.7-plus"},
+    "structured_output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "strict", "enable_thinking"],
+      "properties": {
+        "type": {"const": "json_schema"},
+        "strict": {"const": true},
+        "enable_thinking": {"const": false}
+      }
+    },
+    "retrieval_budget_tokens": {"const": 1024},
+    "submission_fields": {
+      "type": "array",
+      "prefixItems": [
+        {"const": "a"},
+        {"const": "e"},
+        {"const": "t"},
+        {"const": "s"}
+      ],
+      "items": false
+    },
+    "format_repair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["separate_agent_turn", "provider_retry", "billed"],
+      "properties": {
+        "separate_agent_turn": {"const": true},
+        "provider_retry": {"const": false},
+        "billed": {"const": true}
+      }
+    },
+    "reacquisition_metrics": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "enum": [
+          "model_calls",
+          "tool_calls",
+          "provider_input_tokens",
+          "provider_output_tokens",
+          "tool_observation_tokens",
+          "latency_seconds",
+          "cost_cny"
+        ]
+      }
+    },
+    "statistics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit", "paired_bootstrap", "holm_correction", "single_aggregate_score"],
+      "properties": {
+        "unit": {"const": "source_prefix"},
+        "paired_bootstrap": {"const": true},
+        "holm_correction": {"const": true},
+        "single_aggregate_score": {"const": false}
+      }
+    }
+  }
+}

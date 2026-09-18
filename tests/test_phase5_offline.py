@@ -8,7 +8,7 @@ from typing import Any
 
 from tracegraph.archive import ArchiveStore
 from tracegraph.graph import TraceGraph
-from tracegraph.phase5_offline import (
+from tracegraph.context_engine.phase5 import (
     F5_G1_THRESHOLDS,
     adjudicate_f5_g1,
     assert_no_outcome_fields,

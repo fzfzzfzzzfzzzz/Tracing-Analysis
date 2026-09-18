@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from .archive import ArchiveStore
-from .context import ContextItem, ContextManager, ContextView, build_context_managers
+from .context_engine.context import ContextItem, ContextManager, ContextView, build_context_managers
 from .graph import TraceGraph
 from .lifecycle import LifecycleEngine
 from .metrics import evaluate_view

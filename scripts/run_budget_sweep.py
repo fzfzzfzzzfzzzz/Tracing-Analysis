@@ -1,8 +1,9 @@
-"""Run a zero-API structural budget sweep over materialized TraceGraphs."""
+"""不调用外部模型，比较多个输入量上限下的结构结果。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import sys
 from pathlib import Path
@@ -27,7 +28,7 @@ def _jsonl(path: Path) -> list[dict]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--archive", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -89,4 +90,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

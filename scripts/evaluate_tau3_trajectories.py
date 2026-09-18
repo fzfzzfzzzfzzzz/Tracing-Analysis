@@ -1,10 +1,8 @@
-"""Plan or execute offline τ³ evaluation over frozen generation artifacts.
-
-Execution is fail-closed: without ``--execute`` the command only prints the
-evaluation plan, and execution additionally requires an explicit maximum count.
-"""
+"""规划或执行对已保存 tau3-bench 工具使用记录的离线评分。"""
 
 from __future__ import annotations
+
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
 
 import argparse
 import json
@@ -22,7 +20,7 @@ def _parse_args_json(value: str) -> dict:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--store", type=Path, required=True)
     parser.add_argument("--simulation-id", action="append", default=[])
     parser.add_argument("--all", action="store_true")
@@ -111,4 +109,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

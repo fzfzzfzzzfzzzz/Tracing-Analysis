@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Verify frozen Phase 5.2 requests, partial responses, budgets, and hashes."""
+"""检查第五阶段第二次补充的请求、局部响应、上限和文件指纹。"""
 
 from __future__ import annotations
 
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import sys
-import argparse
 from pathlib import Path
 from typing import Any
 
@@ -16,14 +17,14 @@ if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
 from tracegraph.graph import TraceGraph  # noqa: E402
-from tracegraph.lifecycle_annotation import (  # noqa: E402
+from tracegraph.context_engine.annotation import (  # noqa: E402
     AnnotationBudget,
     file_sha256,
     load_phase52_config,
     prepare_annotation_request,
     prepare_validation_feedback_request,
 )
-from tracegraph.phase5_offline import build_strict_prefix  # noqa: E402
+from tracegraph.context_engine.phase5 import build_strict_prefix  # noqa: E402
 from tracegraph.trajectory_artifacts import sha256_json  # noqa: E402
 
 
@@ -48,7 +49,7 @@ def _embedded(path: Path, field: str) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--config",
         type=Path,
@@ -169,4 +170,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

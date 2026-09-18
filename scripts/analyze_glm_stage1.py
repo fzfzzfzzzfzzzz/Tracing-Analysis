@@ -1,13 +1,14 @@
-"""Aggregate a completed or in-progress GLM Stage 1 experiment matrix."""
+"""汇总第一轮 GLM 模型试验已经完成的结果。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import sys
 from pathlib import Path
 
-from tracegraph.stage1 import (
+from tracegraph.evaluation.stage1 import (
     analyze_stage1_plan,
     materialize_trace_archives,
     materialize_trace_graphs,
@@ -22,7 +23,7 @@ for _stream in (sys.stdout, sys.stderr):
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--plan", type=Path, required=True)
     parser.add_argument("--results-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -67,4 +68,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

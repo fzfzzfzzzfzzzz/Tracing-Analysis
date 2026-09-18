@@ -1,0 +1,160 @@
+{
+  "benchmark": "princeton-nlp/SWE-bench_Lite",
+  "dataset_bytes": 1119540,
+  "dataset_file": "data/test-00000-of-00001.parquet",
+  "dataset_revision": "1056b1963e8af34a3010add7c73a413a1ffe317b",
+  "dataset_sha256": "7a21f37b8bc179c7db5beeb14e88ac538ba283455c776e6b2535bbfb6e3551b4",
+  "development_only": true,
+  "evaluator_limitation": "pipeline canary only; not the official full SWE-bench score",
+  "evaluator_scope": "apply hidden test_patch, run FAIL_TO_PASS only",
+  "excluded_from_formal_validation": true,
+  "formal_validation_excluded_repository": "pytest-dev/pytest",
+  "frozen_at": "2026-09-14",
+  "images": "Epoch Research GHCR SWE-bench evaluation images, pinned by manifest digest",
+  "independent_validation": false,
+  "instances": [
+    {
+      "base_commit": "450d2646233c670654744d3d24330b69895bb9d2",
+      "fail_to_pass": [
+        "testing/code/test_excinfo.py::test_excinfo_repr_str"
+      ],
+      "gold_patch_sha256": "34f5b421e92cf10334e75169f11e7f4a6e20cec510e6b679d26eb455e093e53f",
+      "image": "ghcr.io/epoch-research/swe-bench.eval.x86_64.pytest-dev__pytest-5413@sha256:8a97420ed474c427571c6f9ebffc7b6ca8b66b96d59b36c850b64cb50e8fa686",
+      "image_manifest_digest": "sha256:8a97420ed474c427571c6f9ebffc7b6ca8b66b96d59b36c850b64cb50e8fa686",
+      "instance_id": "pytest-dev__pytest-5413",
+      "pass_to_pass_count": 92,
+      "problem_statement_sha256": "d07de38ad8ef1399524db3d22cd5127e01ba3242e1c48cc37d5b397598d1b94d",
+      "repo": "pytest-dev/pytest",
+      "test_patch_sha256": "96a694cd889a4b1597e144bc9c0a127960111eab7621b805711b8ebe5ccad8f2",
+      "version": "4.6"
+    },
+    {
+      "base_commit": "56bf819c2f4eaf8b36bd8c42c06bb59d5a3bfc0f",
+      "fail_to_pass": [
+        "testing/test_nodes.py::test_failure_with_changed_cwd"
+      ],
+      "gold_patch_sha256": "a8ce7c334bfe6a30f80b6b547c9b1e3ead886b643bf9ab340f8165cd10bef878",
+      "image": "ghcr.io/epoch-research/swe-bench.eval.x86_64.pytest-dev__pytest-7220@sha256:eaa0b259f3518bb572d3796c41d56f90f510de0d034f549d8dfc9280e88d1537",
+      "image_manifest_digest": "sha256:eaa0b259f3518bb572d3796c41d56f90f510de0d034f549d8dfc9280e88d1537",
+      "instance_id": "pytest-dev__pytest-7220",
+      "pass_to_pass_count": 11,
+      "problem_statement_sha256": "a4106396b6e1d34ae148b176a00895e7a24a1ff2a047646606f748e313ce48e1",
+      "repo": "pytest-dev/pytest",
+      "test_patch_sha256": "adc9066a2d467a6190edaf765b1843ed03011dacfd7bc48732cdfdf1e8d67760",
+      "version": "5.4"
+    },
+    {
+      "base_commit": "7f7a36478abe7dd1fa993b115d22606aa0e35e88",
+      "fail_to_pass": [
+        "testing/test_skipping.py::TestXFail::test_dynamic_xfail_set_during_runtest_failed",
+        "testing/test_skipping.py::TestXFail::test_dynamic_xfail_set_during_runtest_passed_strict"
+      ],
+      "gold_patch_sha256": "88a7af7e123619306d887c6a9bd1f905acc4872b454df914094c038b71356e30",
+      "image": "ghcr.io/epoch-research/swe-bench.eval.x86_64.pytest-dev__pytest-7490@sha256:c45a2ab9017bc1659864ed9e82e9aff772fb596c1790d18280f04cb313bbeb49",
+      "image_manifest_digest": "sha256:c45a2ab9017bc1659864ed9e82e9aff772fb596c1790d18280f04cb313bbeb49",
+      "instance_id": "pytest-dev__pytest-7490",
+      "pass_to_pass_count": 78,
+      "problem_statement_sha256": "9a5e8c33368dc3bbe9c5f03d3136a574cebede61fea6c575d39ddf108b92d947",
+      "repo": "pytest-dev/pytest",
+      "test_patch_sha256": "fe5323cfe9d6be9648be22ffb13a95079c6e17c13f09987f4c1b8589d27c690c",
+      "version": "6.0"
+    },
+    {
+      "base_commit": "2051e30b9b596e944524ccb787ed20f9f5be93e3",
+      "fail_to_pass": [
+        "testing/logging/test_reporting.py::test_log_cli_enabled_disabled[True]",
+        "testing/logging/test_reporting.py::test_log_cli_default_level",
+        "testing/logging/test_reporting.py::test_sections_single_new_line_after_test_outcome"
+      ],
+      "gold_patch_sha256": "e8193ea0dee0989323f0f7756f492d73cdc2e584b61f9142b8695d9ed2737893",
+      "image": "ghcr.io/epoch-research/swe-bench.eval.x86_64.pytest-dev__pytest-5227@sha256:50368ff0f6c8b591e4f78cae3f244a14e6de59e1798d09028ccad446d379ffa4",
+      "image_manifest_digest": "sha256:50368ff0f6c8b591e4f78cae3f244a14e6de59e1798d09028ccad446d379ffa4",
+      "instance_id": "pytest-dev__pytest-5227",
+      "pass_to_pass_count": 34,
+      "problem_statement_sha256": "3a2ff514af781d2bbeeba733d6cc9ee99766a5c70718f731e0cd2ea4048ad26c",
+      "repo": "pytest-dev/pytest",
+      "test_patch_sha256": "2f0dbf3bd56d91379bef155a0663119a8a7f4e97d5a4501dcd7d8fdc9320d786",
+      "version": "4.4"
+    },
+    {
+      "base_commit": "4787fd64a4ca0dba5528b5651bddd254102fe9f3",
+      "fail_to_pass": [
+        "testing/io/test_saferepr.py::test_simple_repr",
+        "testing/io/test_saferepr.py::test_maxsize",
+        "testing/io/test_saferepr.py::test_maxsize_error_on_instance",
+        "testing/io/test_saferepr.py::test_exceptions",
+        "testing/io/test_saferepr.py::test_baseexception",
+        "testing/io/test_saferepr.py::test_buggy_builtin_repr",
+        "testing/io/test_saferepr.py::test_big_repr",
+        "testing/io/test_saferepr.py::test_repr_on_newstyle",
+        "testing/io/test_saferepr.py::test_unicode",
+        "testing/io/test_saferepr.py::test_pformat_dispatch",
+        "testing/io/test_saferepr.py::test_broken_getattribute"
+      ],
+      "gold_patch_sha256": "6461134e72ddd5997decb656090500402441f32d12bc9f583a9bce0e2f3e806b",
+      "image": "ghcr.io/epoch-research/swe-bench.eval.x86_64.pytest-dev__pytest-7168@sha256:5ffc8edc6b8f44db44c9a9f88c23745795f878edb13d641f2f9cef8c50228f15",
+      "image_manifest_digest": "sha256:5ffc8edc6b8f44db44c9a9f88c23745795f878edb13d641f2f9cef8c50228f15",
+      "instance_id": "pytest-dev__pytest-7168",
+      "pass_to_pass_count": 0,
+      "problem_statement_sha256": "d2780357b6976f3775c3905b22ba4d9a4a3920b60f9c1e692b63b104dc6fbb0e",
+      "repo": "pytest-dev/pytest",
+      "test_patch_sha256": "ae6288ce2b11af1e23717c3234930c64a88181491124fa236253fdd7634ccc18",
+      "version": "5.4"
+    },
+    {
+      "base_commit": "1aefb24b37c30fba8fd79a744829ca16e252f340",
+      "fail_to_pass": [
+        "testing/test_assertion.py::TestAssert_reprcompare::test_bytes_diff_normal",
+        "testing/test_assertion.py::TestAssert_reprcompare::test_bytes_diff_verbose"
+      ],
+      "gold_patch_sha256": "4346eff024daf047d9dbb3c759eb53952edb7c57e613424f8f4fb98e999ca8b1",
+      "image": "ghcr.io/epoch-research/swe-bench.eval.x86_64.pytest-dev__pytest-5495@sha256:813c99cc34228450df683c8a3693d88266355f5b780569dcdd92562cb4ce4dd5",
+      "image_manifest_digest": "sha256:813c99cc34228450df683c8a3693d88266355f5b780569dcdd92562cb4ce4dd5",
+      "instance_id": "pytest-dev__pytest-5495",
+      "pass_to_pass_count": 86,
+      "problem_statement_sha256": "335421f7964c21193a8c352db84c8d1948fac7cb8f870bd2d6f857c91332f733",
+      "repo": "pytest-dev/pytest",
+      "test_patch_sha256": "ffed6b9dd4e8e7deb186cd4b1b3d183a92f9cf7003235b0fa3147b010114c4b2",
+      "version": "4.6"
+    },
+    {
+      "base_commit": "4a2fdce62b73944030cff9b3e52862868ca9584d",
+      "fail_to_pass": [
+        "testing/python/fixtures.py::TestShowFixtures::test_show_fixtures",
+        "testing/python/fixtures.py::TestShowFixtures::test_show_fixtures_verbose"
+      ],
+      "gold_patch_sha256": "be5549ceff2ee5643ad3743e8919241e16ebf9549c79c68cd56a0ee3aaaf666b",
+      "image": "ghcr.io/epoch-research/swe-bench.eval.x86_64.pytest-dev__pytest-5221@sha256:798111aafcff014e884ce2dbef8661b850ec0f69abeda32bdf6f5d8e74d6ef10",
+      "image_manifest_digest": "sha256:798111aafcff014e884ce2dbef8661b850ec0f69abeda32bdf6f5d8e74d6ef10",
+      "instance_id": "pytest-dev__pytest-5221",
+      "pass_to_pass_count": 170,
+      "problem_statement_sha256": "7757789a50241137ed7228f2ffefc2eb41894ac79ce25871635a53d05a3caf23",
+      "repo": "pytest-dev/pytest",
+      "test_patch_sha256": "2ef78e8e8f6ae6965c52756f15af115a80e980bcb52dfe7147a7d38c6f70de08",
+      "version": "4.4"
+    },
+    {
+      "base_commit": "10ca84ffc56c2dd2d9dc4bd71b7b898e083500cd",
+      "fail_to_pass": [
+        "testing/test_assertrewrite.py::TestAssertionRewrite::test_unroll_expression"
+      ],
+      "gold_patch_sha256": "5b621eb0099e1e4eeb2bcb42f24a48b15b540e46fe23403475890578f546680c",
+      "image": "ghcr.io/epoch-research/swe-bench.eval.x86_64.pytest-dev__pytest-5103@sha256:e4704aa1479bc1aa9e2491e59dbc1a5c3eadbdf4eb600279e50ba39abacbf610",
+      "image_manifest_digest": "sha256:e4704aa1479bc1aa9e2491e59dbc1a5c3eadbdf4eb600279e50ba39abacbf610",
+      "instance_id": "pytest-dev__pytest-5103",
+      "pass_to_pass_count": 64,
+      "problem_statement_sha256": "92b5c0a0c415a78c9b42b5cfab6f2137190332221fbce3c857d42d0e196fdb0c",
+      "repo": "pytest-dev/pytest",
+      "test_patch_sha256": "89740f6cb7127fc954eb9fa2a84e7b6df26e77f18b76bf96b50db5bfb0ba5c86",
+      "version": "4.5"
+    }
+  ],
+  "mirror": "ModelScope",
+  "purpose": "real-trajectory collection and evaluation-pipeline canary",
+  "schema_version": "tracegraph_real_canary_v1",
+  "selected_count": 8,
+  "selected_repository": "pytest-dev/pytest",
+  "selection_algorithm": "ascending sha256(seed + '|' + instance_id), first 8 within repository",
+  "selection_seed": "tracegraph-real-canary-260914-r1",
+  "tasks_jsonl_sha256": "174f8faaa618c24c6d1cc9a167dad259937d89b6203902f4ae12f649ccdece26"
+}

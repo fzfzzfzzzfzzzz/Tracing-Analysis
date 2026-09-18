@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from tracegraph.stage1 import (
+from tracegraph.evaluation.stage1 import (
     analyze_stage1_plan,
     materialize_trace_archives,
     materialize_trace_graphs,

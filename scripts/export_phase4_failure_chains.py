@@ -1,12 +1,13 @@
-"""Export clean factorized v2 failure-chain sheets from controlled and natural graphs."""
+"""从固定记录导出第四阶段失败前因后果检查表。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 from pathlib import Path
 
-from tracegraph.failure_chain_annotation_v2 import (
+from tracegraph.context_engine.annotation_v2 import (
     build_failure_chain_items_v2,
     export_failure_chain_package_v2,
 )
@@ -27,7 +28,7 @@ def _load(directory: Path, source_kind: str, *, full_ours_only: bool) -> list[di
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--controlled-graphs", type=Path, required=True)
     parser.add_argument("--natural-graphs", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -61,4 +62,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

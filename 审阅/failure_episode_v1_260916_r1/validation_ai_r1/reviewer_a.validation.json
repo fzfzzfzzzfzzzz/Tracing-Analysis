@@ -1,0 +1,18 @@
+{
+  "schema_version": "compression_audit_failure_episode_validation_v1",
+  "ready": true,
+  "formal_ready": false,
+  "development_only": true,
+  "reviewer_kind": "ai",
+  "case_count": 100,
+  "review_count": 100,
+  "status_counts": {
+    "rejected": 71,
+    "annotated": 29
+  },
+  "annotators": [
+    "ai-draft:zcode:glm-5.2:pass-a"
+  ],
+  "reviews_sha256": "34c48ce66567d456fdbdc697650da96c815337c48c98949172a3ef336ecdad02",
+  "errors": []
+}

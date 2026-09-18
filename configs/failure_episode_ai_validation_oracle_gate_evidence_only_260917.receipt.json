@@ -1,0 +1,43 @@
+{
+  "schema_version": "failure_episode_ai_development_validation_evidence_only_protocol_repair_v1",
+  "created_date": "2026-09-17",
+  "development_only": true,
+  "independent_validation": false,
+  "human_validated": false,
+  "parent_attempts": [
+    {
+      "budget": 4096,
+      "prepared_manifest_sha256": "a4a9f6109f9e5ec961b77963e02eb0602551255234affe4d48ade8bb955b9bb7",
+      "report_sha256": "c3c4a9926238cb9fd9ec4b755c517ea2b7eb952f007d683496ce5ef089640d4b",
+      "result": "hard 3/4 but protocol 3/4 because one budget-dependent recent-plus-gold artifact was not sent"
+    },
+    {
+      "budget": 8192,
+      "prepared_manifest_sha256": "e92e5bf8fddb7d544870822bc6acb2c4a1ed4d78720156855b451af4f7e2ca52",
+      "report_sha256": "60be3513bb77289a1b71d8c93793ae15aec4c7acb0bbc83be71943a9340ebec8",
+      "episodes_sha256": "b04a4874d3bcafd72e09daf6a405477e27deb06759fc96d495fa95d2a8c54413",
+      "result": "protocol 4/4 but hard 2/4; added recent-history distractors changed earlier contexts and overturned one prior pass"
+    }
+  ],
+  "diagnosis": "the historical Oracle mixes a budget-dependent recent-history sample with the gold chain, so it is not a stable capability ceiling",
+  "protocol_change": {
+    "old_method": "oracle (recent-history filler plus gold chain)",
+    "new_method": "oracle_evidence_only (gold ordered evidence plus deterministic call/result pair closure)",
+    "population_change": "none",
+    "gold_change": "none",
+    "model_change": "none",
+    "answer_contract_change": "none",
+    "history_budget": 4096,
+    "budget_invariance_requirement": "the evidence-only records and token count must be identical at 4096 and 8192"
+  },
+  "gate": {
+    "hard_pass_minimum": 3,
+    "episode_count": 4,
+    "necessary_evidence_present_required": 4,
+    "protocol_valid_required": 4,
+    "safety_pass_required": 4
+  },
+  "on_pass": "Freeze all three Oracle attempts and prepare the five-method AI-development matrix. Do not claim independent validation.",
+  "on_fail": "Do not launch the method matrix; export targeted AI review for remaining strict-signature, anchor, and evidence-boundary failures.",
+  "formal_claim_limit": "This post-result protocol repair tests feasibility on non-independent AI labels; it cannot replace a fresh human-reviewed validation set."
+}

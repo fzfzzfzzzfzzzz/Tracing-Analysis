@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from tracegraph.interventions import (
+from tracegraph.evaluation.interventions import (
     InterventionConfig,
     P1_CONDITIONS,
     P1_INTERVENTION_KINDS,

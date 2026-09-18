@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Frozen v0.2 development pilot",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "protocol",
+    "development_only",
+    "independent_validation",
+    "seed",
+    "model",
+    "judge_model",
+    "region",
+    "temperature",
+    "enable_thinking",
+    "max_output_tokens",
+    "history_budget_tokens",
+    "ingest_budget_tokens",
+    "request_input_tokens_hard_max",
+    "request_count_hard_max",
+    "cost_cap_cny",
+    "timeout_seconds",
+    "tokenizer",
+    "pricing_snapshot",
+    "authorization",
+    "gates"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "compression_audit_pilot_v02_1"
+    },
+    "protocol": {
+      "const": "v0.2-development"
+    },
+    "development_only": {
+      "const": true
+    },
+    "independent_validation": {
+      "const": false
+    },
+    "seed": {
+      "const": 20260912
+    },
+    "model": {
+      "const": "qwen3.8-flash"
+    },
+    "judge_model": {
+      "const": "qwen3.8-flash"
+    },
+    "region": {
+      "const": "cn-beijing"
+    },
+    "temperature": {
+      "const": 0
+    },
+    "enable_thinking": {
+      "const": false
+    },
+    "max_output_tokens": {
+      "const": 2048
+    },
+    "history_budget_tokens": {
+      "const": 1536
+    },
+    "ingest_budget_tokens": {
+      "const": 768
+    },
+    "request_input_tokens_hard_max": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65536
+    },
+    "request_count_hard_max": {
+      "const": 1298
+    },
+    "cost_cap_cny": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 100
+    },
+    "timeout_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 60
+    },
+    "tokenizer": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "model": {
+          "const": "qwen3.8-flash"
+        },
+        "path": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "verification_path": {
+          "type": "string"
+        },
+        "verification_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "model",
+        "path",
+        "source",
+        "sha256",
+        "verification_path",
+        "verification_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "pricing_snapshot": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "region": {
+          "const": "cn-beijing"
+        },
+        "source": {
+          "type": "string",
+          "pattern": "^https://help.aliyun.com/"
+        },
+        "input_per_million": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "output_per_million": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [
+        "date",
+        "region",
+        "source",
+        "input_per_million",
+        "output_per_million"
+      ],
+      "additionalProperties": false
+    },
+    "authorization": {
+      "type": "object",
+      "properties": {
+        "authorized_by_user": {
+          "type": "boolean"
+        },
+        "authorization_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "date": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "authorized_by_user",
+        "authorization_id",
+        "date"
+      ],
+      "additionalProperties": false
+    },
+    "gates": {
+      "const": {
+        "judge_holdout_correct": 36,
+        "judge_critical_false_positives": 0,
+        "first_format_valid": 36,
+        "final_format_valid": 38,
+        "full_pass": 20,
+        "oracle_pass": 14
+      }
+    }
+  }
+}

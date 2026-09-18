@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
-"""Build a task-stratified composite plan from an original and repair matrix.
-
-The composite keeps unaffected tasks from the original matrix and substitutes
-every condition for explicitly repaired tasks.  This preserves within-task
-pairing while making the mixed evaluator provenance impossible to overlook.
-"""
+"""把第三阶段原始计划和修复计划按任务合并。"""
 
 from __future__ import annotations
+
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
 
 import argparse
 import copy
@@ -152,7 +149,7 @@ def build_composite_plan(
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--original-plan", required=True, type=Path)
     parser.add_argument("--repair-plan", required=True, type=Path)
     parser.add_argument("--repair-task-id", action="append", required=True)
@@ -194,4 +191,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

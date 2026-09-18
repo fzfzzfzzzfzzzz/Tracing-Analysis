@@ -1,0 +1,203 @@
+CASE index=20 candidate_id=12476d021fac8d8965be886a031c7bfbba2890f3066bf05ab8e8aa7d9659884b
+source=ama_bench repository=ama:minihack task_id=16 split=test events=200
+====================================================================================================
+t0000:action | CALL environment_action/: north
+t0000:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ dark area far west ⏎ horizontal wall near north ⏎ doorway near west ⏎ northwest room corner near northwest ⏎ horizontal wall very near south and southwest ⏎ vertical wall adjacent n …(+336ch)
+t0001:action | CALL environment_action/: west
+t0001:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ vertical closed door far westsouthwest ⏎ horizontal wall near north ⏎ doorway near west ⏎ dark area near west and northwest ⏎ vertical open door near northwest ⏎ vertical wall very  …(+438ch)
+t0002:action | CALL environment_action/: west
+t0002:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ vertical closed door far westsouthwest ⏎ horizontal wall near north ⏎ vertical wall near northeast, east, and northwest ⏎ doorway near west ⏎ dark area near west ⏎ stairs up very ne …(+373ch)
+t0003:action | CALL environment_action/: west
+t0003:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ vertical closed door far westsouthwest ⏎ horizontal wall near north ⏎ vertical wall near northeast and east ⏎ stairs up near eastsoutheast ⏎ dark area near west and northwest ⏎ hori …(+416ch)
+t0004:action | CALL environment_action/: west
+t0004:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ vertical closed door far westsouthwest ⏎ horizontal wall near north ⏎ northeast room corner near northeast ⏎ vertical wall near east ⏎ stairs up near eastsoutheast ⏎ horizontal wall …(+427ch)
+t0005:action | CALL environment_action/: west
+t0005:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ vertical wall far east ⏎ vertical closed door far westsouthwest ⏎ horizontal wall near northeast ⏎ stairs up near eastsoutheast ⏎ horizontal wall very near southeast ⏎ dark area ver …(+378ch)
+t0006:action | CALL environment_action/: west
+t0006:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ vertical wall far east ⏎ stairs up far eastsoutheast ⏎ vertical closed door far westsouthwest ⏎ dark area very near north, south, southwest, and west ⏎ vertical wall adjacent northe …(+374ch)
+t0007:action | CALL environment_action/: west
+t0007:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ vertical wall far east ⏎ stairs up far eastsoutheast ⏎ vertical closed door far westsouthwest ⏎ horizontal wall near northeast ⏎ doorway very near northeast and east ⏎ southwest cor …(+417ch)
+t0008:action | CALL environment_action/: west
+t0008:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ vertical wall far east ⏎ stairs up far eastsoutheast ⏎ vertical closed door far westsouthwest ⏎ doorway near east ⏎ dark area very near southeast, south, southwest, and west ⏎ dark  …(+350ch)
+t0009:action | CALL environment_action/: west
+t0009:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far eastsoutheast ⏎ vertical closed door far westsouthwest ⏎ doorway near east ⏎ dark area very near southeast and south ⏎ horizontal wall very near southwest ⏎ dark area  …(+380ch)
+t0010:action | CALL environment_action/: south
+t0010:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical closed door far west ⏎ dark area far west ⏎ vertical wall near east ⏎ dark area very near north, northeast, and south ⏎ dark area adjacent southeast, s …(+372ch)
+t0011:action | CALL environment_action/: west
+t0011:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical closed door far west ⏎ dark area far west ⏎ vertical wall near east ⏎ horizontal wall near northwest ⏎ dark area very near northeast and southeast ⏎ ve …(+434ch)
+t0012:action | CALL environment_action/: west
+t0012:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical wall far east ⏎ vertical closed door far west ⏎ dark area far west ⏎ horizontal wall near north and northwest ⏎ vertical wall adjacent northeast ⏎ door …(+443ch)
+t0013:action | CALL environment_action/: west
+t0013:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical wall far east ⏎ dark area far west ⏎ horizontal wall near north and northwest ⏎ vertical closed door near west ⏎ vertical wall very near northeast ⏎ do …(+421ch)
+t0014:action | CALL environment_action/: west
+t0014:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical wall far east ⏎ horizontal wall near north ⏎ doorway near northeast and east ⏎ dark area near northeast and west ⏎ vertical closed door near west ⏎ nor …(+434ch)
+t0015:action | CALL environment_action/: west
+t0015:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical wall far east ⏎ horizontal wall near north ⏎ northeast room corner near northeast ⏎ doorway near east ⏎ vertical closed door near west ⏎ dark area near …(+437ch)
+t0016:action | CALL environment_action/: west
+t0016:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ horizontal wall near north and northeast ⏎ doorway near east ⏎ dark area near west ⏎ vertical closed door very near west ⏎ vertical wall very near northwest ⏎ h …(+397ch)
+t0017:action | CALL environment_action/: west
+t0017:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near north and northeast ⏎ dark area very near west ⏎ horizontal wall adjacent southeast and south ⏎ southwest corner adjacen …(+425ch)
+t0018:action | CALL environment_action/: open
+t0018:observation | OBS : message: ⏎ In what direction? ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near north and northeast ⏎ dark area very near west ⏎ horizontal wall adjacent southeast and south ⏎ south …(+420ch)
+t0019:action | CALL environment_action/: west
+t0019:observation | OBS : message: ⏎ The door opens. ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near north and northeast ⏎ dark area very near west ⏎ horizontal wall adjacent southeast and south ⏎ southwes …(+439ch)
+t0020:action | CALL environment_action/: west
+t0020:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area very near southwest and west ⏎ vertical wall adjacent north ⏎ horizontal wall adjacent southeast ⏎ …(+407ch)
+t0021:action | CALL environment_action/: west
+t0021:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area very near south, southwest, and west ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ vertical open do …(+400ch)
+t0022:action | CALL environment_action/: west
+t0022:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ vertical open door very near east ⏎ dark area very near southeast, south, southwest, west, and northwest ⏎ dark area adjacent north and north …(+354ch)
+t0023:action | CALL environment_action/: west
+t0023:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up very far east ⏎ vertical open door near east ⏎ dark area very near north, southeast, south, southwest, and northwest ⏎ dark area adjacent northeast and west ⏎ ⏎ cursor: ⏎  …(+337ch)
+t0024:action | CALL environment_action/: west
+t0024:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up very far east ⏎ vertical open door near east ⏎ dark area very near north, southeast, south, southwest, and northwest ⏎ dark area adjacent northeast and w …(+355ch)
+t0025:action | CALL environment_action/: east
+t0025:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ vertical open door very near east ⏎ dark area very near southeast, south, southwest, west, and northwest ⏎ dark area adjacent north and north …(+356ch)
+t0026:action | CALL environment_action/: north
+t0026:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ vertical open door very near east ⏎ dark area very near southeast, south, southwest, west, and northwest ⏎ dark area adjace …(+374ch)
+t0027:action | CALL environment_action/: east
+t0027:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near west ⏎ dark area very near south and southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+421ch)
+t0028:action | CALL environment_action/: east
+t0028:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ vertical wall adjacent north ⏎ horizontal wall adjacen …(+428ch)
+t0029:action | CALL environment_action/: west
+t0029:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near west ⏎ dark area very near south and southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+421ch)
+t0030:action | CALL environment_action/: south
+t0030:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far eastnortheast ⏎ horizontal wall near northeast ⏎ dark area near west and northwest ⏎ dark area very near north, southeast, and south ⏎ vertical open door adjacent nort …(+424ch)
+t0031:action | CALL environment_action/: north
+t0031:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near south and west ⏎ dark area very near southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+424ch)
+t0032:action | CALL environment_action/: south
+t0032:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far eastnortheast ⏎ horizontal wall near northeast ⏎ dark area near west and northwest ⏎ dark area very near north, southeast, and south ⏎ vertical open door adjacent nort …(+424ch)
+t0033:action | CALL environment_action/: south
+t0033:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far eastnortheast ⏎ dark area near north and northwest ⏎ dark area very near east ⏎ southwest corner adjacent northeast ⏎ dark area adjacent southeast, south, southwest, a …(+363ch)
+t0034:action | CALL environment_action/: south
+t0034:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up far eastnortheast ⏎ dark area near north and northwest ⏎ dark area very near east ⏎ southwest corner adjacent northeast ⏎ dark area adjacent southeast, s …(+381ch)
+t0035:action | CALL environment_action/: north
+t0035:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far eastnortheast ⏎ horizontal wall near northeast ⏎ dark area near west and northwest ⏎ dark area very near north, southeast, and south ⏎ vertical open door adjacent nort …(+424ch)
+t0036:action | CALL environment_action/: west
+t0036:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far eastnortheast ⏎ dark area near west and northwest ⏎ dark area very near north and southeast ⏎ vertical wall very near northeast ⏎ southwest corner very near east ⏎ dar …(+390ch)
+t0037:action | CALL environment_action/: south
+t0037:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up far eastnortheast ⏎ dark area near west and northwest ⏎ dark area very near north and southeast ⏎ vertical wall very near northeast ⏎ southwest corner ve …(+408ch)
+t0038:action | CALL environment_action/: west
+t0038:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up very far eastnortheast ⏎ dark area near north ⏎ southwest corner near east ⏎ dark area very near northeast and west ⏎ dark area adjacent southeast, south, southwest, and n …(+363ch)
+t0039:action | CALL environment_action/: south
+t0039:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up very far eastnortheast ⏎ dark area near north ⏎ southwest corner near east ⏎ dark area very near northeast and west ⏎ dark area adjacent southeast, south …(+381ch)
+t0040:action | CALL environment_action/: north
+t0040:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up very far east ⏎ vertical open door near east ⏎ dark area near southeast ⏎ dark area very near north, south, southwest, and northwest ⏎ dark area adjacent northeast and wes …(+356ch)
+t0041:action | CALL environment_action/: west
+t0041:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up very far east ⏎ vertical open door near east ⏎ dark area near southeast ⏎ dark area very near north, south, southwest, and northwest ⏎ dark area adjacent …(+374ch)
+t0042:action | CALL environment_action/: north
+t0042:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up very far eastsoutheast ⏎ dark area near southeast and south ⏎ dark area very near west ⏎ dark area adjacent north, northeast, east, southwest, and northwest ⏎ ⏎ cursor: ⏎  …(+340ch)
+t0043:action | CALL environment_action/: north
+t0043:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up very far eastsoutheast ⏎ dark area near southeast and south ⏎ dark area very near west ⏎ dark area adjacent north, northeast, east, southwest, and northw …(+358ch)
+t0044:action | CALL environment_action/: east
+t0044:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up very far eastsoutheast ⏎ dark area near southeast and south ⏎ dark area very near west ⏎ dark area adjacent north, northeast, east, southwest, and northw …(+358ch)
+t0045:action | CALL environment_action/: east
+t0045:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up very far eastsoutheast ⏎ dark area near southeast and south ⏎ dark area very near west ⏎ dark area adjacent north, northeast, east, southwest, and northw …(+358ch)
+t0046:action | CALL environment_action/: south
+t0046:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up very far east ⏎ vertical open door near east ⏎ dark area near southeast ⏎ dark area very near north, south, southwest, and northwest ⏎ dark area adjacent northeast and wes …(+356ch)
+t0047:action | CALL environment_action/: east
+t0047:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near southeast ⏎ vertical open door very near east ⏎ dark area very near south, southwest, west, and northwest ⏎ dark area adjacent …(+375ch)
+t0048:action | CALL environment_action/: east
+t0048:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near south and west ⏎ dark area very near southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+424ch)
+t0049:action | CALL environment_action/: east
+t0049:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ vertical wall adjacent north ⏎ horizontal wall adjacen …(+431ch)
+t0050:action | CALL environment_action/: west
+t0050:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near south and west ⏎ dark area very near southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+424ch)
+t0051:action | CALL environment_action/: east
+t0051:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ vertical wall adjacent north ⏎ horizontal wall adjacen …(+431ch)
+t0052:action | CALL environment_action/: south
+t0052:observation | OBS : message: ⏎ It's a wall. ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ vertical wall adjacent north ⏎ horizontal …(+444ch)
+t0053:action | CALL environment_action/: west
+t0053:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near south and west ⏎ dark area very near southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+424ch)
+t0054:action | CALL environment_action/: east
+t0054:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ vertical wall adjacent north ⏎ horizontal wall adjacen …(+431ch)
+t0055:action | CALL environment_action/: west
+t0055:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near south and west ⏎ dark area very near southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+424ch)
+t0056:action | CALL environment_action/: south
+t0056:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far eastnortheast ⏎ horizontal wall near northeast ⏎ dark area near west and northwest ⏎ dark area very near north, southeast, and south ⏎ vertical open door adjacent nort …(+424ch)
+t0057:action | CALL environment_action/: south
+t0057:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far eastnortheast ⏎ dark area near north and northwest ⏎ dark area very near east ⏎ southwest corner adjacent northeast ⏎ dark area adjacent southeast, south, southwest, a …(+363ch)
+t0058:action | CALL environment_action/: west
+t0058:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up far eastnortheast ⏎ dark area near north and northwest ⏎ dark area very near east ⏎ southwest corner adjacent northeast ⏎ dark area adjacent southeast, s …(+381ch)
+t0059:action | CALL environment_action/: north
+t0059:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far eastnortheast ⏎ horizontal wall near northeast ⏎ dark area near west and northwest ⏎ dark area very near north, southeast, and south ⏎ vertical open door adjacent nort …(+424ch)
+t0060:action | CALL environment_action/: north
+t0060:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near south and west ⏎ dark area very near southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+424ch)
+t0061:action | CALL environment_action/: north
+t0061:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near south and west ⏎ dark area very near southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adja …(+442ch)
+t0062:action | CALL environment_action/: east
+t0062:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ vertical wall adjacent north ⏎ horizontal wall adjacen …(+431ch)
+t0063:action | CALL environment_action/: west
+t0063:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near south and west ⏎ dark area very near southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+424ch)
+t0064:action | CALL environment_action/: east
+t0064:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ vertical wall adjacent north ⏎ horizontal wall adjacen …(+431ch)
+t0065:action | CALL environment_action/: south
+t0065:observation | OBS : message: ⏎ It's a wall. ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ vertical wall adjacent north ⏎ horizontal …(+444ch)
+t0066:action | CALL environment_action/: west
+t0066:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near south and west ⏎ dark area very near southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+424ch)
+t0067:action | CALL environment_action/: east
+t0067:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ vertical wall adjacent north ⏎ horizontal wall adjacen …(+431ch)
+t0068:action | CALL environment_action/: southwest
+t0068:observation | OBS : message: ⏎ You can't move diagonally out of an intact doorway. ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ ve …(+483ch)
+t0069:action | CALL environment_action/: north
+t0069:observation | OBS : message: ⏎ It's a wall. ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ vertical wall adjacent north ⏎ horizontal …(+444ch)
+t0070:action | CALL environment_action/: west
+t0070:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near south and west ⏎ dark area very near southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+424ch)
+t0071:action | CALL environment_action/: east
+t0071:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ vertical wall adjacent north ⏎ horizontal wall adjacen …(+431ch)
+t0072:action | CALL environment_action/: west
+t0072:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near south and west ⏎ dark area very near southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+424ch)
+t0073:action | CALL environment_action/: west
+t0073:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near southeast ⏎ vertical open door very near east ⏎ dark area very near south, southwest, west, and northwest ⏎ dark area adjacent …(+375ch)
+t0074:action | CALL environment_action/: west
+t0074:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up very far east ⏎ vertical open door near east ⏎ dark area near southeast ⏎ dark area very near north, south, southwest, and northwest ⏎ dark area adjacent northeast and wes …(+356ch)
+t0075:action | CALL environment_action/: west
+t0075:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up very far east ⏎ vertical open door near east ⏎ dark area near southeast ⏎ dark area very near north, south, southwest, and northwest ⏎ dark area adjacent …(+374ch)
+t0076:action | CALL environment_action/: south
+t0076:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up very far eastnortheast ⏎ dark area near north ⏎ southwest corner near east ⏎ dark area very near northeast and west ⏎ dark area adjacent southeast, south, southwest, and n …(+363ch)
+t0077:action | CALL environment_action/: south
+t0077:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up very far eastnortheast ⏎ dark area near north ⏎ southwest corner near east ⏎ dark area very near northeast and west ⏎ dark area adjacent southeast, south …(+381ch)
+t0078:action | CALL environment_action/: east
+t0078:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far eastnortheast ⏎ dark area near west and northwest ⏎ dark area very near north and southeast ⏎ vertical wall very near northeast ⏎ southwest corner very near east ⏎ dar …(+390ch)
+t0079:action | CALL environment_action/: south
+t0079:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up far eastnortheast ⏎ dark area near west and northwest ⏎ dark area very near north and southeast ⏎ vertical wall very near northeast ⏎ southwest corner ve …(+408ch)
+t0080:action | CALL environment_action/: north
+t0080:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near southeast ⏎ vertical open door very near east ⏎ dark area very near south, southwest, west, and northwest ⏎ dark area adjacent …(+375ch)
+t0081:action | CALL environment_action/: north
+t0081:observation | OBS : message: ⏎ It's solid stone. ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near southeast ⏎ vertical open door very near east ⏎ dark area very near south, southwest, west, and northwest ⏎  …(+393ch)
+t0082:action | CALL environment_action/: east
+t0082:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near south and west ⏎ dark area very near southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+424ch)
+t0083:action | CALL environment_action/: east
+t0083:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ vertical wall adjacent north ⏎ horizontal wall adjacen …(+431ch)
+t0084:action | CALL environment_action/: west
+t0084:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ dark area near south and west ⏎ dark area very near southwest ⏎ dark area adjacent north and northwest ⏎ vertical wall adjacent northeast ⏎ v …(+424ch)
+t0085:action | CALL environment_action/: east
+t0085:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near northeast ⏎ dark area near west ⏎ dark area very near southwest ⏎ vertical wall adjacent north ⏎ horizontal wall adjacen …(+431ch)
+t0086:action | CALL environment_action/: east
+t0086:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ doorway far east ⏎ horizontal wall near north and northeast ⏎ dark area near west ⏎ horizontal wall adjacent southeast and south ⏎ southwest corner adjacent sou …(+431ch)
+t0087:action | CALL environment_action/: east
+t0087:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ dark area far west ⏎ horizontal wall near north and northeast ⏎ doorway near east ⏎ vertical open door very near west ⏎ vertical wall very near northwest ⏎ hori …(+407ch)
+t0088:action | CALL environment_action/: east
+t0088:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical wall far east ⏎ dark area far west ⏎ horizontal wall near north ⏎ northeast room corner near northeast ⏎ doorway near east ⏎ vertical open door near we …(+447ch)
+t0089:action | CALL environment_action/: east
+t0089:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical wall far east ⏎ dark area far west ⏎ horizontal wall near north ⏎ doorway near northeast and east ⏎ dark area near northeast ⏎ vertical open door near  …(+457ch)
+t0090:action | CALL environment_action/: east
+t0090:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical wall far east ⏎ dark area far west ⏎ horizontal wall near north and northwest ⏎ vertical open door near west ⏎ vertical wall very near northeast ⏎ door …(+432ch)
+t0091:action | CALL environment_action/: east
+t0091:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical wall far east ⏎ vertical open door far west ⏎ horizontal wall near north and northwest ⏎ vertical wall adjacent northeast ⏎ doorway adjacent east ⏎ sou …(+434ch)
+t0092:action | CALL environment_action/: east
+t0092:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical open door far west ⏎ vertical wall near east ⏎ horizontal wall near northwest ⏎ dark area very near northeast and southeast ⏎ vertical wall adjacent no …(+429ch)
+t0093:action | CALL environment_action/: east
+t0093:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical open door far west ⏎ vertical wall near east ⏎ dark area very near north, northeast, and south ⏎ dark area adjacent southeast ⏎ southeast corner adjace …(+426ch)
+t0094:action | CALL environment_action/: west
+t0094:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical open door far west ⏎ vertical wall near east ⏎ horizontal wall near northwest ⏎ dark area very near northeast and southeast ⏎ vertical wall adjacent no …(+429ch)
+t0095:action | CALL environment_action/: north
+t0095:observation | OBS : message: ⏎ It's a wall. ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical open door far west ⏎ vertical wall near east ⏎ horizontal wall near northwest ⏎ dark area very near northeast and southeast ⏎ vertical wal …(+442ch)
+t0096:action | CALL environment_action/: south
+t0096:observation | OBS : message: ⏎ It's a wall. ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical open door far west ⏎ vertical wall near east ⏎ horizontal wall near northwest ⏎ dark area very near northeast and southeast ⏎ vertical wal …(+442ch)
+t0097:action | CALL environment_action/: west
+t0097:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical wall far east ⏎ vertical open door far west ⏎ horizontal wall near north and northwest ⏎ vertical wall adjacent northeast ⏎ doorway adjacent east ⏎ sou …(+434ch)
+t0098:action | CALL environment_action/: west
+t0098:observation | OBS : message: ⏎ ⏎ ⏎ language observation: ⏎ stairs up far east ⏎ vertical wall far east ⏎ dark area far west ⏎ horizontal wall near north and northwest ⏎ vertical open door near west ⏎ vertical wall very near northeast ⏎ door …(+432ch)
+t0099:action | CALL environment_action/: west
+t0099:observation | OBS : message: ⏎   ⏎ No Points Name Hp [max] ⏎ 0 Agent-Arc-Dwa-Mal-Law quit in The Dungeons of Doom on ⏎ level 1. 15 [15] ⏎ ⏎ ⏎ language observation: ⏎ dark area adjacent east, southeast, and south ⏎ ⏎ cursor: ⏎ very far easts …(+178ch)

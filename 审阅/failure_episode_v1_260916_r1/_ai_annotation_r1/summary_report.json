@@ -1,0 +1,66 @@
+{
+ "schema_version": "compression_audit_failure_episode_ai_draft_summary_v1",
+ "generated": "2026-09-16",
+ "annotator_model": "zcode / GLM-5.2 (AI drafts; NOT the formal double-human annotation gate)",
+ "known_deviations": [
+  "annotator_kind='ai' (schema const is 'human') — these files are development drafts",
+  "case 001 shared a worked exemplar between passes; excluded from agreement stats",
+  "both passes run the same underlying model; independence is process-level only"
+ ],
+ "passes": {
+  "a": {
+   "file": "E:\\科研\\Tools Tracing\\审阅\\failure_episode_v1_260916_r1\\reviews.reviewer_a.ai_draft.jsonl",
+   "rows": 100,
+   "status_counts": {
+    "annotated": 29,
+    "rejected": 71
+   },
+   "annotator": "ai-draft:zcode:glm-5.2:pass-a",
+   "mechanical_check_errors": []
+  },
+  "b": {
+   "file": "E:\\科研\\Tools Tracing\\审阅\\failure_episode_v1_260916_r1\\reviews.reviewer_b.ai_draft.jsonl",
+   "rows": 100,
+   "status_counts": {
+    "annotated": 31,
+    "rejected": 69
+   },
+   "annotator": "ai-draft:zcode:glm-5.2:pass-b",
+   "mechanical_check_errors": []
+  }
+ },
+ "agreement": {
+  "n": 99,
+  "status_raw_agreement": 0.9797979797979798,
+  "status_cohen_kappa": 0.9512555391432791,
+  "disagreement_count": 2,
+  "doubly_annotated": 28,
+  "recoverability_kappa": 0.26744186046511625,
+  "recoverability_raw_agree": 0.6785714285714286,
+  "failure_family_exact_agree": 0.32142857142857145,
+  "anchor_exact_agree": 0.9642857142857143,
+  "error_signature_exact_agree": 0.5357142857142857,
+  "referenced_events_F1_mean": 0.8083682489574834,
+  "referenced_events_F1_min": 0.5818181818181819,
+  "core_events_F1_mean": 0.8385031809926768,
+  "repair_step_count_mean_abs_diff": 1.25
+ },
+ "status_disagreements": [
+  {
+   "candidate_id": "d4e7c0c0c500cbd962cba7fc0dafa772645d921480a8c1cae7df67dde1419fb1",
+   "case_no": 36,
+   "a": "rejected",
+   "b": "annotated",
+   "a_reason": "Crafter 游戏轨迹，任务从未成功且轨迹在睡眠状态中截断：结尾 t0271:action Sleep 后 t0272–t0274 连续 Noop，最终 t0274:observation 仍为 You are sleeping, and",
+   "b_reason": ""
+  },
+  {
+   "candidate_id": "a794195e09ea40b598af0eddff22fb18699fed1f8bb8a3867cb1234e021f3273",
+   "case_no": 88,
+   "a": "rejected",
+   "b": "annotated",
+   "a_reason": "GAIA 检索任务一次通过：t0003/t0005/t0007/t0014/t0017–t0019 的 !! 标记只是搜索结果/网页正文过长被截断，并非失败；代理逐步检索 scikit-learn 0.19 changelog、交叉验证 O",
+   "b_reason": ""
+  }
+ ]
+}

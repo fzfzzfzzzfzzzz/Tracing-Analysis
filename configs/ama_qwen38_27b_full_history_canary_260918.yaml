@@ -1,0 +1,26 @@
+provider: custom
+base_url: http://127.0.0.1:18080/v1
+api_key: EMPTY
+served_model: Qwen3.8-27B-rev-1d4bf0f
+model: data/model_assets/Qwen3.8-27B-rev-1d4bf0f-tokenizer
+
+# Provider limits frozen for the external-benchmark canary.
+max_tokens: 8192
+max_model_len: 65536
+timeout: 900
+
+# The official AMA LongContextMethod reads these names separately.
+max_model_length: 65536
+max_response_tokens: 8192
+tokenizer_path: data/model_assets/Qwen3.8-27B-rev-1d4bf0f-tokenizer
+
+sampling:
+  # AMA asks for 12 direct answers in one call. Qwen thinking exhausted the
+  # full 8192-token output budget without visible answers at both 0.0 and 1.0.
+  # Freeze non-thinking direct-answer decoding for every AMA method.
+  temperature: 0.0
+  top_p: 0.95
+  top_k: 20
+  min_p: 0.0
+  enable_thinking: false
+  seed: 20260918

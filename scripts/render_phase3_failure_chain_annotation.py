@@ -1,8 +1,9 @@
-"""Render a blind P2 failure-chain CSV as a local, read-only HTML view."""
+"""把第三阶段盲化检查表生成为本地只读网页。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import csv
 import html
 from pathlib import Path
@@ -74,7 +75,7 @@ def render(csv_path: Path, output: Path, annotator: str) -> int:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--annotator", required=True)
@@ -84,4 +85,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

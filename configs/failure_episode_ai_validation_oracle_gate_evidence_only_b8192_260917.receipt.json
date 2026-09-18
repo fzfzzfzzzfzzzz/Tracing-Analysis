@@ -1,0 +1,34 @@
+{
+  "schema_version": "failure_episode_ai_development_validation_evidence_only_budget_repair_v1",
+  "created_date": "2026-09-17",
+  "development_only": true,
+  "independent_validation": false,
+  "human_validated": false,
+  "parent_attempt": {
+    "prepared_manifest_sha256": "1ae6ce987c56d1c28ba456f9838eb35b20e69e8d599340d82d47dbf492c55780",
+    "report_sha256": "9165e474bea7ee864bbea965ac5553d0da61cde28355d2a058b5011228833316",
+    "episodes_sha256": "727a13fddbe1e94c45fcdf98d589abb3a25b139bc589af962c8c5eb1620e6e5b",
+    "result": "two hard passes, one exact-signature content failure, and one unsent 4743-token evidence-only artifact"
+  },
+  "population_change": "none",
+  "gold_change": "none",
+  "model_change": "none",
+  "answer_contract_change": "none",
+  "oracle_records_change": "none; enforced by budget-invariance regression test",
+  "budget_change": {
+    "from": 4096,
+    "to": 8192,
+    "observed_unsent_artifact_tokens": 4743,
+    "basis": "exact tokenizer pre-answer eligibility, not answer correctness"
+  },
+  "gate": {
+    "hard_pass_minimum": 3,
+    "episode_count": 4,
+    "necessary_evidence_present_required": 4,
+    "protocol_valid_required": 4,
+    "safety_pass_required": 4
+  },
+  "on_pass": "Freeze all attempts and prepare the five-method AI-development matrix. Do not claim independent validation.",
+  "on_fail": "Stop model-call expansion. Export targeted AI review for strict error signatures and evidence boundaries, then reassess the primary endpoint before any matrix.",
+  "formal_claim_limit": "This is the final context-feasibility repair for a post-result, non-independent AI-labelled development gate."
+}

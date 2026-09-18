@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "第六阶段公开测试任务离线准备配置",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "prepared_at",
+    "output_root",
+    "external_provider_calls_allowed",
+    "benchmarks",
+    "budget"
+  ],
+  "properties": {
+    "schema_version": {"const": "phase6_benchmark_preparation_v1"},
+    "run_id": {"type": "string", "minLength": 1},
+    "prepared_at": {"type": "string", "format": "date"},
+    "output_root": {"type": "string", "minLength": 1},
+    "external_provider_calls_allowed": {"const": false},
+    "benchmarks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "official_name",
+          "availability",
+          "local_code_root",
+          "local_data_root",
+          "selection_file",
+          "task_id_fields",
+          "expected_rows",
+          "expected_files",
+          "upstream"
+        ],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "official_name": {"type": "string", "minLength": 1},
+          "availability": {"enum": ["public", "pending"]},
+          "local_code_root": {"type": "string", "minLength": 1},
+          "local_data_root": {"type": "string", "minLength": 1},
+          "selection_file": {"type": "string", "minLength": 1},
+          "task_id_fields": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "expected_rows": {"type": "integer", "minimum": 1},
+          "expected_files": {"type": "array"},
+          "upstream": {"type": "object"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "budget": {
+      "type": "object",
+      "required": [
+        "default_model",
+        "methods_per_task",
+        "trials_per_method",
+        "input_tokens_per_request",
+        "output_tokens_per_request",
+        "maximum_cost_cny",
+        "prices_per_million_tokens"
+      ],
+      "properties": {
+        "default_model": {"enum": ["qwen3.7-plus", "qwen3.8-27b"]},
+        "methods_per_task": {"type": "integer", "minimum": 1},
+        "trials_per_method": {"type": "integer", "minimum": 1},
+        "requests_per_trial": {"type": "integer", "minimum": 1},
+        "input_tokens_per_request": {"type": "integer", "minimum": 1},
+        "output_tokens_per_request": {"type": "integer", "minimum": 1},
+        "maximum_cost_cny": {"type": "number", "exclusiveMinimum": 0},
+        "prices_per_million_tokens": {"type": "object"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

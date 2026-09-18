@@ -1,0 +1,40 @@
+{
+  "served_model": "Qwen3-14B-rev-40c0698",
+  "weights_revision": "40c069824f4251a91eefaf281ebe4c544efd3e18",
+  "server_version": "0.8.5",
+  "dtype": "bfloat16",
+  "quantization": "none",
+  "tool_call_parser": "hermes",
+  "launch_argv": [
+    "vllm",
+    "serve",
+    "/data/fangc/models/Qwen3-14B",
+    "--served-model-name",
+    "Qwen3-14B-rev-40c0698",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8000",
+    "--max-model-len",
+    "32768",
+    "--tensor-parallel-size",
+    "2",
+    "--max-num-seqs",
+    "4",
+    "--generation-config",
+    "vllm",
+    "--dtype",
+    "bfloat16",
+    "--enable-auto-tool-choice",
+    "--tool-call-parser",
+    "hermes"
+  ],
+  "hardware": {
+    "hostname": "kglabgpu01",
+    "visible_gpu_indices": [0, 1],
+    "gpu_model": "NVIDIA GeForce RTX 3090",
+    "gpu_memory_mib_each": 24576,
+    "driver_version": "550.54.14",
+    "driver_cuda_version": "12.4"
+  }
+}

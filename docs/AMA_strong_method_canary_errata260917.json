@@ -1,0 +1,14 @@
+{
+  "schema_version": "server_eval_result_errata_v1",
+  "issued_on": "2026-09-17",
+  "source_run": "outputs/server_eval/qwen3_14b_strong_methods_canary_260914_r2",
+  "affected_method": "ama_official_bm25",
+  "old_interpretation": "zero_capability_score",
+  "corrected_validity": "integration_invalid",
+  "capability_aggregate_eligible": false,
+  "reason": "The adapter selected AMA causal construction even though its causal graph was not consumed. The causal STATE_MEMORY contract did not match the state-memory extractor, the model copied raw distractor records, and the construction response was truncated before any answer-model call.",
+  "replacement_profile": "official_state_memory_bm25_with_uniform_answer_runner",
+  "replacement_causal_mode": false,
+  "replacement_run": null,
+  "original_artifacts_retained": true
+}

@@ -1,8 +1,9 @@
-"""Profile the five GDSC prompt-cost layers from frozen JSON/JSONL artifacts."""
+"""计算五层模型输入量，找出固定成本和可减少部分。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import csv
 import json
 import math
@@ -219,7 +220,7 @@ def build_report(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--minimum-headroom", type=float, default=0.30)
@@ -227,16 +228,16 @@ def main() -> None:
     parser.add_argument(
         "--live-matrix-report",
         type=Path,
-        help="Use only context views referenced by this frozen live-matrix report.",
+        help="只使用这份固定报告中引用的模型输入内容。",
     )
     parser.add_argument(
         "--manager",
-        help="Manager to select with --live-matrix-report (for example full_ours).",
+        help="与 --live-matrix-report 一起使用的记录整理办法，例如 full_ours。",
     )
     parser.add_argument(
         "--eligibility-report",
         type=Path,
-        help="Supplement the R0 gate with per-domain provider-token oracle headroom.",
+        help="补充每类任务最多还能减少多少模型输入量的 R0 检查。",
     )
     args = parser.parse_args()
     if bool(args.live_matrix_report) != bool(args.manager):
@@ -274,4 +275,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(run_cli(main))

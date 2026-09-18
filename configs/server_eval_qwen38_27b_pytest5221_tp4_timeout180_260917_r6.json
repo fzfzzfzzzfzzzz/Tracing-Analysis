@@ -1,0 +1,169 @@
+{
+  "ama_code_search": {
+    "image": null,
+    "mode": "disabled"
+  },
+  "data": {
+    "calibration_exclude_prefix_ids": [
+      "controlled:shell_syntax:operations:R0:short",
+      "controlled:parameter_schema:data:R0:long",
+      "controlled:shell_syntax:data:R1:long",
+      "controlled:parameter_schema:software:R1:short",
+      "controlled:shell_syntax:data:R2:short",
+      "controlled:parameter_schema:operations:R2:long",
+      "controlled:parameter_schema:data:R3:short",
+      "controlled:shell_syntax:operations:R3:long",
+      "controlled:shell_syntax:software:R0:long",
+      "controlled:parameter_schema:data:R0:short",
+      "controlled:shell_syntax:operations:R1:short",
+      "controlled:parameter_schema:data:R1:long",
+      "controlled:parameter_schema:software:R2:short",
+      "controlled:shell_syntax:operations:R2:long",
+      "controlled:parameter_schema:data:R3:long",
+      "controlled:shell_syntax:operations:R3:short",
+      "controlled:parameter_schema:software:R0:short",
+      "controlled:parameter_schema:software:R0:long",
+      "controlled:shell_syntax:data:R0:short",
+      "controlled:shell_syntax:data:R1:short",
+      "controlled:parameter_schema:software:R1:long",
+      "controlled:shell_syntax:software:R2:short",
+      "controlled:parameter_schema:data:R2:long",
+      "controlled:parameter_schema:operations:R3:short",
+      "controlled:shell_syntax:software:R3:long",
+      "controlled:shell_syntax:data:R0:long",
+      "controlled:parameter_schema:operations:R0:short",
+      "controlled:parameter_schema:operations:R1:short",
+      "controlled:shell_syntax:software:R1:long",
+      "controlled:parameter_schema:data:R2:short",
+      "controlled:shell_syntax:software:R2:long",
+      "controlled:parameter_schema:software:R3:short",
+      "controlled:shell_syntax:data:R3:long"
+    ],
+    "calibration_only": true,
+    "calibration_prefix_ids": [
+      "controlled:shell_syntax:operations:R0:long",
+      "controlled:shell_syntax:software:R0:short",
+      "controlled:parameter_schema:data:R1:short",
+      "controlled:parameter_schema:operations:R1:long",
+      "controlled:parameter_schema:operations:R2:short",
+      "controlled:parameter_schema:software:R2:long",
+      "controlled:shell_syntax:software:R3:short",
+      "controlled:parameter_schema:software:R3:long"
+    ],
+    "exposure_manifest": null,
+    "prefix_ids": [],
+    "rubrics": null,
+    "split": "dev"
+  },
+  "development_only": true,
+  "embedding": null,
+  "gates": {
+    "final_format_valid": 38,
+    "first_format_valid": 36,
+    "full_pass": 20,
+    "judge_critical_false_positives": 0,
+    "judge_holdout_correct": 36,
+    "oracle_pass": 14
+  },
+  "history_budgets": [
+    16384
+  ],
+  "independent_validation": false,
+  "interactive": true,
+  "judge_model_id": "qwen38_27b",
+  "limits": {
+    "build_calls_per_prefix": 32,
+    "embedding_calls_per_prefix": 512,
+    "input_token_limit": 15000000,
+    "output_token_limit": 1000000,
+    "request_limit": 400,
+    "retrieve_calls_per_query": 6,
+    "timeout_seconds": 180,
+    "wall_seconds": 43200
+  },
+  "methods": [
+    "full_history"
+  ],
+  "model_upgrade": {
+    "changed_fields": [
+      "model weights and tokenizer",
+      "model serving runtime",
+      "tensor parallel size 2 to 4",
+      "thinking sampling temperature 0.6 to 1.0",
+      "provider request timeout 60 to 180 seconds after an observed fail-closed timeout"
+    ],
+    "held_constant": [
+      "exposed task",
+      "full-history method",
+      "32768-token context window",
+      "2048-token per-turn output limit",
+      "native bash tool transport",
+      "40-call agent ceiling and unmodified agent scaffolding"
+    ],
+    "source_model": "Qwen/Qwen3-14B",
+    "target_model": "Qwen/Qwen3.8-27B"
+  },
+  "models": [
+    {
+      "action_transport": "native_tool_call",
+      "api_key_env": "TRACEGRAPH_SERVER_API_KEY",
+      "base_url": "http://127.0.0.1:8000/v1",
+      "context_window": 32768,
+      "display_name": "Qwen/Qwen3.8-27B BF16 TP4 pytest-5221 attribution timeout180 r6",
+      "enable_thinking": true,
+      "id": "qwen38_27b",
+      "max_output_tokens": 2048,
+      "provider": "self_hosted_openai",
+      "returned_model_allowlist": [
+        "Qwen3.8-27B-rev-1d4bf0f"
+      ],
+      "runtime_receipt": {
+        "path": "artifacts/runtime/qwen38_27b_bf16_tp4_260916_r4.receipt.json",
+        "sha256": "63d67da77325bb3141566874b59f5699fd6504aac721591b5f3f13e7dfc38146"
+      },
+      "served_model": "Qwen3.8-27B-rev-1d4bf0f",
+      "server_version": "sglang-0.5.10",
+      "thinking_kinds": [
+        "mini_action",
+        "mini_format_repair"
+      ],
+      "thinking_sampling": {
+        "min_p": 0,
+        "temperature": 1,
+        "top_k": 20,
+        "top_p": 0.95
+      },
+      "thinking_transport": "chat_template_kwargs",
+      "tokenizer": {
+        "files": {
+          "merges.txt": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d",
+          "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+          "vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+        },
+        "path": "artifacts/tokenizers/Qwen3.8-27B-tokenizer-1d4bf0f"
+      },
+      "weights_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0"
+    }
+  ],
+  "schema_version": "server_eval_v2",
+  "seed": 20260916,
+  "sources": {
+    "mini": {
+      "files": {
+        "LICENSE.md": "0f796e58f91d1c07bb2c1b1d0f8bf3a83017c3a5dec1bdc6fae733b2cd2e875b",
+        "pyproject.toml": "c176ff37a89ee88a2ea2ce746b9b7e723ea3175e53be5336ab99f5aba0d59ddf",
+        "src/minisweagent/__init__.py": "0a708308b1b62cc020b60799c3d54f665845f795b3f0c4fdac787c96a38d12c7",
+        "src/minisweagent/agents/default.py": "e8ef8aa365942d739c2ec5cb0879f60f377d2dc2de8ec670aaedf3bafb45a4c2",
+        "src/minisweagent/environments/docker.py": "21d389122b008e7b743d1e640207fda0b08d9010cf6323ddd02f0742b33b96a6",
+        "src/minisweagent/exceptions.py": "0590393c56bee873c79a691dcb4f15cb39c85f1658598b84bfb295bfde56921d",
+        "src/minisweagent/utils/log.py": "aee0cc34a32b542f4d3ef09e1f03b7418cf98ec54d506401d9d4401003c05a9f",
+        "src/minisweagent/utils/serialize.py": "3035b27cfeffdf91117c72bc8131340bd9c5f67a3010baeb4ecd6b0c7406f462"
+      },
+      "github_repo": "SWE-agent/mini-swe-agent",
+      "path": "vendor/mini-swe-04d809c",
+      "revision": "04d809ceab9df28f9adaed044884180159172930"
+    }
+  },
+  "summary_chunk_tokens": 4096
+}

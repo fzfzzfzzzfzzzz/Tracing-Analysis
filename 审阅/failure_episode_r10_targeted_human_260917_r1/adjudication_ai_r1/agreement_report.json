@@ -1,0 +1,72 @@
+{
+  "adjudication_sha256": "085fbad5dab77510762159bed39613c9fe0c5cbcc03263339b5507dd300754ad",
+  "anchor_exact_count": 3,
+  "case_count": 3,
+  "cases": [
+    {
+      "anchor_exact": true,
+      "core_exact": false,
+      "core_f1": 0.9090909090909091,
+      "core_only_a": [],
+      "core_only_b": [
+        "real:swe_gym:32a4b0e8f3c5b3c0:E021"
+      ],
+      "error_result_exact": true,
+      "error_signature_exact": true,
+      "optional_f1": 0.8888888888888888,
+      "prefix_id": "real:swe_gym:32a4b0e8f3c5b3c0",
+      "relevant_partition_exact": true,
+      "strict_action_exact": true
+    },
+    {
+      "anchor_exact": true,
+      "core_exact": false,
+      "core_f1": 0.9090909090909091,
+      "core_only_a": [],
+      "core_only_b": [
+        "real:swe_gym:a81eeafd60eb5788:E031"
+      ],
+      "error_result_exact": true,
+      "error_signature_exact": true,
+      "optional_f1": 0.975609756097561,
+      "prefix_id": "real:swe_gym:a81eeafd60eb5788",
+      "relevant_partition_exact": true,
+      "strict_action_exact": true
+    },
+    {
+      "anchor_exact": true,
+      "core_exact": false,
+      "core_f1": 0.9090909090909091,
+      "core_only_a": [],
+      "core_only_b": [
+        "real:swe_gym:fc45587d5bac8c04:E021"
+      ],
+      "error_result_exact": true,
+      "error_signature_exact": true,
+      "optional_f1": 0.8888888888888888,
+      "prefix_id": "real:swe_gym:fc45587d5bac8c04",
+      "relevant_partition_exact": true,
+      "strict_action_exact": true
+    }
+  ],
+  "cases_sha256": "63936d39200ae01bb3196d93ed0b772fc393d99ae5e0d2f1a504752c212a169f",
+  "core_exact_count": 0,
+  "development_only": true,
+  "error_signature_exact_count": 3,
+  "human_validated": false,
+  "mean_core_f1": 0.9090909090909091,
+  "mean_optional_f1": 0.9177958446251129,
+  "new_provider_requests": 0,
+  "relevant_partition_exact_count": 3,
+  "reviewer_a_ids": [
+    "ai-draft:zcode:glm-5.2:pass-a"
+  ],
+  "reviewer_b_ids": [
+    "ai-draft:zcode:glm-5.2:pass-b"
+  ],
+  "reviewer_independence": "same_model_two_passes_not_independent",
+  "reviews_a_sha256": "1cffe4afe9da58871ca6a583eb40b82f1424193ef2436ad2017829985a72a1ee",
+  "reviews_b_sha256": "02ca3d02dab088de958cda48ef3fde581ee68e60f1b5a93207c681595466c736",
+  "schema_version": "failure_episode_targeted_review_agreement_v1",
+  "strict_action_exact_count": 3
+}

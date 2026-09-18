@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Evaluate the frozen Phase 5.2 symbolic state machine without model completions."""
+"""不调用模型，检查第五阶段第二次补充的固定规则程序。"""
 
 from __future__ import annotations
 
-import argparse
+from tracegraph.plain_cli import PlainArgumentParser, run_cli
+
 import json
 import statistics
 import sys
@@ -23,13 +24,13 @@ from tracegraph.archive import ArchiveStore  # noqa: E402
 from tracegraph.capture import estimate_tokens  # noqa: E402
 from tracegraph.decision_state import stable_digest  # noqa: E402
 from tracegraph.graph import TraceGraph  # noqa: E402
-from tracegraph.lifecycle_annotation import file_sha256, load_phase52_config  # noqa: E402
+from tracegraph.context_engine.annotation import file_sha256, load_phase52_config  # noqa: E402
 from tracegraph.lifecycle_state_machine import (  # noqa: E402
     build_forbidden_offline_projection,
     load_tool_effect_registry,
     replay_lifecycle_state_machine,
 )
-from tracegraph.phase5_offline import (  # noqa: E402
+from tracegraph.context_engine.phase5 import (  # noqa: E402
     build_strict_prefix,
     policy_text,
     prefix_messages,
@@ -139,7 +140,7 @@ def _mean(rows: Sequence[Mapping[str, Any]], key: str) -> float:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = PlainArgumentParser(description=__doc__)
     parser.add_argument(
         "--config",
         type=Path,
@@ -465,4 +466,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main))

@@ -1,0 +1,33 @@
+{
+  "schema_version": "failure_episode_ai_development_validation_gate_budget_repair_v1",
+  "created_date": "2026-09-17",
+  "development_only": true,
+  "independent_validation": false,
+  "human_validated": false,
+  "parent_gate": {
+    "prepared_manifest_sha256": "a4a9f6109f9e5ec961b77963e02eb0602551255234affe4d48ade8bb955b9bb7",
+    "report_sha256": "c3c4a9926238cb9fd9ec4b755c517ea2b7eb952f007d683496ce5ef089640d4b",
+    "episodes_sha256": "0b800c724e471ee1d1cca6b4217b026661c9d64a02b1dda7ff7a88def18a9c60",
+    "result": "failed protocol-validity requirement at 3/4 despite hard_pass=3/4 because one Oracle artifact was context_ineligible and received zero model calls"
+  },
+  "population_change": "none",
+  "gold_change": "none",
+  "model_change": "none",
+  "contract_change": "none",
+  "budget_change": {
+    "from": 4096,
+    "to": 8192,
+    "observed_unsent_artifact_tokens": 6040,
+    "basis": "deterministic pre-answer context eligibility, not answer correctness"
+  },
+  "gate": {
+    "hard_pass_minimum": 3,
+    "episode_count": 4,
+    "necessary_evidence_present_required": 4,
+    "protocol_valid_required": 4,
+    "safety_pass_required": 4
+  },
+  "on_pass": "Freeze both gate attempts and prepare the five-method AI-development matrix at 8192 tokens.",
+  "on_fail": "Do not launch the method matrix; perform item-level gold, prompt, and model-capability attribution.",
+  "formal_claim_limit": "This is a protocol-feasibility repair over non-independent AI labels, not a formal validation or test result."
+}

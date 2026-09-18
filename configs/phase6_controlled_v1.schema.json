@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TraceGraph Phase 6 controlled experiment configuration",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "base_seed",
+    "reactivation_budget_tokens",
+    "bootstrap_samples",
+    "output_root",
+    "specification_path",
+    "expected_base_commit",
+    "protected_roots",
+    "external_provider_calls_allowed"
+  ],
+  "properties": {
+    "schema_version": {"const": "phase6_controlled_config_v1"},
+    "run_id": {"const": "e1_controlled_v1"},
+    "base_seed": {"const": 20260830},
+    "reactivation_budget_tokens": {"const": 1024},
+    "recent_tool_spans": {"const": 2},
+    "bootstrap_samples": {"type": "integer", "minimum": 1},
+    "output_root": {"type": "string", "minLength": 1},
+    "specification_path": {"type": "string", "minLength": 1},
+    "expected_base_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "protected_roots": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "external_provider_calls_allowed": {"const": false},
+    "e3_authorized": {"const": false},
+    "e4_authorized": {"const": false},
+    "preimplementation_validation": {"type": "object"}
+  },
+  "additionalProperties": false
+}

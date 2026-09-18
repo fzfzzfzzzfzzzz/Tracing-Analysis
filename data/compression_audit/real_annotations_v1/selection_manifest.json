@@ -1,0 +1,154 @@
+{
+  "adjudication_complete": false,
+  "benchmark_id": "compression_audit_v1",
+  "candidate_pool_count": 4613,
+  "candidates_sha256": "af693e8fc9ebe81986fce7aa2673c81706e71506aa1330f0f487410949504e4b",
+  "config_path": "E:\\科研\\Tools Tracing\\configs\\compression_audit_v1.json",
+  "config_sha256": "9a57c4e25d477770cba79e980b2c09f1a042b118357726824a4c06fcdb9d80bf",
+  "docker_image_availability": {
+    "available": 60,
+    "checked": 60,
+    "path": "swe_gym_image_availability.json",
+    "replay_verified": 0,
+    "sha256": "cde6713a258fe3903bd98febaacd6220c3fbdd239f142eb1ca06907d261b6c93"
+  },
+  "double_human_annotation_complete": false,
+  "formal_release_target": "v1.0",
+  "formal_test_membership_frozen": false,
+  "gold_created": false,
+  "license_inventory": {
+    "path": "source_license_inventory.json",
+    "public_benchmark_release_blocked": true,
+    "sha256": "a45698fdcebb458b1dd24915e35b166b8a48539c6977b48cf39156522284d355"
+  },
+  "review_packets": {
+    "a": {
+      "path": "_packet/compression_audit_v1_reviewer_a_260915.zip",
+      "sha256": "2f0047a5f6654cb54c58d6cff9665d1b0291f6ae186fd761a44d61cbfc0cb476"
+    },
+    "b": {
+      "path": "_packet/compression_audit_v1_reviewer_b_260915.zip",
+      "sha256": "2f0047a5f6654cb54c58d6cff9665d1b0291f6ae186fd761a44d61cbfc0cb476"
+    }
+  },
+  "schema_version": "compression_audit_v1_annotation_freeze_v1",
+  "selection": {
+    "candidate_mining_used_source_trajectory_outcome": true,
+    "repositories_by_split": {
+      "dev": [
+        "Project-MONAI__MONAI",
+        "ama:swebench",
+        "modin-project__modin"
+      ],
+      "test": [
+        "ama:2048",
+        "ama:babaisai",
+        "ama:crafter",
+        "ama:gaia_level2",
+        "ama:gaia_level3",
+        "ama:minihack",
+        "ama:spider2",
+        "ama:webarena",
+        "bokeh__bokeh",
+        "conan-io__conan",
+        "facebookresearch__hydra",
+        "iterative__dvc",
+        "pandas-dev__pandas",
+        "pydantic__pydantic",
+        "python__mypy"
+      ],
+      "validation": [
+        "ama:alfworld",
+        "ama:gaia_level1",
+        "dask__dask",
+        "getmoto__moto"
+      ]
+    },
+    "repository_assignment": {
+      "ama_bench": {
+        "ama:2048": "test",
+        "ama:alfworld": "validation",
+        "ama:babaisai": "test",
+        "ama:crafter": "test",
+        "ama:gaia_level1": "validation",
+        "ama:gaia_level2": "test",
+        "ama:gaia_level3": "test",
+        "ama:minihack": "test",
+        "ama:spider2": "test",
+        "ama:swebench": "dev",
+        "ama:webarena": "test"
+      },
+      "swe_gym": {
+        "Project-MONAI__MONAI": "dev",
+        "bokeh__bokeh": "test",
+        "conan-io__conan": "test",
+        "dask__dask": "validation",
+        "facebookresearch__hydra": "test",
+        "getmoto__moto": "validation",
+        "iterative__dvc": "test",
+        "modin-project__modin": "dev",
+        "pandas-dev__pandas": "test",
+        "pydantic__pydantic": "test",
+        "python__mypy": "test"
+      }
+    },
+    "repository_leakage": [],
+    "selected_count": 100,
+    "selection_observed_annotations": false,
+    "selection_observed_benchmark_method_results": false,
+    "selection_seed": 20260915,
+    "source_counts": {
+      "ama_bench": 40,
+      "swe_gym": 60
+    },
+    "source_split_counts": {
+      "ama_bench": {
+        "dev": 8,
+        "test": 24,
+        "validation": 8
+      },
+      "swe_gym": {
+        "dev": 12,
+        "test": 36,
+        "validation": 12
+      }
+    },
+    "split_counts": {
+      "dev": 20,
+      "test": 60,
+      "validation": 20
+    },
+    "unique_source_tasks": 100
+  },
+  "source_files": [
+    {
+      "bytes": 70817777,
+      "path": "E:\\科研\\Tools Tracing\\data\\external\\compression_audit_sources_v1\\swe_gym_openhands_baf3a4e\\train.raw-00000-of-00003.parquet",
+      "row_count": 2019,
+      "sha256": "29d038b0c34eb0e50a19730f3cf3daa5a156c2d7e9c871c01b568acbab6aae07",
+      "source": "swe_gym"
+    },
+    {
+      "bytes": 78471672,
+      "path": "E:\\科研\\Tools Tracing\\data\\external\\compression_audit_sources_v1\\swe_gym_openhands_baf3a4e\\train.raw-00001-of-00003.parquet",
+      "row_count": 2018,
+      "sha256": "64a5d435b777a47e2544de1cc3bf61e5452bab1237fc43e70220e13f2f901516",
+      "source": "swe_gym"
+    },
+    {
+      "bytes": 151806160,
+      "path": "E:\\科研\\Tools Tracing\\data\\external\\compression_audit_sources_v1\\swe_gym_openhands_baf3a4e\\train.raw-00002-of-00003.parquet",
+      "row_count": 2018,
+      "sha256": "1e388384f0dbf65421b53ef37d4f92c10e1e458f597bf61326fa047b8e21b597",
+      "source": "swe_gym"
+    },
+    {
+      "bytes": 50451919,
+      "path": "E:\\科研\\Tools Tracing\\data\\external\\compression_audit_sources_v1\\ama_bench_a577737\\open_end_qa_set.jsonl",
+      "row_count": 208,
+      "sha256": "45c36052e1520d87ad9de4114f71c9df42d4aac9cf158c0c353e800b653d65ff",
+      "source": "ama_bench"
+    }
+  ],
+  "split_assignment_frozen_before_annotation": true
+}

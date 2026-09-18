@@ -13,7 +13,7 @@ from tracegraph.lifecycle_context import (
     ProjectionStrategy,
     project_context,
 )
-from tracegraph.liveness import (
+from tracegraph.context_engine.liveness import (
     ArchiveReader,
     DecisionLifecycleGraph,
     LivenessRoots,

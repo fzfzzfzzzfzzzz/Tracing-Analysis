@@ -1,0 +1,322 @@
+{
+  "type": "object",
+  "required": [
+    "schema_version",
+    "development_only",
+    "independent_validation",
+    "seed",
+    "methods",
+    "history_budgets",
+    "summary_chunk_tokens",
+    "interactive",
+    "judge_model_id",
+    "models",
+    "limits",
+    "gates",
+    "data",
+    "sources",
+    "ama_code_search"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "server_eval_v2"
+    },
+    "development_only": {
+      "const": true
+    },
+    "independent_validation": {
+      "const": false
+    },
+    "seed": {
+      "type": "integer"
+    },
+    "methods": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "full_history",
+          "recent_masking",
+          "flat_bm25_archive",
+          "bm25_pair_window_archive",
+          "bm25_episode_archive",
+          "tracegraph_0_4",
+          "tracegraph_causal_retrieval",
+          "tracegraph_lifecycle_cards",
+          "tracegraph_lifecycle_retrieval",
+          "rolling_summary",
+          "acon_official",
+          "ama_official_bm25",
+          "ama_official_embedding",
+          "tracegraph_no_causal_closure",
+          "tracegraph_no_failure_priority",
+          "tracegraph_no_lifecycle_priority",
+          "tracegraph_no_retrieval",
+          "tracegraph_goal_scoped_fallback"
+        ]
+      }
+    },
+    "history_budgets": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "summary_chunk_tokens": {
+      "type": "integer"
+    },
+    "interactive": {
+      "type": "boolean"
+    },
+    "judge_model_id": {
+      "type": "string"
+    },
+    "models": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "display_name",
+          "provider",
+          "base_url",
+          "served_model",
+          "weights_revision",
+          "server_version",
+          "returned_model_allowlist",
+          "api_key_env",
+          "context_window",
+          "max_output_tokens",
+          "thinking_transport",
+          "tokenizer"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "base_url": {},
+          "served_model": {},
+          "weights_revision": {},
+          "server_version": {},
+          "returned_model_allowlist": {
+            "type": "array",
+            "items": {}
+          },
+          "api_key_env": {
+            "type": "string"
+          },
+          "context_window": {
+            "type": "integer"
+          },
+          "max_output_tokens": {
+            "type": "integer"
+          },
+          "thinking_transport": {
+            "type": "string"
+          },
+          "tokenizer": {},
+          "runtime_receipt": {},
+          "enable_thinking": {"type": "boolean"},
+          "thinking_kinds": {"type": "array", "items": {"type": "string"}},
+          "thinking_sampling": {"type": "object"},
+          "action_transport": {"enum": ["json_schema", "native_tool_call"]},
+          "answer_transport": {"enum": ["response_format", "native_tool_call"]},
+          "construction_transport": {"enum": ["text", "native_tool_call"]},
+          "retrieval_transport": {"enum": ["text", "native_tool_call"]},
+          "construction_max_output_tokens": {"type": "integer", "minimum": 2048, "maximum": 8192},
+          "retrieval_max_output_tokens": {"type": "integer", "minimum": 2048, "maximum": 8192},
+          "construction_submission_max_chars": {"type": "integer", "minimum": 1024, "maximum": 65536},
+          "retrieval_submission_max_chars": {"type": "integer", "minimum": 1024, "maximum": 65536}
+        }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "required": [
+        "request_limit",
+        "input_token_limit",
+        "output_token_limit",
+        "wall_seconds",
+        "build_calls_per_prefix",
+        "retrieve_calls_per_query",
+        "timeout_seconds"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "request_limit": {
+          "type": "integer"
+        },
+        "input_token_limit": {
+          "type": "integer"
+        },
+        "output_token_limit": {
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "type": "integer"
+        },
+        "build_calls_per_prefix": {
+          "type": "integer"
+        },
+        "retrieve_calls_per_query": {
+          "type": "integer"
+        },
+        "timeout_seconds": {
+          "type": "integer"
+        },
+        "embedding_calls_per_prefix": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": [
+        "judge_holdout_correct",
+        "judge_critical_false_positives",
+        "first_format_valid",
+        "final_format_valid",
+        "full_pass",
+        "oracle_pass"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "judge_holdout_correct": {
+          "type": "integer"
+        },
+        "judge_critical_false_positives": {
+          "type": "integer"
+        },
+        "first_format_valid": {
+          "type": "integer"
+        },
+        "final_format_valid": {
+          "type": "integer"
+        },
+        "full_pass": {
+          "type": "integer"
+        },
+        "oracle_pass": {
+          "type": "integer"
+        }
+      }
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "split",
+        "prefix_ids",
+        "exposure_manifest"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "split": {
+          "type": "string"
+        },
+        "prefix_ids": {
+          "type": "array",
+          "items": {}
+        },
+        "exposure_manifest": {},
+        "rubrics": {},
+        "calibration_dataset": {}
+      }
+    },
+    "sources": {
+      "type": "object",
+      "required": [
+        "acon",
+        "ama"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "acon": {
+          "type": "object",
+          "required": [
+            "github_repo",
+            "revision",
+            "path",
+            "prompt_dir",
+            "files"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "github_repo": {
+              "type": "string"
+            },
+            "revision": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "prompt_dir": {
+              "type": "string"
+            },
+            "files": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        },
+        "ama": {
+          "type": "object",
+          "required": [
+            "github_repo",
+            "revision",
+            "path",
+            "files"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "github_repo": {
+              "type": "string"
+            },
+            "revision": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "files": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        },
+        "mini": {}
+      }
+    },
+    "ama_code_search": {
+      "type": "object",
+      "required": [
+        "mode",
+        "image"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": ["disabled", "docker", "bwrap"]
+        },
+        "image": {}
+      }
+    },
+    "embedding": {},
+    "acon_guidance": {}
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

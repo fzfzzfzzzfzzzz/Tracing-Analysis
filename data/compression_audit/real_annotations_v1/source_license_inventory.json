@@ -1,0 +1,28 @@
+{
+  "schema_version": "compression_audit_source_license_inventory_v1",
+  "checked_at": "2026-09-15",
+  "sources": [
+    {
+      "source": "swe_gym",
+      "trajectory_revision": "baf3a4e4bff514d48ddc08a93a2ade5c126212c7",
+      "dataset_url": "https://huggingface.co/datasets/SWE-Gym/OpenHands-Sampled-Trajectories",
+      "dataset_card_sha256": "45e76541e88ef9a50192e77137a4622c6f38fbe299fbbae4beb2bbb0d135d8d3",
+      "code_repository_license": "Apache-2.0",
+      "trajectory_dataset_license": "not_declared_in_dataset_card",
+      "local_research_use": true,
+      "public_redistribution_cleared": false,
+      "restriction": "Do not publish or redistribute source-derived trajectories or reviewer packets until the trajectory-data license is confirmed."
+    },
+    {
+      "source": "ama_bench",
+      "trajectory_revision": "a5777378066f53229a94557a7b192435cd027909",
+      "dataset_url": "https://huggingface.co/datasets/AMA-bench/AMA-bench",
+      "dataset_card_sha256": "448fa0df4b773d184feccc66fe0ae11041fa61ef6babe0ceee13f2482119e717",
+      "dataset_license": "MIT",
+      "local_research_use": true,
+      "public_redistribution_cleared": true
+    }
+  ],
+  "formal_local_experiment_blocked": false,
+  "public_benchmark_release_blocked": true
+}

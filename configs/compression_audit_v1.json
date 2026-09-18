@@ -1,0 +1,151 @@
+{
+  "schema_version": "compression_audit_config_v1",
+  "benchmark_id": "compression_audit_v1",
+  "release": "v0.1-diagnostic",
+  "legacy": {
+    "input_root": "outputs/phase6/e1_controlled_v1",
+    "ranked": false,
+    "expected_prefix_count": 24,
+    "expected_fork_count": 72,
+    "expected_hashes": {
+      "prefixes.jsonl": "29ac8cafc36cb6c174b3585cdbbaafe4fc2128ee93c3b971f8b3ba8822967127",
+      "forks.jsonl": "aff7503d8ef7ab5d157ca0aa9daed3eeeb8ab7b4197eb5f65e354571ec3db065",
+      "lifecycle_gold.jsonl": "89421727d4606fbba45469731c953c451613640ed8a68d6b21832fed108e89e0",
+      "manager_outputs.jsonl": "ea1bd2ecc8932abb47052bde0eeacc9e884d1c59065e59fa7e102314337a0268"
+    }
+  },
+  "controlled": {
+    "base_seed": 20260901,
+    "prefix_count": 240,
+    "queries_per_prefix": 6,
+    "episode_count": 1440,
+    "dimensions": {
+      "failure_families": 10,
+      "task_domains": 3,
+      "recoverability_levels": 4,
+      "context_lengths": 2
+    },
+    "split_prefix_counts": {
+      "dev": 48,
+      "validation": 48,
+      "test": 144
+    }
+  },
+  "real": {
+    "normalized_annotation_root": "data/compression_audit/real_annotations_v1",
+    "swe_gym_quota": 60,
+    "ama_bench_quota": 40,
+    "total_quota": 100,
+    "double_human_annotation_required": true,
+    "adjudication_required": true,
+    "minimum_cohen_kappa": 0.8,
+    "minimum_evidence_event_f1": 0.9,
+    "sources": [
+      {
+        "id": "swe_gym_openhands",
+        "repository": "https://github.com/SWE-Gym/SWE-Gym",
+        "repository_commit": "b681068ca20628c6987b7416cc4cf03f06b77ba5",
+        "trajectory_dataset": "https://huggingface.co/datasets/SWE-Gym/OpenHands-Sampled-Trajectories",
+        "trajectory_revision": "baf3a4e4bff514d48ddc08a93a2ade5c126212c7",
+        "code_license": "Apache-2.0",
+        "data_license": "unverified",
+        "license_inventory_required": true,
+        "docker_replay_required": true
+      },
+      {
+        "id": "ama_bench",
+        "repository": "https://github.com/AMA-Bench/AMA-Bench",
+        "repository_commit": "ddfd319e0be33424288c13806f1eafc63e625b59",
+        "trajectory_dataset": "https://huggingface.co/datasets/AMA-bench/AMA-bench",
+        "trajectory_revision": "a5777378066f53229a94557a7b192435cd027909",
+        "code_license": "MIT",
+        "data_license": "MIT",
+        "license_inventory_required": true,
+        "docker_replay_required": false
+      }
+    ]
+  },
+  "v0_live": {
+    "seed": 20260901,
+    "audit_prefix_count": 24,
+    "audit_query_types": [
+      "audit_failed_action",
+      "audit_failure_cause"
+    ],
+    "audit_methods": [
+      "M0_full_history",
+      "M1_recent_masking",
+      "failure_chain_deletion"
+    ],
+    "audit_counterfactual_conditions": [
+      "oracle_failure_chain",
+      "irrelevant_size_control"
+    ],
+    "interactive_prefixes_per_recoverability": 2,
+    "interactive_conditions": [
+      "full",
+      "candidate",
+      "oracle_failure_chain",
+      "irrelevant_size_control"
+    ],
+    "model": {
+      "provider": "dashscope",
+      "name": "qwen3.8-27b",
+      "fallback": null,
+      "temperature": 0,
+      "enable_thinking": false,
+      "max_output_tokens": 512
+    },
+    "context_tokenizer": {
+      "model": "qwen3.8-27b",
+      "path": "outputs/compression_audit/tokenizer_qwen38/tokenizer.modelscope.json",
+      "sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+      "source": "https://huggingface.co/Qwen/Qwen3.8-27B/blob/72a217a/tokenizer.json",
+      "download_url": "https://modelscope.cn/models/Qwen/Qwen3.8-27B/resolve/master/tokenizer.json"
+    },
+    "pricing_snapshot": {
+      "checked_at": "2026-08-31",
+      "source": "https://help.aliyun.com/zh/model-studio/model-pricing",
+      "currency": "CNY",
+      "region": "china-beijing",
+      "prices_per_million_tokens": {
+        "qwen3.8-27b": {
+          "input": 3.0,
+          "output": 12.0
+        }
+      }
+    },
+    "limits": {
+      "maximum_cost_cny": 100.0,
+      "request_count_hard_max": 368,
+      "request_input_tokens_hard_max": 50000,
+      "actual_input_tokens_hard_max": 18400000,
+      "actual_output_tokens_hard_max": 188416,
+      "retry_per_request_max": 0,
+      "timeout_seconds": 180
+    },
+    "authorization": {
+      "authorized_by_user": true,
+      "authorized_at": "2026-08-31",
+      "maximum_cost_cny": 100.0,
+      "scope": "compression_audit_v0_1_only"
+    }
+  },
+  "statistics": {
+    "unit": "source_prefix",
+    "bootstrap_samples": 10000,
+    "confidence_level": 0.95,
+    "multiple_comparison_correction": "holm",
+    "single_aggregate_score": false
+  },
+  "gates": {
+    "full_history_audit_pass_rate_min": 0.95,
+    "failure_chain_deletion_drop_min": 0.3,
+    "oracle_recovery_rate_min": 0.8,
+    "recoverable_regret_reduction_min": 0.5,
+    "request_hash_integrity_min": 1.0,
+    "provider_usage_coverage_min": 1.0,
+    "structured_output_coverage_min": 1.0,
+    "executed_unauthorized_side_effects_max": 0
+  }
+}

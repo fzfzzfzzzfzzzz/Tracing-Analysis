@@ -1,0 +1,381 @@
+{
+  "$id": "compression_audit_failure_episode_annotation_v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "annotation_status": {
+      "enum": [
+        "blank",
+        "annotated",
+        "rejected"
+      ]
+    },
+    "annotator": {
+      "type": "string"
+    },
+    "annotator_kind": {
+      "const": "human"
+    },
+    "candidate_id": {
+      "type": "string"
+    },
+    "failure_episode": {
+      "additionalProperties": false,
+      "properties": {
+        "anchor_source_event_id": {
+          "type": "string"
+        },
+        "chain_policy": {
+          "additionalProperties": false,
+          "properties": {
+            "alternative_evidence_sets": {
+              "items": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "type": "array"
+            },
+            "causal_paths": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "constraints": {
+                    "items": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "maxItems": 2,
+                      "minItems": 2,
+                      "type": "array"
+                    },
+                    "type": "array"
+                  },
+                  "evidence_ids": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array",
+                    "uniqueItems": true
+                  }
+                },
+                "required": [
+                  "evidence_ids",
+                  "constraints"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "relevant_evidence_ids": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "alternative_evidence_sets",
+            "relevant_evidence_ids",
+            "causal_paths"
+          ],
+          "type": "object"
+        },
+        "diagnostic_evidence": {
+          "type": "string"
+        },
+        "error_signature": {
+          "type": "string"
+        },
+        "failure_family": {
+          "type": "string"
+        },
+        "initial_action_source_event_id": {
+          "type": "string"
+        },
+        "initial_result_source_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "optional_support_source_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "query_policies": {
+          "additionalProperties": false,
+          "properties": {
+            "audit_recovery": {
+              "additionalProperties": false,
+              "properties": {
+                "alternative_evidence_sets": {
+                  "items": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array",
+                    "uniqueItems": true
+                  },
+                  "type": "array"
+                },
+                "causal_paths": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "constraints": {
+                        "items": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "maxItems": 2,
+                          "minItems": 2,
+                          "type": "array"
+                        },
+                        "type": "array"
+                      },
+                      "evidence_ids": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array",
+                        "uniqueItems": true
+                      }
+                    },
+                    "required": [
+                      "evidence_ids",
+                      "constraints"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "relevant_evidence_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "alternative_evidence_sets",
+                "relevant_evidence_ids",
+                "causal_paths"
+              ],
+              "type": "object"
+            },
+            "interactive_reacquisition": {
+              "additionalProperties": false,
+              "properties": {
+                "alternative_evidence_sets": {
+                  "items": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array",
+                    "uniqueItems": true
+                  },
+                  "type": "array"
+                },
+                "causal_paths": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "constraints": {
+                        "items": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "maxItems": 2,
+                          "minItems": 2,
+                          "type": "array"
+                        },
+                        "type": "array"
+                      },
+                      "evidence_ids": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array",
+                        "uniqueItems": true
+                      }
+                    },
+                    "required": [
+                      "evidence_ids",
+                      "constraints"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "relevant_evidence_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "alternative_evidence_sets",
+                "relevant_evidence_ids",
+                "causal_paths"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "audit_recovery",
+            "interactive_reacquisition"
+          ],
+          "type": "object"
+        },
+        "recoverability": {
+          "enum": [
+            "",
+            "R0",
+            "R1",
+            "R2",
+            "R3"
+          ]
+        },
+        "recovery_sequence": {
+          "type": "string"
+        },
+        "repair_steps": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "action_source_event_id": {
+                "type": "string"
+              },
+              "decision_source_event_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "outcome": {
+                "enum": [
+                  "intermediate_failure",
+                  "resolved"
+                ]
+              },
+              "result_source_event_ids": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "uniqueItems": true
+              },
+              "semantic_change": {
+                "type": "string"
+              },
+              "step_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "step_id",
+              "decision_source_event_ids",
+              "action_source_event_id",
+              "result_source_event_ids",
+              "outcome",
+              "semantic_change"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "required_core_source_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "resolution_evidence": {
+          "type": "string"
+        },
+        "resolution_source_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "scope": {
+          "const": "task_level_failure_episode"
+        }
+      },
+      "required": [
+        "scope",
+        "failure_family",
+        "recoverability",
+        "error_signature",
+        "diagnostic_evidence",
+        "recovery_sequence",
+        "resolution_evidence",
+        "anchor_source_event_id",
+        "initial_action_source_event_id",
+        "initial_result_source_event_ids",
+        "repair_steps",
+        "resolution_source_event_ids",
+        "required_core_source_event_ids",
+        "optional_support_source_event_ids",
+        "chain_policy",
+        "query_policies"
+      ],
+      "type": "object"
+    },
+    "rejection_reason": {
+      "type": "string"
+    },
+    "repository": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "compression_audit_failure_episode_annotation_v1"
+    },
+    "source": {
+      "type": "string"
+    },
+    "split": {
+      "enum": [
+        "dev",
+        "validation",
+        "test"
+      ]
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "trajectory_revision": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "candidate_id",
+    "source",
+    "repository",
+    "task_id",
+    "split",
+    "trajectory_revision",
+    "failure_episode",
+    "annotator",
+    "annotator_kind",
+    "annotation_status",
+    "rejection_reason"
+  ],
+  "type": "object"
+}
